@@ -17,11 +17,11 @@ function App() {
             Get started
           </Button>
           <div className="flex flex-col items-center gap-[24px]">
-            <p className="font-normal">
+            <p className="text-sm font-normal">
               Don't have an account?{" "}
-              <span className="font-medium">Sign up</span>
+              <span className="font-semibold">Sign up</span>
             </p>
-            <span className="font-medium">Recover account</span>
+            <span className="text-sm font-semibold">Recover account</span>
           </div>
         </div>
       </div>
