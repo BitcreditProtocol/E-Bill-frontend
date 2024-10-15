@@ -9,8 +9,8 @@ export default {
   	extend: {
   		borderRadius: {
   			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
+  			md: 'var(--radius)',
+  			sm: 'var(--radius)'
   		},
   		colors: {
   			background: 'hsl(var(--background))',
