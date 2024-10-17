@@ -38,8 +38,9 @@ const createIdentityFormSchema = z.object({
   email: z.string().email(),
   taxId: z.string(),
 
-  // todo: add validation for file type and size
-  identityDocument: z.instanceof(File),
+  identityDocument: z
+    .instanceof(File)
+    .refine((file) => file.size < 5 * 1024 * 1024),
 });
 
 function CreateIdentityForm() {
@@ -121,7 +122,7 @@ function CreateIdentityForm() {
                 name="dateOfBirth.day"
                 render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel className="font-medium text-xs">Day</FormLabel>
+                    <FormLabel className="font-medium text-xs">Date</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
