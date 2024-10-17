@@ -7,9 +7,9 @@ import Home from "./pages/Home";
 function App() {
   return (
     <DefaultLayout>
-      <Home />
+      {/* <Home /> */}
       {/* <CreateIdentity /> */}
-      {/* <ConnectCompany /> */}
+      <ConnectCompany />
       {/* <ProfileInfo /> */}
     </DefaultLayout>
   );
