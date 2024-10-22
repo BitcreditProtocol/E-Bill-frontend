@@ -33,14 +33,10 @@ class EnvironmentAwareAction<BrowserResult, PWAResult> {
     return this.instances.get(identifier) as EnvironmentAwareAction<B, P>;
   }
 
-  private isPWA(): boolean {
-    return isPWA();
-  }
-
   public async performAction(): Promise<
     ActionResult<BrowserResult | PWAResult>
   > {
-    if (this.isPWA()) {
+    if (isPWA()) {
       return await this.pwaAction();
     } else {
       return await this.browserAction();
