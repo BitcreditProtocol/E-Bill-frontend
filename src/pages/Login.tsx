@@ -20,7 +20,7 @@ export default function Login() {
       <img
         src={loginIllustration}
         alt="Bitcoin Credit Layer"
-        className="aspect-square"
+        className="aspect-square max-w-[220px] mx-auto"
       />
 
       <div className="flex flex-col content-between gap-4 text-center">
