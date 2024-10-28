@@ -1,12 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: "Mulish", sans-serif;
+  font-family: "Geist", system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 

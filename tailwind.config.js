@@ -7,6 +7,10 @@ export default {
   ],
   theme: {
   	extend: {
+			fontFamily: {
+        sans: ['Geist', 'sans-serif'],
+        mono: ['Geist Mono', 'monospace'],
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'var(--radius)',
@@ -52,7 +56,36 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+				// Bitcredit Design System colors
+				divider: {
+          50: '#ECE8DE',
+          100: '#D1CCC1',
+          200: '#BAB4A9',
+          300: '#A39D91',
+        },
+        elevation: {
+          50: '#FEFBF1',
+          100: '#FAF7EF',
+          200: '#EEEBE3',
+          300: '#D1CCC1',
+        },
+        text: {
+          50: '#D6D2CA',
+          100: '#C5C1B9',
+          200: '#8D8579',
+          300: '#1B0F00',
+        },
+        signal: {
+          success: '#006F29',
+          alert: '#AE5F00',
+          error: '#A32B16',
+        },
+        brand: {
+          50: '#FFF2E2',
+          100: '#FBDBB0',
+          200: '#A32B16',
+        },
   		}
   	}
   },
