@@ -8,6 +8,7 @@ import ConnectCompany from "./pages/onboarding/ConnectCompany";
 import ProfileInfo from "./pages/onboarding/ProfileInfo";
 import Home from "./pages/Home";
 import Unlock from "./pages/Unlock.tsx";
+import Login from "./pages/Login.tsx";
 import routes from "./constants/routes.ts";
 
 import "./index.css";
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: routes.LOGIN,
+    element: <Login />,
   },
   {
     path: "/create-identity",

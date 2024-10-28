@@ -84,7 +84,7 @@ export default {
         brand: {
           50: '#FFF2E2',
           100: '#FBDBB0',
-          200: '#A32B16',
+          200: '#F7931A',
         },
   		}
   	}
