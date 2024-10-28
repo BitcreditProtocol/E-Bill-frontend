@@ -4,7 +4,7 @@ import logo from "@/assets/logo.svg";
 
 export default function Login() {
   return (
-    <div className="flex flex-col justify-between h-full py-12 px-[30px]">
+    <div className="flex flex-col justify-between min-h-fit h-screen py-12 px-[30px]">
       <div className="flex flex-col gap-8 items-center">
         <img src={logo} alt="Bitcredit" className="w-[120px]" />
         <div className="flex flex-col items-center gap-2 text-center">
@@ -20,7 +20,7 @@ export default function Login() {
       <img
         src={loginIllustration}
         alt="Bitcoin Credit Layer"
-        className="h-[300px]"
+        className="aspect-square"
       />
 
       <div className="flex flex-col content-between gap-4 text-center">
