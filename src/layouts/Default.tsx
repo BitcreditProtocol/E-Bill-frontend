@@ -1,6 +1,6 @@
 export default function Default({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-w-[320px] w-full h-full flex flex-col items-center p-[24px]">
+    <div className="max-w-[375px] w-full h-screen flex flex-col items-center bg-elevation-50">
       {children}
     </div>
   );
