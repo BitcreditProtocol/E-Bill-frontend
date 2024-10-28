@@ -9,6 +9,7 @@ import ProfileInfo from "./pages/onboarding/ProfileInfo";
 import Home from "./pages/Home";
 
 import "./index.css";
+import "./styles/fonts.css";
 
 const router = createBrowserRouter([
   {

@@ -10,4 +10,5 @@ export default defineConfig({
       reportsDirectory: "./coverage",
     },
   },
+  assetsInclude: ["**/*.woff2"],
 });

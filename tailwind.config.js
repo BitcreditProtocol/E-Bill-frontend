@@ -8,7 +8,7 @@ export default {
   theme: {
   	extend: {
 			fontFamily: {
-        sans: ['Geist', 'sans-serif'],
+        sans: ['Geist', 'system-ui', 'sans-serif'],
         mono: ['Geist Mono', 'monospace'],
       },
   		borderRadius: {
