@@ -2,5 +2,8 @@
   "devDependencies": {
     "@vitest/coverage-v8": "^2.1.4",
     "vitest": "^2.1.4"
+  },
+  "scripts": {
+    "test": "vitest --coverage"
   }
 }
