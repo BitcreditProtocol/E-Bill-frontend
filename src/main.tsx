@@ -7,6 +7,7 @@ import CreateIdentity from "./pages/onboarding/CreateIdentity";
 import ConnectCompany from "./pages/onboarding/ConnectCompany";
 import ProfileInfo from "./pages/onboarding/ProfileInfo";
 import Home from "./pages/Home";
+import Unlock from "./pages/Unlock.tsx";
 import Login from "./pages/Login.tsx";
 import routes from "./constants/routes.ts";
 
@@ -14,6 +15,10 @@ import "./index.css";
 import "./styles/fonts.css";
 
 const router = createBrowserRouter([
+  {
+    path: routes.UNLOCK,
+    element: <Unlock />,
+  },
   {
     path: "/",
     element: <Home />,
