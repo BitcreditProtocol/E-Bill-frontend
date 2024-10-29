@@ -4,6 +4,6 @@
     "vitest": "^2.1.4"
   },
   "scripts": {
-    "test": "vitest --coverage"
+    "test": "vitest"
   }
 }
