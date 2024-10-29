@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { ChevronLeftIcon, DeleteIcon } from "lucide-react";
 
 export default function Unlock() {
-  const { reset } = useForm();
   const [pin, setPin] = useState<string>("");
 
   const addDigit = (digit: string) => {
@@ -14,11 +12,6 @@ export default function Unlock() {
 
   const deleteDigit = () => {
     setPin((prevPin) => prevPin.slice(0, -1));
-  };
-
-  const resetPin = () => {
-    setPin("");
-    reset();
   };
 
   return (
