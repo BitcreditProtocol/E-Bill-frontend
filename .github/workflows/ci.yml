@@ -1,20 +1,31 @@
 name: Workflow for Codecov example-typescript
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "*" ]
 jobs:
-  run:
+  test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Node 18
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '18'
+
       - name: Install dependencies
         run: npm install
-      - name: Run tests and collect coverage
-        run: npm run test
+
+      - name: Run tests and generate coverage
+        run: npm run test -- --coverage
+
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}  # Required if the repo is private
+          files: ./coverage/lcov.info           # Path to the lcov report
+          flags: unittests                      # Optional: Flag for specific test type
+          name: codecov-umbrella                # Optional: Custom name for coverage report
+          fail_ci_if_error: true                # Optional: Fail CI if upload fails
