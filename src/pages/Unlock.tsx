@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import deleteIcon from "@/assets/delete-icon.svg";
+import { ChevronLeftIcon, DeleteIcon } from "lucide-react";
 
 export default function Unlock() {
   const { reset } = useForm();
   const [pin, setPin] = useState<string>("");
 
   const addDigit = (digit: string) => {
-    if (pin.length < 5) {
+    if (pin.length < 6) {
       setPin((prevPin) => prevPin + digit);
     }
   };
@@ -22,14 +22,18 @@ export default function Unlock() {
   };
 
   return (
-    <div className="flex flex-col justify-between min-h-fit h-screen py-12 px-[30px]">
-      {/* Header and PIN display */}
+    <div className="flex flex-col justify-between min-h-fit h-screen py-12 px-6">
       <div className="flex flex-col items-center gap-20 text-center">
-        <h1 className="font-sans font-medium text-[24px]">
+        <div className="flex w-full">
+          <button className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6">
+            <ChevronLeftIcon width={16} strokeWidth={1} color="#1B0F00" />
+          </button>
+        </div>
+        <h1 className="font-sans font-medium text-[24px] mx-3">
           Unlock with your PIN code
         </h1>
         <div className="flex gap-8">
-          {Array.from({ length: 5 }).map((_, idx) => (
+          {Array.from({ length: 6 }).map((_, idx) => (
             <div
               key={idx}
               className={`w-3 h-3 rounded-full ${
@@ -52,10 +56,14 @@ export default function Unlock() {
                   addDigit(item.toString());
                 }
               }}
-              className="w-12 h-12 bg-transparent flex items-center justify-center text-lg font-normal"
+              className="w-12 h-12 p-0 bg-transparent flex items-center justify-center text-lg font-normal"
               disabled={item === ""}
             >
-              {item === "delete" ? <img src={deleteIcon} /> : item}
+              {item === "delete" ? (
+                <DeleteIcon width={24} strokeWidth={1} color="#1B0F00" />
+              ) : (
+                item
+              )}
             </button>
           ))}
         </div>
