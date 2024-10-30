@@ -1,8 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
-import { ChevronLeftIcon, DeleteIcon } from "lucide-react";
+import { ChevronLeftIcon, DeleteIcon, FileLock2Icon } from "lucide-react";
+import routes from "@/constants/routes";
+import { Button } from "@/components/ui/button";
 
 export default function Unlock() {
+  const navigate = useNavigate();
+
+  const goBack = () => navigate(routes.LOGIN);
+
+  const goToIdentityRestoration = () =>
+    navigate(routes.RESTORE_WITH_SEED_PHRASE);
+
   const [pin, setPin] = useState<string>("");
 
   const addDigit = (digit: string) => {
@@ -16,19 +26,24 @@ export default function Unlock() {
   };
 
   return (
-    <div className="flex flex-col justify-between min-h-fit h-screen py-12 px-6">
-      <div className="flex flex-col items-center gap-20 text-center">
+    <div className="flex flex-col min-h-fit h-screen gap-10 py-12 px-6 w-[375px]">
+      <div className="flex flex-col items-center gap-10 text-center">
         <div className="flex w-full">
-          <button className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6">
+          <button
+            className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6"
+            onClick={goBack}
+          >
             <ChevronLeftIcon width={16} strokeWidth={1} color="#1B0F00" />
           </button>
         </div>
+
         <h1 className="font-sans font-medium text-[24px] mx-3">
           <FormattedMessage
             id="pages.unlock.title"
             defaultMessage="Unlock with PIN code"
           />
         </h1>
+
         <div className="flex gap-8">
           {Array.from({ length: 6 }).map((_, idx) => (
             <div
@@ -72,12 +87,19 @@ export default function Unlock() {
               defaultMessage="Forgot your PIN?"
             />
           </span>
-          <span className="font-medium text-[#F7931A] cursor-pointer">
+
+          <Button
+            variant="link"
+            className="gap-2 text-brand-200 text-[14px] font-medium"
+            onClick={goToIdentityRestoration}
+          >
             <FormattedMessage
               id="pages.unlock.seedPhraseRecovery"
               defaultMessage="Recover with seed phrase"
+              description="Go to recovery with seed phrase page"
             />
-          </span>
+            <FileLock2Icon width={20} color="#F7931A" strokeWidth={1} />
+          </Button>
         </div>
       </div>
     </div>

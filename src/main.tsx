@@ -27,6 +27,10 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
+    path: routes.LOGIN,
+    element: <Login />,
+  },
+  {
     path: routes.RESTORE_WITH_PRIVATE_KEY,
     element: <RecoverWithPrivateKey />,
   },
