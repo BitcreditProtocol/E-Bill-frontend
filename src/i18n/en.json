@@ -1,0 +1,10 @@
+{
+  "pages.login.newIdentity": "New identity",
+  "pages.login.restoreWithSeedPhrase": "Restore with seed phrase",
+  "pages.login.subtitle": "A strong trade credit solution, directly between businesses",
+  "pages.login.title": "Bitcoin for the real economy",
+  "pages.login.unlockWithPin": "Unlock with PIN",
+  "pages.unlock.forgotPin": "Forgot your PIN?",
+  "pages.unlock.seedPhraseRecovery": "Recover with seed phrase",
+  "pages.unlock.title": "Unlock with PIN code"
+}
