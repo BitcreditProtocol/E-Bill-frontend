@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, CircleXIcon, CopyIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import routes from "@/constants/routes";
 
 type WordFieldProps = {
   id: number;
@@ -27,6 +29,10 @@ function WordField({ id, value, onChange, onPaste }: WordFieldProps) {
 }
 
 export default function RecoverWithSeedPhrase() {
+  const navigate = useNavigate();
+
+  const goBack = () => navigate(routes.LOGIN);
+
   const [seedWords, setSeedWords] = useState(Array(12).fill(""));
 
   const handleInputChange = (index: number, newValue: string) => {
@@ -62,7 +68,10 @@ export default function RecoverWithSeedPhrase() {
     <div className="flex flex-col min-h-fit h-screen gap-10 py-12 px-6">
       <div className="flex flex-col items-center gap-10 text-center">
         <div className="flex w-full">
-          <button className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6">
+          <button
+            className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6"
+            onClick={goBack}
+          >
             <ChevronLeftIcon width={16} strokeWidth={1} color="#1B0F00" />
           </button>
         </div>
