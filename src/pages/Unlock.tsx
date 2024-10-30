@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { ChevronLeftIcon, DeleteIcon } from "lucide-react";
 import { FormattedMessage } from "react-intl";
+import { ChevronLeftIcon, DeleteIcon } from "lucide-react";
 
 export default function Unlock() {
   const [pin, setPin] = useState<string>("");
