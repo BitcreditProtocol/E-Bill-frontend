@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "extract": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './extracted/en.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
+    "extract-simple": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './src/i18n/en.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format simple"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -30,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
+    "@formatjs/cli": "^6.3.5",
     "@types/node": "^22.7.4",
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",

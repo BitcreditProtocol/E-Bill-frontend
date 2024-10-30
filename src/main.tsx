@@ -1,7 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { IntlProvider } from "react-intl";
+
+import LanguageProvider from "./context/LanguageContext.tsx";
 
 import DefaultLayout from "./layouts/Default.tsx";
 import CreateIdentity from "./pages/onboarding/CreateIdentity";
@@ -13,8 +14,6 @@ import routes from "./constants/routes.ts";
 
 import "./index.css";
 import "./styles/fonts.css";
-
-import enTranslation from "./i18n/en-US.json";
 
 const router = createBrowserRouter([
   {
@@ -45,10 +44,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <IntlProvider defaultLocale="en" locale="en" messages={enTranslation}>
+    <LanguageProvider>
       <DefaultLayout>
         <RouterProvider router={router} />
       </DefaultLayout>
-    </IntlProvider>
+    </LanguageProvider>
   </StrictMode>
 );
