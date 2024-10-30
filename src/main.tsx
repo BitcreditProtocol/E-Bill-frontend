@@ -2,11 +2,12 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+import LanguageProvider from "./context/LanguageContext.tsx";
+
 import DefaultLayout from "./layouts/Default.tsx";
 import CreateIdentity from "./pages/onboarding/CreateIdentity";
 import ConnectCompany from "./pages/onboarding/ConnectCompany";
 import ProfileInfo from "./pages/onboarding/ProfileInfo";
-import Home from "./pages/Home";
 import Unlock from "./pages/Unlock.tsx";
 import Login from "./pages/Login.tsx";
 import routes from "./constants/routes.ts";
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <Home />,
+    element: <Login />,
   },
   {
     path: routes.LOGIN,
@@ -43,8 +44,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <DefaultLayout>
-      <RouterProvider router={router} />
-    </DefaultLayout>
+    <LanguageProvider>
+      <DefaultLayout>
+        <RouterProvider router={router} />
+      </DefaultLayout>
+    </LanguageProvider>
   </StrictMode>
 );

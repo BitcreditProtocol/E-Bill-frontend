@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, DeleteIcon } from "lucide-react";
 
 export default function Unlock() {
@@ -23,7 +24,10 @@ export default function Unlock() {
           </button>
         </div>
         <h1 className="font-sans font-medium text-[24px] mx-3">
-          Unlock with your PIN code
+          <FormattedMessage
+            id="pages.unlock.title"
+            defaultMessage="Unlock with PIN code"
+          />
         </h1>
         <div className="flex gap-8">
           {Array.from({ length: 6 }).map((_, idx) => (
@@ -62,11 +66,17 @@ export default function Unlock() {
         </div>
 
         <div className="flex flex-col gap-2 text-center">
-          <span className="font-medium text-[#1B0F0080] cursor-pointer">
-            Forgot your PIN?
+          <span className="font-medium text-[#1B0F0080]">
+            <FormattedMessage
+              id="pages.unlock.forgotPin"
+              defaultMessage="Forgot your PIN?"
+            />
           </span>
           <span className="font-medium text-[#F7931A] cursor-pointer">
-            Recover with seed phrase
+            <FormattedMessage
+              id="pages.unlock.seedPhraseRecovery"
+              defaultMessage="Recover with seed phrase"
+            />
           </span>
         </div>
       </div>
