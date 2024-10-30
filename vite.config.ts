@@ -1,6 +1,8 @@
-import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 import path from "path";
+
+import { configDefaults } from "vitest/config";
 
 export default defineConfig({
   plugins: [react()],
@@ -10,4 +12,13 @@ export default defineConfig({
     },
   },
   assetsInclude: ["**/*.woff2"],
+  test: {
+    include: ["tests/**/*.test.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "lcov"],
+      reportsDirectory: "./coverage",
+    },
+    exclude: [...configDefaults.exclude],
+  },
 });
