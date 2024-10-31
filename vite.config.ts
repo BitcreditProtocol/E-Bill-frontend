@@ -12,7 +12,8 @@ export default defineConfig({
   },
   assetsInclude: ["**/*.woff2"],
   test: {
-    include: ["tests/**/*.test.ts"],
+    environment: "jsdom",
+    include: ["src/__tests__/**/*.test.{ts,tsx}"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "lcov"],
