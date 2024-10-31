@@ -48,7 +48,7 @@ export default function Unlock() {
           {Array.from({ length: 6 }).map((_, idx) => (
             <div
               key={idx}
-              data-testid={pin.length > idx ? "filled-dot" : "empty-dot"}
+              aria-label={pin.length > idx ? "filled dot" : "empty dot"}
               className={`w-3 h-3 rounded-full ${
                 pin.length > idx ? "bg-[#F7931A]" : "bg-[#1B0F00]/20"
               }`}
@@ -69,7 +69,7 @@ export default function Unlock() {
                   addDigit(item.toString());
                 }
               }}
-              data-testid={item === "delete" ? "delete" : `digit-${item}`}
+              aria-label={item === "delete" ? "delete" : undefined}
               className="w-12 h-12 p-0 bg-transparent flex items-center justify-center text-lg font-normal"
               disabled={item === ""}
             >

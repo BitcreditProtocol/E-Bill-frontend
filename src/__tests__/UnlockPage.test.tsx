@@ -55,10 +55,10 @@ describe("Unlock Component", () => {
     fireEvent.click(screen.getByRole("button", { name: "2" }));
     fireEvent.click(screen.getByRole("button", { name: "3" }));
 
-    const filledDots = screen.getAllByTestId("filled-dot");
+    const filledDots = screen.getAllByLabelText("filled dot");
     expect(filledDots).toHaveLength(3);
 
-    const emptyDots = screen.getAllByTestId("empty-dot");
+    const emptyDots = screen.getAllByLabelText("empty dot");
     expect(emptyDots).toHaveLength(3);
   });
 
@@ -67,13 +67,13 @@ describe("Unlock Component", () => {
     fireEvent.click(screen.getByRole("button", { name: "2" }));
     fireEvent.click(screen.getByRole("button", { name: "3" }));
 
-    const deleteButton = screen.getByTestId("delete");
+    const deleteButton = screen.getByRole("button", { name: "delete" });
     fireEvent.click(deleteButton);
 
-    const filledDots = screen.getAllByTestId("filled-dot");
+    const filledDots = screen.getAllByLabelText("filled dot");
     expect(filledDots).toHaveLength(2);
 
-    const emptyDots = screen.getAllByTestId("empty-dot");
+    const emptyDots = screen.getAllByLabelText("empty dot");
     expect(emptyDots).toHaveLength(4);
   });
 
@@ -82,7 +82,7 @@ describe("Unlock Component", () => {
       fireEvent.click(screen.getByRole("button", { name: digit }))
     );
 
-    const filledDots = screen.getAllByTestId("filled-dot");
+    const filledDots = screen.getAllByLabelText("filled dot");
     expect(filledDots).toHaveLength(6);
   });
 });
