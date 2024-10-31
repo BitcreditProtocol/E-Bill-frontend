@@ -33,9 +33,9 @@ describe("Unlock Component", () => {
   afterEach(cleanup);
 
   it("should navigate back to login when Go Back button is clicked", () => {
-    const backButton = screen.getAllByRole("button", { name: "" });
+    const backButton = screen.getAllByRole("button", { name: "" })[0];
 
-    fireEvent.click(backButton[0]);
+    fireEvent.click(backButton);
 
     expect(navigate).toHaveBeenCalledWith(routes.LOGIN);
   });

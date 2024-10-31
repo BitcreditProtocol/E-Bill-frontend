@@ -26,10 +26,7 @@
       "@/*": [
         "./src/*"
       ]
-    },
-    "types": [
-      "vitest"
-    ]
+    }
   },
   "include": [
     "src"
