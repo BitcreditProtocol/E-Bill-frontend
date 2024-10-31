@@ -2,15 +2,17 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import LanguageProvider from "./context/LanguageContext.tsx";
+import LanguageProvider from "./context/LanguageContext";
 
-import DefaultLayout from "./layouts/Default.tsx";
+import DefaultLayout from "./layouts/Default";
 import CreateIdentity from "./pages/onboarding/CreateIdentity";
 import ConnectCompany from "./pages/onboarding/ConnectCompany";
 import ProfileInfo from "./pages/onboarding/ProfileInfo";
-import Unlock from "./pages/Unlock.tsx";
-import Login from "./pages/Login.tsx";
-import routes from "./constants/routes.ts";
+import Unlock from "./pages/Unlock";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
+
+import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
@@ -27,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: routes.LOGIN,
     element: <Login />,
+  },
+  {
+    path: routes.HOME,
+    element: <Home />,
   },
   {
     path: "/create-identity",
