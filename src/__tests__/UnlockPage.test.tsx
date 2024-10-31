@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
+import type { Mock } from "vitest";
 import { MemoryRouter, useNavigate } from "react-router-dom";
 import { IntlProvider } from "react-intl";
 import Unlock from "@/pages/Unlock";
@@ -15,7 +16,7 @@ describe("Unlock Component", () => {
   const navigate = vi.fn();
   beforeEach(() => {
     vi.resetAllMocks();
-    (useNavigate as vi.Mock).mockReturnValue(navigate);
+    (useNavigate as Mock).mockReturnValue(navigate);
   });
 
   const renderComponent = () =>
