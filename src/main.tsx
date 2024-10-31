@@ -10,6 +10,8 @@ import ConnectCompany from "./pages/onboarding/ConnectCompany";
 import ProfileInfo from "./pages/onboarding/ProfileInfo";
 import Unlock from "./pages/Unlock.tsx";
 import Login from "./pages/Login.tsx";
+import RecoverWithPrivateKey from "./pages/RecoverWithPrivateKey.tsx";
+import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase.tsx";
 import routes from "./constants/routes.ts";
 
 import "./index.css";
@@ -27,6 +29,14 @@ const router = createBrowserRouter([
   {
     path: routes.LOGIN,
     element: <Login />,
+  },
+  {
+    path: routes.RESTORE_WITH_PRIVATE_KEY,
+    element: <RecoverWithPrivateKey />,
+  },
+  {
+    path: routes.RESTORE_WITH_SEED_PHRASE,
+    element: <RecoverWithSeedPhrase />,
   },
   {
     path: "/create-identity",
