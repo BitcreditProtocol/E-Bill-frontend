@@ -2,17 +2,19 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import LanguageProvider from "./context/LanguageContext.tsx";
+import LanguageProvider from "./context/LanguageContext";
 
-import DefaultLayout from "./layouts/Default.tsx";
+import DefaultLayout from "./layouts/Default";
 import CreateIdentity from "./pages/onboarding/CreateIdentity";
 import ConnectCompany from "./pages/onboarding/ConnectCompany";
 import ProfileInfo from "./pages/onboarding/ProfileInfo";
-import Unlock from "./pages/Unlock.tsx";
-import Login from "./pages/Login.tsx";
-import RecoverWithPrivateKey from "./pages/RecoverWithPrivateKey.tsx";
-import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase.tsx";
-import routes from "./constants/routes.ts";
+
+import Unlock from "./pages/Unlock";
+import Login from "./pages/Login";
+import RecoverWithPrivateKey from "./pages/RecoverWithPrivateKey";
+import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
+import Home from "./pages/Home";
+import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
@@ -31,8 +33,8 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: routes.RESTORE_WITH_PRIVATE_KEY,
-    element: <RecoverWithPrivateKey />,
+    path: routes.HOME,
+    element: <Home />,
   },
   {
     path: routes.RESTORE_WITH_SEED_PHRASE,
