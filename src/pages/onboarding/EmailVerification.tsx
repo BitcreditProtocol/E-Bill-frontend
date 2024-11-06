@@ -11,9 +11,8 @@ function CodeInputs() {
   ) => {
     const value = e.target.value;
 
-    // Ensure only digits are entered
     if (!/^\d*$/.test(value)) {
-      e.target.value = ""; // Clear any non-numeric input
+      e.target.value = "";
       return;
     }
 
