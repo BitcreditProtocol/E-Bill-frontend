@@ -1,13 +1,24 @@
-import { defineConfig } from 'vite';
-import { configDefaults } from 'vitest/config';
+import { defineConfig } from "vite";
+import { configDefaults } from "vitest/config";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
-    test: {
-        include: ['tests/**/*.test.ts'], // Adjust this to your test file location
-        coverage: {
-            provider: 'v8',
-            reporter: ['text', 'json', 'lcov'],
-            reportsDirectory: './coverage',
-        },
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
+  },
+  assetsInclude: ["**/*.woff2"],
+  test: {
+    environment: "jsdom",
+    include: ["src/__tests__/**/*.test.{ts,tsx}"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "lcov"],
+      reportsDirectory: "./coverage",
+    },
+    exclude: [...configDefaults.exclude],
+  },
 });
