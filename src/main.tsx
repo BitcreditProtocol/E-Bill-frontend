@@ -5,9 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LanguageProvider from "./context/LanguageContext";
 
 import DefaultLayout from "./layouts/Default";
-import ConnectCompany from "./pages/onboarding/ConnectCompany";
-import ProfileInfo from "./pages/onboarding/ProfileInfo";
-
+import RequiredInformation from "./pages/onboarding/RequiredInformation";
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
@@ -19,6 +17,8 @@ import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
+import EmailVerification from "./pages/onboarding/EmailVerification";
+import OptionalInformation from "./pages/onboarding/OptionalInformation";
 
 const router = createBrowserRouter([
   {
@@ -46,12 +46,16 @@ const router = createBrowserRouter([
     element: <CreateNewIdentity />,
   },
   {
-    path: "/connect-company",
-    element: <ConnectCompany />,
+    path: routes.REQUIRED_INFORMATION,
+    element: <RequiredInformation />,
   },
   {
-    path: "/profile-info",
-    element: <ProfileInfo />,
+    path: routes.EMAIL_VERIFICATION,
+    element: <EmailVerification />,
+  },
+  {
+    path: routes.OPTIONAL_INFORMATION,
+    element: <OptionalInformation />,
   },
 ]);
 
