@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,10 @@ import {
 } from "@/components/ui/select";
 
 export default function OptionalInformation() {
+  const navigate = useNavigate();
+
+  const confirmIdentity = () => navigate("/confirm-identity");
+
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-5 px-10">
       <div className="flex flex-col gap-12">
@@ -70,7 +75,10 @@ export default function OptionalInformation() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]">
+        <Button
+          onClick={confirmIdentity}
+          className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
+        >
           <FormattedMessage
             id="pages.onboarding.optionalInformation.continue"
             defaultMessage="Continue"
@@ -79,6 +87,7 @@ export default function OptionalInformation() {
         </Button>
 
         <Button
+          onClick={confirmIdentity}
           className="w-full text-text-300 bg-transparent font-medium border-text-300 rounded-[8px] py-[24px] px-[32px] hover:bg-transparent"
           variant="outline"
         >

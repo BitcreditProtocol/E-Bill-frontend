@@ -1,8 +1,13 @@
+import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { Button } from "@/components/ui/button";
 import encryptedDataIllustration from "@/assets/encrypted-data-illustration.svg";
 
 export default function CreateNewIdentity() {
+  const navigate = useNavigate();
+
+  const startCreatingIdentity = () => navigate("/required-information");
+
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-5 px-10">
       <div className="flex flex-col gap-12">
@@ -31,7 +36,10 @@ export default function CreateNewIdentity() {
         />
       </div>
 
-      <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]">
+      <Button
+        onClick={startCreatingIdentity}
+        className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
+      >
         <FormattedMessage
           id="pages.identityCreation.createNewIdentity.newIdentity"
           defaultMessage="Create new identity"

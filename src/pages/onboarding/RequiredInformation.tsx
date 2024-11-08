@@ -1,8 +1,13 @@
+import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function RequiredInformation() {
+  const navigate = useNavigate();
+
+  const verifyEmail = () => navigate("/email-verification");
+
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-5 px-10">
       <div className="flex flex-col gap-12">
@@ -31,7 +36,10 @@ export default function RequiredInformation() {
         </div>
       </div>
 
-      <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]">
+      <Button
+        onClick={verifyEmail}
+        className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
+      >
         <FormattedMessage
           id="pages.onboarding.requiredInformation.continue"
           defaultMessage="Continue"

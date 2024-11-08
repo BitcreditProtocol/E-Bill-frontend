@@ -1,5 +1,7 @@
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
+import { ChevronRightIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function CodeInputs() {
@@ -51,6 +53,10 @@ function CodeInputs() {
 }
 
 export default function EmailVerification() {
+  const navigate = useNavigate();
+
+  const goToOptionalInformation = () => navigate("/optional-information");
+
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-5 px-10">
       <div className="flex flex-col gap-12">
@@ -66,7 +72,7 @@ export default function EmailVerification() {
           <span className="font-normal text-text-200 text-base text-center">
             <FormattedMessage
               id="pages.onboarding.emailVerification.subtitle"
-              defaultMessage="We've sent an one-time passcode to {}"
+              defaultMessage="We've sent an one-time passcode to example@bit.cr"
               description="Subheader copy for Email verification page"
             />
           </span>
@@ -82,22 +88,28 @@ export default function EmailVerification() {
               defaultMessage="Open email inbox"
               description="Open email inbox button copy for Email verification page"
             />
+            <ChevronRightIcon width={16} strokeWidth={1} color="#1B0F00" />
           </Button>
+
           <CodeInputs />
+
           <Button
             variant="link"
             className="text-signal-alert text-xs font-medium p-0 h-fit"
           >
             <FormattedMessage
               id="pages.onboarding.emailVerification.resendCode"
-              defaultMessage="Resend ({})"
+              defaultMessage="Resend (30s)"
               description="Resend code button copy for Email verification page"
             />
           </Button>
         </div>
       </div>
 
-      <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]">
+      <Button
+        onClick={goToOptionalInformation}
+        className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
+      >
         <FormattedMessage
           id="pages.onboarding.emailVerification.continue"
           defaultMessage="Continue"

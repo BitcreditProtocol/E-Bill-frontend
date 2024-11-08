@@ -12,6 +12,7 @@ import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/Home";
 
 import CreateNewIdentity from "./pages/onboarding/CreateNewIdentity";
+import Success from "./pages/onboarding/Success";
 
 import routes from "./constants/routes";
 
@@ -19,6 +20,7 @@ import "./index.css";
 import "./styles/fonts.css";
 import EmailVerification from "./pages/onboarding/EmailVerification";
 import OptionalInformation from "./pages/onboarding/OptionalInformation";
+import ConfirmIdentity from "./pages/onboarding/ConfirmIdentity";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +58,14 @@ const router = createBrowserRouter([
   {
     path: routes.OPTIONAL_INFORMATION,
     element: <OptionalInformation />,
+  },
+  {
+    path: "/success",
+    element: <Success />,
+  },
+  {
+    path: "/confirm-identity",
+    element: <ConfirmIdentity />,
   },
 ]);
 
