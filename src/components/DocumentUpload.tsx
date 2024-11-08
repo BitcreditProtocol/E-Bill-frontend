@@ -1,5 +1,5 @@
 import { forwardRef, useState } from "react";
-import { UploadIcon, CheckCircle, Trash2, Trash } from "lucide-react";
+import { UploadIcon, CheckCircle, Trash } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatFileSize, truncateFileName } from "@/utils";
 
