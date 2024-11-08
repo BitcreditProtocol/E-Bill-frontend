@@ -60,6 +60,7 @@ export default {
 				// Bitcredit Design System colors
 				divider: {
           50: '#ECE8DE',
+					75: '#D9D5CC',
           100: '#D1CCC1',
           200: '#BAB4A9',
           300: '#A39D91',
@@ -67,7 +68,7 @@ export default {
         elevation: {
           50: '#FEFBF1',
           100: '#FAF7EF',
-          200: '#EEEBE3',
+          200: '#F6F2E7',
           300: '#D1CCC1',
         },
         text: {
