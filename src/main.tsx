@@ -11,9 +11,9 @@ import ProfileInfo from "./pages/onboarding/ProfileInfo";
 
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
-import RecoverWithPrivateKey from "./pages/RecoverWithPrivateKey";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/Home";
+import { Notifications, NotificationsEmpty } from "./pages/Notifications";
 import routes from "./constants/routes";
 
 import "./index.css";
@@ -51,6 +51,14 @@ const router = createBrowserRouter([
   {
     path: "/profile-info",
     element: <ProfileInfo />,
+  },
+  {
+    path: routes.NOTIFICATIONS,
+    element: <Notifications />,
+  },
+  {
+    path: "/notifications-empty",
+    element: <NotificationsEmpty />,
   },
 ]);
 
