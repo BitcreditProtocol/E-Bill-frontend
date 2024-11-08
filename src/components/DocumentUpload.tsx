@@ -1,6 +1,6 @@
 import { forwardRef, useState } from "react";
-import { cn } from "@/lib/utils";
 import { UploadIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface DocumentUploadProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -26,15 +26,15 @@ const DocumentUpload = forwardRef<HTMLInputElement, DocumentUploadProps>(
 
         <div
           className={cn(
-            "flex flex-col items-center gap-3 h-[150px] w-full rounded-[12px] border bg-elevation-200 px-4 pt-4 pb-4",
+            "flex flex-col items-center gap-3 w-full rounded-[12px] border bg-elevation-200 px-4 pt-4 pb-4",
             isFocused ? "border-[#1B0F004D]" : "border-[#1B0F0014]"
           )}
         >
           <div className="w-9 h-9 flex items-center justify-center rounded-full bg-divider-100">
-            <UploadIcon className="text-muted-foreground w-5 h-5" />
+            <UploadIcon className="text-[#1B0F00]" width={16} strokeWidth={1} />
           </div>
           <div className="flex flex-col items-center gap-2">
-            <span className="text-[14px] font-medium text-foreground">
+            <span className="text-sm font-medium text-foreground">
               Upload your identity document
             </span>
             <span className="text-[12px] text-[#1B0F0080]">

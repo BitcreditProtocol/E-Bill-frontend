@@ -2,6 +2,14 @@ import { FormattedMessage } from "react-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DocumentUpload } from "@/components/DocumentUpload";
+import {
+  Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 export default function OptionalInformation() {
   return (
@@ -28,6 +36,35 @@ export default function OptionalInformation() {
         <div className="flex flex-col gap-3">
           <Input id="cityOfBirth" label="City of birth" />
           <Input id="socialSecurityNumber" label="Social security number" />
+          <Select>
+            <SelectTrigger label="Country of birth" id="example-select">
+              <SelectValue placeholder="Select an option" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="option1">Afghanistan</SelectItem>
+                <SelectItem value="option2">Albania</SelectItem>
+                <SelectItem value="option3">Algeria</SelectItem>
+                <SelectItem value="option4">Andorra</SelectItem>
+                <SelectItem value="option5">Angola</SelectItem>
+                <SelectItem value="option6">Antigua and Barbuda</SelectItem>
+                <SelectItem value="option7">Argentina</SelectItem>
+                <SelectItem value="option8">Armenia</SelectItem>
+                <SelectItem value="option9">Australia</SelectItem>
+                <SelectItem value="option10">Austria</SelectItem>
+                <SelectItem value="option11">Azerbaijan</SelectItem>
+                <SelectItem value="option12">Bahamas</SelectItem>
+                <SelectItem value="option13">Bahrain</SelectItem>
+                <SelectItem value="option14">Bangladesh</SelectItem>
+                <SelectItem value="option15">Barbados</SelectItem>
+                <SelectItem value="option16">Belarus</SelectItem>
+                <SelectItem value="option17">Belgium</SelectItem>
+                <SelectItem value="option18">Belize</SelectItem>
+                <SelectItem value="option19">Benin</SelectItem>
+                <SelectItem value="option20">Bhutan</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <DocumentUpload />
         </div>
       </div>
