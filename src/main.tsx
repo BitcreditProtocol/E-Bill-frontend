@@ -10,10 +10,9 @@ import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/Home";
-
 import CreateNewIdentity from "./pages/onboarding/CreateNewIdentity";
 import Success from "./pages/onboarding/Success";
-
+import { Notifications, NotificationsEmpty } from "./pages/Notifications";
 import routes from "./constants/routes";
 
 import "./index.css";
@@ -66,6 +65,14 @@ const router = createBrowserRouter([
   {
     path: "/confirm-identity",
     element: <ConfirmIdentity />,
+  },
+  {
+    path: routes.NOTIFICATIONS,
+    element: <Notifications />,
+  },
+  {
+    path: "/notifications-empty",
+    element: <NotificationsEmpty />,
   },
 ]);
 
