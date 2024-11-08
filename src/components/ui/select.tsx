@@ -66,11 +66,11 @@ const SelectTrigger = React.forwardRef<
     <div className="relative">
       <SelectPrimitive.Trigger
         ref={(node) => {
-          if (typeof ref === "function") ref(node);
-          else if (ref)
-            (ref as React.MutableRefObject<HTMLButtonElement | null>).current =
-              node;
+          // @ts-expect-error This is a valid mutable property
           triggerRef.current = node;
+
+          if (typeof ref === "function") ref(node);
+          else if (ref) ref.current = node;
         }}
         className={cn(
           "flex h-[58px] w-full items-center justify-between rounded-[8px] border border-[#1B0F0014] bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none",
@@ -146,8 +146,9 @@ SelectContent.displayName = SelectPrimitive.Content.displayName;
 const SelectGroup = SelectPrimitive.Group;
 const SelectValue = SelectPrimitive.Value;
 
-interface SelectLabelProps
-  extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label> {}
+type SelectLabelProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Label
+>;
 
 const SelectLabel = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Label>,
@@ -161,8 +162,9 @@ const SelectLabel = React.forwardRef<
 ));
 SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
-interface SelectItemProps
-  extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item> {}
+type SelectItemProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Item
+>;
 
 const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
@@ -171,7 +173,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-[6px] py-2.5 px-2 text-base font-medium text-text-300 outline-none",
+      "relative flex w-full mb-1 cursor-default select-none items-center rounded-[6px] py-2.5 px-2 text-base font-medium text-text-300 outline-none",
       "data-[highlighted]:bg-[#EEEBE3] data-[highlighted]:text-inherit",
       "data-[state=checked]:bg-[#EEEBE3]",
       className
@@ -188,8 +190,9 @@ const SelectItem = React.forwardRef<
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
 
-interface SelectSeparatorProps
-  extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator> {}
+type SelectSeparatorProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Separator
+>;
 
 const SelectSeparator = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Separator>,
