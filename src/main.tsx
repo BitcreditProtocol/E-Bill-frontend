@@ -18,6 +18,7 @@ import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
+import { Bills, BillsEmpty } from "./pages/Bills";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,14 @@ const router = createBrowserRouter([
   {
     path: "/notifications-empty",
     element: <NotificationsEmpty />,
+  },
+  {
+    path: routes.BILLS,
+    element: <Bills />,
+  },
+  {
+    path: "/bills-empty",
+    element: <BillsEmpty />,
   },
 ]);
 
