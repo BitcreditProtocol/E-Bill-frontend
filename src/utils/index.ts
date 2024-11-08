@@ -11,3 +11,28 @@ export const detectBrowserLanguage = () => {
 
   return language;
 };
+
+export const formatFileSize = (size: number) => {
+  if (size < 1024) return `${size} B`;
+
+  if (size < 1048576) return `${(size / 1024).toFixed(2)} KB`;
+
+  return `${(size / 1048576).toFixed(2)} MB`;
+};
+
+export const truncateFileName = (name: string) => {
+  const maxNameLength = 20;
+  const extensionIndex = name.lastIndexOf(".");
+
+  if (extensionIndex === -1)
+    return name.length > maxNameLength
+      ? `${name.slice(0, 5)}...${name.slice(-3)}`
+      : name;
+
+  const extension = name.slice(extensionIndex);
+  const baseName = name.slice(0, extensionIndex);
+
+  return baseName.length > maxNameLength
+    ? `${baseName.slice(0, 5)}...${baseName.slice(-3)}${extension}`
+    : name;
+};

@@ -5,20 +5,22 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LanguageProvider from "./context/LanguageContext";
 
 import DefaultLayout from "./layouts/Default";
-import CreateIdentity from "./pages/onboarding/CreateIdentity";
-import ConnectCompany from "./pages/onboarding/ConnectCompany";
-import ProfileInfo from "./pages/onboarding/ProfileInfo";
-
+import RequiredInformation from "./pages/onboarding/RequiredInformation";
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/Home";
+import CreateNewIdentity from "./pages/onboarding/CreateNewIdentity";
+import Success from "./pages/onboarding/Success";
 import { Notifications, NotificationsEmpty } from "./pages/Notifications";
 import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
 import { Bills, BillsEmpty } from "./pages/Bills";
+import EmailVerification from "./pages/onboarding/EmailVerification";
+import OptionalInformation from "./pages/onboarding/OptionalInformation";
+import ConfirmIdentity from "./pages/onboarding/ConfirmIdentity";
 
 const router = createBrowserRouter([
   {
@@ -42,16 +44,28 @@ const router = createBrowserRouter([
     element: <RecoverWithSeedPhrase />,
   },
   {
-    path: "/create-identity",
-    element: <CreateIdentity />,
+    path: routes.CREATE_IDENTITY,
+    element: <CreateNewIdentity />,
   },
   {
-    path: "/connect-company",
-    element: <ConnectCompany />,
+    path: routes.REQUIRED_INFORMATION,
+    element: <RequiredInformation />,
   },
   {
-    path: "/profile-info",
-    element: <ProfileInfo />,
+    path: routes.EMAIL_VERIFICATION,
+    element: <EmailVerification />,
+  },
+  {
+    path: routes.OPTIONAL_INFORMATION,
+    element: <OptionalInformation />,
+  },
+  {
+    path: "/success",
+    element: <Success />,
+  },
+  {
+    path: "/confirm-identity",
+    element: <ConfirmIdentity />,
   },
   {
     path: routes.NOTIFICATIONS,
