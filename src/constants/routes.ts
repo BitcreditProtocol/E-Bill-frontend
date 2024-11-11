@@ -8,6 +8,7 @@ const REQUIRED_INFORMATION = "/required-information";
 const EMAIL_VERIFICATION = "/email-verification";
 const OPTIONAL_INFORMATION = "/optional-information";
 const NOTIFICATIONS = "/notifications";
+const BILLS = "/bills";
 
 export default {
   LOGIN,
@@ -20,4 +21,5 @@ export default {
   EMAIL_VERIFICATION,
   OPTIONAL_INFORMATION,
   NOTIFICATIONS,
+  BILLS,
 };

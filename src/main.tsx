@@ -17,6 +17,7 @@ import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
+import { Bills, BillsEmpty } from "./pages/Bills";
 import EmailVerification from "./pages/onboarding/EmailVerification";
 import OptionalInformation from "./pages/onboarding/OptionalInformation";
 import ConfirmIdentity from "./pages/onboarding/ConfirmIdentity";
@@ -73,6 +74,14 @@ const router = createBrowserRouter([
   {
     path: "/notifications-empty",
     element: <NotificationsEmpty />,
+  },
+  {
+    path: routes.BILLS,
+    element: <Bills />,
+  },
+  {
+    path: "/bills-empty",
+    element: <BillsEmpty />,
   },
 ]);
 
