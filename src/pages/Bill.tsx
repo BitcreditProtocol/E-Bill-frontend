@@ -1,7 +1,13 @@
+import { FormattedMessage } from "react-intl";
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  MoveRightIcon,
+  PaperclipIcon,
+  PrinterIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { MoveRightIcon } from "lucide-react";
-import { FormattedMessage } from "react-intl";
 
 function BillProperty({ label, value }: { label: string; value: string }) {
   return (
@@ -18,8 +24,21 @@ function BillProperty({ label, value }: { label: string; value: string }) {
 
 export default function Bill() {
   return (
-    <div className="flex flex-col justify-between w-full min-h-fit h-screen py-4 px-5">
-      <div className="flex justify-between">a</div>
+    <div className="flex flex-col justify-between gap-6 w-full min-h-fit h-screen py-4 px-5">
+      <div className="flex justify-between">
+        <button className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6">
+          <ChevronLeftIcon width={16} strokeWidth={1} color="#1B0F00" />
+        </button>
+
+        <div className="flex gap-2">
+          <button className="flex justify-center items-center w-8 h-8 bg-elevation-200 border-[1px] border-divider-50 rounded-[6px]">
+            <PaperclipIcon size={20} color="#1B0F00" strokeWidth={1} />
+          </button>
+          <button className="flex justify-center items-center w-8 h-8 bg-elevation-200 border-[1px] border-divider-50 rounded-[6px]">
+            <PrinterIcon size={20} color="#1B0F00" strokeWidth={1} />
+          </button>
+        </div>
+      </div>
 
       <div className="flex flex-col flex-1 gap-6">
         <div className="flex flex-col gap-1">
@@ -69,7 +88,7 @@ export default function Bill() {
           />
         </Button>
         <Button
-          className="w-full text-text-300 bg-transparent font-medium border-text-300 rounded-[8px] py-3 px-6 hover:bg-transparent"
+          className="gap-2.5 w-full text-text-300 bg-transparent font-medium border-text-300 rounded-[8px] py-3 px-6 hover:bg-transparent"
           variant="outline"
         >
           <FormattedMessage
@@ -77,6 +96,7 @@ export default function Bill() {
             defaultMessage="Endorse"
             description="Action to endorse the bill"
           />
+          <ChevronDownIcon size={20} color="#1B0F00" strokeWidth={1} />
         </Button>
       </div>
     </div>
