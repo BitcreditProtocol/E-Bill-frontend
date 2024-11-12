@@ -21,6 +21,7 @@ import { Bills, BillsEmpty } from "./pages/Bills";
 import EmailVerification from "./pages/onboarding/EmailVerification";
 import OptionalInformation from "./pages/onboarding/OptionalInformation";
 import ConfirmIdentity from "./pages/onboarding/ConfirmIdentity";
+import Bill from "./pages/Bill";
 
 const router = createBrowserRouter([
   {
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
   {
     path: "/bills-empty",
     element: <BillsEmpty />,
+  },
+  {
+    path: routes.VIEW_BILL,
+    element: <Bill />,
   },
 ]);
 
