@@ -9,6 +9,7 @@ const EMAIL_VERIFICATION = "/email-verification";
 const OPTIONAL_INFORMATION = "/optional-information";
 const NOTIFICATIONS = "/notifications";
 const BILLS = "/bills";
+const ISSUE_BILL = "/issue-bill";
 
 export default {
   LOGIN,
@@ -22,4 +23,5 @@ export default {
   OPTIONAL_INFORMATION,
   NOTIFICATIONS,
   BILLS,
+  ISSUE_BILL,
 };
