@@ -22,6 +22,9 @@ import EmailVerification from "./pages/onboarding/EmailVerification";
 import OptionalInformation from "./pages/onboarding/OptionalInformation";
 import ConfirmIdentity from "./pages/onboarding/ConfirmIdentity";
 import Bill from "./pages/Bill";
+import IssueBill from "./pages/IssueBill";
+import CreateBill from "./pages/CreateBill";
+import PreviewBill from "./pages/PreviewBill";
 
 const router = createBrowserRouter([
   {
@@ -87,6 +90,16 @@ const router = createBrowserRouter([
   {
     path: routes.VIEW_BILL,
     element: <Bill />,
+    path: routes.ISSUE_BILL,
+    element: <IssueBill />,
+  },
+  {
+    path: routes.CREATE_BILL,
+    element: <CreateBill />,
+  },
+  {
+    path: routes.PREVIEW_BILL,
+    element: <PreviewBill />,
   },
 ]);
 
