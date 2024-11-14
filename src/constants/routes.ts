@@ -10,6 +10,8 @@ const OPTIONAL_INFORMATION = "/optional-information";
 const NOTIFICATIONS = "/notifications";
 const BILLS = "/bills";
 const ISSUE_BILL = "/issue-bill";
+const CREATE_BILL = "/create-bill";
+const PREVIEW_BILL = "/preview-bill";
 
 export default {
   LOGIN,
@@ -24,4 +26,6 @@ export default {
   NOTIFICATIONS,
   BILLS,
   ISSUE_BILL,
+  CREATE_BILL,
+  PREVIEW_BILL,
 };
