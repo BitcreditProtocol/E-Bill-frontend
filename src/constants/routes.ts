@@ -9,6 +9,8 @@ const EMAIL_VERIFICATION = "/email-verification";
 const OPTIONAL_INFORMATION = "/optional-information";
 const NOTIFICATIONS = "/notifications";
 const BILLS = "/bills";
+// todo: replace by /bills/:id once we integrate the api
+const VIEW_BILL = "/bill";
 const ISSUE_BILL = "/issue-bill";
 const CREATE_BILL = "/create-bill";
 const PREVIEW_BILL = "/preview-bill";
@@ -25,6 +27,7 @@ export default {
   OPTIONAL_INFORMATION,
   NOTIFICATIONS,
   BILLS,
+  VIEW_BILL,
   ISSUE_BILL,
   CREATE_BILL,
   PREVIEW_BILL,
