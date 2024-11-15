@@ -24,6 +24,8 @@ import ConfirmIdentity from "./pages/onboarding/ConfirmIdentity";
 import IssueBill from "./pages/IssueBill";
 import CreateBill from "./pages/CreateBill";
 import PreviewBill from "./pages/PreviewBill";
+import MintBill from "./pages/MintBill";
+import SellBill from "./pages/SellBill";
 
 const router = createBrowserRouter([
   {
@@ -97,6 +99,14 @@ const router = createBrowserRouter([
   {
     path: routes.PREVIEW_BILL,
     element: <PreviewBill />,
+  },
+  {
+    path: routes.MINT_BILL,
+    element: <MintBill />,
+  },
+  {
+    path: routes.SELL_BILL,
+    element: <SellBill />,
   },
 ]);
 
