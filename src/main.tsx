@@ -90,6 +90,8 @@ const router = createBrowserRouter([
   {
     path: routes.VIEW_BILL,
     element: <Bill />,
+  },
+  {
     path: routes.ISSUE_BILL,
     element: <IssueBill />,
   },
