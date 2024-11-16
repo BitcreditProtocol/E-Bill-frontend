@@ -1,10 +1,11 @@
-import { FormattedMessage } from "react-intl";
+import { useRef } from "react";
+import { useIntl, FormattedMessage } from "react-intl";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import contactsIllustration from "@/assets/contacts-illustration.svg";
-import { PlusIcon, SearchIcon } from "lucide-react";
-import { useRef } from "react";
 
 function Search() {
+  const intl = useIntl();
   const searchFieldRef = useRef<HTMLInputElement>(null);
 
   const focusSearchField = () => {
@@ -17,10 +18,15 @@ function Search() {
       className="flex items-center gap-2 h-[46px] py-[14px] px-4 border-[1px] border-divider-75 rounded-[8px]"
     >
       <SearchIcon className="w-4 h-4 text-text-300" />
+
       <input
         ref={searchFieldRef}
         type="text"
-        placeholder="Search for contacts..."
+        placeholder={intl.formatMessage({
+          id: "contacts.search.placeholder",
+          defaultMessage: "Search for contacts...",
+          description: "Placeholder text for search input",
+        })}
         className="w-full bg-transparent text-text-300 text-sm font-medium placeholder-text-300 focus:outline-none"
       />
     </div>
