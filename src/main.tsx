@@ -27,7 +27,7 @@ import CreateBill from "./pages/CreateBill";
 import PreviewBill from "./pages/PreviewBill";
 import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
-
+import Overview from "./pages/contacts/Overview";
 
 const router = createBrowserRouter([
   {
@@ -121,6 +121,10 @@ const router = createBrowserRouter([
   {
     path: routes.PREVIEW_BILL,
     element: <PreviewBill />,
+  },
+  {
+    path: routes.CONTACTS,
+    element: <Overview />,
   },
 ]);
 
