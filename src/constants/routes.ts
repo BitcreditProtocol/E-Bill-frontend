@@ -14,6 +14,8 @@ const VIEW_BILL = "/bill";
 const ISSUE_BILL = "/issue-bill";
 const CREATE_BILL = "/create-bill";
 const PREVIEW_BILL = "/preview-bill";
+const MINT_BILL = "/mint-bill";
+const SELL_BILL = "/sell-bill";
 
 export default {
   LOGIN,
@@ -31,4 +33,6 @@ export default {
   ISSUE_BILL,
   CREATE_BILL,
   PREVIEW_BILL,
+  MINT_BILL,
+  SELL_BILL,
 };
