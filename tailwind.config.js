@@ -88,10 +88,8 @@ export default {
           200: '#F7931A',
         },
         base: {
-          DEFAULT: '#1B0F00',
           hover: '#331C00',
           active: '#000000',
-          inactive: '#D1CCC1'
         },
   		}
   	}
