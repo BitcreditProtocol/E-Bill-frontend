@@ -21,10 +21,10 @@ const checkboxVariants = cva(
 )
 
 export interface CheckboxProps
-  extends Omit<React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>, 'checked'> {
+  extends Omit<React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>, 'checked'>,
+  VariantProps<typeof checkboxVariants> {
   checked?: boolean;
   indeterminate?: boolean;
-  size?: "sm" | "md";
 }
 
 const Checkbox = React.forwardRef<
@@ -37,18 +37,13 @@ const Checkbox = React.forwardRef<
     disabled={disabled}
     className={cn(
       checkboxVariants({ size, className }),
-      // Default/Unchecked state
       "bg-elevation-200 border-divider-75",
-      // Hover state for unchecked
       "enabled:hover:bg-elevation-250 enabled:hover:border-divider-75",
-      // Checked/Indeterminate state
       "data-[state=checked]:bg-brand-50 data-[state=checked]:border-brand-200",
       "data-[state=indeterminate]:bg-brand-50 data-[state=indeterminate]:border-brand-200",
-      // Hover state for checked/indeterminate
       "enabled:data-[state=checked]:hover:bg-brand-100 enabled:data-[state=checked]:hover:border-brand-200",
       "enabled:data-[state=indeterminate]:hover:bg-brand-100 enabled:data-[state=indeterminate]:hover:border-brand-200",
-      // Disabled state
-      "disabled:!bg-[#D1CCC1] disabled:!border-0 disabled:cursor-not-allowed"
+      "disabled:!bg-elevation-300 disabled:!border-0 disabled:cursor-not-allowed"
     )}
     {...props}
   >
