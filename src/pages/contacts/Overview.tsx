@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useIntl, FormattedMessage } from "react-intl";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { EllipsisIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import contactsIllustration from "@/assets/contacts-illustration.svg";
 
@@ -63,6 +63,43 @@ function Header() {
   );
 }
 
+function Contact() {
+  return (
+    <div className="flex justify-between items-center bg-elevation-200 py-4 px-5 rounded-[12px] select-none">
+      <div className="flex gap-3">
+        <div className="flex justify-center items-center bg-brand-100 h-9 w-9 rounded-full">
+          <span className="text-brand-200 text-xs font-medium">PH</span>
+        </div>
+
+        <div className="flex flex-col">
+          <span className="text-text-300 text-base font-medium leading-6">
+            Phoenix Baker
+          </span>
+          <span className="text-text-200 text-xs leading-[18px]">Catelog</span>
+        </div>
+      </div>
+
+      <Button
+        className="gap-1 p-0 h-fit text-text-300 text-xs font-medium no-underline hover:no-underline leading-[18px]"
+        variant="link"
+      >
+        <EllipsisIcon className="w-6 h-6 text-text-300" />
+      </Button>
+    </div>
+  );
+}
+
+function ContactsList() {
+  return (
+    <div className="flex-1 flex flex-col gap-2 w-full">
+      <Contact />
+      <Contact />
+      <Contact />
+      <Contact />
+    </div>
+  );
+}
+
 function EmptyList() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center w-52">
@@ -104,7 +141,7 @@ export default function Overview() {
   return (
     <div className="flex flex-col justify-between items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
       <Header />
-      <EmptyList />
+      <ContactsList />
     </div>
   );
 }
