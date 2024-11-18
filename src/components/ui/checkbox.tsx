@@ -53,11 +53,9 @@ const Checkbox = React.forwardRef<
         disabled ? "text-white" : "text-brand-200"
       )}
     >
-      {indeterminate ? (
-        <Minus className="h-3 w-3" />
-      ) : (
-        <Check className="h-3 w-3" />
-      )}
+      {React.createElement(indeterminate ? Minus : Check, {
+        className: size === "sm" ? "h-3 w-3" : "h-4 w-4"
+      })}
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 ))
