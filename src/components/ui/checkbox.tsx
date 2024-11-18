@@ -10,8 +10,8 @@ const checkboxVariants = cva(
   {
     variants: {
       size: {
-        sm: "h-4 w-4",
-        md: "h-5 w-5",
+        sm: "h-4 w-4 [&_svg]:h-3 [&_svg]:w-3",
+        md: "h-5 w-5 [&_svg]:h-3.5 [&_svg]:w-3.5",
       }
     },
     defaultVariants: {
@@ -53,11 +53,7 @@ const Checkbox = React.forwardRef<
         disabled ? "text-white" : "text-brand-200"
       )}
     >
-      {indeterminate ? (
-        <Minus className="h-3 w-3" />
-      ) : (
-        <Check className="h-3 w-3" />
-      )}
+      {indeterminate ? <Minus /> : <Check />}
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 ))
