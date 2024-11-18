@@ -7,6 +7,7 @@ import { copyToClipboard } from "@/utils";
 
 export default function ProfileInfo() {
   const [isPrivateKeyVisible, setIsPrivateKeyVisible] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   const togglePrivateKeyVisibility = () =>
     setIsPrivateKeyVisible((prev) => !prev);
@@ -75,7 +76,14 @@ export default function ProfileInfo() {
         </div>
 
         <div className="flex items-center space-x-2">
-          <Checkbox id="backup" className="bg-transparent border-[#18181B]" />
+          <Checkbox
+            id="backup"
+            checked={isChecked}
+            // indeterminate={true}
+            onCheckedChange={(checked) => setIsChecked(checked as boolean)}
+            // disabled={true}
+            size="sm"
+          />
           <label
             htmlFor="backup"
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

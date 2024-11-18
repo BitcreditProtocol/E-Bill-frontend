@@ -28,7 +28,6 @@ import PreviewBill from "./pages/PreviewBill";
 import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
-
 const router = createBrowserRouter([
   {
     path: routes.UNLOCK,
