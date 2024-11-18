@@ -60,7 +60,7 @@ export default {
         // Bitcredit Design System colors
         divider: {
           50: '#ECE8DE',
-					75: '#D9D5CC',
+          75: '#D9D5CC',
           100: '#D1CCC1',
           200: '#BAB4A9',
           300: '#A39D91',
