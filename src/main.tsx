@@ -113,6 +113,14 @@ const router = createBrowserRouter([
     path: routes.SELL_BILL,
     element: <SellBill />,
   },
+  {
+    path: routes.CREATE_BILL,
+    element: <CreateBill />,
+  },
+  {
+    path: routes.PREVIEW_BILL,
+    element: <PreviewBill />,
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(
