@@ -79,6 +79,34 @@ describe("FormattedCurrency", () => {
     });
   });
 
+  describe("currency", () => {
+    it("should verify dollar sign can be disabled", () => {
+      const { container } = render({ value: 21, currency: "USD" });
+      expect(container.firstElementChild!.textContent).toBe("+$21.00");
+    });
+    it("should verify dollar sign can be disabled (es)", () => {
+      const { container } = render({ value: 21, currency: "USD", locale: "es" });
+      expect(container.firstElementChild!.textContent).toBe("+21,00 US$");
+    });
+    it("should verify euro sign can be disabled (fr)", () => {
+      const { container } = render({ value: 21, currency: "EUR", locale: "fr" });
+      expect(container.firstElementChild!.textContent).toBe("+21,00 €");
+    });
+    it("should verify euro sign can be disabled (zh)", () => {
+      const { container } = render({ value: 21, currency: "EUR", locale: "zh"});
+      expect(container.firstElementChild!.textContent).toBe("+€21.00");
+    });
+    it("should verify euro sign can be disabled (pt)", () => {
+      const { container } = render({ value: 21, currency: "EUR", locale: "pt"});
+      expect(container.firstElementChild!.textContent).toBe("+€ 21,00");
+    });
+    it("should verify bitcoin sign can be disabled", () => {
+      const { container } = render({ value: 21, currency: "BTC" });
+      expect(container.firstElementChild!.textContent).toBe("+BTC 21.00")
+      // TODO: should be `expect(container.firstElementChild!.textContent).toBe("+₿21.00")`
+    });
+  });
+
   describe("font color", () => {
     it("should verify zero value color", () => {
       const { container } = render({ value: 0 });
