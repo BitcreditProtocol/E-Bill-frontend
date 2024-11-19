@@ -1,4 +1,4 @@
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, FormattedNumber } from "react-intl";
 import { CalendarDaysIcon, ChevronsUpDownIcon, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import createBillIllustration from "@/assets/create-bill-illustration.svg";
@@ -95,7 +95,7 @@ export function Bills() {
                   <span className="text-sm text-text-200">12-Nov-24</span>
                   <div className="flex gap-1 items-baseline">
                     <span className="text-sm text-signal-success">
-                      +12.49002
+                      <FormattedNumber value={12.49002} signDisplay="always" minimumFractionDigits={2} maximumFractionDigits={8} />
                     </span>
                     <span className="text-xs text-text-300">USD</span>
                   </div>
@@ -111,7 +111,7 @@ export function Bills() {
                   <span className="text-sm text-text-200">12-Nov-24</span>
                   <div className="flex gap-1 items-baseline">
                     <span className="text-sm text-signal-success">
-                      +3234.12001
+                      <FormattedNumber value={3234.12001} signDisplay="always" minimumFractionDigits={2} maximumFractionDigits={8} />
                     </span>
                     <span className="text-xs text-text-300">USD</span>
                   </div>
@@ -126,7 +126,9 @@ export function Bills() {
                 <div className="flex justify-between">
                   <span className="text-sm text-text-200">10-Nov-24</span>
                   <div className="flex gap-1 items-baseline">
-                    <span className="text-sm text-signal-error">-2.49002</span>
+                    <span className="text-sm text-signal-error">
+                      <FormattedNumber value={-2.49002} signDisplay="always" minimumFractionDigits={2} maximumFractionDigits={8} />
+                    </span>
                     <span className="text-xs text-text-300">USD</span>
                   </div>
                 </div>
