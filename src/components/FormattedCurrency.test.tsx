@@ -104,17 +104,23 @@ describe("FormattedCurrency", () => {
       expect(container.firstElementChild!.classList).not.toContain("text-signal-error");
     });
 
-    it("should verify adapting font color", () => {
-      const { container } = render({ value: 21, color: "red" });
-      expect(container.firstElementChild!.classList).not.toContain("text-signal-success");
-      expect(container.firstElementChild!.classList).toContain("text-signal-error");
-    });
-
     it("should verify customizing font color", () => {
       const { container } = render({ value: 21, color: "none", className: "text-text-300" });
       expect(container.firstElementChild!.classList).not.toContain("text-signal-success");
       expect(container.firstElementChild!.classList).not.toContain("text-signal-error");
       expect(container.firstElementChild!.classList).toContain("text-text-300");
+    });
+
+    it("should verify displaying positive value as debit", () => {
+      const { container } = render({ value: 21, type: "debit" });
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-success");
+      expect(container.firstElementChild!.classList).toContain("text-signal-error");
+    });
+
+    it("should verify displaying negative value as credit", () => {
+      const { container } = render({ value: -21, type: "credit" });
+      expect(container.firstElementChild!.classList).toContain("text-signal-success");
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-error");
     });
   });
 
@@ -123,7 +129,7 @@ describe("FormattedCurrency", () => {
       const { container } = render({ value: 21, signDisplay: "never" });
       expect(container.firstElementChild!.textContent).toBe("21.00");
     });
-    
+
     it("should verify adding sign to zero", () => {
       const { container } = render({ value: 0, signDisplay: "always"});
       expect(container.firstElementChild!.textContent).toBe("+0.00");

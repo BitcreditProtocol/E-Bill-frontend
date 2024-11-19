@@ -4,14 +4,15 @@ import { cn } from "@/lib/utils";
 export type FormattedCurrencyProps = {
   value: number,
   className?: string,
-  color?: "auto" | "red" | "green" | "none",
+  color?: "auto" | "none",
+  type?: "auto" | "credit" | "debit",
 } & Pick<FormatNumberOptions, 'signDisplay'>
 
-const FormattedCurrency = ({ value, className, color = "auto", signDisplay = "exceptZero" } : FormattedCurrencyProps) => {
+const FormattedCurrency = ({ value, className, color = "auto", type = "auto", signDisplay = "exceptZero" } : FormattedCurrencyProps) => {
   return (
     <span className={cn(className, {
-        "text-signal-success": color === "green" || (color === "auto" && value > 0),
-        "text-signal-error": color === "red" || (color === "auto" && value < 0),
+        "text-signal-success": color !== "none" && (type === "credit" || (type === "auto" && value > 0)),
+        "text-signal-error": color !== "none" && (type === "debit" || (type === "auto" && value < 0)),
       })}>
       <FormattedNumber value={value} 
         signDisplay={signDisplay}
