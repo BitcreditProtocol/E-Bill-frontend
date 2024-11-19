@@ -123,6 +123,11 @@ const router = createBrowserRouter([
   },
 ]);
 
+if (import.meta.env.DEV) {
+  console.info("[dev] quickly navigate through all routes while developing:");
+  console.table(router.routes.map(it => [it.path, location.origin + it.path]))
+}
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <LanguageProvider>
