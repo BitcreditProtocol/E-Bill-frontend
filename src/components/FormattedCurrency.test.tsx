@@ -1,7 +1,7 @@
 import { render as reactRender, cleanup} from "@testing-library/react";
 import { describe, it, expect, afterEach } from "vitest";
-import { FormattedCurrency, type FormattedCurrencyProps } from "./FormattedCurrency";
 import { IntlProvider } from "react-intl";
+import { FormattedCurrency, type FormattedCurrencyProps } from "./FormattedCurrency";
 
 describe("FormattedCurrency", () => {
 
@@ -17,8 +17,6 @@ describe("FormattedCurrency", () => {
     it("en", () => {
       const { container } = render({ value: 0 })
       expect(container.firstElementChild!.textContent).toBe("0.00");
-      expect(container.firstElementChild!.classList).not.toContain("text-signal-success");
-      expect(container.firstElementChild!.classList).not.toContain("text-signal-error");
     });
 
     it("es", () => {
@@ -41,8 +39,6 @@ describe("FormattedCurrency", () => {
     it("en", () => {
       const { container } = render({ value: 21000001.23456789 });
       expect(container.firstElementChild!.textContent).toBe("+21,000,001.23456789");
-      expect(container.firstElementChild!.classList).toContain("text-signal-success");
-      expect(container.firstElementChild!.classList).not.toContain("text-signal-error");
     });
 
     it("es", () => {
@@ -65,8 +61,6 @@ describe("FormattedCurrency", () => {
     it("en", () => {
       const { container } = render({ value: -1337.42 });
       expect(container.firstElementChild!.textContent).toBe("-1,337.42");
-      expect(container.firstElementChild!.classList).not.toContain("text-signal-success");
-      expect(container.firstElementChild!.classList).toContain("text-signal-error");
     });
 
     it("es", () => {
@@ -82,6 +76,45 @@ describe("FormattedCurrency", () => {
     it("zh", () => {
       const { container } = render({ value: -1337.42, locale: "zh" });
       expect(container.firstElementChild!.textContent).toBe("-1,337.42");
+    });
+  });
+
+  describe("font color", () => {
+    it("should verify zero value color", () => {
+      const { container } = render({ value: 0 });
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-success");
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-error");
+    });
+
+    it("should verify positive value color", () => {
+      const { container } = render({ value: 21 });
+      expect(container.firstElementChild!.classList).toContain("text-signal-success");
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-error");
+    });
+
+    it("should verify negative value color", () => {
+      const { container } = render({ value: -21 });
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-success");
+      expect(container.firstElementChild!.classList).toContain("text-signal-error");
+    });
+
+    it("should verify disabling font color", () => {
+      const { container } = render({ value: -21, color: "none" });
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-success");
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-error");
+    });
+
+    it("should verify adapting font color", () => {
+      const { container } = render({ value: 21, color: "red" });
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-success");
+      expect(container.firstElementChild!.classList).toContain("text-signal-error");
+    });
+
+    it("should verify customizing font color", () => {
+      const { container } = render({ value: 21, color: "none", className: "text-text-300" });
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-success");
+      expect(container.firstElementChild!.classList).not.toContain("text-signal-error");
+      expect(container.firstElementChild!.classList).toContain("text-text-300");
     });
   });
 });
