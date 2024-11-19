@@ -117,4 +117,17 @@ describe("FormattedCurrency", () => {
       expect(container.firstElementChild!.classList).toContain("text-text-300");
     });
   });
+
+  describe("sign display", () => {
+    it("should verify disabling sign", () => {
+      const { container } = render({ value: 21, signDisplay: "never" });
+      expect(container.firstElementChild!.textContent).toBe("21.00");
+    });
+    
+    it("should verify adding sign to zero", () => {
+      const { container } = render({ value: 0, signDisplay: "always"});
+      expect(container.firstElementChild!.textContent).toBe("+0.00");
+    });
+  });
+
 });
