@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
