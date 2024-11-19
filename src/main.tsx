@@ -121,7 +121,15 @@ const router = createBrowserRouter([
     path: routes.PREVIEW_BILL,
     element: <PreviewBill />,
   },
-]);
+], {
+  future: {
+    v7_fetcherPersist: true,
+    v7_normalizeFormMethod: true,
+    v7_partialHydration: true,
+    v7_relativeSplatPath: true,
+    v7_skipActionErrorRevalidation: true,
+  }
+});
 
 if (import.meta.env.DEV) {
   console.info("[dev] quickly navigate through all routes while developing:");
@@ -132,7 +140,12 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <LanguageProvider>
       <DefaultLayout>
-        <RouterProvider router={router} />
+        <RouterProvider
+          router={router}
+          future={{
+            v7_startTransition: true
+          }}
+        />
       </DefaultLayout>
     </LanguageProvider>
   </StrictMode>
