@@ -13,7 +13,7 @@ export default defineConfig({
   assetsInclude: ["**/*.woff2"],
   test: {
     environment: "jsdom",
-    include: ["src/__tests__/**/*.test.{ts,tsx}"],
+    include: ["**/*.test.{ts,tsx}"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "lcov"],

@@ -1,7 +1,8 @@
-import { FormattedMessage, FormattedNumber } from "react-intl";
+import { FormattedMessage } from "react-intl";
 import { CalendarDaysIcon, ChevronsUpDownIcon, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import createBillIllustration from "@/assets/create-bill-illustration.svg";
+import { FormattedCurrency } from "@/components/FormattedCurrency";
 
 export function Bills() {
   return (
@@ -94,9 +95,7 @@ export function Bills() {
                 <div className="flex justify-between">
                   <span className="text-sm text-text-200">12-Nov-24</span>
                   <div className="flex gap-1 items-baseline">
-                    <span className="text-sm text-signal-success">
-                      <FormattedNumber value={12.49002} signDisplay="always" minimumFractionDigits={2} maximumFractionDigits={8} />
-                    </span>
+                    <FormattedCurrency value={12.49002} className="text-sm" />
                     <span className="text-xs text-text-300">USD</span>
                   </div>
                 </div>
@@ -110,9 +109,7 @@ export function Bills() {
                 <div className="flex justify-between">
                   <span className="text-sm text-text-200">12-Nov-24</span>
                   <div className="flex gap-1 items-baseline">
-                    <span className="text-sm text-signal-success">
-                      <FormattedNumber value={3234.12001} signDisplay="always" minimumFractionDigits={2} maximumFractionDigits={8} />
-                    </span>
+                    <FormattedCurrency value={3234.12001} className="text-sm" />
                     <span className="text-xs text-text-300">USD</span>
                   </div>
                 </div>
@@ -126,9 +123,7 @@ export function Bills() {
                 <div className="flex justify-between">
                   <span className="text-sm text-text-200">10-Nov-24</span>
                   <div className="flex gap-1 items-baseline">
-                    <span className="text-sm text-signal-error">
-                      <FormattedNumber value={-2.49002} signDisplay="always" minimumFractionDigits={2} maximumFractionDigits={8} />
-                    </span>
+                    <FormattedCurrency value={-2.49002} className="text-sm" />
                     <span className="text-xs text-text-300">USD</span>
                   </div>
                 </div>
