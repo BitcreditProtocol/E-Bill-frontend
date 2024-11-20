@@ -4,7 +4,6 @@ import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, DeleteIcon, FileLock2Icon } from "lucide-react";
 import routes from "@/constants/routes";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 
 export default function Unlock() {
   const navigate = useNavigate();
@@ -25,8 +24,6 @@ export default function Unlock() {
   const deleteDigit = () => {
     setPin((prevPin) => prevPin.slice(0, -1));
   };
-
-  const {toast} = useToast()
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-10 py-12 px-6 w-[375px]">
@@ -107,18 +104,6 @@ export default function Unlock() {
           </Button>
         </div>
       </div>
-
-      
-          <Button
-            className="w-full"
-            onClick={() => {
-              toast({
-                title: "Unlock failed",
-                description: "Please try again",
-                variant: "error",
-              });
-            }}>HELLO</Button>
-
     </div>
   );
 }
