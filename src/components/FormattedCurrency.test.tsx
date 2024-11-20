@@ -102,8 +102,8 @@ describe("FormattedCurrency", () => {
     });
     it("should verify bitcoin sign can be disabled", () => {
       const { container } = render({ value: 21, currency: "BTC" });
-      expect(container.firstElementChild!.textContent).toBe("+BTC 21.00")
-      // TODO: should be `expect(container.firstElementChild!.textContent).toBe("+₿21.00")`
+      expect(container.firstElementChild!.textContent).toBe("+BTC 21.00000000")
+      // TODO: should be `expect(container.firstElementChild!.textContent).toBe("+₿21.00000000")`
     });
   });
 

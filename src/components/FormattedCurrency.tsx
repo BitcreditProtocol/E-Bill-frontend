@@ -6,7 +6,8 @@ export type FormattedCurrencyProps = {
   className?: string,
   color?: "auto" | "none",
   type?: "auto" | "credit" | "debit",
-} & Pick<FormatNumberOptions, 'signDisplay' | 'currency' | 'currencyDisplay'>
+  currency?: FormatNumberOptions['currency'] | "BTC"
+} & Pick<FormatNumberOptions, 'signDisplay' | 'currencyDisplay'>
 
 const FormattedCurrency = ({ value, className, color = "auto", type = "auto", currency, currencyDisplay = "symbol", signDisplay = "exceptZero" } : FormattedCurrencyProps) => {
   return (
@@ -17,7 +18,7 @@ const FormattedCurrency = ({ value, className, color = "auto", type = "auto", cu
       <FormattedNumber
         value={value}
         signDisplay={signDisplay}
-        minimumFractionDigits={2}
+        minimumFractionDigits={currency === "BTC" ? 8 : 2}
         maximumFractionDigits={8}
         style={currency !== undefined ? "currency" : "decimal"}
         currency={currency}
