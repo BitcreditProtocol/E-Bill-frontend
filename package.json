@@ -12,7 +12,8 @@
     "extract": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './extracted/en.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
     "extract-simple": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './src/i18n/en.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format simple",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prepare": "husky"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -58,7 +59,9 @@
     "eslint-plugin-react-refresh": "^0.4.14",
     "eslint-plugin-storybook": "^0.11.1",
     "globals": "^15.12.0",
+    "husky": "^9.1.7",
     "jsdom": "^25.0.1",
+    "lint-staged": "^15.2.10",
     "postcss": "^8.4.49",
     "storybook": "^8.4.4",
     "tailwindcss": "^3.4.15",
