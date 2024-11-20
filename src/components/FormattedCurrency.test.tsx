@@ -80,30 +80,57 @@ describe("FormattedCurrency", () => {
   });
 
   describe("currency", () => {
-    it("should verify dollar sign can be disabled", () => {
+    it("should verify dollar sign", () => {
       const { container } = render({ value: 21, currency: "USD" });
       expect(container.firstElementChild!.textContent).toBe("+$21.00");
     });
-    it("should verify dollar sign can be disabled (es)", () => {
+    it("should verify dollar sign (es)", () => {
       const { container } = render({ value: 21, currency: "USD", locale: "es" });
       expect(container.firstElementChild!.textContent).toBe("+21,00 US$");
     });
-    it("should verify euro sign can be disabled (fr)", () => {
+    it("should verify euro sign (fr)", () => {
       const { container } = render({ value: 21, currency: "EUR", locale: "fr" });
       expect(container.firstElementChild!.textContent).toBe("+21,00 €");
     });
-    it("should verify euro sign can be disabled (zh)", () => {
+    it("should verify euro sign (zh)", () => {
       const { container } = render({ value: 21, currency: "EUR", locale: "zh"});
       expect(container.firstElementChild!.textContent).toBe("+€21.00");
     });
-    it("should verify euro sign can be disabled (pt)", () => {
+    it("should verify euro sign (pt)", () => {
       const { container } = render({ value: 21, currency: "EUR", locale: "pt"});
       expect(container.firstElementChild!.textContent).toBe("+€ 21,00");
     });
-    it("should verify bitcoin sign can be disabled", () => {
+    it("should verify bitcoin sign", () => {
       const { container } = render({ value: 21, currency: "BTC" });
+      expect(container.firstElementChild!.textContent).toBe("+₿ 21.00000000")
+    });
+    it("should verify bitcoin sign (es)", () => {
+      const { container } = render({ value: 21, currency: "BTC", locale: "es" });
+      expect(container.firstElementChild!.textContent).toBe("+21,00000000 ₿")
+    });
+    it("should verify bitcoin sign (pt)", () => {
+      const { container } = render({ value: 21, currency: "BTC", locale: "pt" });
+      expect(container.firstElementChild!.textContent).toBe("+₿ 21,00000000")
+    });
+    it("should verify bitcoin code", () => {
+      const { container } = render({ value: 21, currency: "BTC", currencyDisplay: "code" });
       expect(container.firstElementChild!.textContent).toBe("+BTC 21.00000000")
-      // TODO: should be `expect(container.firstElementChild!.textContent).toBe("+₿21.00000000")`
+    });
+    it("should verify bitcoin name", () => {
+      const { container } = render({ value: 21, currency: "BTC", currencyDisplay: "name" });
+      expect(container.firstElementChild!.textContent).toBe("+21.00000000 bitcoin")
+    });
+    it("should verify dollar code", () => {
+      const { container } = render({ value: 21, currency: "USD", currencyDisplay: "code" });
+      expect(container.firstElementChild!.textContent).toBe("+USD 21.00")
+    });
+    it("should verify dollar name", () => {
+      const { container } = render({ value: 21, currency: "USD", currencyDisplay: "name" });
+      expect(container.firstElementChild!.textContent).toBe("+21.00 US dollars")
+    });
+    it("should verify dollar name (es)", () => {
+      const { container } = render({ value: 21, currency: "USD", currencyDisplay: "name", locale: "es" });
+      expect(container.firstElementChild!.textContent).toBe("+21,00 dólares estadounidenses")
     });
   });
 

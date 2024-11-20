@@ -1,12 +1,16 @@
 import { FormattedNumber, type FormatNumberOptions } from "react-intl";
 import { cn } from "@/lib/utils";
 
+const BITCOIN_CODE = "BTC";
+const BITCOIN_NAME = "bitcoin";
+const BITCOIN_SYMBOL = "₿";
+
 export type FormattedCurrencyProps = {
   value: number,
   className?: string,
   color?: "auto" | "none",
   type?: "auto" | "credit" | "debit",
-  currency?: FormatNumberOptions['currency'] | "BTC"
+  currency?: FormatNumberOptions['currency'] | typeof BITCOIN_CODE
 } & Pick<FormatNumberOptions, 'signDisplay' | 'currencyDisplay'>
 
 const FormattedCurrency = ({ value, className, color = "auto", type = "auto", currency, currencyDisplay = "symbol", signDisplay = "exceptZero" } : FormattedCurrencyProps) => {
@@ -18,12 +22,23 @@ const FormattedCurrency = ({ value, className, color = "auto", type = "auto", cu
       <FormattedNumber
         value={value}
         signDisplay={signDisplay}
-        minimumFractionDigits={currency === "BTC" ? 8 : 2}
+        minimumFractionDigits={currency === BITCOIN_CODE ? 8 : 2}
         maximumFractionDigits={8}
         style={currency !== undefined ? "currency" : "decimal"}
         currency={currency}
         currencyDisplay={currency !== undefined ? currencyDisplay : undefined}
-      />
+      >
+        {(formattedNumber: string) => {
+          if (currency !== BITCOIN_CODE) {
+            return <>{formattedNumber}</>;
+          }
+          switch(currencyDisplay) {
+            case "name": return <>{formattedNumber.replace(BITCOIN_CODE, BITCOIN_NAME)}</>; 
+            case "symbol": return <>{formattedNumber.replace(BITCOIN_CODE, BITCOIN_SYMBOL)}</>;
+            default: return <>{formattedNumber}</>;
+          }
+        }}
+      </FormattedNumber>
     </span>
   )
 };
