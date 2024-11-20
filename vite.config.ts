@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
-import { configDefaults } from "vitest/config";
 import react from "@vitejs/plugin-react";
+import { configDefaults } from "vitest/config";
 import path from "path";
 
 export default defineConfig({
@@ -13,7 +13,7 @@ export default defineConfig({
   assetsInclude: ["**/*.woff2"],
   test: {
     environment: "jsdom",
-    include: ["src/__tests__/**/*.test.{ts,tsx}"],
+    include: ["**/*.test.{ts,tsx}"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "lcov"],
