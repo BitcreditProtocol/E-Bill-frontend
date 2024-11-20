@@ -1,4 +1,4 @@
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
 import {
   Toast,
   ToastClose,
@@ -6,23 +6,47 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "@/components/ui/toast"
-import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon } from "lucide-react"
+} from "@/components/ui/toast";
+import {
+  CircleCheckIcon,
+  InfoIcon,
+  TriangleAlertIcon,
+  OctagonXIcon,
+} from "lucide-react";
 
 export function Toaster() {
-  const { toasts } = useToast()
+  const { toasts } = useToast();
 
   const icons = {
-    success: <CircleCheckIcon className="w-5 h-5 text-signal-success" strokeWidth="1px"/>,
-    info: <InfoIcon className="w-5 h-5 text-text-300" strokeWidth="1px"/>,
-    warning: <TriangleAlertIcon className="w-5 h-5 text-signal-alert" strokeWidth="1px"/>,
-    error: <OctagonXIcon className="w-5 h-5 text-signal-error" strokeWidth="1px"/>,
+    success: (
+      <CircleCheckIcon
+        className="w-5 h-5 text-signal-success"
+        strokeWidth="1px"
+      />
+    ),
+    info: <InfoIcon className="w-5 h-5 text-text-300" strokeWidth="1px" />,
+    warning: (
+      <TriangleAlertIcon
+        className="w-5 h-5 text-signal-alert"
+        strokeWidth="1px"
+      />
+    ),
+    error: (
+      <OctagonXIcon className="w-5 h-5 text-signal-error" strokeWidth="1px" />
+    ),
   };
 
   return (
     <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, variant, ...props }) {
-        const icon = icons[variant || 'info'];
+      {toasts.map(function ({
+        id,
+        title,
+        description,
+        action,
+        variant,
+        ...props
+      }) {
+        const icon = icons[variant || "info"];
         return (
           <Toast key={id} variant={variant} {...props}>
             <div className="flex gap-2">
@@ -37,9 +61,9 @@ export function Toaster() {
             {action}
             <ToastClose />
           </Toast>
-        )
+        );
       })}
       <ToastViewport position={toasts[0]?.position} />
     </ToastProvider>
-  )
+  );
 }
