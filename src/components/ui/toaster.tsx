@@ -12,28 +12,21 @@ import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon } from "luci
 export function Toaster() {
   const { toasts } = useToast()
 
-  const getIcon = (variant: string | null | undefined) => {
-    switch (variant) {
-      case 'success':
-        return <CircleCheckIcon className="h-5 w-5 text-signal-success" />
-      case 'info':
-        return <InfoIcon className="h-5 w-5" />
-      case 'warning':
-        return <TriangleAlertIcon className="h-5 w-5 text-signal-alert" />
-      case 'error':
-        return <OctagonXIcon className="h-5 w-5 text-signal-error" />
-      default:
-        return null
-    }
-  }
+  const icons = {
+    success: <CircleCheckIcon className="w-5 h-5 text-signal-success" strokeWidth="1px"/>,
+    info: <InfoIcon className="w-5 h-5 text-text-300" strokeWidth="1px"/>,
+    warning: <TriangleAlertIcon className="w-5 h-5 text-signal-alert" strokeWidth="1px"/>,
+    error: <OctagonXIcon className="w-5 h-5 text-signal-error" strokeWidth="1px"/>,
+  };
 
   return (
     <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, variant, position, ...props }) {
+      {toasts.map(function ({ id, title, description, action, variant, ...props }) {
+        const icon = icons[variant || 'info'];
         return (
           <Toast key={id} variant={variant} {...props}>
             <div className="flex gap-2">
-              {getIcon(variant)}
+              {icon}
               <div className="flex flex-col gap-1.5">
                 {title && <ToastTitle>{title}</ToastTitle>}
                 {description && (

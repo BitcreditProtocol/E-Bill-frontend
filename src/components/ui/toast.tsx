@@ -12,26 +12,18 @@ const ToastViewport = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport> & { position?: string }
 >(({ className, position, ...props }, ref) => {
   
-  const positionStyles = (() => {
-    switch (position) {
-      case 'top-left':
-        return 'top-0 left-0';
-      case 'top-right':
-        return 'top-0 right-0';
-      case 'bottom-left':
-        return 'bottom-0 left-0';
-      case 'bottom-right':
-        return 'bottom-0 right-0';
-      default:
-        return 'top-0 right-0';
-    }
-  })();
+  const positionStyles = {
+    'top-left': 'top-0 left-0',
+    'top-right': 'top-0 right-0',
+    'bottom-left': 'bottom-0 left-0',
+    'bottom-right': 'bottom-0 right-0',
+}[position ?? 'top-right'];
 
   return (
     <ToastPrimitives.Viewport
       ref={ref}
       className={cn(
-        `fixed z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:flex-col md:max-w-[420px] ${positionStyles}`,
+        `fixed z-[10] flex max-h-screen w-full flex-col-reverse p-4 sm:flex-col md:max-w-[420px] ${positionStyles}`,
         className
       )}
       {...props}
@@ -52,7 +44,7 @@ const toastVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "success",
+      variant: "info",
     },
   }
 )
@@ -100,7 +92,7 @@ const ToastClose = React.forwardRef<
     toast-close=""
     {...props}
   >
-    <X className="h-5 w-5 text-text-200" />
+    <X className="h-5 w-5 text-text-200" strokeWidth="1px" />
   </ToastPrimitives.Close>
 ))
 ToastClose.displayName = ToastPrimitives.Close.displayName
@@ -111,7 +103,7 @@ const ToastTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Title
     ref={ref}
-    className={cn("text-[14px] text-text-200 font-[500]", className)}
+    className={cn("text-sm text-text-200 font-medium", className)}
     {...props}
   />
 ))
