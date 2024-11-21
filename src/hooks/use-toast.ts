@@ -1,6 +1,3 @@
-"use client";
-
-// Inspired by react-hot-toast library
 import * as React from "react";
 
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
@@ -13,6 +10,7 @@ type ToasterToast = ToastProps & {
   title?: React.ReactNode;
   description?: React.ReactNode;
   action?: ToastActionElement;
+  position?: string;
 };
 
 let count = 0;
@@ -27,7 +25,7 @@ enum ActionType {
   UPDATE_TOAST,
   DISMISS_TOAST,
   REMOVE_TOAST,
-};
+}
 
 type Action =
   | {
@@ -145,7 +143,8 @@ function toast({ ...props }: Toast) {
       type: ActionType.UPDATE_TOAST,
       toast: { ...props, id },
     });
-  const dismiss = () => dispatch({ type: ActionType.DISMISS_TOAST, toastId: id });
+  const dismiss = () =>
+    dispatch({ type: ActionType.DISMISS_TOAST, toastId: id });
 
   dispatch({
     type: ActionType.ADD_TOAST,
@@ -182,7 +181,8 @@ function useToast() {
   return {
     ...state,
     toast,
-    dismiss: (toastId?: string) => dispatch({ type: ActionType.DISMISS_TOAST, toastId }),
+    dismiss: (toastId?: string) =>
+      dispatch({ type: ActionType.DISMISS_TOAST, toastId }),
   };
 }
 

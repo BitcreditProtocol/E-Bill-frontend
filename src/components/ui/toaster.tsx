@@ -7,16 +7,34 @@ import {
   ToastTitle,
   ToastViewport,
 } from "@/components/ui/toast";
-
-type ToasterProps = {
-  id: string;
-  title?: string;
-  description?: React.ReactNode;
-  action?: React.ReactNode;
-} & React.ComponentProps<typeof Toast>;
+import {
+  CircleCheckIcon,
+  InfoIcon,
+  TriangleAlertIcon,
+  OctagonXIcon,
+} from "lucide-react";
 
 export function Toaster() {
   const { toasts } = useToast();
+
+  const icons = {
+    success: (
+      <CircleCheckIcon
+        className="w-5 h-5 text-signal-success"
+        strokeWidth="1px"
+      />
+    ),
+    info: <InfoIcon className="w-5 h-5 text-text-300" strokeWidth="1px" />,
+    warning: (
+      <TriangleAlertIcon
+        className="w-5 h-5 text-signal-alert"
+        strokeWidth="1px"
+      />
+    ),
+    error: (
+      <OctagonXIcon className="w-5 h-5 text-signal-error" strokeWidth="1px" />
+    ),
+  };
 
   return (
     <ToastProvider>
@@ -25,22 +43,27 @@ export function Toaster() {
         title,
         description,
         action,
+        variant,
         ...props
-      }: ToasterProps) {
+      }) {
+        const icon = icons[variant || "info"];
         return (
-          <Toast key={id} {...props}>
-            <div className="grid gap-1">
-              {title && <ToastTitle>{title}</ToastTitle>}
-              {description && (
-                <ToastDescription>{description}</ToastDescription>
-              )}
+          <Toast key={id} variant={variant} {...props}>
+            <div className="flex gap-2">
+              {icon}
+              <div className="flex flex-col gap-1.5">
+                {title && <ToastTitle>{title}</ToastTitle>}
+                {description && (
+                  <ToastDescription>{description}</ToastDescription>
+                )}
+              </div>
             </div>
             {action}
             <ToastClose />
           </Toast>
         );
       })}
-      <ToastViewport />
+      <ToastViewport position={toasts[0]?.position} />
     </ToastProvider>
   );
 }
