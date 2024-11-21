@@ -2,6 +2,8 @@ import { IntlProvider } from "react-intl";
 import { createContext, useContext, useState } from "react";
 import { detectBrowserLanguage } from "@/utils";
 
+
+//TODO Gui help me
 import en from "@/i18n/en.json";
 
 const DEFAULT_LOCALE = "en";
