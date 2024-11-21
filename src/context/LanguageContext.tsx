@@ -2,7 +2,7 @@ import { IntlProvider } from "react-intl";
 import { createContext, useContext, useState } from "react";
 import { detectBrowserLanguage } from "@/utils";
 
-import en from "@/i18n/en.json";
+import en from "@/i18n/en/en.json";
 
 const DEFAULT_LOCALE = "en";
 
