@@ -6,5 +6,8 @@
   "pages.login.unlockWithPin": "Unlock with PIN",
   "pages.unlock.forgotPin": "Forgot your PIN?",
   "pages.unlock.seedPhraseRecovery": "Recover with seed phrase",
-  "pages.unlock.title": "Unlock with PIN code"
+  "pages.unlock.title": "Unlock with PIN code",
+  "payee": "Payee",
+  "payer": "Payer",
+  "balances": "Balances"
 }
