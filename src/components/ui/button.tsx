@@ -18,6 +18,7 @@ const buttonVariants = cva(
         filter: "bg-transparent max-h-7 !py-1 !px-3 border-[1px] border-divider-100 rounded-[8px] text-text-300 text-xs font-medium hover:bg-transparent",
       },
       size: {
+        xxs: "text-xs px-2 py-1",
         xs: "text-xs px-4 py-2.5",
         sm: "text-sm px-5 py-3",
         md: "text-sm px-6 py-4",
