@@ -17,6 +17,7 @@ const PREVIEW_BILL = "/preview-bill";
 const MINT_BILL = "/mint-bill";
 const SELL_BILL = "/sell-bill";
 const CONTACTS = "/contacts";
+const CREATE_CONTACT = "/create-contact";
 
 export default {
   LOGIN,
@@ -37,4 +38,5 @@ export default {
   MINT_BILL,
   SELL_BILL,
   CONTACTS,
+  CREATE_CONTACT,
 };

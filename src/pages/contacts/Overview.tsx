@@ -1,7 +1,9 @@
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useIntl, FormattedMessage } from "react-intl";
 import { EllipsisIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import routes from "@/constants/routes";
 import contactsIllustration from "@/assets/contacts-illustration.svg";
 
 function Search() {
@@ -34,6 +36,8 @@ function Search() {
 }
 
 function Header() {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col gap-3 w-full">
       <div className="flex justify-between items-center">
@@ -48,6 +52,7 @@ function Header() {
         <Button
           className="gap-1 p-0 h-fit text-text-300 text-xs font-medium no-underline hover:no-underline leading-[18px]"
           variant="link"
+          onClick={() => navigate(routes.CREATE_CONTACT)}
         >
           <PlusIcon className="w-4 h-4 text-text-300" />
           <FormattedMessage
