@@ -87,8 +87,12 @@ export default {
           100: '#FBDBB0',
           200: '#F7931A',
         },
-      }
-    }
+        base: {
+          hover: '#331C00',
+          active: '#000000',
+        },
+  		}
+  	}
   },
   plugins: [require("tailwindcss-animate")],
 }

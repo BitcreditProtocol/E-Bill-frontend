@@ -5,33 +5,30 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap font-medium transition-all ease-in-out focus-visible:outline-none focus-visible:box-content disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        default: "bg-text-300 text-white hover:bg-base-hover focus:border-[6px] focus:border-divider-75 active:bg-base-active disabled:bg-elevation-300",
+        outline: "border border-base text-base hover:border-divider-100 hover:text-divider-100 focus:border-[6px] focus:border-divider-75 active:border-base-active disabled:border-base-inactive disabled:text-base-inactive bg-transparent",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        filter:
-          "bg-transparent max-h-7 !py-1 !px-3 border-[1px] border-divider-100 rounded-[8px] text-text-300 text-xs font-medium hover:bg-transparent",
+        filter: "bg-transparent max-h-7 !py-1 !px-3 border-[1px] border-divider-100 rounded-[8px] text-text-300 text-xs font-medium hover:bg-transparent",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
-      },
+        xxs: "text-xs px-2 py-1",
+        xs: "text-xs px-4 py-2.5",
+        sm: "text-sm px-5 py-3",
+        md: "text-sm px-6 py-4",
+        lg: "text-base px-8 py-[18px]",
+      }
     },
     defaultVariants: {
       variant: "default",
-      size: "default",
-    },
+      size: "md"
+    }
   }
 );
 
