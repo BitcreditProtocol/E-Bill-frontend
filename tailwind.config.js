@@ -87,6 +87,9 @@ export default {
           100: '#FBDBB0',
           200: '#F7931A',
         },
+      },
+      backgroundImage: {
+        'background-ellipse': 'url(/src/assets/images/background-ellipse.svg)',
       }
     }
   },
