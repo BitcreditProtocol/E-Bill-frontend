@@ -2,7 +2,7 @@
 
 Please provide a brief summary of the changes in this pull request. What issue(s) does this PR address? What problem(s) does it solve?
 
-Fixes #(issue-number)
+Relates to #(issue-number)
 
 ---
 
