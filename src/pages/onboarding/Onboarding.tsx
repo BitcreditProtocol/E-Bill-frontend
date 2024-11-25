@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { First, Second, Third, Fourth } from "./Screens";
 import { Button } from "@/components/ui/button";
 import DotIndicator from "@/components/DotIndicator";
@@ -25,7 +26,18 @@ export default function Onboarding() {
     <div className="flex flex-col gap-6 w-full min-h-fit h-screen py-6 px-5 bg-background-ellipse bg-no-repeat select-none">
       <img src={layoutLogo} className="w-[30px] h-5" />
 
-      {steps[currentStep]}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentStep}
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -10, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="flex-1"
+        >
+          {steps[currentStep]}
+        </motion.div>
+      </AnimatePresence>
 
       <div className="flex flex-col gap-6">
         <DotIndicator

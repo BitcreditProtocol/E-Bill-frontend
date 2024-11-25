@@ -6,7 +6,7 @@ import fourthIllustration from "@/assets/images/onboarding/fourth-illustration.s
 
 export function First() {
   return (
-    <div className="flex-1 flex flex-col justify-between">
+    <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
           id="onboarding.first.title"
@@ -24,7 +24,7 @@ export function First() {
 
 export function Second() {
   return (
-    <div className="flex-1 flex flex-col justify-between">
+    <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
           id="onboarding.second.title"
@@ -42,7 +42,7 @@ export function Second() {
 
 export function Third() {
   return (
-    <div className="flex-1 flex flex-col justify-between">
+    <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
           id="onboarding.third.title"
@@ -60,7 +60,7 @@ export function Third() {
 
 export function Fourth() {
   return (
-    <div className="flex-1 flex flex-col justify-between">
+    <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
           id="onboarding.fourth.title"
