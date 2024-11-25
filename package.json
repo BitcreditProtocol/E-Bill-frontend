@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=0",
+    "lint-staged": "npm run lint -- --fix",
     "test": "vitest",
     "preview": "vite preview",
     "extract": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './extracted/en.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
