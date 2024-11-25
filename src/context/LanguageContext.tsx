@@ -2,15 +2,36 @@ import { IntlProvider } from "react-intl";
 import { createContext, useContext, useState } from "react";
 import { detectBrowserLanguage } from "@/utils";
 
-
-//TODO Gui help me
-import en from "@/i18n/en.json";
-
 const DEFAULT_LOCALE = "en";
 
-const translations: { [key: string]: typeof en } = {
-  en,
-};
+type TranslationMessages = Record<string, string>;
+
+const modules = import.meta.glob<Record<string, TranslationMessages>>(
+  "@/i18n/**/**/*.json",
+  {
+    eager: true,
+  }
+);
+
+const translations: { [key: string]: Record<string, string> } = {};
+
+for (const path in modules) {
+  const match = path.match(/\/i18n\/(\w+)\/.*\.json$/);
+
+  if (match) {
+    const locale = match[1];
+    translations[locale] = translations[locale] || {};
+
+    const fileContent = modules[path];
+    const content = fileContent.default || fileContent;
+
+    if (content && typeof content === "object") {
+      Object.assign(translations[locale], content);
+    } else {
+      console.warn(`Invalid JSON in file: ${path}`);
+    }
+  }
+}
 
 type LanguageContextType = {
   locale: string;
@@ -29,7 +50,9 @@ export default function LanguageProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [locale, setLocale] = useState(detectBrowserLanguage());
+  const [locale, setLocale] = useState(
+    detectBrowserLanguage() || DEFAULT_LOCALE
+  );
 
   return (
     <LanguageContext.Provider value={{ locale, setLocale }}>
