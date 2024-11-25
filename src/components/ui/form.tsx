@@ -165,6 +165,9 @@ const FormMessage = React.forwardRef<
 FormMessage.displayName = "FormMessage"
 
 export {
+  // TODO: "For React refresh to work correctly, your file should only export React components."
+  // (see: https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports)
+  // eslint-disable-next-line react-refresh/only-export-components
   useFormField,
   Form,
   FormItem,
