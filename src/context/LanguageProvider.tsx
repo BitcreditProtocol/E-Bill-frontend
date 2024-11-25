@@ -1,26 +1,12 @@
 import { IntlProvider } from "react-intl";
-import { createContext, useContext, useState } from "react";
+import { useState } from "react";
 import { detectBrowserLanguage } from "@/utils";
-
 import en from "@/i18n/en.json";
-
-const DEFAULT_LOCALE = "en";
+import { DEFAULT_LOCALE, LanguageContext } from "./LanguageContext";
 
 const translations: { [key: string]: typeof en } = {
   en,
 };
-
-type LanguageContextType = {
-  locale: string;
-  setLocale: (locale: string) => void;
-};
-
-const LanguageContext = createContext<LanguageContextType>({
-  locale: DEFAULT_LOCALE,
-  setLocale: () => {},
-});
-
-export const useLanguage = () => useContext(LanguageContext);
 
 export default function LanguageProvider({
   children,
