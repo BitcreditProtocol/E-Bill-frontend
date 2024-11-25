@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 
 const DEFAULT_LOCALE = "en";
 
-type LanguageContextType = {
+export type LanguageContextType = {
   locale: string;
   setLocale: (locale: string) => void;
 };
@@ -14,4 +14,8 @@ const LanguageContext = createContext<LanguageContextType>({
 
 const useLanguage = () => useContext(LanguageContext);
 
-export { LanguageContext, useLanguage, DEFAULT_LOCALE };
+export { 
+  LanguageContext,
+  useLanguage,
+  DEFAULT_LOCALE
+};
