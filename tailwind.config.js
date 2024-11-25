@@ -11,11 +11,6 @@ export default {
         sans: ['Geist', 'system-ui', 'sans-serif'],
         mono: ['Geist Mono', 'monospace'],
       },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'var(--radius)',
-        sm: 'var(--radius)'
-      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -86,6 +81,10 @@ export default {
           50: '#FFF2E2',
           100: '#FBDBB0',
           200: '#F7931A',
+        },
+        base: {
+          hover: '#331C00',
+          active: '#000000',
         },
       },
       backgroundImage: {
