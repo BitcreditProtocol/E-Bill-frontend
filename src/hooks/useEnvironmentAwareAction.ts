@@ -8,6 +8,7 @@ interface ActionFunction<T> {
 }
 
 class EnvironmentAwareAction<BrowserResult, PWAResult> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static instances: Map<string, EnvironmentAwareAction<any, any>> =
     new Map();
 

@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
+import { Toaster } from "./components/ui/toaster";
 import LanguageProvider from "./context/LanguageContext";
 
 import DefaultLayout from "./layouts/Default";
@@ -27,117 +27,131 @@ import CreateBill from "./pages/CreateBill";
 import PreviewBill from "./pages/PreviewBill";
 import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
-import Overview from "./pages/contacts/Overview";
-import Create from "./pages/contacts/Create";
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: routes.UNLOCK,
+      element: <Unlock />,
+    },
+    {
+      path: "/",
+      element: <Login />,
+    },
+    {
+      path: routes.LOGIN,
+      element: <Login />,
+    },
+    {
+      path: routes.HOME,
+      element: <Home />,
+    },
+    {
+      path: routes.RESTORE_WITH_SEED_PHRASE,
+      element: <RecoverWithSeedPhrase />,
+    },
+    {
+      path: routes.CREATE_IDENTITY,
+      element: <CreateNewIdentity />,
+    },
+    {
+      path: routes.REQUIRED_INFORMATION,
+      element: <RequiredInformation />,
+    },
+    {
+      path: routes.EMAIL_VERIFICATION,
+      element: <EmailVerification />,
+    },
+    {
+      path: routes.OPTIONAL_INFORMATION,
+      element: <OptionalInformation />,
+    },
+    {
+      path: "/success",
+      element: <Success />,
+    },
+    {
+      path: "/confirm-identity",
+      element: <ConfirmIdentity />,
+    },
+    {
+      path: routes.NOTIFICATIONS,
+      element: <Notifications />,
+    },
+    {
+      path: "/notifications-empty",
+      element: <NotificationsEmpty />,
+    },
+    {
+      path: routes.BILLS,
+      element: <Bills />,
+    },
+    {
+      path: "/bills-empty",
+      element: <BillsEmpty />,
+    },
+    {
+      path: routes.VIEW_BILL,
+      element: <Bill />,
+    },
+    {
+      path: routes.ISSUE_BILL,
+      element: <IssueBill />,
+    },
+    {
+      path: routes.CREATE_BILL,
+      element: <CreateBill />,
+    },
+    {
+      path: routes.PREVIEW_BILL,
+      element: <PreviewBill />,
+    },
+    {
+      path: routes.MINT_BILL,
+      element: <MintBill />,
+    },
+    {
+      path: routes.SELL_BILL,
+      element: <SellBill />,
+    },
+    {
+      path: routes.CREATE_BILL,
+      element: <CreateBill />,
+    },
+    {
+      path: routes.PREVIEW_BILL,
+      element: <PreviewBill />,
+    },
+  ],
   {
-    path: routes.UNLOCK,
-    element: <Unlock />,
-  },
-  {
-    path: "/",
-    element: <Login />,
-  },
-  {
-    path: routes.LOGIN,
-    element: <Login />,
-  },
-  {
-    path: routes.HOME,
-    element: <Home />,
-  },
-  {
-    path: routes.RESTORE_WITH_SEED_PHRASE,
-    element: <RecoverWithSeedPhrase />,
-  },
-  {
-    path: routes.CREATE_IDENTITY,
-    element: <CreateNewIdentity />,
-  },
-  {
-    path: routes.REQUIRED_INFORMATION,
-    element: <RequiredInformation />,
-  },
-  {
-    path: routes.EMAIL_VERIFICATION,
-    element: <EmailVerification />,
-  },
-  {
-    path: routes.OPTIONAL_INFORMATION,
-    element: <OptionalInformation />,
-  },
-  {
-    path: "/success",
-    element: <Success />,
-  },
-  {
-    path: "/confirm-identity",
-    element: <ConfirmIdentity />,
-  },
-  {
-    path: routes.NOTIFICATIONS,
-    element: <Notifications />,
-  },
-  {
-    path: "/notifications-empty",
-    element: <NotificationsEmpty />,
-  },
-  {
-    path: routes.BILLS,
-    element: <Bills />,
-  },
-  {
-    path: "/bills-empty",
-    element: <BillsEmpty />,
-  },
-  {
-    path: routes.VIEW_BILL,
-    element: <Bill />,
-  },
-  {
-    path: routes.ISSUE_BILL,
-    element: <IssueBill />,
-  },
-  {
-    path: routes.CREATE_BILL,
-    element: <CreateBill />,
-  },
-  {
-    path: routes.PREVIEW_BILL,
-    element: <PreviewBill />,
-  },
-  {
-    path: routes.MINT_BILL,
-    element: <MintBill />,
-  },
-  {
-    path: routes.SELL_BILL,
-    element: <SellBill />,
-  },
-  {
-    path: routes.CREATE_BILL,
-    element: <CreateBill />,
-  },
-  {
-    path: routes.PREVIEW_BILL,
-    element: <PreviewBill />,
-  },
-  {
-    path: routes.CONTACTS,
-    element: <Overview />,
-  },
-  {
-    path: routes.CREATE_CONTACT,
-    element: <Create />,
-  },
-]);
+    future: {
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_partialHydration: true,
+      v7_relativeSplatPath: true,
+      v7_skipActionErrorRevalidation: true,
+    },
+  }
+);
+
+if (import.meta.env.DEV) {
+  console.info("[dev] quickly navigate through all routes while developing:");
+  console.table(
+    router.routes.map((it) => [it.path, location.origin + it.path])
+  );
+}
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <LanguageProvider>
       <DefaultLayout>
-        <RouterProvider router={router} />
+        <RouterProvider
+          router={router}
+          future={{
+            v7_startTransition: true,
+          }}
+        />
+        <Toaster />
       </DefaultLayout>
     </LanguageProvider>
   </StrictMode>

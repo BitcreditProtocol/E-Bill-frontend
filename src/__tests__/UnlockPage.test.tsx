@@ -21,7 +21,10 @@ describe("Unlock Component", () => {
 
   const renderComponent = () =>
     render(
-      <MemoryRouter>
+      <MemoryRouter future={{
+        v7_relativeSplatPath: true,
+        v7_startTransition: true,
+      }}>
         <IntlProvider locale="en">
           <Unlock />
         </IntlProvider>
