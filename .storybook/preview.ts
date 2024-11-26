@@ -13,6 +13,7 @@ const preview: Preview = {
     },
     layout: 'centered',
   },
+  tags: ['autodocs'],
 };
 
 export default preview;
