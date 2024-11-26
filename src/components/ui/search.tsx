@@ -24,8 +24,8 @@ function Search({ onSearch, placeholder, size = "md" }: SearchProps) {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      onSearch(searchFieldRef.current?.value || "");
+    if (event.key === "Enter" && searchFieldRef.current?.value) {
+      onSearch(searchFieldRef.current.value);
     }
   };
 
