@@ -1,5 +1,5 @@
 import DefaultLayout from "./layouts/Default";
-import ConnectCompany from "./pages/onboarding/ConnectCompany";
+import ConnectCompany from "./pages/signup/ConnectCompany";
 
 function App() {
   return (

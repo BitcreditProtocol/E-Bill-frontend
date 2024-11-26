@@ -5,28 +5,30 @@ import { Toaster } from "./components/ui/toaster";
 import LanguageProvider from "./context/LanguageContext";
 
 import DefaultLayout from "./layouts/Default";
-import RequiredInformation from "./pages/onboarding/RequiredInformation";
+import RequiredInformation from "./pages/signup/RequiredInformation";
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/Home";
-import CreateNewIdentity from "./pages/onboarding/CreateNewIdentity";
-import Success from "./pages/onboarding/Success";
+import CreateNewIdentity from "./pages/signup/CreateNewIdentity";
+import Success from "./pages/signup/Success";
 import { Notifications, NotificationsEmpty } from "./pages/Notifications";
 import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
 import { Bills, BillsEmpty } from "./pages/Bills";
-import EmailVerification from "./pages/onboarding/EmailVerification";
-import OptionalInformation from "./pages/onboarding/OptionalInformation";
-import ConfirmIdentity from "./pages/onboarding/ConfirmIdentity";
+import EmailVerification from "./pages/signup/EmailVerification";
+import OptionalInformation from "./pages/signup/OptionalInformation";
+import ConfirmIdentity from "./pages/signup/ConfirmIdentity";
 import Bill from "./pages/Bill";
 import IssueBill from "./pages/IssueBill";
 import CreateBill from "./pages/CreateBill";
 import PreviewBill from "./pages/PreviewBill";
 import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
+
+import Onboarding from "./pages/onboarding/Onboarding";
 
 const router = createBrowserRouter(
   [
@@ -121,6 +123,10 @@ const router = createBrowserRouter(
     {
       path: routes.PREVIEW_BILL,
       element: <PreviewBill />,
+    },
+    {
+      path: "/get-started",
+      element: <Onboarding />,
     },
   ],
   {
