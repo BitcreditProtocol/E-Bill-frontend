@@ -1,6 +1,5 @@
 import { SearchIcon } from "lucide-react";
 import { useRef } from "react";
-import { useIntl } from "react-intl";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +27,6 @@ const searchVariants = cva(
 );
 
 function Search({ onSearch, placeholder, size }: SearchProps) {
-  const intl = useIntl();
   const searchFieldRef = useRef<HTMLInputElement>(null);
 
   const focusSearchField = () => {
@@ -51,12 +49,7 @@ function Search({ onSearch, placeholder, size }: SearchProps) {
         ref={searchFieldRef}
         type="text"
         placeholder={
-          placeholder ||
-          intl.formatMessage({
-            id: "contacts.search.placeholder",
-            defaultMessage: "Search for contacts...",
-            description: "Placeholder text for search input",
-          })
+          placeholder
         }
         className="w-full text-text-300 bg-transparent font-medium placeholder-text-300 focus:outline-none"
         onKeyDown={handleKeyDown}
