@@ -1,6 +1,6 @@
 {
   "**/*.{ts,tsx}": [
-    "eslint --fix",
+    "npm run lint-staged",
     "vitest related --run"
   ]
 }

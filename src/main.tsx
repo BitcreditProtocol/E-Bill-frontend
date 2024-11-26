@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "./components/ui/toaster";
-import LanguageProvider from "./context/LanguageContext";
+import LanguageProvider from "./context/language/LanguageProvider";
 
 import DefaultLayout from "./layouts/Default";
 import RequiredInformation from "./pages/signup/RequiredInformation";
