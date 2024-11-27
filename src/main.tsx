@@ -27,14 +27,10 @@ import CreateBill from "./pages/CreateBill";
 import PreviewBill from "./pages/PreviewBill";
 import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
+import Loading from "./components/Loading";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Onboarding = lazy(() => import("./pages/onboarding/Onboarding"));
-
-// eslint-disable-next-line react-refresh/only-export-components
-function Loading() {
-  return <div className="mx-2 my-4">Loading…</div>
-}
 
 const router = createBrowserRouter(
   [
