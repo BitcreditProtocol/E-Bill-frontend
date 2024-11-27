@@ -143,10 +143,13 @@ const router = createBrowserRouter(
 if (import.meta.env.DEV) {
   console.info("[dev] quickly navigate through all routes while developing:");
   console.table(
-    router.routes.map((it) => [it.path, location.origin + it.path])
+    router.routes
+      .filter((it) => it.path !== undefined)
+      .map((it) => [it.path, location.origin + (it.path || "")])
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <LanguageProvider>

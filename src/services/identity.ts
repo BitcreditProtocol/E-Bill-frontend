@@ -8,7 +8,7 @@ type IdentityData = {
   postal_address: string;
 };
 
-export async function createIdentity(data: IdentityData): Promise<void> {
+export async function createIdentity(data: IdentityData): Promise<unknown> {
   try {
     const response = await fetch("/identity/create", {
       method: "POST",
@@ -19,10 +19,10 @@ export async function createIdentity(data: IdentityData): Promise<void> {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${String(response.status)}`);
     }
 
-    const result = await response.json();
+    const result = await response.json() as unknown;
 
     return result;
   } catch (error) {
@@ -41,10 +41,10 @@ export async function getIdentity(): Promise<IdentityData> {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${String(response.status)}`);
     }
 
-    const identity: IdentityData = await response.json();
+    const identity = await response.json() as IdentityData;
 
     return identity;
   } catch (error) {

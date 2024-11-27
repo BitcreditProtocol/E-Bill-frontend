@@ -1,4 +1,3 @@
-import React from "react";
 
 type DotIndicatorProps = {
   steps: number;
@@ -12,13 +11,17 @@ const DotIndicator = ({ steps, current, onClick }: DotIndicatorProps) => {
       {Array.from({ length: steps }, (_, index) => (
         <button
           key={index}
-          onClick={() => onClick && onClick(index)}
+          onClick={() => { 
+            if (onClick) {
+              onClick(index);
+            } 
+          }}
           className={`w-[10px] h-[10px] rounded-full transition ${
             index === current
               ? "bg-text-300"
               : "bg-text-300/20 hover:bg-text-300/40"
           }`}
-          aria-label={`Go to page ${index + 1}`}
+          aria-label={`Go to page ${String(index + 1)}`}
         />
       ))}
     </div>

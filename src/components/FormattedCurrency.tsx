@@ -10,7 +10,7 @@ export type FormattedCurrencyProps = {
   className?: string,
   color?: "auto" | "none",
   type?: "auto" | "credit" | "debit",
-  currency?: FormatNumberOptions['currency'] | typeof BITCOIN_CODE
+  currency?: FormatNumberOptions['currency']
 } & Pick<FormatNumberOptions, 'signDisplay' | 'currencyDisplay'>
 
 const FormattedCurrency = ({ value, className, color = "auto", type = "auto", currency, currencyDisplay = "symbol", signDisplay = "exceptZero" } : FormattedCurrencyProps) => {
