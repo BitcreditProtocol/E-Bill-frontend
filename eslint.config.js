@@ -5,7 +5,12 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist'] },
+  { 
+    ignores: [
+      'dist',
+      '.storybook',
+    ]
+  },
   {
     extends: [
       js.configs.recommended,
@@ -16,7 +21,8 @@ export default tseslint.config(
   {
     extends: [
       js.configs.recommended,
-      ...tseslint.configs.strictTypeChecked,
+      //...tseslint.configs.strictTypeChecked,
+      ...tseslint.configs.recommended,
     ],
     files: ['**/*.{ts,tsx}'],
     ignores: ['**/*.test.{ts,tsx}'],

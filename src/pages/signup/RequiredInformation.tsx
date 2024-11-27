@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 export default function RequiredInformation() {
   const navigate = useNavigate();
 
-  const verifyEmail = () => navigate("/email-verification");
+  const verifyEmail = () => { navigate("/email-verification"); };
 
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-5 px-10">

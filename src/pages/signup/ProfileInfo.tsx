@@ -10,7 +10,7 @@ export default function ProfileInfo() {
   const [isChecked, setIsChecked] = useState(false);
 
   const togglePrivateKeyVisibility = () =>
-    setIsPrivateKeyVisible((prev) => !prev);
+    { setIsPrivateKeyVisible((prev) => !prev); };
 
   const publicKey =
     "bitcrqqqqqqp350slvdds7028l4yre5cuh8v38zseert25mxf7lkr2trsy0j2m8";
@@ -80,7 +80,7 @@ export default function ProfileInfo() {
             id="backup"
             checked={isChecked}
             // indeterminate={true}
-            onCheckedChange={(checked) => setIsChecked(checked as boolean)}
+            onCheckedChange={(checked) => { setIsChecked(checked as boolean); }}
             // disabled={true}
             size="sm"
           />

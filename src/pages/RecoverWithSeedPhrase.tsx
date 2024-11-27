@@ -21,7 +21,7 @@ function WordField({ id, value, onChange, onPaste }: WordFieldProps) {
       <input
         className="w-full bg-transparent outline-none text-text-300 text-[14px] font-medium leading-[14px]"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => { onChange(e.target.value); }}
         onPaste={onPaste}
       />
     </div>
@@ -31,7 +31,7 @@ function WordField({ id, value, onChange, onPaste }: WordFieldProps) {
 export default function RecoverWithSeedPhrase() {
   const navigate = useNavigate();
 
-  const goBack = () => navigate(routes.LOGIN);
+  const goBack = () => { navigate(routes.LOGIN); };
 
   const [seedWords, setSeedWords] = useState(Array(12).fill(""));
 
@@ -101,7 +101,7 @@ export default function RecoverWithSeedPhrase() {
               key={i}
               id={i + 1}
               value={word}
-              onChange={(newValue) => handleInputChange(i, newValue)}
+              onChange={(newValue) => { handleInputChange(i, newValue); }}
               onPaste={handlePaste}
             />
           ))}
