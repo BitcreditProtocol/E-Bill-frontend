@@ -1,7 +1,7 @@
 import { IntlProvider } from "react-intl";
 import { useState } from "react";
 import { detectBrowserLanguage } from "@/utils";
-import en from "@/i18n/en/translation.json";
+import en from "@/i18n/source.json";
 import { DEFAULT_LOCALE, LanguageContext } from "./LanguageContext";
 
 const translations: { [key: string]: typeof en } = {
