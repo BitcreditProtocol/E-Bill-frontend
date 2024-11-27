@@ -16,10 +16,16 @@ interface DatePickerProps {
 export function DatePicker({allowRangeSelection = false}: DatePickerProps) {
   const [date, setDate] = React.useState<Date>();
   const [showCalendar, setShowCalendar] = React.useState(false);
+  const [showYearPicker, setshowYearPicker] = React.useState(false);
   const [selectedRange, setSelectedRange] = React.useState<number | null>(null);
 
   const toggleCalendar = () => {
     setShowCalendar((prev) => !prev);
+  }
+
+  const toggleYearPicker = () => {
+    setshowYearPicker((prev => !prev));
+    alert("!aasdasd")
   }
 
   const formatDate = (date: Date | undefined) => {
@@ -125,6 +131,7 @@ export function DatePicker({allowRangeSelection = false}: DatePickerProps) {
             <Calendar
               mode="single"
               selected={date}
+              onToggleYearPicker={toggleYearPicker}
               onSelect={(selectDate) => {
                 setDate(selectDate)
               }}

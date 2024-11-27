@@ -1,21 +1,39 @@
 import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+  onToggleYearPicker: () => void
+}
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  onToggleYearPicker,
   ...props
 }: CalendarProps) {
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(undefined)
+
+  const handleDayClick = (date: Date) => {
+    setSelectedDate(date)
+  }
+
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "long", 
+      day: "numeric", 
+      year: "numeric", 
+    }).format(date);
+  }
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      onDayClick={handleDayClick}
       className={cn("flex justify-center", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full",
@@ -54,6 +72,12 @@ function Calendar({
       components={{
         IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+        CaptionLabel: () => (
+          <div className={cn("flex justify-between items-center gap-2")}>
+            <div>{selectedDate ? formatDate(selectedDate) : "Selecione uma data"}</div>
+            <ChevronDown strokeWidth={3} size={15} onClick={onToggleYearPicker}/>
+          </div>
+        ),
       }}
       {...props}
     />

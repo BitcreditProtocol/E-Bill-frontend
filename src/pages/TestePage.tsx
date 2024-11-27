@@ -6,7 +6,7 @@ const TestPage = () => {
     <div className="h-full">
       <h1>Página de Teste</h1>
       <p>Esta é uma página de teste para o novo componente.</p>
-      <DatePicker ></DatePicker>
+      <DatePicker allowRangeSelection></DatePicker>
     </div>
   );
 };
