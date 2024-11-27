@@ -9,13 +9,17 @@ export default tseslint.config(
   {
     extends: [
       js.configs.recommended,
+      ...tseslint.configs.recommended,
+    ],
+    files: ['**/*.test.{ts,tsx}'],
+  },
+  {
+    extends: [
+      js.configs.recommended,
       ...tseslint.configs.strictTypeChecked,
     ],
     files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
+    ignores: ['**/*.test.{ts,tsx}'],
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
@@ -28,6 +32,10 @@ export default tseslint.config(
       ],
     },
     languageOptions: {
+      ecmaVersion: 2020,
+      globals: {
+        ...globals.browser,
+      },
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
