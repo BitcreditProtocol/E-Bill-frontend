@@ -44,8 +44,8 @@ function CodeInputs() {
           ref={(el) => (inputRefs.current[index] = el)}
           className="w-12 h-12 border border-[#1B0F0014] rounded-[8px] bg-elevation-200 text-text-300 text-3xl font-light text-center focus:outline-none"
           style={{ fontSize: "28px" }}
-          onChange={(e) => handleInput(e, index)}
-          onKeyDown={(e) => handleKeyDown(e, index)}
+          onChange={(e) => { handleInput(e, index); }}
+          onKeyDown={(e) => { handleKeyDown(e, index); }}
         />
       ))}
     </div>
@@ -55,7 +55,7 @@ function CodeInputs() {
 export default function EmailVerification() {
   const navigate = useNavigate();
 
-  const goToOptionalInformation = () => navigate("/optional-information");
+  const goToOptionalInformation = () => { navigate("/optional-information"); };
 
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-5 px-10">

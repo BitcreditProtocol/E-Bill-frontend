@@ -10,10 +10,10 @@ import logo from "@/assets/logo.svg";
 export default function Login() {
   const navigate = useNavigate();
 
-  const goToUnlockWithPin = () => navigate(routes.UNLOCK);
+  const goToUnlockWithPin = () => { navigate(routes.UNLOCK); };
 
   const goToIdentityRestoration = () =>
-    navigate(routes.RESTORE_WITH_SEED_PHRASE);
+    { navigate(routes.RESTORE_WITH_SEED_PHRASE); };
 
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-12 px-[30px]">

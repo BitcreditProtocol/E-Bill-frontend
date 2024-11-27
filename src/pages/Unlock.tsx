@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 export default function Unlock() {
   const navigate = useNavigate();
 
-  const goBack = () => navigate(routes.LOGIN);
+  const goBack = () => { navigate(routes.LOGIN); };
 
   const goToIdentityRestoration = () =>
-    navigate(routes.RESTORE_WITH_SEED_PHRASE);
+    { navigate(routes.RESTORE_WITH_SEED_PHRASE); };
 
   const [pin, setPin] = useState<string>("");
 

@@ -34,7 +34,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             className
           )}
           ref={ref}
-          onFocus={() => setIsFocused(true)}
+          onFocus={() => { setIsFocused(true); }}
           onBlur={handleBlur}
           onChange={handleChange}
           {...props}

@@ -61,8 +61,8 @@ const DocumentUpload = forwardRef<HTMLInputElement, DocumentUploadProps>(
               className
             )}
             ref={ref}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={() => { setIsFocused(true); }}
+            onBlur={() => { setIsFocused(false); }}
             onChange={handleFileChange}
             {...props}
           />

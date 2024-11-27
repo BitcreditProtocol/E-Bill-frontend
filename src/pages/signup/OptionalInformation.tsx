@@ -15,7 +15,7 @@ import {
 export default function OptionalInformation() {
   const navigate = useNavigate();
 
-  const confirmIdentity = () => navigate("/confirm-identity");
+  const confirmIdentity = () => { navigate("/confirm-identity"); };
 
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-5 px-10">
