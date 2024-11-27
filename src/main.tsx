@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { lazy, StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "./components/ui/toaster";
@@ -28,7 +28,13 @@ import PreviewBill from "./pages/PreviewBill";
 import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
-import Onboarding from "./pages/onboarding/Onboarding";
+// eslint-disable-next-line react-refresh/only-export-components
+const Onboarding = lazy(() => import("./pages/onboarding/Onboarding"));
+
+// eslint-disable-next-line react-refresh/only-export-components
+function Loading() {
+  return <div className="mx-2 my-4">Loading…</div>
+}
 
 const router = createBrowserRouter(
   [
@@ -126,7 +132,9 @@ const router = createBrowserRouter(
     },
     {
       path: "/get-started",
-      element: <Onboarding />,
+      element: <Suspense fallback={<Loading />}>
+        <Onboarding />
+      </Suspense>
     },
   ],
   {
