@@ -34,7 +34,7 @@ function CodeInputs() {
 
   return (
     <div className="flex gap-3">
-      {[...Array(5)].map((_, index) => (
+      {[...Array<never>(5)].map((_, index) => (
         <input
           key={index}
           type="text"

@@ -13,7 +13,7 @@ export const detectBrowserLanguage = () => {
 };
 
 export const formatFileSize = (size: number) => {
-  if (size < 1024) return `${size} B`;
+  if (size < 1024) return `${String(size)} B`;
 
   if (size < 1048576) return `${(size / 1024).toFixed(2)} KB`;
 
