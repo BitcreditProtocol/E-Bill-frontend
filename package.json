@@ -11,7 +11,7 @@
     "test": "vitest",
     "preview": "vite preview",
     "extract": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './extracted/en.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
-    "extract-simple": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './src/i18n/en.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format simple",
+    "extract-simple": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './src/i18n/en/translation.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format simple",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepare": "husky"
