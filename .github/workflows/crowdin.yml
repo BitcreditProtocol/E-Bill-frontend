@@ -3,6 +3,8 @@ name: Crowdin Action
 on:
   push:
     branches: [ 'mkj/crowdin' ]
+  schedule:
+    - cron: '27 7 * * *' # daily at 07:27 (UTC)
 
 jobs:
   synchronize-with-crowdin:
