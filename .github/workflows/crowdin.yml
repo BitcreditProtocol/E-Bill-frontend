@@ -2,9 +2,9 @@ name: Crowdin Action
 
 on:
   push:
-    branches: [ 'mkj/crowdin' ]
+    branches: [ 'main' ]
   schedule:
-    - cron: '27 7 * * *' # daily at 07:27 (UTC)
+    - cron: '27 4 * * *' # daily at 04:27 (UTC)
   workflow_dispatch:
 
 jobs:
@@ -29,9 +29,9 @@ jobs:
           create_pull_request: true
           pull_request_title: 'New Crowdin Translations'
           pull_request_body: 'New Crowdin translations by [Crowdin GH Action](https://github.com/crowdin/github-action)'
-          pull_request_base_branch_name: 'mkj/crowdin'
+          pull_request_base_branch_name: 'main'
           pull_request_labels: 'i18n, automated'
-          pull_request_reviewers: mtbitcr
+          pull_request_reviewers: 'mtbitcr'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
