@@ -18,26 +18,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Upload translation source
-        uses: crowdin/github-action@v2
-        with:
-          crowdin_branch_name: source_upload
-          upload_sources: true
-          upload_translations: false
-          download_sources: false
-          download_translations: false
-          create_pull_request: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-
       - name: Download translations
         uses: crowdin/github-action@v2
         with:
           upload_sources: false
           upload_translations: false
-          download_sources: true
+          download_sources: true # crowdin is the single source of truth
           download_translations: true
           localization_branch_name: l10n_crowdin_translations
           create_pull_request: true
