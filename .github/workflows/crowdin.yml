@@ -15,12 +15,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: crowdin action
+      - name: Upload translation source
+        uses: crowdin/github-action@v2
+        with:
+          crowdin_branch_name: source_upload
+          upload_sources: true
+          upload_translations: false
+          download_sources: false
+          download_translations: false
+          create_pull_request: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      - name: Download translations
         uses: crowdin/github-action@v2
         with:
           upload_sources: false
           upload_translations: false
-          download_sources: false
+          download_sources: true
           download_translations: true
           localization_branch_name: l10n_crowdin_translations
           create_pull_request: true
@@ -30,11 +44,6 @@ jobs:
           pull_request_labels: 'i18n, automated'
           pull_request_reviewers: mtbitcr
         env:
-          # A classic GitHub Personal Access Token with the 'repo' scope selected (the user should have write access to the repository).
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          
-          # A numeric ID, found at https://crowdin.com/project/<projectName>/tools/api
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-
-          # Visit https://crowdin.com/settings#api-key to create this token
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
