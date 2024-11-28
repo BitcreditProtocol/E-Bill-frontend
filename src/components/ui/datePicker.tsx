@@ -10,13 +10,18 @@ import { Calendar } from "@/components/ui/calendar"
 import { DateRangeDropdown } from "./dataRangeDropdown"
 import {YearPicker} from "./yearPicker"
 import { MonthPicker } from "./monthPicker"
+import { DateRange } from "../../types/DateRange"
+
 
 interface DatePickerProps {
+  date: Date;
+  setDate: (date: Date) => void;
   allowRangeSelection?: boolean;
+  dateRange?: DateRange;
+  setDateRange?: (dateRange: DateRange) => void; 
 }
 
-export function DatePicker({allowRangeSelection = false}: DatePickerProps) {
-  const [date, setDate] = React.useState<Date>(new Date());
+export function DatePicker({allowRangeSelection = false, date, setDate, setDateRange}: DatePickerProps) {
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [showYearPicker, setshowYearPicker] = React.useState(false);
   const [showMonthPicker, setShowMonthPicker] = React.useState(false);
@@ -40,12 +45,22 @@ export function DatePicker({allowRangeSelection = false}: DatePickerProps) {
   };
 
   const rangedDate = (date: Date | undefined) => {
-    if (!date || selectedRange === null) return "No selected range";
+    if (!date || selectedRange === null) return new Date(date || Date.now());
 
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() + selectedRange);
-    return formatDate(newDate);
+    return newDate;
   }
+
+  React.useEffect(() => {
+    const newDate: DateRange = {
+      startDate: date,
+      endDate: rangedDate(date),
+    };
+    if(setDateRange){
+      setDateRange(newDate)
+    }
+  }, [selectedRange]);
 
   return (
     <div>
@@ -112,7 +127,7 @@ export function DatePicker({allowRangeSelection = false}: DatePickerProps) {
 
                       <div className="col-span-5 pb-5">
                         <div className="h-full w-full bg-[#f6f2e7] border border-gray-200 rounded-lg text-sm flex justify-center items-center">
-                          {rangedDate(date)}
+                          {formatDate(rangedDate(date))}
                         </div>
                       </div>
                     </div>
