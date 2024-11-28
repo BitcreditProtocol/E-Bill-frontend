@@ -3,6 +3,8 @@ name: Crowdin Action
 on:
   push:
     branches: [ 'main' ]
+    paths:
+      - 'src/i18n/source.json'
   schedule:
     - cron: '27 4 * * *' # daily at 04:27 (UTC)
   workflow_dispatch:
