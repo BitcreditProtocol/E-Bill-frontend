@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import storybook from 'eslint-plugin-storybook'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
@@ -17,6 +18,12 @@ export default tseslint.config(
       ...tseslint.configs.recommended,
     ],
     files: ['**/*.test.{ts,tsx}'],
+  },
+  {
+    extends: [
+      ...storybook.configs['flat/recommended'],
+    ],
+    files: ['**/*.stories.{ts,tsx}'],
   },
   {
     extends: [
