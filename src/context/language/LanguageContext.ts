@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-const DEFAULT_LOCALE = "en";
+const DEFAULT_LOCALE = "en-US";
 
 export type LanguageContextType = {
   locale: string;
