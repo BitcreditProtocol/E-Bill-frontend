@@ -1,4 +1,4 @@
-import { DatePicker } from "@/components/ui/DatePicker";
+import { DatePicker } from "@/components/ui/datePicker";
 import React from "react";
 
 const TestPage = () => {

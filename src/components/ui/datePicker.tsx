@@ -8,15 +8,18 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { DateRangeDropdown } from "./dataRangeDropdown"
+import {YearPicker} from "./yearPicker"
+import { MonthPicker } from "./monthPicker"
 
 interface DatePickerProps {
   allowRangeSelection?: boolean;
 }
 
 export function DatePicker({allowRangeSelection = false}: DatePickerProps) {
-  const [date, setDate] = React.useState<Date>();
+  const [date, setDate] = React.useState<Date>(new Date());
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [showYearPicker, setshowYearPicker] = React.useState(false);
+  const [showMonthPicker, setShowMonthPicker] = React.useState(false);
   const [selectedRange, setSelectedRange] = React.useState<number | null>(null);
 
   const toggleCalendar = () => {
@@ -25,7 +28,6 @@ export function DatePicker({allowRangeSelection = false}: DatePickerProps) {
 
   const toggleYearPicker = () => {
     setshowYearPicker((prev => !prev));
-    alert("!aasdasd")
   }
 
   const formatDate = (date: Date | undefined) => {
@@ -69,7 +71,7 @@ export function DatePicker({allowRangeSelection = false}: DatePickerProps) {
 
       <div
         className={cn(
-          `fixed bottom-0 left-1/2 -translate-x-1/2 max-w-[375px] w-full ${allowRangeSelection ? "h-3/4" : "h-2/3"} bg-elevation-50 p-3 transition-transform duration-300 ease-in-out rounded-t-2xl justify-center`,
+          `fixed bottom-0 left-1/2 -translate-x-1/2 max-w-[375px] w-full ${allowRangeSelection ? "h-4/5" : "h-2/3"} bg-elevation-50 p-3 transition-transform duration-300 ease-in-out rounded-t-2xl justify-center`,
           showCalendar ? "translate-y-0" : "translate-y-full"
         )}
       >
@@ -128,16 +130,39 @@ export function DatePicker({allowRangeSelection = false}: DatePickerProps) {
           </div>
 
           <div className={`${allowRangeSelection ? "row-span-5" : "row-span-6"} w-full h-full`}>
-            <Calendar
-              mode="single"
-              selected={date}
-              onToggleYearPicker={toggleYearPicker}
-              onSelect={(selectDate) => {
-                setDate(selectDate)
-              }}
-              initialFocus
-              className="pt-4 w-full h-full"
-            />
+            {showYearPicker ? (
+              <div className="h-full w-full pb-5">
+                <YearPicker
+                 baseDate={date}
+                 setDate={setDate}
+                 setShowYearPicker={setshowYearPicker}
+                 setShowMonthPicker={setShowMonthPicker}
+                />
+              </div>
+            ) : showMonthPicker ? (
+              <div className="h-full w-full pb-5"> 
+                <MonthPicker 
+                  baseDate={date}
+                  setDate={setDate}
+                  setShowYearPicker={setshowYearPicker}
+                  setShowMonthPicker={setShowMonthPicker}
+                />
+              </div>
+            ) :
+            (
+              <Calendar
+                mode="single"
+                selected={date}
+                onToggleYearPicker={toggleYearPicker}
+                onSelect={(selectDate) => {
+                  if(selectDate) {
+                    setDate(selectDate)
+                  }
+                }}
+                initialFocus
+                className="pt-4 w-full h-full"
+              />
+            )}
           </div>
           
           <div className="row-span-2 grid grid-cols-2 w-full h-full justify-center items-center">
@@ -145,8 +170,9 @@ export function DatePicker({allowRangeSelection = false}: DatePickerProps) {
               <Button 
                 className="w-40 h-12 rounded-xl bg-inherit border border-black "
                 onClick={() => {
-                  setShowCalendar(false)
-                  setDate(undefined)
+                  setDate(new Date());
+                  setshowYearPicker(false);
+                  setShowCalendar(false);
                 }}
               >
                 <span className="text-black">Cancel</span>

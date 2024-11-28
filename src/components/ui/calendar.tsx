@@ -7,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button"
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
   onToggleYearPicker: () => void
+  selected: Date
 }
 
 function Calendar({
@@ -14,9 +15,10 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   onToggleYearPicker,
+  selected,
   ...props
 }: CalendarProps) {
-  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(undefined)
+  const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
 
   const handleDayClick = (date: Date) => {
     setSelectedDate(date)
@@ -34,6 +36,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       onDayClick={handleDayClick}
+      month={selected}
       className={cn("flex justify-center", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full",
@@ -74,7 +77,7 @@ function Calendar({
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
         CaptionLabel: () => (
           <div className={cn("flex justify-between items-center gap-2")}>
-            <div>{selectedDate ? formatDate(selectedDate) : "Selecione uma data"}</div>
+            <div>{selected ? formatDate(selected) : formatDate(selectedDate)}</div>
             <ChevronDown strokeWidth={3} size={15} onClick={onToggleYearPicker}/>
           </div>
         ),
