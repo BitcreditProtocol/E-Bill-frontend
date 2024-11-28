@@ -3,6 +3,10 @@ name: Crowdin Action
 on:
   push:
     branches: [ 'mkj/crowdin' ]
+  push:
+    branches: [ 'main' ]
+    paths:
+      - 'src/i18n/source.json'
   schedule:
     - cron: '27 7 * * *' # daily at 07:27 (UTC)
   workflow_dispatch:
