@@ -37,28 +37,28 @@ describe("LanguageProvider", () => {
       mockNavigation({ language: "en-US" });
 
       const { container } = render({});
-      expect(container.textContent).toBe("en");
+      expect(container.textContent).toBe("en-US");
     });
 
     it("es", () => {
       mockNavigation({ language: "es-ES" });
 
       const { container } = render({});
-      expect(container.textContent).toBe("es");
+      expect(container.textContent).toBe("es-ES");
     });
 
     it("fr", () => {
       mockNavigation({ language: "fr-FR" });
 
       const { container } = render({});
-      expect(container.textContent).toBe("fr");
+      expect(container.textContent).toBe("fr-FR");
     });
 
     it("zh", () => {
       mockNavigation({ language: "zh-CN" });
 
       const { container } = render({});
-      expect(container.textContent).toBe("zh");
+      expect(container.textContent).toBe("zh-CN");
     });
   });
 
@@ -70,17 +70,17 @@ describe("LanguageProvider", () => {
 
       const { container } = render({ 
         onLocaleChange: (ctx) => {
-          if (ctx.locale !== "it") {
-            setTimeout(() => ctx.setLocale("it"), 1);
+          if (ctx.locale !== "it-IT") {
+            setTimeout(() => ctx.setLocale("it-IT"), 1);
           }
         }
       });
 
-      expect(container.textContent).toBe("en");
+      expect(container.textContent).toBe("en-US");
 
       await vi.runAllTimersAsync();
 
-      expect(container.textContent).toBe("it");
+      expect(container.textContent).toBe("it-IT");
     });
   });
 

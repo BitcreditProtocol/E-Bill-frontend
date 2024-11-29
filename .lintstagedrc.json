@@ -1,6 +1,8 @@
 {
   "**/*.{ts,tsx}": [
     "npm run lint-staged",
-    "vitest related --run"
+    "vitest related --run",
+    "npm run i18n-extract",
+    "git add src/i18n/source.json"
   ]
 }

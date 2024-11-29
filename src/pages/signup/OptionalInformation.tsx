@@ -92,9 +92,9 @@ export default function OptionalInformation() {
           variant="outline"
         >
           <FormattedMessage
-            id="pages.onboarding.optionalInformation.continue"
+            id="pages.onboarding.optionalInformation.skip"
             defaultMessage="Skip for now"
-            description="Continue button copy for Optional information page"
+            description="Skip button copy for Optional information page"
           />
         </Button>
       </div>

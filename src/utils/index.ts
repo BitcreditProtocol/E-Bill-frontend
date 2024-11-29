@@ -7,9 +7,7 @@ export const isPWA = () =>
   document.referrer.includes("android-app://");
 
 export const detectBrowserLanguage = () => {
-  const language = navigator.language.split("-")[0];
-
-  return language;
+  return navigator.language;
 };
 
 export const formatFileSize = (size: number) => {
