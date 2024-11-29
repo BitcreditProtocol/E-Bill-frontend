@@ -144,7 +144,7 @@ function OptionalInformation() {
 export default function ConfirmIdentity() {
   const navigate = useNavigate();
 
-  const signToConfirm = () => navigate("/success");
+  const signToConfirm = () => { navigate("/success"); };
 
   return (
     <div className="flex flex-col justify-between gap-10 min-h-fit h-screen py-5 px-10">

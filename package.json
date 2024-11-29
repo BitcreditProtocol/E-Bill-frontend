@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=0",
+    "lint-staged": "npm run lint -- --fix",
     "test": "vitest",
     "preview": "vite preview",
-    "extract": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './extracted/en.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
-    "extract-simple": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './src/i18n/en.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format simple"
+    "i18n-extract": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='**/*.d.ts' --out-file './src/i18n/source.json' --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format simple",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "prepare": "husky"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -21,11 +24,16 @@
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+<<<<<<< HEAD
     "@types/date-fns": "^2.5.3",
+=======
+    "@radix-ui/react-toast": "^1.2.2",
+>>>>>>> main
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "lucide-react": "^0.460.0",
+    "motion": "^11.11.17",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
@@ -37,8 +45,16 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.2",
     "@eslint/js": "^9.15.0",
     "@formatjs/cli": "^6.3.11",
+    "@storybook/addon-essentials": "^8.4.4",
+    "@storybook/addon-interactions": "^8.4.4",
+    "@storybook/addon-onboarding": "^8.4.4",
+    "@storybook/blocks": "^8.4.4",
+    "@storybook/react": "^8.4.4",
+    "@storybook/react-vite": "^8.4.4",
+    "@storybook/test": "^8.4.4",
     "@testing-library/react": "^16.0.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.9.0",
@@ -50,12 +66,16 @@
     "eslint": "^9.15.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.14",
+    "eslint-plugin-storybook": "^0.11.1",
     "globals": "^15.12.0",
+    "husky": "^9.1.7",
     "jsdom": "^25.0.1",
+    "lint-staged": "^15.2.10",
     "postcss": "^8.4.49",
+    "storybook": "^8.4.4",
     "tailwindcss": "^3.4.15",
     "typescript": "^5.6.3",
-    "typescript-eslint": "^8.14.0",
+    "typescript-eslint": "^8.15.0",
     "vite": "^5.4.11",
     "vitest": "^2.1.5"
   }

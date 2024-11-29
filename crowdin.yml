@@ -1,0 +1,4 @@
+preserve_hierarchy: true
+files:
+  - source: src/i18n/source.json
+    translation: src/i18n/%locale%/translation.json

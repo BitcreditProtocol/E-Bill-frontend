@@ -11,11 +11,6 @@ export default {
         sans: ['Geist', 'system-ui', 'sans-serif'],
         mono: ['Geist Mono', 'monospace'],
       },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'var(--radius)',
-        sm: 'var(--radius)'
-      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -69,6 +64,7 @@ export default {
           50: '#FEFBF1',
           100: '#FAF7EF',
           200: '#F6F2E7',
+          250: '#F2EDDF',
           300: '#D1CCC1',
         },
         text: {
@@ -87,6 +83,13 @@ export default {
           100: '#FBDBB0',
           200: '#F7931A',
         },
+        base: {
+          hover: '#331C00',
+          active: '#000000',
+        },
+      },
+      backgroundImage: {
+        'background-ellipse': 'url(/src/assets/images/background-ellipse.svg)',
       }
     }
   },

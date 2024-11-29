@@ -8,6 +8,7 @@ interface ActionFunction<T> {
 }
 
 class EnvironmentAwareAction<BrowserResult, PWAResult> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static instances: Map<string, EnvironmentAwareAction<any, any>> =
     new Map();
 
@@ -57,27 +58,25 @@ export function useEnvironmentAwareAction<BrowserResult, PWAResult>(
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
+      const action = EnvironmentAwareAction.getInstance(
+        browserAction,
+        pwaAction,
+        identifier
+      );
 
-      try {
-        const action = EnvironmentAwareAction.getInstance(
-          browserAction,
-          pwaAction,
-          identifier
-        );
-
-        const data = await action.performAction();
-        setResult(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Error: " + err!.toString())
-        );
-      } finally {
-        setIsLoading(false);
-      }
+      return await action.performAction();
     };
 
-    fetchData();
+    setIsLoading(true);
+    fetchData().then((data) => {
+      setResult(data);
+    }).catch((err: unknown) => {
+      setError(
+        err instanceof Error ? err : new Error("Error: " + (typeof err === "string" ? err : "Unknown Error"))
+      );
+    }).finally(() => {
+      setIsLoading(false);
+    })
   }, [browserAction, pwaAction, identifier]);
 
   return { result, error, isLoading };

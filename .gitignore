@@ -27,3 +27,4 @@ coverage
 # generated tsbuildinfo files
 tsconfig.app.tsbuildinfo
 tsconfig.node.tsbuildinfo
+*storybook.log

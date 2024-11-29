@@ -21,7 +21,7 @@ function WordField({ id, value, onChange, onPaste }: WordFieldProps) {
       <input
         className="w-full bg-transparent outline-none text-text-300 text-[14px] font-medium leading-[14px]"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => { onChange(e.target.value); }}
         onPaste={onPaste}
       />
     </div>
@@ -31,9 +31,9 @@ function WordField({ id, value, onChange, onPaste }: WordFieldProps) {
 export default function RecoverWithSeedPhrase() {
   const navigate = useNavigate();
 
-  const goBack = () => navigate(routes.LOGIN);
+  const goBack = () => { navigate(routes.LOGIN); };
 
-  const [seedWords, setSeedWords] = useState(Array(12).fill(""));
+  const [seedWords, setSeedWords] = useState(Array<string>(12).fill(""));
 
   const handleInputChange = (index: number, newValue: string) => {
     const updatedWords = [...seedWords];
@@ -41,7 +41,7 @@ export default function RecoverWithSeedPhrase() {
     setSeedWords(updatedWords);
   };
 
-  const handlePaste = async (e: React.ClipboardEvent<HTMLInputElement>) => {
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const text = e.clipboardData.getData("Text");
     const words = text.split(" ").slice(0, 12);
@@ -101,7 +101,7 @@ export default function RecoverWithSeedPhrase() {
               key={i}
               id={i + 1}
               value={word}
-              onChange={(newValue) => handleInputChange(i, newValue)}
+              onChange={(newValue) => { handleInputChange(i, newValue); }}
               onPaste={handlePaste}
             />
           ))}
@@ -124,7 +124,11 @@ export default function RecoverWithSeedPhrase() {
           <Button
             variant="link"
             className="gap-2 text-[#1B0F0080] text-[14px] font-medium"
-            onClick={pasteFromClipboard}
+            onClick={() => {
+              pasteFromClipboard().catch(() => {
+                // TODO: handle error
+              })
+            }}
           >
             <CopyIcon width={20} color="#1B0F0080" strokeWidth={1} />
             <FormattedMessage

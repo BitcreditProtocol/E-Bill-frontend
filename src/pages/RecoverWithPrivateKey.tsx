@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -8,7 +7,7 @@ export default function RecoverWithPrivateKey() {
   const [isPrivateKeyVisible, setIsPrivateKeyVisible] = useState(false);
 
   const togglePrivateKeyVisibility = () =>
-    setIsPrivateKeyVisible((prev) => !prev);
+    { setIsPrivateKeyVisible((prev) => !prev); };
 
   const privateKeyFieldValue = isPrivateKeyVisible
     ? privateKey
@@ -62,7 +61,7 @@ export default function RecoverWithPrivateKey() {
             className="w-full h-[120px] p-3 bg-[#EEEBE3] rounded-[8px] resize-none"
             placeholder="Enter your private key"
             value={privateKeyFieldValue}
-            onChange={(e) => setPrivateKey(e.target.value)}
+            onChange={(e) => { setPrivateKey(e.target.value); }}
           />
         </div>
         <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]">

@@ -48,3 +48,7 @@ export default tseslint.config({
   },
 })
 ```
+
+## Contribute
+
+Check out the project [contributing guide](./CONTRIBUTING.md).

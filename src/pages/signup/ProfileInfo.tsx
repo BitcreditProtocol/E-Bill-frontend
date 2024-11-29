@@ -10,7 +10,7 @@ export default function ProfileInfo() {
   const [isChecked, setIsChecked] = useState(false);
 
   const togglePrivateKeyVisibility = () =>
-    setIsPrivateKeyVisible((prev) => !prev);
+    { setIsPrivateKeyVisible((prev) => !prev); };
 
   const publicKey =
     "bitcrqqqqqqp350slvdds7028l4yre5cuh8v38zseert25mxf7lkr2trsy0j2m8";
@@ -32,7 +32,11 @@ export default function ProfileInfo() {
             <Button
               className="border-transparent p-0 hover:bg-transparent hover:border-transparent"
               variant="outline"
-              onClick={() => copyToClipboard(publicKey)}
+              onClick={() => {
+                copyToClipboard(publicKey).catch(() => {
+                  // TODO: handle error
+                })
+              }}
             >
               <CopyIcon size={16} />
             </Button>
@@ -63,7 +67,11 @@ export default function ProfileInfo() {
             <Button
               className="border-transparent p-0 hover:bg-transparent hover:border-transparent"
               variant="outline"
-              onClick={() => copyToClipboard(privateKey)}
+              onClick={() => {
+                copyToClipboard(privateKey).catch(() => {
+                  // TODO: handle error
+                })
+              }}
             >
               <CopyIcon size={16} />
             </Button>
@@ -80,7 +88,7 @@ export default function ProfileInfo() {
             id="backup"
             checked={isChecked}
             // indeterminate={true}
-            onCheckedChange={(checked) => setIsChecked(checked as boolean)}
+            onCheckedChange={(checked) => { setIsChecked(checked as boolean); }}
             // disabled={true}
             size="sm"
           />

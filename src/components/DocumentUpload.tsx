@@ -19,7 +19,9 @@ const DocumentUpload = forwardRef<HTMLInputElement, DocumentUploadProps>(
         setFileName(truncateFileName(file.name));
         setFileSize(file.size);
         setProgress(0);
-        uploadFile(file);
+        uploadFile(file).catch(() => {
+          // TODO: handle error
+        });
       }
     };
 
@@ -61,8 +63,8 @@ const DocumentUpload = forwardRef<HTMLInputElement, DocumentUploadProps>(
               className
             )}
             ref={ref}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={() => { setIsFocused(true); }}
+            onBlur={() => { setIsFocused(false); }}
             onChange={handleFileChange}
             {...props}
           />
@@ -121,7 +123,7 @@ const DocumentUpload = forwardRef<HTMLInputElement, DocumentUploadProps>(
               <div className="w-full bg-[#D1CCC1] rounded-[8px] h-2 overflow-hidden">
                 <div
                   className="bg-green-500 h-full"
-                  style={{ width: `${progress}%` }}
+                  style={{ width: `${String(progress)}%` }}
                 ></div>
               </div>
               <span className="text-sm text-text-300">{progress}%</span>

@@ -6,7 +6,7 @@ import encryptedDataIllustration from "@/assets/encrypted-data-illustration.svg"
 export default function CreateNewIdentity() {
   const navigate = useNavigate();
 
-  const startCreatingIdentity = () => navigate("/required-information");
+  const startCreatingIdentity = () => { navigate("/required-information"); };
 
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-5 px-10">
