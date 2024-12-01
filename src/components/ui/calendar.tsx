@@ -16,7 +16,7 @@ function Calendar({
   showOutsideDays = true,
   onToggleYearPicker,
   selected,
-  ...props
+  ...restProps
 }: CalendarProps) {
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
 
@@ -73,8 +73,8 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+        IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+        IconRight: () => <ChevronRight className="h-4 w-4" />,
         CaptionLabel: () => (
           <div className={cn("flex justify-between items-center gap-2")}>
             <div>{selected ? formatDate(selected) : formatDate(selectedDate)}</div>
@@ -82,7 +82,7 @@ function Calendar({
           </div>
         ),
       }}
-      {...props}
+      {...restProps}
     />
   )
 }

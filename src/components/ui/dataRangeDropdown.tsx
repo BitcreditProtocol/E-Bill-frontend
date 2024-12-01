@@ -31,7 +31,7 @@ export function DateRangeDropdown({ onRangeChange }: DateRangeDropdownProps) {
       case 30:
       case 60:
       case 90:
-        return `${value} days`
+        return `${String(value)} days`;
       case 180:
         return "6 Months"
       case 365:

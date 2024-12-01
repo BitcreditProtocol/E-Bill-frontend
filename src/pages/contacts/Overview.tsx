@@ -52,7 +52,7 @@ function Header() {
         <Button
           className="gap-1 p-0 h-fit text-text-300 text-xs font-medium no-underline hover:no-underline leading-[18px]"
           variant="link"
-          onClick={() => navigate(routes.CREATE_CONTACT)}
+          onClick={() => { navigate(routes.CREATE_CONTACT); }}
         >
           <PlusIcon className="w-4 h-4 text-text-300" />
           <FormattedMessage

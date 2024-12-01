@@ -44,23 +44,21 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
     }).format(date);
   };
 
-  const rangedDate = (date: Date | undefined) => {
-    if (!date || selectedRange === null) return new Date(date || Date.now());
-
+  const rangedDate = React.useCallback((date: Date) => {
     const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + selectedRange);
+    newDate.setDate(newDate.getDate() + (selectedRange ?? 0));
     return newDate;
-  }
+  }, [selectedRange]);
 
   React.useEffect(() => {
     const newDate: DateRange = {
       startDate: date,
       endDate: rangedDate(date),
     };
-    if(setDateRange){
-      setDateRange(newDate)
+    if (setDateRange) {
+      setDateRange(newDate);
     }
-  }, [selectedRange]);
+  }, [selectedRange, date, setDateRange, rangedDate]);
 
   return (
     <div>
@@ -68,12 +66,12 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
         variant={"outline"}
         className={cn(
           "w-[280px] justify-start text-left font-normal",
-          !date && "text-muted-foreground"
+          "text-muted-foreground"
         )}
         onClick={toggleCalendar}
       >
         <CalendarIcon />
-        {date ? format(date, "PPP") : <span>Pick a date</span>}
+        {format(date, "PPP")}
       </Button>
 
       <div
@@ -81,7 +79,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
           "fixed inset-0 bg-black/30 transition-opacity duration-300 max-w-[375px] left-1/2 -translate-x-1/2",
           showCalendar ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
-        onClick={() => setShowCalendar(false)} 
+        onClick={() => { setShowCalendar(false); }} 
       ></div>
 
       <div
@@ -197,7 +195,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
             <div  className="col-span-1 flex justify-center items-center">
               <Button 
                 className="w-40 h-12 rounded-xl bg-black"
-                onClick={() => setShowCalendar(false)}
+                onClick={() => { setShowCalendar(false); }}
               >
                 <span>Confirm</span>
               </Button>
