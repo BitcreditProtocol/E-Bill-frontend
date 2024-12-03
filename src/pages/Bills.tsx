@@ -1,17 +1,18 @@
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { CalendarDaysIcon, ChevronsUpDownIcon, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import createBillIllustration from "@/assets/create-bill-illustration.svg";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 
 export function Bills() {
+  const intl = useIntl();
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-12 px-6 w-full">
       <div className="flex flex-col gap-3">
         <div className="flex gap-1 justify-between items-center">
           <h2 className="text-xl font-medium text-text-300">
             <FormattedMessage
-              id="pages.bills.title"
+              id="Bills"
               defaultMessage="Bills"
               description="Title for Bills page"
             />
@@ -21,8 +22,8 @@ export function Bills() {
             <CalendarDaysIcon size={16} strokeWidth={1} color="#1B0F00" />
 
             <FormattedMessage
-              id="pages.bills.selectDates"
-              defaultMessage="Select dates"
+              id="Select date"
+              defaultMessage="Select date"
               description="Button to filter bills by date range"
             />
           </Button>
@@ -33,7 +34,11 @@ export function Bills() {
             <SearchIcon size={16} strokeWidth={1} color="#1B0F00" />
             <input
               type="text"
-              placeholder="Search for bills..."
+              placeholder={intl.formatMessage({
+                id: "Search for bills",
+                defaultMessage: "Search for bills...",
+                description: "Placeholder text for bills search input",
+              })}
               className="w-full bg-transparent text-sm font-medium text-text-300 outline-none"
             />
           </div>
@@ -41,28 +46,28 @@ export function Bills() {
           <div className="flex gap-2">
             <Button variant="filter">
               <FormattedMessage
-                id="pages.bills.all"
+                id="All"
                 defaultMessage="All"
                 description="Filter to view All bills"
               />
             </Button>
             <Button variant="filter">
               <FormattedMessage
-                id="pages.bills.payee"
+                id="Payee"
                 defaultMessage="Payee"
                 description="Filter to view Payee bills"
               />
             </Button>
             <Button variant="filter">
               <FormattedMessage
-                id="pages.bills.payer"
+                id="Payer"
                 defaultMessage="Payer"
                 description="Filter to view Payer bills"
               />
             </Button>
             <Button variant="filter">
               <FormattedMessage
-                id="pages.bills.contingent"
+                id="Contingent"
                 defaultMessage="Contingent"
                 description="Filter to view Contingent bills"
               />
@@ -79,7 +84,7 @@ export function Bills() {
                 <ChevronsUpDownIcon size={16} strokeWidth={1} color="#1B0F00" />
 
                 <FormattedMessage
-                  id="pages.bills.orderByMaturity"
+                  id="Maturity"
                   defaultMessage="Maturity"
                   description="Button to order bills by maturity date"
                 />
@@ -137,13 +142,14 @@ export function Bills() {
 }
 
 export function BillsEmpty() {
+  const intl = useIntl();
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-12 px-6 w-full">
       <div className="flex flex-col gap-3">
         <div className="flex gap-1 justify-between items-center">
           <h2 className="text-xl font-medium text-text-300">
             <FormattedMessage
-              id="pages.bills.title"
+              id="Bills"
               defaultMessage="Bills"
               description="Title for Bills page"
             />
@@ -153,8 +159,8 @@ export function BillsEmpty() {
             <CalendarDaysIcon size={16} strokeWidth={1} color="#1B0F00" />
 
             <FormattedMessage
-              id="pages.bills.selectDates"
-              defaultMessage="Select dates"
+              id="Select date"
+              defaultMessage="Select date"
               description="Button to filter bills by date range"
             />
           </Button>
@@ -164,7 +170,11 @@ export function BillsEmpty() {
           <SearchIcon size={16} strokeWidth={1} color="#1B0F00" />
           <input
             type="text"
-            placeholder="Search for bills..."
+              placeholder={intl.formatMessage({
+                id: "Search for bills",
+                defaultMessage: "Search for bills...",
+                description: "Placeholder text for bills search input",
+              })}
             className="w-full bg-transparent text-sm font-medium text-text-300 outline-none"
           />
         </div>
@@ -172,28 +182,28 @@ export function BillsEmpty() {
         <div className="flex gap-2">
           <Button variant="filter">
             <FormattedMessage
-              id="pages.bills.all"
+              id="All"
               defaultMessage="All"
               description="Filter to view All bills"
             />
           </Button>
           <Button variant="filter">
             <FormattedMessage
-              id="pages.bills.payee"
+              id="Payee"
               defaultMessage="Payee"
               description="Filter to view Payee bills"
             />
           </Button>
           <Button variant="filter">
             <FormattedMessage
-              id="pages.bills.payer"
+              id="Payer"
               defaultMessage="Payer"
               description="Filter to view Payer bills"
             />
           </Button>
           <Button variant="filter">
             <FormattedMessage
-              id="pages.bills.contingent"
+              id="Contingent"
               defaultMessage="Contingent"
               description="Filter to view Contingent bills"
             />
@@ -208,7 +218,7 @@ export function BillsEmpty() {
           <div className="flex flex-col items-center gap-2">
             <h3 className="text-xl font-medium text-text-300">
               <FormattedMessage
-                id="pages.bills.empty"
+                id="No bills issued yet"
                 defaultMessage="No bills issued yet"
                 description="Empty bills list message"
               />
@@ -216,7 +226,7 @@ export function BillsEmpty() {
 
             <span className="text-base text-text-200 text-center">
               <FormattedMessage
-                id="pages.bills.startCreating"
+                id="Start creating a bill and distribute it to your contacts"
                 defaultMessage="Start creating a bill and distribute it to your contacts"
                 description="Description to start creating a bill"
               />
@@ -228,8 +238,8 @@ export function BillsEmpty() {
             variant="outline"
           >
             <FormattedMessage
-              id="pages.bills.issueBill"
-              defaultMessage="Issue a bill"
+              id="Issue bill"
+              defaultMessage="Issue bill"
               description="Action to start creating a bill"
             />
           </Button>

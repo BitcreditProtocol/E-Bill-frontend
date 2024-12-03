@@ -16,7 +16,7 @@ export function Notifications() {
         <div className="flex gap-1 items-center">
           <h2 className="text-xl font-medium text-text-300">
             <FormattedMessage
-              id="pages.notifications.title"
+              id="Notifications"
               defaultMessage="Notifications"
               description="Title for Notifications page"
             />
@@ -27,21 +27,21 @@ export function Notifications() {
         <div className="flex gap-2">
           <Button variant="filter">
             <FormattedMessage
-              id="pages.notifications.all"
+              id="All"
               defaultMessage="All"
               description="Filter to view All notifications"
             />
           </Button>
           <Button variant="filter">
             <FormattedMessage
-              id="pages.notifications.pay"
+              id="Pay"
               defaultMessage="Pay"
               description="Filter to view pending Pay notifications"
             />
           </Button>
           <Button variant="filter">
             <FormattedMessage
-              id="pages.notifications.accept"
+              id="Accept"
               defaultMessage="Accept"
               description="Filter to view pending Accept notifications"
             />
@@ -119,7 +119,7 @@ export function Notifications() {
 
         <Button variant="link" className="text-text-200 font-medium text-sm">
           <FormattedMessage
-            id="pages.notifications.history"
+            id="See history"
             defaultMessage="See history"
             description="Link to view notification history"
           />
@@ -142,7 +142,7 @@ export function NotificationsEmpty() {
         <div className="flex gap-1 items-center">
           <h2 className="text-xl font-medium text-text-300">
             <FormattedMessage
-              id="pages.notifications.title"
+              id="Notifications"
               defaultMessage="Notifications"
               description="Title for Notifications page"
             />
@@ -153,21 +153,21 @@ export function NotificationsEmpty() {
         <div className="flex gap-2">
           <Button variant="filter">
             <FormattedMessage
-              id="pages.notifications.all"
+              id="All"
               defaultMessage="All"
               description="Filter to view All notifications"
             />
           </Button>
           <Button variant="filter">
             <FormattedMessage
-              id="pages.notifications.pay"
+              id="Pay"
               defaultMessage="Pay"
               description="Filter to view pending Pay notifications"
             />
           </Button>
           <Button variant="filter">
             <FormattedMessage
-              id="pages.notifications.accept"
+              id="Accept"
               defaultMessage="Accept"
               description="Filter to view pending Accept notifications"
             />
@@ -182,7 +182,7 @@ export function NotificationsEmpty() {
           <div className="flex flex-col items-center gap-2">
             <h3 className="text-xl font-medium text-text-300">
               <FormattedMessage
-                id="pages.notifications.empty"
+                id="No notifications"
                 defaultMessage="No notifications"
                 description="Empty notifications message"
               />
@@ -190,7 +190,7 @@ export function NotificationsEmpty() {
 
             <span className="text-base text-text-200 text-center">
               <FormattedMessage
-                id="pages.notifications.startCreating"
+                id="Start creating a bill and distribute it to your contacts"
                 defaultMessage="Start creating a bill and distribute it to your contacts"
                 description="Description to start creating a bill"
               />
@@ -202,7 +202,7 @@ export function NotificationsEmpty() {
             variant="outline"
           >
             <FormattedMessage
-              id="pages.notifications.issueBill"
+              id="Issue a bill"
               defaultMessage="Issue a bill"
               description="Action to start creating a bill"
             />

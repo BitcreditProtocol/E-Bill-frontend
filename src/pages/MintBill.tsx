@@ -14,7 +14,7 @@ export default function MintBill() {
 
         <span className="text-text-300 text-base font-medium">
           <FormattedMessage
-            id="pages.mintBill.title"
+            id="Mint a bill"
             defaultMessage="Mint a bill"
             description="Header copy for Mint bill page"
           />
@@ -47,7 +47,7 @@ export default function MintBill() {
         <div className="flex flex-col gap-2">
           <span className="text-text-300 text-sm font-medium">
             <FormattedMessage
-              id="pages.mintBill.billInformation.orderOf"
+              id="Endorse to the order of"
               defaultMessage="Endorse to the order of"
               description="Label for bill endorsee name input"
             />
@@ -59,7 +59,7 @@ export default function MintBill() {
           <div className="flex justify-between items-center">
             <span className="text-text-300 text-sm font-medium">
               <FormattedMessage
-                id="pages.mintBill.billInformation.value"
+                id="Against the sum of"
                 defaultMessage="Against the sum of"
                 description="Label for bill value input"
               />
@@ -71,7 +71,7 @@ export default function MintBill() {
             >
               <CalculatorIcon width={16} strokeWidth={1} color="#1B0F00" />
               <FormattedMessage
-                id="pages.mintBill.billInformation.calculateDiscount"
+                id="Calculate discount"
                 defaultMessage="Calculate discount"
                 description="Calculate discount button"
               />
@@ -98,7 +98,7 @@ export default function MintBill() {
 
       <Button className="h-[54px] w-full bg-text-300 text-white font-medium rounded-[8px] py-[18px] px-8">
         <FormattedMessage
-          id="pages.mintBill.mint"
+          id="Mint"
           defaultMessage="Mint"
           description="Button to trigger bill mint"
         />

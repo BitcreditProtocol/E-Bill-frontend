@@ -39,7 +39,7 @@ export default function Unlock() {
 
         <h1 className="font-sans font-medium text-[24px] mx-3">
           <FormattedMessage
-            id="pages.unlock.title"
+            id="Unlock with PIN code"
             defaultMessage="Unlock with PIN code"
           />
         </h1>
@@ -85,7 +85,7 @@ export default function Unlock() {
         <div className="flex flex-col gap-2 text-center">
           <span className="font-medium text-[#1B0F0080]">
             <FormattedMessage
-              id="pages.unlock.forgotPin"
+              id="Forgot your PIN?"
               defaultMessage="Forgot your PIN?"
             />
           </span>
@@ -96,7 +96,7 @@ export default function Unlock() {
             onClick={goToIdentityRestoration}
           >
             <FormattedMessage
-              id="pages.unlock.seedPhraseRecovery"
+              id="Recover with seed phrase"
               defaultMessage="Recover with seed phrase"
               description="Go to recovery with seed phrase page"
             />

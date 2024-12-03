@@ -25,7 +25,7 @@ function Search() {
         ref={searchFieldRef}
         type="text"
         placeholder={intl.formatMessage({
-          id: "contacts.search.placeholder",
+          id: "Search for contacts...",
           defaultMessage: "Search for contacts...",
           description: "Placeholder text for search input",
         })}
@@ -43,7 +43,7 @@ function Header() {
       <div className="flex justify-between items-center">
         <h1 className="text-text-300 text-xl font-medium">
           <FormattedMessage
-            id="contacts.header.title"
+            id="Contacts"
             defaultMessage="Contacts"
             description="Title for contacts page"
           />
@@ -56,7 +56,7 @@ function Header() {
         >
           <PlusIcon className="w-4 h-4 text-text-300" />
           <FormattedMessage
-            id="contacts.header.create"
+            id="New contact"
             defaultMessage="New contact"
             description="Create contact button"
           />
@@ -114,7 +114,7 @@ function EmptyList() {
       <div className="flex flex-col items-center gap-2 text-center mb-4">
         <h2 className="text-text-300 text-xl font-medium leading-[30px]">
           <FormattedMessage
-            id="contacts.empty.title"
+            id="No contacts yet"
             defaultMessage="No contacts yet"
             description="Title for empty contacts list"
           />
@@ -122,7 +122,7 @@ function EmptyList() {
 
         <span className="text-text-200 text-md leading-6">
           <FormattedMessage
-            id="contacts.empty.description"
+            id="Create your first contact to start a relation"
             defaultMessage="Create your first contact to start a relation"
             description="Description for empty contacts list"
           />
@@ -134,7 +134,7 @@ function EmptyList() {
         variant="outline"
       >
         <FormattedMessage
-          id="contacts.empty.create"
+          id="Create contact"
           defaultMessage="Create contact"
           description="Create contact button"
         />

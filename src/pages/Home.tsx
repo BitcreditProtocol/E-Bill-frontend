@@ -61,7 +61,7 @@ function Balances() {
         <div className="flex justify-between items-center pt-4 px-4 pb-2 border-b-[1px] border-b-[#1B0F001A]">
           <h2 className="text-sm font-medium text-text-300">
             <FormattedMessage
-              id="pages.home.balances.title"
+              id="Balances"
               defaultMessage="Balances"
               description="Title for balances component on Home page"
             />
@@ -86,7 +86,7 @@ function Balances() {
           <div className="flex justify-between py-2 border-b-[1px] border-b-[#0000001A]">
             <span className="text-xs text-text-200">
               <FormattedMessage
-                id="pages.home.balances.payee"
+                id="Payee"
                 defaultMessage="Payee"
                 description="Payee label"
               />
@@ -103,7 +103,7 @@ function Balances() {
           <div className="flex justify-between py-2 border-b-[1px] border-b-[#0000001A]">
             <span className="text-xs text-text-200">
               <FormattedMessage
-                id="pages.home.balances.payer"
+                id="Payer"
                 defaultMessage="Payer"
                 description="Payer label"
               />
@@ -120,7 +120,7 @@ function Balances() {
           <div className="flex justify-between">
             <span className="text-xs text-text-200">
               <FormattedMessage
-                id="pages.home.balances.contingent"
+                id="Contingent"
                 defaultMessage="Contingent"
                 description="Contingent label"
               />
@@ -145,7 +145,7 @@ function EBillsList() {
       <div className="flex justify-between items-center">
         <h2 className="text-sm font-medium text-text-300">
           <FormattedMessage
-            id="pages.home.ebills.title"
+            id="E-bills"
             defaultMessage="E-bills"
             description="Title for e-bills list component on Home page"
           />
@@ -157,7 +157,7 @@ function EBillsList() {
         >
           <ListFilterIcon width={16} color="#1B0F00" strokeWidth={1} />
           <FormattedMessage
-            id="pages.home.ebills.filter"
+            id="Filter"
             defaultMessage="Filter"
             description="Open filters modal to filter e-bills"
           />
@@ -213,7 +213,7 @@ function EBillsList() {
         className="gap-1 text-text-200 text-sm font-medium p-0 h-fit"
       >
         <FormattedMessage
-          id="pages.home.ebills.seeAll"
+          id="See all"
           defaultMessage="See all"
           description="Navigates to the e-bills page"
         />
@@ -231,7 +231,7 @@ function NavigationBar() {
       >
         <HomeIcon width={24} color="#1B0F00" strokeWidth={1} />
         <FormattedMessage
-          id="layout.navigation.home"
+          id="Home"
           defaultMessage="Home"
           description="Navigates to the Home page"
         />
@@ -243,7 +243,7 @@ function NavigationBar() {
       >
         <ReceiptTextIcon width={24} color="#8D8579" strokeWidth={1} />
         <FormattedMessage
-          id="layout.navigation.ebills"
+          id="E-bills"
           defaultMessage="E-bills"
           description="Navigates to the E-bills page"
         />
@@ -255,7 +255,7 @@ function NavigationBar() {
       >
         <SearchIcon width={24} color="#8D8579" strokeWidth={1} />
         <FormattedMessage
-          id="layout.navigation.search"
+          id="Search"
           defaultMessage="Search"
           description="Navigates to the Search page"
         />
@@ -267,7 +267,7 @@ function NavigationBar() {
       >
         <SettingsIcon width={24} color="#8D8579" strokeWidth={1} />
         <FormattedMessage
-          id="layout.navigation.settings"
+          id="Settings"
           defaultMessage="Settings"
           description="Navigates to the Settings page"
         />

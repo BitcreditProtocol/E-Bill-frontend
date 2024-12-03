@@ -14,7 +14,7 @@ export default function CreateNewIdentity() {
         <div className="flex flex-col gap-2 items-center">
           <h1 className="font-sans font-medium text-[24px] tracking-tight mb-0">
             <FormattedMessage
-              id="pages.identityCreation.createNewIdentity.title"
+              id="Encrypted data"
               defaultMessage="Encrypted data"
               description="Header copy for Create new identity page"
             />
@@ -22,7 +22,7 @@ export default function CreateNewIdentity() {
 
           <span className="font-normal text-text-200 text-base text-center">
             <FormattedMessage
-              id="pages.identityCreation.createNewIdentity.subtitle"
+              id="Personal data is stored encrypted and cannot be accessed without your signing an explicit approval"
               defaultMessage="Personal data is stored encrypted and cannot be accessed without your signing an explicit approval"
               description="Subheader copy for Create new identity page"
             />
@@ -41,7 +41,7 @@ export default function CreateNewIdentity() {
         className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
       >
         <FormattedMessage
-          id="pages.identityCreation.createNewIdentity.newIdentity"
+          id="Create new identity"
           defaultMessage="Create new identity"
           description="Start Identity creation flow"
         />

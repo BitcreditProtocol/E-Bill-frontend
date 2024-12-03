@@ -47,7 +47,7 @@ export default function Bill() {
           </span>
           <h2 className="text-text-300 text-xl font-medium">
             <FormattedMessage
-              id="pages.bill.view.heading"
+              id="Against this bill of exchange"
               defaultMessage="Against this bill of exchange"
               description="Heading for bill visualization page"
             />
@@ -82,7 +82,7 @@ export default function Bill() {
       <div className="flex flex-col gap-3">
         <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-3 px-6">
           <FormattedMessage
-            id="pages.bill.view.requestToAccept"
+            id="Request to accept"
             defaultMessage="Request to accept"
             description="Action to request to accept the bill"
           />
@@ -92,7 +92,7 @@ export default function Bill() {
           variant="outline"
         >
           <FormattedMessage
-            id="pages.bill.view.endorse"
+            id="Endorse"
             defaultMessage="Endorse"
             description="Action to endorse the bill"
           />

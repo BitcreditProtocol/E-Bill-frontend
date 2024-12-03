@@ -31,14 +31,14 @@ export default function IssueBill() {
       <div className="flex flex-col gap-2 items-center">
         <h1 className="font-sans font-medium text-2xl tracking-tight mb-0">
           <FormattedMessage
-            id="pages.issueBill.title"
+            id="Issue a bill"
             defaultMessage="Issue a bill"
             description="Header copy for Issue bill page"
           />
         </h1>
         <span className="font-normal text-text-200 text-base text-center px-0.5 leading-6">
           <FormattedMessage
-            id="pages.issueBill.subtitle"
+            id="Issue a promissory note where you, the drawer, commit to making the payment"
             defaultMessage="Issue a promissory note where you, the drawer, commit to making the payment"
             description="Subheader copy for Issue bill page"
           />

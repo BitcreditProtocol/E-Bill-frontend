@@ -9,7 +9,7 @@ export function First() {
     <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
-          id="onboarding.first.title"
+          id="A strong trade credit solution. Directly between businesses"
           defaultMessage="A strong trade credit solution. Directly between businesses"
           description="First onboarding screen title"
         />
@@ -27,7 +27,7 @@ export function Second() {
     <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
-          id="onboarding.second.title"
+          id="No banks involved. Works even in a banking crisis"
           defaultMessage="No banks involved. Works even in a banking crisis"
           description="Second onboarding screen title"
         />
@@ -45,7 +45,7 @@ export function Third() {
     <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
-          id="onboarding.third.title"
+          id="Reduces the risk of default and the loss in case of default."
           defaultMessage="Reduces the risk of default and the loss in case of default."
           description="Third onboarding screen title"
         />
@@ -63,7 +63,7 @@ export function Fourth() {
     <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
-          id="onboarding.fourth.title"
+          id="Based on proven Bitcoin tech, free to download and use for everyone."
           defaultMessage="Based on proven Bitcoin tech, free to download and use for everyone."
           description="Fourth onboarding screen title"
         />
