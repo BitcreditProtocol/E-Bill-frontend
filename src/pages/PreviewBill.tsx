@@ -38,14 +38,14 @@ export default function PreviewBill() {
       <div className="flex flex-col gap-2 items-center mt-1">
         <h1 className="font-sans font-medium text-2xl tracking-tight mb-0">
           <FormattedMessage
-            id="pages.issueBill.title"
+            id="Issue a bill"
             defaultMessage="Issue a bill"
             description="Header copy for Issue bill page"
           />
         </h1>
         <span className="font-normal text-text-200 text-base text-center px-0.5 leading-6">
           <FormattedMessage
-            id="pages.issueBill.subtitle"
+            id="Issue a promissory note where you, the drawer, commit to making the payment"
             defaultMessage="Issue a promissory note where you, the drawer, commit to making the payment"
             description="Subheader copy for Issue bill page"
           />
@@ -61,7 +61,7 @@ export default function PreviewBill() {
           <div className="flex flex-col gap-1">
             <h2 className="text-text-300 text-base font-medium">
               <FormattedMessage
-                id="pages.bill.preview.heading"
+                id="Against this bill of exchange"
                 defaultMessage="Against this bill of exchange"
                 description="Heading for bill preview page"
               />
@@ -88,7 +88,7 @@ export default function PreviewBill() {
           <div className="flex flex-col gap-3">
             <span className="text-text-300 text-sm font-medium">
               <FormattedMessage
-                id="pages.bill.preview.noProtest"
+                id="No protest"
                 defaultMessage="No protest"
                 description="No protest copy for bill preview page"
               />
@@ -99,7 +99,7 @@ export default function PreviewBill() {
             <div className="flex flex-col gap-1.5">
               <span className="text-text-200 text-xs font-normal">
                 <FormattedMessage
-                  id="pages.bill.preview.invoice"
+                  id="Invoice"
                   defaultMessage="Invoice"
                   description="Invoice copy for bill preview page"
                 />
@@ -125,7 +125,7 @@ export default function PreviewBill() {
       <div className="flex flex-col gap-3">
         <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-3 px-6">
           <FormattedMessage
-            id="pages.bill.issue.sign"
+            id="Sign"
             defaultMessage="Sign"
             description="Action to sign and create the bill"
           />

@@ -63,7 +63,7 @@ export default function EmailVerification() {
         <div className="flex flex-col gap-2 items-center">
           <h1 className="font-sans font-medium text-[24px] tracking-tight mb-0">
             <FormattedMessage
-              id="pages.onboarding.emailVerification.title"
+              id="Verify your email address"
               defaultMessage="Verify your email address"
               description="Header copy for Email verification page"
             />
@@ -84,7 +84,7 @@ export default function EmailVerification() {
             className="text-text-300 text-xs font-medium p-0 h-fit"
           >
             <FormattedMessage
-              id="pages.onboarding.emailVerification.openEmailInbox"
+              id="Open email inbox"
               defaultMessage="Open email inbox"
               description="Open email inbox button copy for Email verification page"
             />
@@ -111,7 +111,7 @@ export default function EmailVerification() {
         className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
       >
         <FormattedMessage
-          id="pages.onboarding.emailVerification.continue"
+          id="Continue"
           defaultMessage="Continue"
           description="Continue button copy for Email verification page"
         />
