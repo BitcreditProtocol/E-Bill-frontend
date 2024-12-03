@@ -59,7 +59,7 @@ function Form() {
           isExtraFieldsVisible ? "hidden" : "flex"
         }`}
         variant="outline"
-        onClick={() => setIsExtraFieldsVisible(!isExtraFieldsVisible)}
+        onClick={() => { setIsExtraFieldsVisible(!isExtraFieldsVisible); }}
       >
         <FormattedMessage
           id="pages.createContact.viewAllFields"
@@ -123,7 +123,7 @@ export default function Create() {
         <Button
           className="flex-1 w-full text-text-300 bg-transparent text-sm font-medium border-text-300 rounded-[8px] py-3 px-6 hover:bg-transparent"
           variant="outline"
-          onClick={() => navigate(routes.CONTACTS)}
+          onClick={() => { navigate(routes.CONTACTS); }}
         >
           <FormattedMessage
             id="pages.createContact.cancel"
@@ -134,7 +134,7 @@ export default function Create() {
 
         <Button
           className="flex-1 w-full bg-text-300 text-white font-medium rounded-[8px] py-3 px-6"
-          onClick={() => navigate(routes.CONTACTS)}
+          onClick={() => { navigate(routes.CONTACTS); }}
         >
           <FormattedMessage
             id="pages.createContact.save"
