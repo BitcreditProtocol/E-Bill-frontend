@@ -64,6 +64,7 @@
   "Reduces the risk of default and the loss in case of default.": "Reduces the risk of default and the loss in case of default.",
   "Request to accept": "Request to accept",
   "Required information": "Required information",
+  "Resend ({delay})": "Resend ({delay})",
   "Restore identity": "Restore identity",
   "Restore with seed phrase": "Restore with seed phrase",
   "Save": "Save",
@@ -90,6 +91,5 @@
   "Verify your email address": "Verify your email address",
   "View more": "View more",
   "We have successfully created your identity and you can now use the app": "We have successfully created your identity and you can now use the app",
-  "pages.onboarding.emailVerification.resendCode": "Resend (30s)",
-  "pages.onboarding.emailVerification.subtitle": "We've sent an one-time passcode to example@bit.cr"
+  "We've sent a one-time passcode to {email}": "We've sent a one-time passcode to {email}"
 }

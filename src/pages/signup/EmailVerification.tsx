@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { ChevronRightIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -53,6 +53,7 @@ function CodeInputs() {
 }
 
 export default function EmailVerification() {
+  const intl = useIntl();
   const navigate = useNavigate();
 
   const goToOptionalInformation = () => { navigate("/optional-information"); };
@@ -70,11 +71,13 @@ export default function EmailVerification() {
           </h1>
 
           <span className="font-normal text-text-200 text-base text-center">
-            <FormattedMessage
-              id="pages.onboarding.emailVerification.subtitle"
-              defaultMessage="We've sent an one-time passcode to example@bit.cr"
-              description="Subheader copy for Email verification page"
-            />
+            {intl.formatMessage({
+              id: "We've sent a one-time passcode to {email}",
+              defaultMessage: "We've sent a one-time passcode to {email}",
+              description: "Subheader copy for Email verification page",
+            }, {
+              email: "example@bit.cr"
+            })}
           </span>
         </div>
 
@@ -97,11 +100,13 @@ export default function EmailVerification() {
             variant="link"
             className="text-signal-alert text-xs font-medium p-0 h-fit"
           >
-            <FormattedMessage
-              id="pages.onboarding.emailVerification.resendCode"
-              defaultMessage="Resend (30s)"
-              description="Resend code button copy for Email verification page"
-            />
+            {intl.formatMessage({
+              id: "Resend ({delay})",
+              defaultMessage: "Resend ({delay})",
+              description: "Resend code button copy for Email verification page",
+            }, {
+              delay: "30s"
+            })}
           </Button>
         </div>
       </div>
