@@ -44,7 +44,7 @@ export default function CreateBill() {
             <SelectValue placeholder="Select an option" />
           </SelectTrigger>
           <SelectContent>
-            <SelectGroup>
+            <SelectGroup className="overflow-y-auto max-h-[30rem]">
               <SelectItem value="option1">Afghanistan</SelectItem>
               <SelectItem value="option2">Albania</SelectItem>
               <SelectItem value="option3">Algeria</SelectItem>
