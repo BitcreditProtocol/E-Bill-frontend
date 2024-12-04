@@ -14,6 +14,13 @@ const daysBetween = (startDate: Date, endDate: Date): number => {
   return Math.round((start - end) / MILLISECONDS_PER_DAY);
 };
 
+const gross = (value: number, discountRate: number, days: number) => {
+    // TODO: from ticket: formula := `gross_amount = (t1-t0)/365*e^i * net_amount`
+    // return (days / 365) * Math.pow(Math.E, 1 + discountRate / 100) * value;
+    // return value * Math.pow(Math.E, (days / 365) * (discountRate / 100));
+    return value * Math.pow(1 + (discountRate / 100), days / 365);
+};
+
 export type DiscountFormProps = {
   startDate?: Date
   endDate: Date
@@ -70,9 +77,8 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
 
   useEffect(() => {
     if (netAmount.value === undefined) return;
-    // gross_amount = (t1-t0)/365*e^i * net_amount
-    const grossValue = (days / 365) * Math.pow(Math.E, 1 + (discountRate / 100)) * netAmount.value
-    // const grossValue = Math.pow(Math.E, (1 + discountRate / 100) * (days / 365)) * netAmount.value
+
+    const grossValue = gross(netAmount.value, discountRate, days);
 
     setValue("grossAmount", {
       value: grossValue,
@@ -125,7 +131,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
       </div>
 
       <div className="flex flex-col">
-        <Input id="days" type="number"
+        <Input id="days" type="number" step="1"
           label={intl.formatMessage({
             id: "Days",
             defaultMessage: "Days",
@@ -146,7 +152,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
       </div>
 
       <div className="flex flex-col">
-        <Input id="discountRate" type="number"
+        <Input id="discountRate" type="number" step="0.01"
           label={intl.formatMessage({
             id: "Discount rate",
             defaultMessage: "Discount rate",
@@ -173,8 +179,10 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
           control={control}
           render={({ field }) => (
             <Input
+              id="netAmount"
+              step={grossAmount.currency === "BTC" ? 8 : 2}
               onChange={(e) => { field.onChange({
-                value: e.target.value ? Number(e.target.value) : undefined,
+                value: e.target.value ? parseFloat(e.target.value) : undefined,
                 currency: "BTC"
               })}}
               label={intl.formatMessage({
