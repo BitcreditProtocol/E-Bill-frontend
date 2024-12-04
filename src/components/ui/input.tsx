@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
-import { useFormContext } from "react-hook-form";
 import { XIcon } from "lucide-react";
 
 export interface InputProps
@@ -12,18 +11,13 @@ export interface InputProps
   clearable?: boolean;
   hint?: string;
   inputSize?: "sm" | "md" | "lg";
-  state?:
-    | "default"
-    | "typing"
-    | "hover"
-    | "disabled"
-    | "filled"
-    | "success"
-    | "error";
+  disabled?: boolean;
+  success?: boolean;
+  error?: boolean;
 }
 
 const inputVariants = cva(
-  "flex items-center gap-2 rounded-[8px] transition-all duration-200 ease-in-out",
+  "flex items-center gap-2 rounded-[8px] border transition-all duration-200 ease-in-out",
   {
     variants: {
       size: {
@@ -32,18 +26,14 @@ const inputVariants = cva(
         lg: "h-[60px] text-sm px-4 py-5",
       },
       state: {
-        default: "border-[#1B0F0014] bg-elevation-200",
-        typing: "border-[#1B0F004D] bg-elevation-200",
-        hover: "border-[#1B0F004D] bg-elevation-250",
-        disabled: "border-[#1B0F0014] bg-elevation-100 cursor-not-allowed",
-        filled: "border-[#1B0F004D] bg-elevation-200",
+        disabled: "border-[#1B0F0014] bg-red-500 cursor-not-allowed",
         success: "border-green-500 bg-elevation-200",
         error: "border-red-500 bg-elevation-200",
+        filled: "border-[#1B0F004D] bg-elevation-200",
       },
     },
     defaultVariants: {
       size: "md",
-      state: "default",
     },
   }
 );
@@ -58,13 +48,14 @@ const Input = ({
   clearable,
   hint,
   inputSize,
-  state,
+  disabled,
+  success,
+  error,
   ...props
 }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [hasValue, setHasValue] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  useFormContext();
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     setIsFocused(false);
@@ -83,8 +74,21 @@ const Input = ({
   };
 
   return (
+    <div>
     <div className="relative">
-      <div className={cn(inputVariants({ size: inputSize, state }), className)}>
+      <div
+        className={cn(
+          inputVariants({ size: inputSize }),
+          "border-divider-50 bg-elevation-200 hover:border-divider-50 hover:bg-elevation-250 focus-within:border-divider-300 focus-within:bg-elevation-200",
+          {
+            "border-[#1B0F004D] bg-yellow-200": hasValue,
+            "border-[#1B0F0014] bg-red-500 cursor-not-allowed": disabled,
+            "border-green-500 bg-elevation-200": success,
+            "border-red-500 bg-elevation-200": error,
+          },
+          className
+        )}
+      >
         {icon && <span>{icon}</span>}
         <input
           type={type}
@@ -98,6 +102,7 @@ const Input = ({
           }}
           onBlur={handleBlur}
           onChange={handleChange}
+          disabled={disabled}
           {...props}
         />
         {clearable && hasValue && (
@@ -113,28 +118,28 @@ const Input = ({
       <label
         htmlFor={id}
         className={cn(
-          "absolute left-4 transition-all duration-200 ease-out flex items-center text-text-300 font-medium",
+          "absolute left-4 transition-all duration-200 ease-in-out flex items-center text-text-300",
           inputSize === "sm" ? "text-xs" : "text-sm",
           isFocused || hasValue
-            ? inputSize === "sm"
-              ? "top-1 text-xs text-text-200"
-              : "top-2 text-xs text-text-200"
-            : "top-1/2 -translate-y-1/2",
-          icon && 'pl-6'
+        ? inputSize === "sm"
+          ? "top-1 text-xs text-text-200 font-normal"
+          : "top-2 text-xs text-text-200 font-normal"
+        : "top-1/2 -translate-y-1/2 font-medium",
+          icon && "pl-6",
+          {
+        "text-signal-success": (isFocused || hasValue) && success,
+        "text-signal-error": (isFocused || hasValue) && error,
+          }
         )}
       >
         {label}
-        {required && (
-          <span
-            className={
-              isFocused || hasValue ? "text-text-200" : "text-signal-error"
-            }
-          >
-            *
-          </span>
-        )}
+        {required && <span>*</span>}
       </label>
-      {hint && <div className="text-xs text-text-200 mt-[2px]">{hint}</div>}
+    </div>
+     {hint && <div className={cn("text-xs text-text-200 mt-[2px]", {
+      "text-signal-success": success,
+      "text-signal-error": error,
+    })}>{hint}</div>}
     </div>
   );
 };
