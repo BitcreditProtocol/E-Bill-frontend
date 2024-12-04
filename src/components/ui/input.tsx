@@ -20,9 +20,9 @@ const inputVariants = cva(
   {
     variants: {
       size: {
-        sm: "text-xs px-4 py-3 gap-2",
-        md: "text-sm p-4 gap-2",
-        lg: "text-sm px-4 py-5 gap-2",
+        sm: "text-xs px-4 py-3",
+        md: "text-sm p-4",
+        lg: "text-sm px-4 py-5",
       },
       state: {
         default: "border-[#1B0F0014] bg-elevation-200",
@@ -70,7 +70,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             type={type}
             id={id}
-            className="flex-1 font-medium bg-transparent outline-none"
+            className={`flex font-medium bg-transparent outline-none ${isFocused || hasValue ? "pt-1" : ""}`}
             ref={ref}
             onFocus={() => { setIsFocused(true); }}
             onBlur={handleBlur}
@@ -89,8 +89,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             "absolute left-4 transition-all duration-200 ease-out flex items-center text-text-300 font-medium",
             inputSize === 'sm' ? 'text-xs' : 'text-sm',
             isFocused || hasValue
-              ? "top-2 text-[12px] text-text-200"
-              : "top-[20%]"
+              ? "top-1 text-[12px] text-text-200"
+             : "top-1/2 -translate-y-1/2"
           )}
         >
           {label}
