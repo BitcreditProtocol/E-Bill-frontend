@@ -25,12 +25,6 @@ const inputVariants = cva(
         md: "h-[52px] text-sm p-4",
         lg: "h-[60px] text-sm px-4 py-5",
       },
-      state: {
-        disabled: "border-[#1B0F0014] bg-red-500 cursor-not-allowed",
-        success: "border-green-500 bg-elevation-200",
-        error: "border-red-500 bg-elevation-200",
-        filled: "border-[#1B0F004D] bg-elevation-200",
-      },
     },
     defaultVariants: {
       size: "md",
@@ -42,7 +36,7 @@ const Input = ({
   className,
   type,
   label,
-  required = false,
+  required,
   id,
   icon,
   clearable,
@@ -75,71 +69,80 @@ const Input = ({
 
   return (
     <div>
-    <div className="relative">
-      <div
-        className={cn(
-          inputVariants({ size: inputSize }),
-          "border-divider-50 bg-elevation-200 hover:border-divider-50 hover:bg-elevation-250 focus-within:border-divider-300 focus-within:bg-elevation-200",
-          {
-            "border-[#1B0F004D] bg-yellow-200": hasValue,
-            "border-[#1B0F0014] bg-red-500 cursor-not-allowed": disabled,
-            "border-green-500 bg-elevation-200": success,
-            "border-red-500 bg-elevation-200": error,
-          },
-          className
-        )}
-      >
-        {icon && <span>{icon}</span>}
-        <input
-          type={type}
-          id={id}
-          className={`flex font-medium bg-transparent outline-none ${
-            isFocused || hasValue ? "pt-3" : ""
-          }`}
-          ref={inputRef}
-          onFocus={() => {
-            setIsFocused(true);
-          }}
-          onBlur={handleBlur}
-          onChange={handleChange}
-          disabled={disabled}
-          {...props}
-        />
-        {clearable && hasValue && (
-          <button
-            type="button"
-            onClick={clearField}
-            className="absolute right-4"
-          >
-            <XIcon className="h-5 w-5 text-text-300" />
-          </button>
-        )}
+      <div className="relative">
+        <div
+          className={cn(
+            inputVariants({ size: inputSize }),
+            "border-divider-50 bg-elevation-200 hover:border-divider-50 hover:bg-elevation-250 focus-within:border-divider-300 focus-within:bg-elevation-200",
+            {
+              "border-divider-50 bg-elevation-200": hasValue,
+              "border-none text-[#F1EDE4] bg-divider-100 cursor-not-allowed":
+                disabled,
+              "border-green-500 bg-elevation-200": success,
+              "border-red-500 bg-elevation-200": error,
+            },
+            className
+          )}
+        >
+          {icon && <span>{icon}</span>}
+          <input
+            type={type}
+            id={id}
+            className={`flex font-medium bg-transparent outline-none ${
+              isFocused || hasValue ? "pt-3" : ""
+            }`}
+            ref={inputRef}
+            onFocus={() => {
+              setIsFocused(true);
+            }}
+            onBlur={handleBlur}
+            onChange={handleChange}
+            disabled={disabled}
+            {...props}
+          />
+          {clearable && hasValue && (
+            <button
+              type="button"
+              onClick={clearField}
+              className="absolute right-4"
+            >
+              <XIcon className="h-5 w-5 text-text-300" />
+            </button>
+          )}
+        </div>
+        <label
+          htmlFor={id}
+          className={cn(
+            "absolute left-4 transition-all duration-200 ease-in-out flex items-center text-text-300",
+            inputSize === "sm" ? "text-xs" : "text-sm",
+            isFocused || hasValue
+              ? cn(
+                  inputSize === "sm" ? "top-1" : "top-2",
+                  "text-xs text-text-200 font-normal"
+                )
+              : "top-1/2 -translate-y-1/2 font-medium",
+            icon && "pl-7",
+            {
+              "text-signal-success": (isFocused || hasValue) && success,
+              "text-signal-error": (isFocused || hasValue) && error,
+              "text-[#F1EDE4]": disabled,
+            }
+          )}
+        >
+          {label}
+          {required && <span>*</span>}
+        </label>
       </div>
-      <label
-        htmlFor={id}
-        className={cn(
-          "absolute left-4 transition-all duration-200 ease-in-out flex items-center text-text-300",
-          inputSize === "sm" ? "text-xs" : "text-sm",
-          isFocused || hasValue
-        ? inputSize === "sm"
-          ? "top-1 text-xs text-text-200 font-normal"
-          : "top-2 text-xs text-text-200 font-normal"
-        : "top-1/2 -translate-y-1/2 font-medium",
-          icon && "pl-6",
-          {
-        "text-signal-success": (isFocused || hasValue) && success,
-        "text-signal-error": (isFocused || hasValue) && error,
-          }
-        )}
-      >
-        {label}
-        {required && <span>*</span>}
-      </label>
-    </div>
-     {hint && <div className={cn("text-xs text-text-200 mt-[2px]", {
-      "text-signal-success": success,
-      "text-signal-error": error,
-    })}>{hint}</div>}
+      {hint && (
+        <div
+          className={cn("text-xs text-text-200 mt-[2px]", {
+            "text-signal-success": success,
+            "text-signal-error": error,
+          })}
+        >
+          {hint}
+        </div>
+      )}
     </div>
   );
 };
