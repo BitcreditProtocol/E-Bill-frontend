@@ -30,6 +30,8 @@ import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
 
+import Signup from "./pages/signup/Signup";
+
 const router = createBrowserRouter(
   [
     {
@@ -127,6 +129,10 @@ const router = createBrowserRouter(
     {
       path: "/get-started",
       element: <Onboarding />,
+    },
+    {
+      path: routes.SIGNUP,
+      element: <Signup />,
     },
   ],
   {
