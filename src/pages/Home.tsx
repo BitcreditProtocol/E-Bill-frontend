@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 
 import layoutLogo from "@/assets/layout-logo.svg";
 import defaultAvatar from "@/assets/default-avatar.svg";
+import { Input } from "@/components/ui/input";
 
 function Topbar() {
   return (
@@ -285,6 +286,17 @@ export default function Home() {
         <EBillsList />
       </div>
       <NavigationBar />
+      <Input
+          // label="Username"
+          id="username"
+          // required
+          // icon={<SearchIcon className="h-5 w-5" />}
+          clearable
+          hint="Enter your username"
+          inputSize="sm"
+          state="default"
+         
+        />
     </div>
   );
 }
