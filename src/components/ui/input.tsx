@@ -119,7 +119,8 @@ const Input = ({
             ? inputSize === "sm"
               ? "top-1 text-xs text-text-200"
               : "top-2 text-xs text-text-200"
-            : "top-1/2 -translate-y-1/2"
+            : "top-1/2 -translate-y-1/2",
+          icon && 'pl-6'
         )}
       >
         {label}
