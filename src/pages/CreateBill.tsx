@@ -11,6 +11,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function CreateBill() {
   return (
@@ -44,28 +45,30 @@ export default function CreateBill() {
             <SelectValue placeholder="Select an option" />
           </SelectTrigger>
           <SelectContent>
-            <SelectGroup>
-              <SelectItem value="option1">Afghanistan</SelectItem>
-              <SelectItem value="option2">Albania</SelectItem>
-              <SelectItem value="option3">Algeria</SelectItem>
-              <SelectItem value="option4">Andorra</SelectItem>
-              <SelectItem value="option5">Angola</SelectItem>
-              <SelectItem value="option6">Antigua and Barbuda</SelectItem>
-              <SelectItem value="option7">Argentina</SelectItem>
-              <SelectItem value="option8">Armenia</SelectItem>
-              <SelectItem value="option9">Australia</SelectItem>
-              <SelectItem value="option10">Austria</SelectItem>
-              <SelectItem value="option11">Azerbaijan</SelectItem>
-              <SelectItem value="option12">Bahamas</SelectItem>
-              <SelectItem value="option13">Bahrain</SelectItem>
-              <SelectItem value="option14">Bangladesh</SelectItem>
-              <SelectItem value="option15">Barbados</SelectItem>
-              <SelectItem value="option16">Belarus</SelectItem>
-              <SelectItem value="option17">Belgium</SelectItem>
-              <SelectItem value="option18">Belize</SelectItem>
-              <SelectItem value="option19">Benin</SelectItem>
-              <SelectItem value="option20">Bhutan</SelectItem>
-            </SelectGroup>
+            <ScrollArea className="h-[10rem]">
+              <SelectGroup>
+                <SelectItem value="option1">Afghanistan</SelectItem>
+                <SelectItem value="option2">Albania</SelectItem>
+                <SelectItem value="option3">Algeria</SelectItem>
+                <SelectItem value="option4">Andorra</SelectItem>
+                <SelectItem value="option5">Angola</SelectItem>
+                <SelectItem value="option6">Antigua and Barbuda</SelectItem>
+                <SelectItem value="option7">Argentina</SelectItem>
+                <SelectItem value="option8">Armenia</SelectItem>
+                <SelectItem value="option9">Australia</SelectItem>
+                <SelectItem value="option10">Austria</SelectItem>
+                <SelectItem value="option11">Azerbaijan</SelectItem>
+                <SelectItem value="option12">Bahamas</SelectItem>
+                <SelectItem value="option13">Bahrain</SelectItem>
+                <SelectItem value="option14">Bangladesh</SelectItem>
+                <SelectItem value="option15">Barbados</SelectItem>
+                <SelectItem value="option16">Belarus</SelectItem>
+                <SelectItem value="option17">Belgium</SelectItem>
+                <SelectItem value="option18">Belize</SelectItem>
+                <SelectItem value="option19">Benin</SelectItem>
+                <SelectItem value="option20">Bhutan</SelectItem>
+              </SelectGroup>
+            </ScrollArea>
           </SelectContent>
         </Select>
 
