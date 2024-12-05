@@ -133,7 +133,7 @@ const Input = ({
           {required && <span>*</span>}
         </label>
       </div>
-      {hint && (
+      {hint ? (
         <div
           className={cn("text-xs text-text-200 mt-[2px]", {
             "text-signal-success": success,
@@ -142,6 +142,8 @@ const Input = ({
         >
           {hint}
         </div>
+      ) : (
+        error && <p className="text-xs text-signal-error mt-[2px]">{error}</p>
       )}
     </div>
   );
