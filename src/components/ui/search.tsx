@@ -48,9 +48,7 @@ function Search({ onSearch, placeholder, size }: SearchProps) {
       <input
         ref={searchFieldRef}
         type="text"
-        placeholder={
-          placeholder
-        }
+        placeholder={placeholder}
         className="w-full text-text-300 bg-transparent font-medium placeholder-text-300 focus:outline-none"
         onKeyDown={handleKeyDown}
       />
