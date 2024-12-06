@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CalendarDaysIcon } from "lucide-react";
 import { Input } from "./ui/input";
@@ -11,25 +11,30 @@ import Big from "big.js";
 export type DiscountFormProps = {
   startDate?: Date
   endDate: Date
-  onSubmit: (values: FormValues) => void
+  currency?: string
+  onSubmit: (values: FormResult) => void
 };
 
 type CurrencyAmount = {
-  value?: number
+  value: number
   currency: string
 };
 
-type FormValues = {
-  startDate: Date
-  endDate: Date
+type FormResult = {
   days: number
   discountRate: number
-  markUp: CurrencyAmount
-  netAmount: CurrencyAmount
-  grossAmount: CurrencyAmount
+  net: CurrencyAmount
+  gross: CurrencyAmount
 };
 
-const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : DiscountFormProps) => {
+
+type FormValues = {
+  days?: number
+  discountRate?: number
+  netAmount?: number
+};
+
+const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onSubmit } : DiscountFormProps) => {
   const intl = useIntl();
   const startDate = useMemo(() => userStartDate || new Date(Date.now()), [userStartDate])
 
@@ -37,22 +42,25 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
     defaultValues: {
       days: daysBetween(startDate, endDate),
       discountRate: undefined,
-      netAmount: {
-        value: undefined,
-        currency: "BTC"
-      },
-      markUp: {
-        value: undefined,
-        currency: "BTC"
-      },
-      grossAmount: {
-        value: undefined,
-        currency: "BTC"
-      }
+      netAmount: undefined
     }
   });
 
-  const { days, discountRate, netAmount, markUp, grossAmount } = watch();
+  const { days, discountRate, netAmount } = watch();
+  const [gross, setGross] = useState<CurrencyAmount>();
+  const net = useMemo<CurrencyAmount | undefined>(() => {
+    return netAmount === undefined || isNaN(netAmount) ? undefined : {
+      value: netAmount,
+      currency
+    }
+  }, [netAmount, currency]);
+
+  const markUp = useMemo<CurrencyAmount | undefined>(() => {
+    return net === undefined || gross === undefined ? undefined : {
+      value: gross.value - net.value,
+      currency: net.currency
+    }
+  }, [gross, net]);
 
   useEffect(() => {
     setValue("days", daysBetween(startDate, endDate), {
@@ -63,32 +71,30 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
   }, [startDate, endDate, setValue]);
 
   useEffect(() => {
-    if (netAmount.value === undefined) return;
+    if (net === undefined || discountRate === undefined || days === undefined) {
+      setGross(undefined);
+      return;
+    }
 
-    const grossValue = Act360.netToGross(new Big(netAmount.value), new Big(discountRate).div(100), days);
-
-    setValue("grossAmount", {
+    const grossValue = Act360.netToGross(new Big(net.value), new Big(discountRate).div(100), days);
+    setGross({
       value: grossValue.toNumber(),
-      currency: "BTC"
+      currency: net.currency
     });
-  }, [days, discountRate, netAmount, setValue]);
-
-  useEffect(() => {
-    if (netAmount.value === undefined ||
-        grossAmount.value === undefined
-    ) return;
-    
-    const markUpValue = grossAmount.value - netAmount.value;
-
-    setValue("markUp", {
-      value: markUpValue,
-      currency: "BTC"
-    });
-  }, [grossAmount, netAmount, setValue]);
+  }, [net, days, discountRate]);
 
   return (<form className="flex flex-col gap-1 min-w-[8rem]"
     onSubmit={(e) => {
-      handleSubmit(onSubmit)(e).catch(() => {
+      handleSubmit((values) => {
+        if (gross === undefined || net === undefined || values.discountRate === undefined || values.days === undefined) return;
+
+        onSubmit({
+          days: values.days,
+          discountRate: values.discountRate,
+          net,
+          gross,
+        });
+      })(e).catch(() => {
         // TODO
       })
     }}>
@@ -167,11 +173,8 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
           render={({ field }) => (
             <Input
               id="netAmount"
-              step={grossAmount.currency === "BTC" ? 8 : 2}
-              onChange={(e) => { field.onChange({
-                value: e.target.value ? parseFloat(e.target.value) : undefined,
-                currency: "BTC"
-              })}}
+              step={currency === "BTC" ? 8 : 2}
+              onChange={(e) => { field.onChange(parseFloat(e.target.value))}}
               label={intl.formatMessage({
                 id: "Net amount",
                 defaultMessage: "Net amount",
@@ -189,13 +192,13 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
         />
 
         <div className="flex gap-1 items-center">
-          {markUp.value === undefined ? (<>?</>) : (<FormattedCurrency
+          {markUp === undefined ? (<>?</>) : (<FormattedCurrency
             value={markUp.value}
             currency={markUp.currency}
             currencyDisplay="none"
             color="none"
           />)}
-          <span className="text-xxs text-text-200 leading-3">{markUp.currency}</span>
+          <span className="text-xxs text-text-200 leading-3">{markUp?.currency}</span>
         </div>
       </div>
 
@@ -207,12 +210,12 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
         />
 
         <div className="flex gap-1 items-center">
-          {grossAmount.value === undefined ? (<>?</>) : (<FormattedCurrency
-            value={grossAmount.value}
-            currency={grossAmount.currency}
+          {gross === undefined ? (<>?</>) : (<FormattedCurrency
+            value={gross.value}
+            currency={gross.currency}
             currencyDisplay="none"
           />)}
-          <span className="text-xxs text-text-200 leading-3">{grossAmount.currency}</span>
+          <span className="text-xxs text-text-200 leading-3">{gross?.currency}</span>
         </div>
       </div>
 
