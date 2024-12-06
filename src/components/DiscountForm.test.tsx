@@ -55,8 +55,8 @@ describe("DiscountForm", () => {
     await userEvent.click(screen.getByText("Confirm"));
 
     expect(onSubmit).toHaveBeenCalledWith({
-      days: "360",
-      discountRate: "99.9999",
+      days: 360,
+      discountRate: new Big("0.999999"),
       gross: {
         "currency": "BTC",
         "value": new Big("1000000"),
@@ -84,8 +84,8 @@ describe("DiscountForm", () => {
     await userEvent.click(screen.getByText("Confirm"));
 
     expect(onSubmit).toHaveBeenCalledWith({
-      days: "90",
-      discountRate: "4.5",
+      days: 90,
+      discountRate: new Big("0.045"),
       gross: {
         "currency": "BTC",
         "value": new Big("1.01137800252844500632"),
