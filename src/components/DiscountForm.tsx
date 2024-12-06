@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { FormattedCurrency } from "./FormattedCurrency";
 import { Controller, useForm } from "react-hook-form";
 import { daysBetween, Act360 } from "./discount-util";
+import Big from "big.js";
 
 export type DiscountFormProps = {
   startDate?: Date
@@ -64,10 +65,10 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
   useEffect(() => {
     if (netAmount.value === undefined) return;
 
-    const grossValue = Act360.netToGross(netAmount.value, discountRate / 100, days);
+    const grossValue = Act360.netToGross(new Big(netAmount.value), new Big(discountRate).div(100), days);
 
     setValue("grossAmount", {
-      value: grossValue,
+      value: grossValue.toNumber(),
       currency: "BTC"
     });
   }, [days, discountRate, netAmount, setValue]);

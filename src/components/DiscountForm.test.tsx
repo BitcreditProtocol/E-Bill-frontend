@@ -58,11 +58,11 @@ describe("DiscountForm", () => {
         discountRate: "100",
         grossAmount: {
           "currency": "BTC",
-          "value": -72.00000000000026,
+          "value": -72,
         },
         markUp: {
           "currency": "BTC",
-          "value": -73.00000000000026,
+          "value": -73,
         },
         netAmount: {
           "currency": "BTC",
