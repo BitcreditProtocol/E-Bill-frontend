@@ -54,24 +54,17 @@ describe("DiscountForm", () => {
     await userEvent.click(screen.getByText("Confirm"));
 
     expect(onSubmit).toHaveBeenCalledWith({
-        days: "365",
-        discountRate: "100",
-        grossAmount: {
-          "currency": "BTC",
-          "value": -72,
-        },
-        markUp: {
-          "currency": "BTC",
-          "value": -73,
-        },
-        netAmount: {
-          "currency": "BTC",
-          "value": 1,
-        },
-      }, expect.objectContaining({
-        type: "submit"
-      })
-    );
+      days: "365",
+      discountRate: "100",
+      gross: {
+        "currency": "BTC",
+        "value": -72,
+      },
+      net: {
+        "currency": "BTC",
+        "value": 1,
+      },
+    });
   });
 
   it("should calculate gross amount correctly (1)", async () => {
@@ -90,23 +83,16 @@ describe("DiscountForm", () => {
     await userEvent.click(screen.getByText("Confirm"));
 
     expect(onSubmit).toHaveBeenCalledWith({
-        days: "90",
-        discountRate: "4.5",
-        grossAmount: {
-          "currency": "BTC",
-          "value": 1.011378002528445,
-        },
-        markUp: {
-          "currency": "BTC",
-          "value": 0.011378002528444897,
-        },
-        netAmount: {
-          "currency": "BTC",
-          "value": 1,
-        },
-      }, expect.objectContaining({
-        type: "submit"
-      })
-    );
+      days: "90",
+      discountRate: "4.5",
+      gross: {
+        "currency": "BTC",
+        "value": 1.011378002528445,
+      },
+      net: {
+        "currency": "BTC",
+        "value": 1,
+      },
+    });
   });
 });
