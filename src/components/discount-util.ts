@@ -1,3 +1,4 @@
+import Big from 'big.js';
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1_000;
 
@@ -8,8 +9,8 @@ export const daysBetween = (startDate: Date, endDate: Date): number => {
 };
 
 export const Act360 = {
-  netToGross: (netAmount: number, discountRate: number, days: number) => {
-    const discountDays = discountRate * days / 360;
-    return netAmount / (1 - discountDays);
+  netToGross: (netAmount: Big, discountRate: Big, days: number) : Big => {
+    const discountDays = discountRate.times(days).div(360);
+    return netAmount.div(new Big(1).minus(discountDays));
   }
 };

@@ -1,6 +1,7 @@
 
 import { describe, it, expect } from "vitest";
 import { daysBetween, Act360 } from "./discount-util";
+import Big from "big.js";
 
 describe("discount-util", () => {
 
@@ -29,8 +30,8 @@ describe("discount-util", () => {
       it("should calculate gross amount correctly", () => {
         const startDate = new Date(2024, 11, 6);
         const endDate = new Date(2025, 2, 31);
-        const netAmount = 10.12;
-        const discountRate = 0.045;
+        const netAmount = new Big(10.12);
+        const discountRate = new Big(0.045);
 
         const days = daysBetween(startDate, endDate);
         const grossAmount = Act360.netToGross(netAmount, discountRate, days);
@@ -40,22 +41,22 @@ describe("discount-util", () => {
       it("should calculate gross amount correctly (step-by-step)", () => {
         const startDate = new Date(2024, 11, 6);
         const endDate = new Date(2025, 2, 31);
-        const netAmount = 10.12;
-        const discountRate = 0.045;
+        const netAmount = new Big(10.12);
+        const discountRate = new Big(0.045);
 
         const days = daysBetween(startDate, endDate);
         expect(days, "sanity check").toBe(115);
 
-        const discountDays = discountRate * days / 360;
-        expect(discountDays, "sanity check").toBeCloseTo(0.014375);
+        const discountDays = discountRate.times(days).div(360);
+        expect(discountDays.toNumber(), "sanity check").toBe(0.014375);
 
-        const factor = 1 - discountDays;
+        const factor = new Big(1).minus(discountDays);
 
-        const grossAmount = netAmount / factor;
-        expect(grossAmount).toBeCloseTo(10.2675967);
+        const grossAmount = netAmount.div(factor);
+        expect(grossAmount.toNumber()).toBe(10.267596702599873);
 
         const calcGrossAmount = Act360.netToGross(netAmount, discountRate, days);
-        expect(calcGrossAmount).toBe(grossAmount);
+        expect(calcGrossAmount.toNumber()).toBe(grossAmount.toNumber());
       });
     });
   });
