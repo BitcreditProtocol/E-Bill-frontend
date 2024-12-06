@@ -1,0 +1,63 @@
+
+import { describe, it, expect } from "vitest";
+import { daysBetween, Act360 } from "./discount-util";
+
+describe("discount-util", () => {
+
+  describe("daysBetween", () => {
+    it("should calculate days between two dates correctly", () => {
+      expect(daysBetween(new Date(2009, 0, 3), new Date(2009, 0, 3))).toBe(0);
+      expect(daysBetween(new Date(2009, 0, 3), new Date(2009, 0, 4))).toBe(1);
+      expect(daysBetween(new Date(2009, 0, 3), new Date(2009, 0, 2))).toBe(-1);
+      expect(daysBetween(new Date(2009, 0, 3), new Date(2010, 0, 3))).toBe(365);
+      expect(daysBetween(new Date(2024, 11, 6), new Date(2025, 2, 31))).toBe(115);
+
+      // leap year
+      expect(daysBetween(new Date(2004, 0, 3), new Date(2005, 0, 3))).toBe(366);
+
+      // with time
+      expect(daysBetween(new Date(2009, 0, 3, 1, 1, 1), new Date(2009, 0, 3, 2, 2, 2))).toBe(0);
+      expect(daysBetween(new Date(2009, 0, 3, 1, 1, 1), new Date(2009, 0, 4, 2, 2, 2))).toBe(1);
+      expect(daysBetween(new Date(2009, 0, 3, 1, 1, 1), new Date(2009, 0, 4, 23, 23, 23))).toBe(1);
+      expect(daysBetween(new Date(2009, 0, 3, 23, 59, 59), new Date(2009, 0, 4, 0, 0, 0))).toBe(1);
+      expect(daysBetween(new Date(2009, 0, 3, 0, 0, 1), new Date(2009, 0, 2, 23, 59, 59))).toBe(-1);
+    });
+  });
+
+  describe("Act360", () => {
+    describe("netToGross", () => {
+      it("should calculate gross amount correctly", () => {
+        const startDate = new Date(2024, 11, 6);
+        const endDate = new Date(2025, 2, 31);
+        const netAmount = 10.12;
+        const discountRate = 0.045;
+
+        const days = daysBetween(startDate, endDate);
+        const grossAmount = Act360.netToGross(netAmount, discountRate, days);
+        expect(grossAmount).toBeCloseTo(10.2675967);
+      });
+
+      it("should calculate gross amount correctly (step-by-step)", () => {
+        const startDate = new Date(2024, 11, 6);
+        const endDate = new Date(2025, 2, 31);
+        const netAmount = 10.12;
+        const discountRate = 0.045;
+
+        const days = daysBetween(startDate, endDate);
+        expect(days, "sanity check").toBe(115);
+
+        const discountDays = discountRate * days / 360;
+        expect(discountDays, "sanity check").toBeCloseTo(0.014375);
+
+        const factor = 1 - discountDays;
+
+        const grossAmount = netAmount / factor;
+        expect(grossAmount).toBeCloseTo(10.2675967);
+
+        const calcGrossAmount = Act360.netToGross(netAmount, discountRate, days);
+        expect(calcGrossAmount).toBe(grossAmount);
+      });
+    });
+  });
+  
+});
