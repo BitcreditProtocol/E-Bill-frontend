@@ -49,17 +49,17 @@ describe("DiscountForm", () => {
     });
 
     await userEvent.clear(screen.getByLabelText("Days"));
-    await userEvent.type(screen.getByLabelText("Days"), "365");
-    await userEvent.type(screen.getByLabelText("Discount rate"), "100");
+    await userEvent.type(screen.getByLabelText("Days"), "360");
+    await userEvent.type(screen.getByLabelText("Discount rate"), "99.9999");
     await userEvent.type(screen.getByLabelText("Net amount"), "1");
     await userEvent.click(screen.getByText("Confirm"));
 
     expect(onSubmit).toHaveBeenCalledWith({
-      days: "365",
-      discountRate: "100",
+      days: "360",
+      discountRate: "99.9999",
       gross: {
         "currency": "BTC",
-        "value": new Big("-71.99999999999999999424"),
+        "value": new Big("1000000"),
       },
       net: {
         "currency": "BTC",
@@ -95,5 +95,41 @@ describe("DiscountForm", () => {
         "value": new Big("1"),
       },
     });
+  });
+
+  it("should not submit form if values are invalid (days)", async () => {
+    const onSubmit = vi.fn();
+
+    render({
+      startDate: new Date(2009, 0, 3),
+      endDate: new Date(2009, 2, 3),
+      onSubmit
+    });
+
+    await userEvent.clear(screen.getByLabelText("Days"));
+    await userEvent.type(screen.getByLabelText("Days"), "365");
+    await userEvent.type(screen.getByLabelText("Discount rate"), "100");
+    await userEvent.type(screen.getByLabelText("Net amount"), "1");
+    await userEvent.click(screen.getByText("Confirm"));
+
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("should not submit form if values are invalid (discount rate)", async () => {
+    const onSubmit = vi.fn();
+
+    render({
+      startDate: new Date(2009, 0, 3),
+      endDate: new Date(2009, 2, 3),
+      onSubmit
+    });
+
+    await userEvent.clear(screen.getByLabelText("Days"));
+    await userEvent.type(screen.getByLabelText("Days"), "360");
+    await userEvent.type(screen.getByLabelText("Discount rate"), "100");
+    await userEvent.type(screen.getByLabelText("Net amount"), "1");
+    await userEvent.click(screen.getByText("Confirm"));
+
+    expect(onSubmit).not.toHaveBeenCalled();
   });
 });

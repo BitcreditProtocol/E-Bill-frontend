@@ -39,7 +39,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
   const intl = useIntl();
   const startDate = useMemo(() => userStartDate || new Date(Date.now()), [userStartDate])
 
-  const { control, watch, register, setValue, handleSubmit, formState: { errors }, } = useForm<FormValues>({
+  const { control, watch, register, setValue, handleSubmit, formState: { isValid, errors }, } = useForm<FormValues>({
     defaultValues: {
       days: daysBetween(startDate, endDate),
       discountRate: undefined,
@@ -72,17 +72,17 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
   }, [startDate, endDate, setValue]);
 
   useEffect(() => {
-    if (net === undefined || discountRate === undefined || days === undefined) {
+    if (!isValid || net === undefined || discountRate === undefined || days === undefined) {
       setGross(undefined);
       return;
     }
 
-    const grossValue = Act360.netToGross(net.value, new Big(discountRate).div(new Big(100)), days);
-    setGross({
+    const grossValue = Act360.netToGross(net.value, new Big(discountRate).div(new Big("100")), days);
+    setGross(grossValue !== undefined ? {
       value: grossValue,
       currency: net.currency
-    });
-  }, [net, days, discountRate]);
+    } : undefined);
+  }, [isValid, net, days, discountRate]);
 
   return (<form className="flex flex-col gap-1 min-w-[8rem]"
     onSubmit={(e) => {
@@ -136,15 +136,20 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
               description="Days label in discount form"
             />
           </label>
-          <input
-            id="days"
-            step="1"
-            type="number"
-            className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            {...register("days", { 
-              required: true,
-              min: 0,
-            })}
+            <Controller
+              name="days"
+              control={control}
+              render={({ field }) => (<input
+                id="days"
+                step="1"
+                type="number"
+                className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                min="0"
+                max="360"
+                required
+                {...register("days")}
+                onChange={(e) => { field.onChange(parseInt(e.target.value))}}
+              />)}
             />
         </div>
         {errors.days && (<div className="text-xxs text-signal-error">
@@ -169,19 +174,23 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
             />
           </label>
           <div>
-            <input
-              id="discountRate"
-              step="0.0001"
-              type="number"
-              className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              {...register("discountRate", { 
-                required: true,
-                min: 0,
-                max: 100,
-              })}
-              />
-              %
-            </div>
+            <Controller
+              name="discountRate"
+              control={control}
+              render={({ field }) => (<input
+                id="discountRate"
+                step="0.0001"
+                type="number"
+                className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                min="0"
+                max="99.9999"
+                required
+                {...register("discountRate")}
+                onChange={(e) => { field.onChange(parseInt(e.target.value))}}
+              />)}
+            />
+            %
+          </div>
         </div>
         {errors.discountRate && (<div className="text-xxs text-signal-error">
           <FormattedMessage
