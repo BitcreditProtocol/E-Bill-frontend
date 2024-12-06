@@ -23,16 +23,26 @@ type CurrencyAmount = {
 
 type FormResult = {
   days: number
-  discountRate: number
+  discountRate: Big
   net: CurrencyAmount
   gross: CurrencyAmount
 };
 
-
 type FormValues = {
-  days?: number
-  discountRate?: number
-  netAmount?: number
+  daysInput?: string
+  discountRateInput?: string
+  netInput?: string
+};
+
+const parseFloatSafe = (str: string | undefined) => {
+  if (str === undefined) return undefined;
+  const parsed = parseFloat(str);
+  return isNaN(parsed) ? undefined : parsed;
+};
+const parseIntSafe = (str: string | undefined) => {
+  if (str === undefined) return undefined;
+  const parsed = parseInt(str, 10);
+  return isNaN(parsed) ? undefined : parsed;
 };
 
 const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onSubmit } : DiscountFormProps) => {
@@ -40,21 +50,29 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
   const startDate = useMemo(() => userStartDate || new Date(Date.now()), [userStartDate])
 
   const { control, watch, register, setValue, handleSubmit, formState: { isValid, errors }, } = useForm<FormValues>({
-    defaultValues: {
-      days: daysBetween(startDate, endDate),
-      discountRate: undefined,
-      netAmount: undefined
-    }
+    mode: "all"
   });
 
-  const { days, discountRate, netAmount } = watch();
-  const [gross, setGross] = useState<CurrencyAmount>();
+  const { daysInput, discountRateInput, netInput } = watch();
+
+  const days = useMemo<number | undefined>(() => {
+    return parseIntSafe(daysInput);
+  }, [daysInput]);
+
+  const discountRate = useMemo<Big | undefined>(() => {
+    const parsed = parseFloatSafe(discountRateInput);
+    return parsed === undefined ? undefined : new Big(parsed).div(new Big("100"))
+  }, [discountRateInput]);
+
   const net = useMemo<CurrencyAmount | undefined>(() => {
-    return netAmount === undefined || isNaN(netAmount) ? undefined : {
-      value: new  Big(netAmount),
+    const parsed = parseFloatSafe(netInput);
+    return parsed === undefined ? undefined : {
+      value: new Big(parsed),
       currency
     }
-  }, [netAmount, currency]);
+  }, [netInput, currency]);
+
+  const [gross, setGross] = useState<CurrencyAmount>();
 
   const markUp = useMemo<CurrencyAmount | undefined>(() => {
     return net === undefined || gross === undefined ? undefined : {
@@ -64,7 +82,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
   }, [gross, net]);
 
   useEffect(() => {
-    setValue("days", daysBetween(startDate, endDate), {
+    setValue("daysInput", String(daysBetween(startDate, endDate)), {
       shouldValidate: true,
       shouldDirty: true,
       shouldTouch: true,
@@ -77,21 +95,21 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
       return;
     }
 
-    const grossValue = Act360.netToGross(net.value, new Big(discountRate).div(new Big("100")), days);
-    setGross(grossValue !== undefined ? {
+    const grossValue = Act360.netToGross(net.value, discountRate, days);
+    setGross(grossValue === undefined ? undefined : {
       value: grossValue,
       currency: net.currency
-    } : undefined);
+    });
   }, [isValid, net, days, discountRate]);
 
   return (<form className="flex flex-col gap-1 min-w-[8rem]"
     onSubmit={(e) => {
-      handleSubmit((values) => {
-        if (gross === undefined || net === undefined || values.discountRate === undefined || values.days === undefined) return;
+      handleSubmit(() => {
+        if (gross === undefined || net === undefined || discountRate === undefined || days === undefined) return;
 
         onSubmit({
-          days: values.days,
-          discountRate: values.discountRate,
+          days,
+          discountRate,
           net,
           gross,
         });
@@ -129,7 +147,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
           "peer flex h-[58px] w-full rounded-[8px] border bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-none",
           "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-0",
         )}>
-          <label htmlFor="days">
+          <label htmlFor="daysInput">
             <FormattedMessage
               id="Days"
               defaultMessage="Days"
@@ -137,26 +155,27 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
             />
           </label>
             <Controller
-              name="days"
+              name="daysInput"
               control={control}
-              render={({ field }) => (<input
-                id="days"
+              rules={{ required: true }}
+              render={() => (<input
+                id="daysInput"
                 step="1"
                 type="number"
                 className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                min="0"
-                max="360"
-                required
-                {...register("days")}
-                onChange={(e) => { field.onChange(parseInt(e.target.value))}}
+                {...register("daysInput", {
+                  required: true,
+                  min: 1,
+                  max: 360,
+                })}
               />)}
             />
         </div>
-        {errors.days && (<div className="text-xxs text-signal-error">
+        {errors.daysInput && (<div className="text-xxs text-signal-error">
           <FormattedMessage
             id="Please enter a valid value."
             defaultMessage="Please enter a valid value."
-            description="Error message for field 'days' in discount form"
+            description="Error message for field 'daysInput' in discount form"
           />
         </div>)}
       </div>
@@ -166,7 +185,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
           "peer flex h-[58px] w-full rounded-[8px] border bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-none",
           "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-0",
         )}>
-          <label htmlFor="discountRate">
+          <label htmlFor="discountRateInput">
             <FormattedMessage
               id="Discount rate"
               defaultMessage="Discount rate"
@@ -175,24 +194,24 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
           </label>
           <div>
             <Controller
-              name="discountRate"
+              name="discountRateInput"
               control={control}
-              render={({ field }) => (<input
-                id="discountRate"
+              render={() => (<input
+                id="discountRateInput"
                 step="0.0001"
                 type="number"
                 className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                min="0"
-                max="99.9999"
-                required
-                {...register("discountRate")}
-                onChange={(e) => { field.onChange(parseInt(e.target.value))}}
+                {...register("discountRateInput", {
+                  required: true,
+                  min: 0,
+                  max: 99.9999,
+                })}
               />)}
             />
             %
           </div>
         </div>
-        {errors.discountRate && (<div className="text-xxs text-signal-error">
+        {errors.discountRateInput && (<div className="text-xxs text-signal-error">
           <FormattedMessage
             id="Please enter a valid value."
             defaultMessage="Please enter a valid value."
@@ -203,11 +222,11 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
 
       <div>
         <Controller
-          name="netAmount"
+          name="netInput"
           control={control}
           render={({ field }) => (
             <Input
-              id="netAmount"
+              id="netInput"
               step={currency === "BTC" ? 8 : 2}
               onChange={(e) => { field.onChange(parseFloat(e.target.value))}}
               label={intl.formatMessage({
@@ -254,7 +273,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
         </div>
       </div>
 
-      <Button type="submit" size="xs" className="my-[16px]">
+      <Button type="submit" size="xs" className="my-[16px]" disabled={!isValid}>
         <FormattedMessage
           id="Confirm"
           defaultMessage="Confirm"
