@@ -3,6 +3,7 @@ import { describe, it, afterEach, expect, vi } from "vitest";
 import { IntlProvider } from "react-intl";
 import { DiscountForm, DiscountFormProps } from "./DiscountForm";
 import userEvent from "@testing-library/user-event";
+import Big from "big.js";
 
 describe("DiscountForm", () => {
 
@@ -58,11 +59,11 @@ describe("DiscountForm", () => {
       discountRate: "100",
       gross: {
         "currency": "BTC",
-        "value": -72,
+        "value": new Big("-71.99999999999999999424"),
       },
       net: {
         "currency": "BTC",
-        "value": 1,
+        "value": new Big("1"),
       },
     });
   });
@@ -87,11 +88,11 @@ describe("DiscountForm", () => {
       discountRate: "4.5",
       gross: {
         "currency": "BTC",
-        "value": 1.011378002528445,
+        "value": new Big("1.01137800252844500632"),
       },
       net: {
         "currency": "BTC",
-        "value": 1,
+        "value": new Big("1"),
       },
     });
   });

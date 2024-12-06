@@ -27,22 +27,34 @@ describe("discount-util", () => {
 
   describe("Act360", () => {
     describe("netToGross", () => {
-      it("should calculate gross amount correctly", () => {
+      it("should calculate gross amount correctly (0)", () => {
         const startDate = new Date(2024, 11, 6);
         const endDate = new Date(2025, 2, 31);
-        const netAmount = new Big(10.12);
-        const discountRate = new Big(0.045);
+        const netAmount = new Big("10.12");
+        const discountRate = new Big("0.045");
 
         const days = daysBetween(startDate, endDate);
         const grossAmount = Act360.netToGross(netAmount, discountRate, days);
-        expect(grossAmount).toBeCloseTo(10.2675967);
+        expect(grossAmount).toStrictEqual(new Big("10.26759670259987317692"));
+        expect(grossAmount.toNumber()).toBe(10.267596702599873);
+      });
+
+      it("should calculate gross amount correctly (1)", () => {
+        const grossAmount = Act360.netToGross(new Big("1"), new Big("1"), 365);
+        expect(grossAmount).toStrictEqual(new Big("-71.99999999999999999424"));
+      });
+
+      it("should calculate gross amount correctly (2)", () => {
+        expect(Act360.netToGross(new Big(1), new Big("0.9863"), 365)).toStrictEqual(new Big("719999.999999999424"));
+        expect(Act360.netToGross(new Big(1), new Big("0.9864"), 365)).toStrictEqual(new Big("-10000"));
+        expect(Act360.netToGross(new Big(1), new Big("0.9865"), 365)).toStrictEqual(new Big("-4965.51724137931031743163"));
       });
 
       it("should calculate gross amount correctly (step-by-step)", () => {
         const startDate = new Date(2024, 11, 6);
         const endDate = new Date(2025, 2, 31);
-        const netAmount = new Big(10.12);
-        const discountRate = new Big(0.045);
+        const netAmount = new Big("10.12");
+        const discountRate = new Big("0.045");
 
         const days = daysBetween(startDate, endDate);
         expect(days, "sanity check").toBe(115);
@@ -53,10 +65,11 @@ describe("discount-util", () => {
         const factor = new Big(1).minus(discountDays);
 
         const grossAmount = netAmount.div(factor);
+        expect(grossAmount).toStrictEqual(new Big("10.26759670259987317692"));
         expect(grossAmount.toNumber()).toBe(10.267596702599873);
 
         const calcGrossAmount = Act360.netToGross(netAmount, discountRate, days);
-        expect(calcGrossAmount.toNumber()).toBe(grossAmount.toNumber());
+        expect(calcGrossAmount).toStrictEqual(grossAmount);
       });
     });
   });

@@ -16,7 +16,7 @@ export type DiscountFormProps = {
 };
 
 type CurrencyAmount = {
-  value: number
+  value: Big
   currency: string
 };
 
@@ -50,14 +50,14 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
   const [gross, setGross] = useState<CurrencyAmount>();
   const net = useMemo<CurrencyAmount | undefined>(() => {
     return netAmount === undefined || isNaN(netAmount) ? undefined : {
-      value: netAmount,
+      value: new  Big(netAmount),
       currency
     }
   }, [netAmount, currency]);
 
   const markUp = useMemo<CurrencyAmount | undefined>(() => {
     return net === undefined || gross === undefined ? undefined : {
-      value: gross.value - net.value,
+      value: gross.value.sub(net.value),
       currency: net.currency
     }
   }, [gross, net]);
@@ -76,9 +76,9 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
       return;
     }
 
-    const grossValue = Act360.netToGross(new Big(net.value), new Big(discountRate).div(100), days);
+    const grossValue = Act360.netToGross(net.value, new Big(discountRate).div(new Big(100)), days);
     setGross({
-      value: grossValue.toNumber(),
+      value: grossValue,
       currency: net.currency
     });
   }, [net, days, discountRate]);
@@ -193,7 +193,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
 
         <div className="flex gap-1 items-center">
           {markUp === undefined ? (<>?</>) : (<FormattedCurrency
-            value={markUp.value}
+            value={markUp.value.toNumber()}
             currency={markUp.currency}
             currencyDisplay="none"
             color="none"
@@ -211,7 +211,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
 
         <div className="flex gap-1 items-center">
           {gross === undefined ? (<>?</>) : (<FormattedCurrency
-            value={gross.value}
+            value={gross.value.toNumber()}
             currency={gross.currency}
             currencyDisplay="none"
           />)}

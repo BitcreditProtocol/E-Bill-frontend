@@ -8,9 +8,12 @@ export const daysBetween = (startDate: Date, endDate: Date): number => {
   return Math.round((start - end) / MILLISECONDS_PER_DAY);
 };
 
+const BIG_1 = new Big(1);
+const BIG_360 = new Big(360);
+
 export const Act360 = {
   netToGross: (netAmount: Big, discountRate: Big, days: number) : Big => {
-    const discountDays = discountRate.times(days).div(360);
-    return netAmount.div(new Big(1).minus(discountDays));
+    const discountDays = discountRate.times(days).div(BIG_360);
+    return netAmount.div(BIG_1.minus(discountDays));
   }
 };
