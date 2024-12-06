@@ -29,6 +29,13 @@ import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
+import Category from "./pages/bill/draw/Category";
+import Draw from "./pages/bill/draw/Draw";
+import DrawFilled from "./pages/bill/draw/DrawFilled";
+import EditIssue from "./pages/bill/draw/EditIssue";
+import PlaceOfPayment from "./pages/bill/draw/Place";
+import Preview from "./pages/bill/draw/Preview";
+import BillSuccess from "./pages/bill/draw/Success";
 
 const router = createBrowserRouter(
   [
@@ -102,11 +109,11 @@ const router = createBrowserRouter(
     },
     {
       path: routes.CREATE_BILL,
-      element: <CreateBill />,
+      element: <Category />,
     },
     {
       path: routes.PREVIEW_BILL,
-      element: <PreviewBill />,
+      element: <Preview />,
     },
     {
       path: routes.MINT_BILL,
@@ -127,6 +134,26 @@ const router = createBrowserRouter(
     {
       path: "/get-started",
       element: <Onboarding />,
+    },
+    {
+      path: "/draw-bill",
+      element: <Draw />,
+    },
+    {
+      path: "/draw-bill-filled",
+      element: <DrawFilled />,
+    },
+    {
+      path: "/edit-issue",
+      element: <EditIssue />,
+    },
+    {
+      path: "/place-of-payment",
+      element: <PlaceOfPayment />,
+    },
+    {
+      path: "/bill-success",
+      element: <BillSuccess />,
     },
   ],
   {
