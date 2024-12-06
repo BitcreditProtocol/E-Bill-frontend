@@ -154,29 +154,27 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
               description="Days label in discount form"
             />
           </label>
-            <Controller
-              name="daysInput"
-              control={control}
-              rules={{ required: true }}
-              render={() => (<input
-                id="daysInput"
-                step="1"
-                type="number"
-                className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                {...register("daysInput", {
-                  required: true,
-                  min: 1,
-                  max: 360,
-                })}
-              />)}
+            <input
+              id="daysInput"
+              step="1"
+              type="number"
+              className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              {...register("daysInput", {
+                required: true,
+                min: 1,
+                max: 360,
+              })}
             />
         </div>
         {errors.daysInput && (<div className="text-xxs text-signal-error">
-          <FormattedMessage
-            id="Please enter a valid value."
-            defaultMessage="Please enter a valid value."
-            description="Error message for field 'daysInput' in discount form"
-          />
+          {intl.formatMessage({
+            id: "Please enter a valid value between {min} and {max}.",
+            defaultMessage: "Please enter a valid value between 1 and 360.",
+            description: "Error message for field 'days' in discount form",
+          }, {
+            min: intl.formatNumber(1),
+            max: intl.formatNumber(360),
+          })}
         </div>)}
       </div>
 
@@ -193,30 +191,29 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
             />
           </label>
           <div>
-            <Controller
-              name="discountRateInput"
-              control={control}
-              render={() => (<input
-                id="discountRateInput"
-                step="0.0001"
-                type="number"
-                className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                {...register("discountRateInput", {
-                  required: true,
-                  min: 0,
-                  max: 99.9999,
-                })}
-              />)}
+            <input
+              id="discountRateInput"
+              step="0.0001"
+              type="number"
+              className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              {...register("discountRateInput", {
+                required: true,
+                min: 0,
+                max: 99.9999,
+              })}
             />
             %
           </div>
         </div>
         {errors.discountRateInput && (<div className="text-xxs text-signal-error">
-          <FormattedMessage
-            id="Please enter a valid value."
-            defaultMessage="Please enter a valid value."
-            description="Error message for field 'discountRate' in discount form"
-          />
+          {intl.formatMessage({
+            id: "Please enter a valid value between {min} and {max}.",
+            defaultMessage: "Please enter a valid value between 0 and 99.9999.",
+            description: "Error message for field 'discountRate' in discount form",
+          }, {
+            min: `${intl.formatNumber(0)}%`,
+            max: `${intl.formatNumber(99.9999)}%`,
+          })}
         </div>)}
       </div>
 
