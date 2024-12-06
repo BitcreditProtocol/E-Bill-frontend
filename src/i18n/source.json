@@ -1,4 +1,13 @@
 {
+  "Calculate discount": "Calculate discount",
+  "Confirm": "Confirm",
+  "Dates": "Dates",
+  "Days": "Days",
+  "Discount rate": "Discount rate",
+  "Gross amount": "Gross amount",
+  "Mark up": "Mark up",
+  "Net amount": "Net amount",
+  "Please enter a valid value between {min} and {max}.": "Please enter a valid value between 0 and 99.9999.",
   "contacts.empty.create": "Create contact",
   "contacts.empty.description": "Create your first contact to start a relation",
   "contacts.empty.title": "No contacts yet",
