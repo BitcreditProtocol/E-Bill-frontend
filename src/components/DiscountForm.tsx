@@ -8,6 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { daysBetween, Act360 } from "./discount-util";
 import Big from "big.js";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/language/LanguageContext";
 
 export type DiscountFormProps = {
   startDate?: Date
@@ -44,9 +45,16 @@ const parseIntSafe = (str: string | undefined) => {
   const parsed = parseInt(str, 10);
   return isNaN(parsed) ? undefined : parsed;
 };
+const formatDate = (date: Date, locale: string): string => {
+  const year = new Intl.DateTimeFormat(locale, { year: "2-digit" }).format(date);
+  const month = new Intl.DateTimeFormat(locale, { month: "short" }).format(date);
+  const day = new Intl.DateTimeFormat(locale, { day: "2-digit" }).format(date);
+  return `${day}-${month}-${year}`;
+};
 
 const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onSubmit } : DiscountFormProps) => {
   const intl = useIntl();
+  const lang = useLanguage();
   const startDate = useMemo(() => userStartDate || new Date(Date.now()), [userStartDate])
 
   const { control, watch, register, setValue, handleSubmit, formState: { isValid, errors }, } = useForm<FormValues>({
@@ -136,9 +144,9 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
           />
         </div>
         <div className="flex gap-1 text-text-300">
-          <span>{startDate.toDateString()}</span>
+          <span>{formatDate(startDate, lang.locale)}</span>
           <span>to</span>
-          <span>{endDate.toDateString()}</span>
+          <span>{formatDate(endDate, lang.locale)}</span>
         </div>
       </div>
 
