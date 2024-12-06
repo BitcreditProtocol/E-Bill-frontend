@@ -1,114 +1,18 @@
-import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useIntl, FormattedMessage } from "react-intl";
-import { EllipsisIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { FormattedMessage } from "react-intl";
+import { ChevronRightIcon, PlusIcon } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import routes from "@/constants/routes";
+import Search from "@/components/ui/search";
+import { Separator } from "@/components/ui/separator";
 import contactsIllustration from "@/assets/contacts-illustration.svg";
 
-function Search() {
-  const intl = useIntl();
-  const searchFieldRef = useRef<HTMLInputElement>(null);
-
-  const focusSearchField = () => {
-    searchFieldRef.current?.focus();
-  };
-
-  return (
-    <div
-      onClick={focusSearchField}
-      className="flex items-center gap-2 h-[46px] py-[14px] px-4 border-[1px] border-divider-75 rounded-[8px]"
-    >
-      <SearchIcon className="w-4 h-4 text-text-300" />
-
-      <input
-        ref={searchFieldRef}
-        type="text"
-        placeholder={intl.formatMessage({
-          id: "contacts.search.placeholder",
-          defaultMessage: "Search for contacts...",
-          description: "Placeholder text for search input",
-        })}
-        className="w-full bg-transparent text-text-300 text-sm font-medium placeholder-text-300 focus:outline-none"
-      />
-    </div>
-  );
-}
-
-function Header() {
-  const navigate = useNavigate();
-
-  return (
-    <div className="flex flex-col gap-3 w-full">
-      <div className="flex justify-between items-center">
-        <h1 className="text-text-300 text-xl font-medium">
-          <FormattedMessage
-            id="contacts.header.title"
-            defaultMessage="Contacts"
-            description="Title for contacts page"
-          />
-        </h1>
-
-        <Button
-          className="gap-1 p-0 h-fit text-text-300 text-xs font-medium no-underline hover:no-underline leading-[18px]"
-          variant="link"
-          onClick={() => { navigate(routes.CREATE_CONTACT); }}
-        >
-          <PlusIcon className="w-4 h-4 text-text-300" />
-          <FormattedMessage
-            id="contacts.header.create"
-            defaultMessage="New contact"
-            description="Create contact button"
-          />
-        </Button>
-      </div>
-
-      <Search />
-    </div>
-  );
-}
-
-function Contact() {
-  return (
-    <div className="flex justify-between items-center bg-elevation-200 py-4 px-5 rounded-[12px] select-none">
-      <div className="flex gap-3">
-        <div className="flex justify-center items-center bg-brand-100 h-9 w-9 rounded-full">
-          <span className="text-brand-200 text-xs font-medium">PH</span>
-        </div>
-
-        <div className="flex flex-col">
-          <span className="text-text-300 text-base font-medium leading-6">
-            Phoenix Baker
-          </span>
-          <span className="text-text-200 text-xs leading-[18px]">Catelog</span>
-        </div>
-      </div>
-
-      <Button
-        className="gap-1 p-0 h-fit text-text-300 text-xs font-medium no-underline hover:no-underline leading-[18px]"
-        variant="link"
-      >
-        <EllipsisIcon className="w-6 h-6 text-text-300" />
-      </Button>
-    </div>
-  );
-}
-
-function ContactsList() {
-  return (
-    <div className="flex-1 flex flex-col gap-2 w-full">
-      <Contact />
-      <Contact />
-      <Contact />
-      <Contact />
-    </div>
-  );
-}
+import List from "./components/List";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function EmptyList() {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center w-52">
+    <div className="flex-1 flex flex-col items-center pt-10 w-52">
       <img src={contactsIllustration} className="w-18 h-18 mx-auto mb-5" />
 
       <div className="flex flex-col items-center gap-2 text-center mb-4">
@@ -134,9 +38,9 @@ function EmptyList() {
         variant="outline"
       >
         <FormattedMessage
-          id="contacts.empty.create"
-          defaultMessage="Create contact"
-          description="Create contact button"
+          id="New Contact"
+          defaultMessage="New contact"
+          description="New contact button"
         />
       </Button>
     </div>
@@ -144,10 +48,55 @@ function EmptyList() {
 }
 
 export default function Overview() {
+  const navigate = useNavigate();
+  const goToCreate = () => {
+    navigate("/create-contact");
+  };
+
   return (
-    <div className="flex flex-col justify-between items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
-      <Header />
-      <ContactsList />
+    <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
+      <div className="flex flex-col gap-3 w-full">
+        <h1 className="text-text-300 text-xl font-medium">
+          <FormattedMessage
+            id="Contacts"
+            defaultMessage="Contacts"
+            description="Title for contacts page"
+          />
+        </h1>
+
+        <Search
+          placeholder="Name, address, email..."
+          onSearch={(e) => {
+            console.log(e);
+          }}
+        />
+      </div>
+
+      <div className="flex flex-col gap-4 w-full">
+        <button
+          className="flex items-center justify-between w-full"
+          onClick={goToCreate}
+        >
+          <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center w-8 h-8 bg-brand-200 p-2 rounded-full">
+              <PlusIcon className="w-4 h-4 text-brand-50" />
+            </div>
+
+            <span className="text-text-300 text-base font-medium">
+              <FormattedMessage
+                id="New Contact"
+                defaultMessage="New contact"
+                description="New contact button"
+              />
+            </span>
+          </div>
+          <ChevronRightIcon className="w-6 h-6 text-text-300" />
+        </button>
+
+        <Separator className="bg-divider-75" />
+      </div>
+
+      <List />
     </div>
   );
 }

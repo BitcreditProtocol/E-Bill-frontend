@@ -30,6 +30,12 @@ import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
 
+// contacts
+import Create from "./pages/contacts/Create";
+import Overview from "./pages/contacts/Overview";
+import View from "./pages/contacts/View";
+import Edit from "./pages/contacts/Edit";
+
 const router = createBrowserRouter(
   [
     {
@@ -127,6 +133,22 @@ const router = createBrowserRouter(
     {
       path: "/get-started",
       element: <Onboarding />,
+    },
+    {
+      path: routes.CONTACTS,
+      element: <Overview />,
+    },
+    {
+      path: routes.CREATE_CONTACT,
+      element: <Create />,
+    },
+    {
+      path: "/view-contact",
+      element: <View />,
+    },
+    {
+      path: "/edit-contact",
+      element: <Edit />,
     },
   ],
   {
