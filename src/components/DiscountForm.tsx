@@ -7,6 +7,7 @@ import { FormattedCurrency } from "./FormattedCurrency";
 import { Controller, useForm } from "react-hook-form";
 import { daysBetween, Act360 } from "./discount-util";
 import Big from "big.js";
+import { cn } from "@/lib/utils";
 
 export type DiscountFormProps = {
   startDate?: Date
@@ -124,46 +125,71 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
       </div>
 
       <div className="flex flex-col">
-        <Input id="days" type="number" step="1"
-          label={intl.formatMessage({
-            id: "Days",
-            defaultMessage: "Days",
-            description: "Days label in discount form",
-          })}
-          {...register("days", { 
-            required: true,
-            min: 0,
-          })}
-          />
-          {errors.days && (<span className="text-xxs text-signal-error">
+        <div className={cn("flex gap-2 justify-between items-center font-semibold",
+          "peer flex h-[58px] w-full rounded-[8px] border bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-none",
+          "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-0",
+        )}>
+          <label htmlFor="days">
             <FormattedMessage
-              id="Please enter a valid value."
-              defaultMessage="Please enter a valid value."
-              description="Error message for field 'days' in discount form"
+              id="Days"
+              defaultMessage="Days"
+              description="Days label in discount form"
             />
-          </span>)}
+          </label>
+          <input
+            id="days"
+            step="1"
+            type="number"
+            className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            {...register("days", { 
+              required: true,
+              min: 0,
+            })}
+            />
+        </div>
+        {errors.days && (<div className="text-xxs text-signal-error">
+          <FormattedMessage
+            id="Please enter a valid value."
+            defaultMessage="Please enter a valid value."
+            description="Error message for field 'days' in discount form"
+          />
+        </div>)}
       </div>
 
       <div className="flex flex-col">
-        <Input id="discountRate" type="number" step="0.01"
-          label={intl.formatMessage({
-            id: "Discount rate",
-            defaultMessage: "Discount rate",
-            description: "Discount rate label in discount form",
-          })}
-          {...register("discountRate", { 
-            required: true,
-            min: 0,
-            max: 100,
-          })}
-          />
-          {errors.discountRate && (<span className="text-xxs text-signal-error">
+        <div className={cn("flex gap-2 justify-between items-center font-semibold",
+          "peer flex h-[58px] w-full rounded-[8px] border bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-none",
+          "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-0",
+        )}>
+          <label htmlFor="discountRate">
             <FormattedMessage
-              id="Please enter a valid value."
-              defaultMessage="Please enter a valid value."
-              description="Error message for field 'discountRate' in discount form"
+              id="Discount rate"
+              defaultMessage="Discount rate"
+              description="Discount rate label in discount form"
             />
-          </span>)}
+          </label>
+          <div>
+            <input
+              id="discountRate"
+              step="0.0001"
+              type="number"
+              className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              {...register("discountRate", { 
+                required: true,
+                min: 0,
+                max: 100,
+              })}
+              />
+              %
+            </div>
+        </div>
+        {errors.discountRate && (<div className="text-xxs text-signal-error">
+          <FormattedMessage
+            id="Please enter a valid value."
+            defaultMessage="Please enter a valid value."
+            description="Error message for field 'discountRate' in discount form"
+          />
+        </div>)}
       </div>
 
       <div>
