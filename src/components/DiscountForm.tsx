@@ -5,21 +5,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { FormattedCurrency } from "./FormattedCurrency";
 import { Controller, useForm } from "react-hook-form";
-
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1_000;
-
-const daysBetween = (startDate: Date, endDate: Date): number => {
-  const start = Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-  const end = Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-  return Math.round((start - end) / MILLISECONDS_PER_DAY);
-};
-
-const gross = (value: number, discountRate: number, days: number) => {
-    // TODO: from ticket: formula := `gross_amount = (t1-t0)/365*e^i * net_amount`
-    // return (days / 365) * Math.pow(Math.E, 1 + discountRate / 100) * value;
-    // return value * Math.pow(Math.E, (days / 365) * (discountRate / 100));
-    return value * Math.pow(1 + (discountRate / 100), days / 365);
-};
+import { daysBetween, Act360 } from "./discount-util";
 
 export type DiscountFormProps = {
   startDate?: Date
@@ -78,7 +64,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, onSubmit } : Discount
   useEffect(() => {
     if (netAmount.value === undefined) return;
 
-    const grossValue = gross(netAmount.value, discountRate, days);
+    const grossValue = Act360.netToGross(netAmount.value, discountRate / 100, days);
 
     setValue("grossAmount", {
       value: grossValue,
