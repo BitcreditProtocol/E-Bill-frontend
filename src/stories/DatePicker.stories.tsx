@@ -38,7 +38,7 @@ export default {
     component: DatePicker
 } as Meta<DatePickerProps>;
 
-const Template: StoryFn<any> = (args) => {
+const Template: StoryFn<DatePickerProps> = (args) => {
     const [date, setDate] = React.useState(new Date);
     const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
     
