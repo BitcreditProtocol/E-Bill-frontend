@@ -29,14 +29,9 @@ import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
-import TestePage from "./pages/teste";
 
 const router = createBrowserRouter(
   [
-    {
-      path: "/teste",
-      element: <TestePage></TestePage>
-    },
     {
       path: routes.UNLOCK,
       element: <Unlock />,
