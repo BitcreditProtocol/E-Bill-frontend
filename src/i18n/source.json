@@ -115,5 +115,14 @@
   "months.september": "September",
   "months.october": "October",
   "months.november": "November",
-  "months.december": "December"
+  "months.december": "December",
+  "datePicker.selectDate": "Select date",
+  "datePicker.selectDateRange": "Select date range",
+  "datePicker.button.confirm": "confirm",  
+  "datePicker.button.canvel": "cancel",
+  "dropdown.option.30days": "30 dias",
+  "dropdown.option.60days": "60 dias",
+  "dropdown.option.90days": "90 dias",
+  "dropdown.option.6months": "6 meses",
+  "dropdown.option.1year": "1 ano"
 }

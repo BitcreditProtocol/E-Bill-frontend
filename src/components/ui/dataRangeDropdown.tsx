@@ -60,9 +60,9 @@ export function DateRangeDropdown({ onRangeChange }: DateRangeDropdownProps) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="w-full flex items-start justify-start rounded-lg bg-[#f6f2e7]"
+          className="w-full h-10 relative rounded-lg bg-[#f6f2e7]"
         >
-          {handleDisplayRange(selectedRange)}
+          <div className="absolute left-3">{handleDisplayRange(selectedRange)}</div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64 bg-[#f6f2e7]">
@@ -72,11 +72,21 @@ export function DateRangeDropdown({ onRangeChange }: DateRangeDropdownProps) {
           value={String(selectedRange)}
           onValueChange={handleRangeChanged}
         >
-          <DropdownMenuRadioItem value="30">30 days</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="60">60 days</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="90">90 days</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="180">6 months</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="365">1 year</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="30">
+            {intl.formatMessage({ id: 'dropdown.option.30days', defaultMessage: "30 days" })}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="60">
+            {intl.formatMessage({ id: 'dropdown.option.60days', defaultMessage: "60 days" })}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="90">
+            {intl.formatMessage({ id: 'dropdown.option.90days', defaultMessage: "90 days" })}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="180">
+            {intl.formatMessage({ id: 'dropdown.option.6months', defaultMessage: "6 Months" })}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="365">
+            {intl.formatMessage({ id: 'dropdown.option.1year', defaultMessage: "1 year" })}
+          </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

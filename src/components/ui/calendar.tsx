@@ -36,7 +36,6 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       onDayClick={handleDayClick}
-      month={selected}
       className={cn("flex justify-center", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full",
