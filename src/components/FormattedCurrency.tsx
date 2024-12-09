@@ -11,7 +11,8 @@ export type FormattedCurrencyProps = {
   color?: "auto" | "none",
   type?: "auto" | "credit" | "debit",
   currency?: FormatNumberOptions['currency']
-} & Pick<FormatNumberOptions, 'signDisplay' | 'currencyDisplay'>
+  currencyDisplay?: FormatNumberOptions['currencyDisplay'] | "none"
+} & Pick<FormatNumberOptions, 'signDisplay'>
 
 const FormattedCurrency = ({ value, className, color = "auto", type = "auto", currency, currencyDisplay = "symbol", signDisplay = "exceptZero" } : FormattedCurrencyProps) => {
   return (
@@ -26,7 +27,7 @@ const FormattedCurrency = ({ value, className, color = "auto", type = "auto", cu
         maximumFractionDigits={8}
         style={currency !== undefined ? "currency" : "decimal"}
         currency={currency}
-        currencyDisplay={currency !== undefined ? currencyDisplay : undefined}
+        currencyDisplay={currency !== undefined && currencyDisplay !== "none" ? currencyDisplay : undefined}
       >
         {(formattedNumber: string) => {
           if (currency !== BITCOIN_CODE) {
@@ -35,6 +36,8 @@ const FormattedCurrency = ({ value, className, color = "auto", type = "auto", cu
           switch(currencyDisplay) {
             case "name": return <>{formattedNumber.replace(BITCOIN_CODE, BITCOIN_NAME)}</>; 
             case "symbol": return <>{formattedNumber.replace(BITCOIN_CODE, BITCOIN_SYMBOL)}</>;
+            // eslint-disable-next-line no-irregular-whitespace
+            case "none": return <>{formattedNumber.replace(`${BITCOIN_CODE} `, "")}</>;
             default: return <>{formattedNumber}</>;
           }
         }}
