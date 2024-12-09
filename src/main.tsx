@@ -1,6 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { Toaster } from "./components/ui/toaster";
 import LanguageProvider from "./context/language/LanguageProvider";
 
@@ -29,6 +31,8 @@ import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter(
   [
@@ -145,27 +149,36 @@ const router = createBrowserRouter(
     },
   }
 );
+const prepare = async () => {
+  if (import.meta.env.DEV) {
+    const { worker } = await import("./mocks/browser");
 
-if (import.meta.env.DEV) {
-  console.info("[dev] quickly navigate through all routes while developing:");
-  console.table(
-    router.routes
-      .filter((it) => it.path !== undefined)
-      .map((it) => [it.path, location.origin + (it.path || "")])
+    console.info("[dev] quickly navigate through all routes while developing:");
+    console.table(
+      router.routes
+        .filter((it) => it.path !== undefined)
+        .map((it) => [it.path, location.origin + (it.path || "")])
+    );
+
+    await worker.start();
+  }
+};
+
+void prepare().then(() => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <LanguageProvider>
+          <RouterProvider
+            router={router}
+            future={{
+              v7_startTransition: true,
+            }}
+          />
+          <Toaster />
+        </LanguageProvider>
+      </QueryClientProvider>
+    </StrictMode>
   );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <LanguageProvider>
-      <RouterProvider
-        router={router}
-        future={{
-          v7_startTransition: true,
-        }}
-      />
-      <Toaster />
-    </LanguageProvider>
-  </StrictMode>
-);
+});

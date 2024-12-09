@@ -1,12 +1,33 @@
 import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
+import { useQuery } from "@tanstack/react-query";
 import { ReceiptTextIcon } from "lucide-react";
 
 import Bill from "@/components/Bill";
 import routes from "@/constants/routes";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getRecentBills } from "@/services/bill";
+
+function BillsLoader() {
+  return (
+    <>
+      {Array.from({ length: 3 }, (_, i) => (
+        <Skeleton
+          id={`bill-skeleton-${i.toString()}`}
+          key={`bill-skeleton-${i.toString()}`}
+          className="w-full h-16 bg-elevation-200 rounded-lg"
+        />
+      ))}
+    </>
+  );
+}
 
 export default function Bills() {
   const navigate = useNavigate();
+  const { isPending, data } = useQuery({
+    queryKey: ["recent-bills"],
+    queryFn: getRecentBills,
+  });
 
   return (
     <div className="flex flex-col gap-3">
@@ -19,28 +40,19 @@ export default function Bills() {
       </span>
 
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-1.5">
-          <Bill
-            title="Hayek Ltd."
-            date="12-Nov-24"
-            amount={12.49002}
-            currency="USD"
-          />
-
-          <Bill
-            title="Hayek Ltd."
-            date="12-Nov-24"
-            amount={-3234.12001}
-            currency="USD"
-          />
-
-          <Bill
-            title="Hayek Ltd."
-            date="12-Nov-24"
-            amount={-3234.12001}
-            currency="USD"
-          />
-        </div>
+        {isPending || !data ? (
+          <BillsLoader />
+        ) : (
+          data.map((bill) => (
+            <Bill
+              key={bill.id}
+              title={bill.name}
+              amount={bill.amount_numbers}
+              currency={bill.currency_code}
+              date={bill.date_of_issue}
+            />
+          ))
+        )}
 
         <button
           className="flex items-center gap-1 bg-transparent text-brand-200 text-sm font-medium leading-5 mx-auto"
