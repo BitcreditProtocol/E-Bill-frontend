@@ -1,16 +1,24 @@
 
 import { describe, it, expect } from "vitest";
-import { formatDate } from ".";
+import { formatFileSize } from ".";
 
 describe("util", () => {
 
-  describe("formatDate", () => {
-    it("should format date according to designs", () => {
-      expect(formatDate(new Date(2009, 0, 3), "en-US")).toBe("03-Jan-09");
-      expect(formatDate(new Date(2009, 0, 3), "es-AR")).toBe("03-ene-09");
-      expect(formatDate(new Date(2009, 0, 3), "tr")).toBe("03-Oca-09");
-      expect(formatDate(new Date(2009, 0, 3), "fr")).toBe("03-janv.-09");
-      expect(formatDate(new Date(2009, 0, 3), "zh")).toBe("03日-1月-09年");
+  describe("formatFileSize", () => {
+    it("should format file size according to designs", () => {
+      expect(formatFileSize(-1)).toBe("-1 B");
+      expect(formatFileSize(0)).toBe("0 B");
+      expect(formatFileSize(1)).toBe("1 B");
+      expect(formatFileSize(1_023)).toBe("1023 B");
+
+      expect(formatFileSize(1_024)).toBe("1.00 KB");
+      expect(formatFileSize(10_000)).toBe("9.77 KB");
+      expect(formatFileSize(1_048_575)).toBe("1024.00 KB");
+
+      expect(formatFileSize(10_48_576)).toBe("1.00 MB");
+      expect(formatFileSize(10_48_576 * 1_000)).toBe("1000.00 MB");
+      expect(formatFileSize(10_48_576 * 1_000 * 1_000)).toBe("1000000.00 MB");
+      expect(formatFileSize(10_48_576 * 1_000 * 1_000 * 1_000)).toBe("1000000000.00 MB");
     });
   });
   

@@ -34,14 +34,3 @@ export const truncateFileName = (name: string) => {
     ? `${baseName.slice(0, 5)}...${baseName.slice(-3)}${extension}`
     : name;
 };
-
-const formatDMY = (date: Date, locale: string): string => {
-  const year = new Intl.DateTimeFormat(locale, { year: "2-digit" }).format(date);
-  const month = new Intl.DateTimeFormat(locale, { month: "short" }).format(date);
-  const day = new Intl.DateTimeFormat(locale, { day: "2-digit" }).format(date);
-  return `${day}-${month}-${year}`;
-};
-
-export const formatDate = (date: Date, locale: string): string => {
-  return formatDMY(date, locale);
-};
