@@ -9,7 +9,7 @@ import RequiredInformation from "./pages/signup/RequiredInformation";
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
-import Home from "./pages/Home";
+import Home from "./pages/home";
 import CreateNewIdentity from "./pages/signup/CreateNewIdentity";
 import Success from "./pages/signup/Success";
 import { Notifications, NotificationsEmpty } from "./pages/Notifications";
