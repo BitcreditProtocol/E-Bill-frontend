@@ -38,6 +38,7 @@
     "react-hook-form": "^7.53.2",
     "react-intl": "^7.0.1",
     "react-router-dom": "^6.28.0",
+    "run-parallel": "^1.2.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "util-deprecate": "^1.0.2",
