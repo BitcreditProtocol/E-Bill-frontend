@@ -16,7 +16,7 @@ const meta = {
     endDate: new Date(now + 90 * MILLISECONDS_PER_DAY),
     onSubmit: fn(),
     gross: {
-      value: new Big(1),
+      value: new Big(12.47568),
       currency: "BTC"
     }
   },

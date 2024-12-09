@@ -59,11 +59,41 @@ type FormValues = {
   discountRateInput?: string
 };
 
-const DiscountForm = ({ ...props } : DiscountFormProps) => {
-  if ('currency' in props) {
-    return (<NetToGrossDiscountForm { ...props } />);
-  }
-  return (<GrossToNetDiscountForm { ...props } />);
+const DiscountForm = ({ startDate: userStartDate, endDate, ...props } : DiscountFormProps) => {
+  const lang = useLanguage();
+  const startDate = useMemo(() => userStartDate || new Date(Date.now()), [userStartDate]);
+
+  return (<div className="flex flex-col gap-2 min-w-[8rem]">
+    <h2 className="text-text-300 text-lg font-medium">
+      <FormattedMessage
+        id="Calculate discount"
+        defaultMessage="Calculate discount"
+        description="Title of discount form"
+      />
+    </h2>
+
+    <div className="flex gap-1 text-xs">
+      <div className="flex gap-1 text-text-200">
+        <CalendarDaysIcon size={16} strokeWidth={1} />
+
+        <FormattedMessage
+          id="Dates"
+          defaultMessage="Dates"
+          description="Dates label in discount form"
+        />
+      </div>
+      <div className="flex gap-1 text-text-300">
+        <span>{formatDate(startDate, lang.locale)}</span>
+        <span>to</span>
+        <span>{formatDate(endDate, lang.locale)}</span>
+      </div>
+    </div>
+    {'currency' in props ? (
+      <NetToGrossDiscountForm startDate={startDate} endDate={endDate} { ...props } />
+    ) : (
+      <GrossToNetDiscountForm startDate={startDate} endDate={endDate} { ...props } />
+    )}
+  </div>);
 };
 
 DiscountForm.displayName = "DiscountForm";
@@ -72,10 +102,8 @@ type NetToGrossFormValues = FormValues & {
   netInput?: string
 };
 
-const NetToGrossDiscountForm = ({ startDate: userStartDate, endDate, currency, onSubmit } : NetToGrossProps) => {
+const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : NetToGrossProps) => {
   const intl = useIntl();
-  const lang = useLanguage();
-  const startDate = useMemo(() => userStartDate || new Date(Date.now()), [userStartDate])
 
   const { watch, register, setValue, handleSubmit, formState: { isValid, errors }, } = useForm<NetToGrossFormValues>({
     mode: "all"
@@ -110,6 +138,7 @@ const NetToGrossDiscountForm = ({ startDate: userStartDate, endDate, currency, o
   }, [gross, net]);
 
   useEffect(() => {
+    if (startDate === undefined) return
     setValue("daysInput", String(daysBetween(startDate, endDate)), {
       shouldValidate: true,
       shouldDirty: true,
@@ -145,31 +174,6 @@ const NetToGrossDiscountForm = ({ startDate: userStartDate, endDate, currency, o
         // TODO
       })
     }}>
-      <h2 className="text-text-300 text-lg font-medium">
-        <FormattedMessage
-          id="Calculate discount"
-          defaultMessage="Calculate discount"
-          description="Title of discount form"
-        />
-      </h2>
-
-      <div className="flex gap-1 text-xs py-[4px]">
-        <div className="flex gap-1 text-text-200">
-          <CalendarDaysIcon size={16} strokeWidth={1} />
-
-          <FormattedMessage
-            id="Dates"
-            defaultMessage="Dates"
-            description="Dates label in discount form"
-          />
-        </div>
-        <div className="flex gap-1 text-text-300">
-          <span>{formatDate(startDate, lang.locale)}</span>
-          <span>to</span>
-          <span>{formatDate(endDate, lang.locale)}</span>
-        </div>
-      </div>
-
       <div className="flex flex-col">
         <InputContainer htmlFor="daysInput" label={
           <FormattedMessage
@@ -283,7 +287,7 @@ const NetToGrossDiscountForm = ({ startDate: userStartDate, endDate, currency, o
         </div>
       </div>
 
-      <div className="flex justify-between items-center text-md text-text-300 font-medium">
+      <div className="flex justify-between items-center text-md text-text-300 font-semibold">
         <FormattedMessage
           id="Gross amount"
           defaultMessage="Gross amount"
@@ -296,7 +300,7 @@ const NetToGrossDiscountForm = ({ startDate: userStartDate, endDate, currency, o
             currency={gross.currency}
             currencyDisplay="none"
           />)}
-          <span className="text-xxs text-text-200 leading-3">{gross?.currency}</span>
+          <span className="font-medium text-xxs text-text-200 leading-3">{gross?.currency}</span>
         </div>
       </div>
 
@@ -314,10 +318,8 @@ NetToGrossDiscountForm.displayName = "NetToGrossDiscountForm";
 
 type GrossToNetFormValues = FormValues
 
-const GrossToNetDiscountForm = ({ startDate: userStartDate, endDate, gross, onSubmit } : GrossToNetProps) => {
+const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossToNetProps) => {
   const intl = useIntl();
-  const lang = useLanguage();
-  const startDate = useMemo(() => userStartDate || new Date(Date.now()), [userStartDate])
 
   const { watch, register, setValue, handleSubmit, formState: { isValid, errors }, } = useForm<GrossToNetFormValues>({
     mode: "all"
@@ -338,12 +340,13 @@ const GrossToNetDiscountForm = ({ startDate: userStartDate, endDate, gross, onSu
 
   const discount = useMemo<CurrencyAmount | undefined>(() => {
     return net === undefined ? undefined : {
-      value: gross.value.sub(net.value),
+      value: net.value.sub(gross.value),
       currency: net.currency
     }
   }, [gross, net]);
 
   useEffect(() => {
+    if (startDate === undefined) return;
     setValue("daysInput", String(daysBetween(startDate, endDate)), {
       shouldValidate: true,
       shouldDirty: true,
@@ -357,9 +360,8 @@ const GrossToNetDiscountForm = ({ startDate: userStartDate, endDate, gross, onSu
       return;
     }
 
-    const grossValue = Act360.netToGross(gross.value, discountRate, days);
-    setNet(grossValue === undefined ? undefined : {
-      value: grossValue,
+    setNet({
+      value: Act360.grossToNet(gross.value, discountRate, days),
       currency: gross.currency
     });
   }, [isValid, gross, days, discountRate]);
@@ -379,31 +381,6 @@ const GrossToNetDiscountForm = ({ startDate: userStartDate, endDate, gross, onSu
         // TODO
       })
     }}>
-      <h2 className="text-text-300 text-lg font-medium">
-        <FormattedMessage
-          id="Calculate discount"
-          defaultMessage="Calculate discount"
-          description="Title of discount form"
-        />
-      </h2>
-
-      <div className="flex gap-1 text-xs py-[4px]">
-        <div className="flex gap-1 text-text-200">
-          <CalendarDaysIcon size={16} strokeWidth={1} />
-
-          <FormattedMessage
-            id="Dates"
-            defaultMessage="Dates"
-            description="Dates label in discount form"
-          />
-        </div>
-        <div className="flex gap-1 text-text-300">
-          <span>{formatDate(startDate, lang.locale)}</span>
-          <span>to</span>
-          <span>{formatDate(endDate, lang.locale)}</span>
-        </div>
-      </div>
-
       <div className="flex flex-col">
         <InputContainer htmlFor="daysInput" label={
           <FormattedMessage
@@ -468,7 +445,25 @@ const GrossToNetDiscountForm = ({ startDate: userStartDate, endDate, gross, onSu
         </div>)}
       </div>
 
-      <div className="mt-1 flex justify-between text-sm text-text-200 font-normal">
+      <div className="mt-1 flex justify-between items-center text-sm text-text-200 font-medium">
+        <FormattedMessage
+          id="Gross amount"
+          defaultMessage="Gross amount"
+          description="Gross amount label in discount form"
+        />
+
+        <div className="flex gap-1 items-center">
+          <FormattedCurrency
+            value={gross.value.toNumber()}
+            currency={gross.currency}
+            currencyDisplay="none"
+            color="none"
+          />
+          <span className="text-xxs text-text-200 leading-3">{gross.currency}</span>
+        </div>
+      </div>
+
+      <div className="flex justify-between text-sm text-text-200 font-medium">
         <FormattedMessage
           id="Discount"
           defaultMessage="Discount"
@@ -486,20 +481,20 @@ const GrossToNetDiscountForm = ({ startDate: userStartDate, endDate, gross, onSu
         </div>
       </div>
 
-      <div className="flex justify-between items-center text-md text-text-300 font-medium">
+      <div className="flex justify-between items-center text-md text-text-300 font-semibold">
         <FormattedMessage
-          id="Gross amount"
-          defaultMessage="Gross amount"
-          description="Gross amount label in discount form"
+          id="Net amount"
+          defaultMessage="Net amount"
+          description="Net amount label in discount form"
         />
 
         <div className="flex gap-1 items-center">
-          <FormattedCurrency
-            value={gross.value.toNumber()}
-            currency={gross.currency}
+          {net === undefined ? (<>?</>) : (<FormattedCurrency
+            value={net.value.toNumber()}
+            currency={net.currency}
             currencyDisplay="none"
-          />
-          <span className="text-xxs text-text-200 leading-3">{gross.currency}</span>
+          />)}
+          <span className="font-medium text-xxs text-text-200 leading-3">{net?.currency}</span>
         </div>
       </div>
 
