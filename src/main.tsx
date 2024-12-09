@@ -33,100 +33,106 @@ import Onboarding from "./pages/onboarding/Onboarding";
 const router = createBrowserRouter(
   [
     {
-      path: routes.UNLOCK,
-      element: <Unlock />,
-    },
-    {
-      path: "/",
-      element: <Login />,
-    },
-    {
-      path: routes.LOGIN,
-      element: <Login />,
-    },
-    {
-      path: routes.HOME,
-      element: <Home />,
-    },
-    {
-      path: routes.RESTORE_WITH_SEED_PHRASE,
-      element: <RecoverWithSeedPhrase />,
-    },
-    {
-      path: routes.CREATE_IDENTITY,
-      element: <CreateNewIdentity />,
-    },
-    {
-      path: routes.REQUIRED_INFORMATION,
-      element: <RequiredInformation />,
-    },
-    {
-      path: routes.EMAIL_VERIFICATION,
-      element: <EmailVerification />,
-    },
-    {
-      path: routes.OPTIONAL_INFORMATION,
-      element: <OptionalInformation />,
-    },
-    {
-      path: "/success",
-      element: <Success />,
-    },
-    {
-      path: "/confirm-identity",
-      element: <ConfirmIdentity />,
-    },
-    {
-      path: routes.NOTIFICATIONS,
-      element: <Notifications />,
-    },
-    {
-      path: "/notifications-empty",
-      element: <NotificationsEmpty />,
-    },
-    {
-      path: routes.BILLS,
-      element: <Bills />,
-    },
-    {
-      path: "/bills-empty",
-      element: <BillsEmpty />,
-    },
-    {
-      path: routes.VIEW_BILL,
-      element: <Bill />,
-    },
-    {
-      path: routes.ISSUE_BILL,
-      element: <IssueBill />,
-    },
-    {
-      path: routes.CREATE_BILL,
-      element: <CreateBill />,
-    },
-    {
-      path: routes.PREVIEW_BILL,
-      element: <PreviewBill />,
-    },
-    {
-      path: routes.MINT_BILL,
-      element: <MintBill />,
-    },
-    {
-      path: routes.SELL_BILL,
-      element: <SellBill />,
-    },
-    {
-      path: routes.CREATE_BILL,
-      element: <CreateBill />,
-    },
-    {
-      path: routes.PREVIEW_BILL,
-      element: <PreviewBill />,
-    },
-    {
-      path: "/get-started",
-      element: <Onboarding />,
+      path: routes.ROOT,
+      element: <DefaultLayout />,
+      children: [
+        {
+          path: routes.UNLOCK,
+          element: <Unlock />,
+        },
+        {
+          path: routes.LOGIN,
+          element: <Login />,
+        },
+        {
+          path: routes.LOGIN,
+          element: <Login />,
+        },
+        {
+          path: routes.HOME,
+          element: <Home />,
+        },
+        {
+          path: routes.RESTORE_WITH_SEED_PHRASE,
+          element: <RecoverWithSeedPhrase />,
+        },
+        {
+          path: routes.CREATE_IDENTITY,
+          element: <CreateNewIdentity />,
+        },
+        {
+          path: routes.REQUIRED_INFORMATION,
+          element: <RequiredInformation />,
+        },
+        {
+          path: routes.EMAIL_VERIFICATION,
+          element: <EmailVerification />,
+        },
+        {
+          path: routes.OPTIONAL_INFORMATION,
+          element: <OptionalInformation />,
+        },
+        {
+          path: "success",
+          element: <Success />,
+        },
+        {
+          path: "confirm-identity",
+          element: <ConfirmIdentity />,
+        },
+        {
+          path: routes.NOTIFICATIONS,
+          element: <Notifications />,
+        },
+        {
+          path: "notifications-empty",
+          element: <NotificationsEmpty />,
+        },
+        {
+          path: routes.BILLS,
+          element: <Bills />,
+        },
+        {
+          path: "bills-empty",
+          element: <BillsEmpty />,
+        },
+        {
+          path: routes.VIEW_BILL,
+          element: <Bill />,
+        },
+        {
+          path: routes.ISSUE_BILL,
+          element: <IssueBill />,
+        },
+        {
+          path: routes.CREATE_BILL,
+          element: <CreateBill />,
+        },
+        {
+          path: routes.PREVIEW_BILL,
+          element: <PreviewBill />,
+        },
+        {
+          path: routes.MINT_BILL,
+          element: <MintBill />,
+        },
+        {
+          path: routes.SELL_BILL,
+          element: <SellBill />,
+        },
+        {
+          path: routes.CREATE_BILL,
+          element: <CreateBill />,
+        },
+        {
+          path: routes.PREVIEW_BILL,
+          element: <PreviewBill />,
+        },
+        {
+          path: "get-started",
+          element: <Onboarding />,
+        },
+      ],
     },
   ],
   {
@@ -153,15 +159,13 @@ if (import.meta.env.DEV) {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <LanguageProvider>
-      <DefaultLayout>
-        <RouterProvider
-          router={router}
-          future={{
-            v7_startTransition: true,
-          }}
-        />
-        <Toaster />
-      </DefaultLayout>
+      <RouterProvider
+        router={router}
+        future={{
+          v7_startTransition: true,
+        }}
+      />
+      <Toaster />
     </LanguageProvider>
   </StrictMode>
 );
