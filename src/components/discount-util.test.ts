@@ -36,7 +36,7 @@ describe("discount-util", () => {
         const days = daysBetween(startDate, endDate);
         const grossAmount = Act360.netToGross(netAmount, discountRate, days);
         expect(grossAmount).toStrictEqual(new Big("10.26759670259987317692"));
-        expect(grossAmount.toNumber()).toBe(10.267596702599873);
+        expect(grossAmount!.toNumber()).toBe(10.267596702599873);
       });
 
       it("should calculate gross amount correctly (1)", () => {

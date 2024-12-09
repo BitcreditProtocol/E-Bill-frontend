@@ -8,6 +8,7 @@ import { daysBetween, Act360 } from "./discount-util";
 import Big from "big.js";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/language/LanguageContext";
+import { formatDate } from "@/utils";
 
 export type DiscountFormProps = {
   startDate?: Date
@@ -43,12 +44,6 @@ const parseIntSafe = (str: string | undefined) => {
   if (str === undefined) return undefined;
   const parsed = parseInt(str, 10);
   return isNaN(parsed) ? undefined : parsed;
-};
-const formatDate = (date: Date, locale: string): string => {
-  const year = new Intl.DateTimeFormat(locale, { year: "2-digit" }).format(date);
-  const month = new Intl.DateTimeFormat(locale, { month: "short" }).format(date);
-  const day = new Intl.DateTimeFormat(locale, { day: "2-digit" }).format(date);
-  return `${day}-${month}-${year}`;
 };
 
 const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onSubmit } : DiscountFormProps) => {
