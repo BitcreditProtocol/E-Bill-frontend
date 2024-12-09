@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CalendarDaysIcon } from "lucide-react";
-import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { FormattedCurrency } from "./FormattedCurrency";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { daysBetween, Act360 } from "./discount-util";
 import Big from "big.js";
 import { cn } from "@/lib/utils";
@@ -57,7 +56,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
   const lang = useLanguage();
   const startDate = useMemo(() => userStartDate || new Date(Date.now()), [userStartDate])
 
-  const { control, watch, register, setValue, handleSubmit, formState: { isValid, errors }, } = useForm<FormValues>({
+  const { watch, register, setValue, handleSubmit, formState: { isValid, errors }, } = useForm<FormValues>({
     mode: "all"
   });
 
@@ -162,17 +161,17 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
               description="Days label in discount form"
             />
           </label>
-            <input
-              id="daysInput"
-              step="1"
-              type="number"
-              className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              {...register("daysInput", {
-                required: true,
-                min: 1,
-                max: 360,
-              })}
-            />
+          <input
+            id="daysInput"
+            step="1"
+            type="number"
+            className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            {...register("daysInput", {
+              required: true,
+              min: 1,
+              max: 360,
+            })}
+          />
         </div>
         {errors.daysInput && (<div className="text-xxs text-signal-error">
           {intl.formatMessage({
@@ -225,22 +224,41 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
         </div>)}
       </div>
 
-      <div>
-        <Controller
-          name="netInput"
-          control={control}
-          render={({ field }) => (
-            <Input
+      <div className="flex flex-col">
+        <div className={cn("flex gap-2 justify-between items-center font-semibold",
+          "peer flex h-[58px] w-full rounded-[8px] border bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-none",
+          "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-0",
+        )}>
+          <label htmlFor="netInput">
+            <FormattedMessage
+              id="Net amount"
+              defaultMessage="Net amount"
+              description="Net amount label in discount form"
+            />
+          </label>
+          <div className="flex gap-1 items-center">
+            <input
               id="netInput"
-              step={currency === "BTC" ? 8 : 2}
-              onChange={(e) => { field.onChange(parseFloat(e.target.value))}}
-              label={intl.formatMessage({
-                id: "Net amount",
-                defaultMessage: "Net amount",
-                description: "Net amount label in discount form",
-              })} />
-          )}
-        />
+              type="number"
+              step="any"
+              className={cn("bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none", {
+                "text-signal-success": net !== undefined && net.value.toNumber() > 0,
+                "text-signal-error": net !== undefined && net.value.toNumber() < 0
+              })}
+              {...register("netInput", {
+                required: true
+              })}
+            />
+            <span className="font-medium text-xxs text-text-200 leading-3">{currency}</span>
+          </div>
+        </div>
+        {errors.netInput && (<div className="text-xxs text-signal-error">
+          {intl.formatMessage({
+            id: "Please enter a valid value.",
+            defaultMessage: "Please enter a valid value.",
+            description: "Error message for field 'net' in discount form",
+          })}
+        </div>)}
       </div>
 
       <div className="flex justify-between text-sm text-text-200 font-normal">
