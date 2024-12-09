@@ -194,7 +194,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
             })}
           />
         </InputContainer>
-        {errors.daysInput && (<div className="text-xxs text-signal-error">
+        {errors.daysInput && (<div className="text-[10px] text-signal-error">
           {intl.formatMessage({
             id: "Please enter a valid value between {min} and {max}.",
             defaultMessage: "Please enter a valid value between 1 and 360.",
@@ -227,7 +227,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
             %
           </div>
         </InputContainer>
-        {errors.discountRateInput && (<div className="text-xxs text-signal-error">
+        {errors.discountRateInput && (<div className="text-[10px] text-signal-error">
           {intl.formatMessage({
             id: "Please enter a valid value between {min} and {max}.",
             defaultMessage: "Please enter a valid value between 0 and 99.9999.",
@@ -258,10 +258,10 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
                 required: true
               })}
             />
-            <span className="font-medium text-xxs text-text-200 leading-3">{currency}</span>
+            <span className="font-medium text-[10px] text-text-200 leading-3">{currency}</span>
           </div>
         </InputContainer>
-        {errors.netInput && (<div className="text-xxs text-signal-error">
+        {errors.netInput && (<div className="text-[10px] text-signal-error">
           {intl.formatMessage({
             id: "Please enter a valid value.",
             defaultMessage: "Please enter a valid value.",
@@ -284,7 +284,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
             currencyDisplay="none"
             color="none"
           />)}
-          <span className="text-xxs text-text-200 leading-3">{markUp?.currency}</span>
+          <span className="text-[10px] text-text-200 leading-3">{markUp?.currency}</span>
         </div>
       </div>
 
@@ -301,7 +301,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
             currency={gross.currency}
             currencyDisplay="none"
           />)}
-          <span className="font-medium text-xxs text-text-200 leading-3">{gross?.currency}</span>
+          <span className="font-medium text-[10px] text-text-200 leading-3">{gross?.currency}</span>
         </div>
       </div>
 
@@ -401,7 +401,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
             })}
           />
         </InputContainer>
-        {errors.daysInput && (<div className="text-xxs text-signal-error">
+        {errors.daysInput && (<div className="text-[10px] text-signal-error">
           {intl.formatMessage({
             id: "Please enter a valid value between {min} and {max}.",
             defaultMessage: "Please enter a valid value between 1 and 360.",
@@ -434,7 +434,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
             %
           </div>
         </InputContainer>
-        {errors.discountRateInput && (<div className="text-xxs text-signal-error">
+        {errors.discountRateInput && (<div className="text-[10px] text-signal-error">
           {intl.formatMessage({
             id: "Please enter a valid value between {min} and {max}.",
             defaultMessage: "Please enter a valid value between 0 and 99.9999.",
@@ -460,7 +460,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
             currencyDisplay="none"
             color="none"
           />
-          <span className="text-xxs text-text-200 leading-3">{gross.currency}</span>
+          <span className="text-[10px] text-text-200 leading-3">{gross.currency}</span>
         </div>
       </div>
 
@@ -478,7 +478,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
             currencyDisplay="none"
             color="none"
           />)}
-          <span className="text-xxs text-text-200 leading-3">{discount?.currency}</span>
+          <span className="text-[10px] text-text-200 leading-3">{discount?.currency}</span>
         </div>
       </div>
 
@@ -495,7 +495,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
             currency={net.currency}
             currencyDisplay="none"
           />)}
-          <span className="font-medium text-xxs text-text-200 leading-3">{net?.currency}</span>
+          <span className="font-medium text-[10px] text-text-200 leading-3">{net?.currency}</span>
         </div>
       </div>
 
