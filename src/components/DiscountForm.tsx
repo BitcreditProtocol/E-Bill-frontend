@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CalendarDaysIcon } from "lucide-react";
-import { Button } from "./ui/button";
-import { FormattedCurrency } from "./FormattedCurrency";
 import { useForm } from "react-hook-form";
-import { daysBetween, Act360 } from "./discount-util";
 import Big from "big.js";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/language/LanguageContext";
-import { formatDate } from "@/utils";
+import { formatDate, parseFloatSafe, parseIntSafe } from "@/utils";
+import { Button } from "./ui/button";
+import { FormattedCurrency } from "./FormattedCurrency";
+import { daysBetween, Act360 } from "./discount-util";
 
 export type DiscountFormProps = {
   startDate?: Date
@@ -33,17 +33,6 @@ type FormValues = {
   daysInput?: string
   discountRateInput?: string
   netInput?: string
-};
-
-const parseFloatSafe = (str: string | undefined) => {
-  if (str === undefined) return undefined;
-  const parsed = parseFloat(str);
-  return isNaN(parsed) ? undefined : parsed;
-};
-const parseIntSafe = (str: string | undefined) => {
-  if (str === undefined) return undefined;
-  const parsed = parseInt(str, 10);
-  return isNaN(parsed) ? undefined : parsed;
 };
 
 const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onSubmit } : DiscountFormProps) => {
