@@ -9,7 +9,7 @@ function RequiredInformation() {
       <div className="flex justify-between">
         <span className="text-text-300 font-medium">
           <FormattedMessage
-            id="pages.onboarding.confirmIdentity.requiredInformation"
+            id="Required information"
             defaultMessage="Required information"
             description="Header for required information section"
           />
@@ -20,7 +20,7 @@ function RequiredInformation() {
         <div className="flex flex-col gap-1.5">
           <span className="text-xs text-[#1B0F0080]">
             <FormattedMessage
-              id="pages.onboarding.confirmIdentity.legalFullName"
+              id="Legal full name"
               defaultMessage="Legal full name"
               description="Label for legal full name input"
             />
@@ -33,7 +33,7 @@ function RequiredInformation() {
         <div className="flex flex-col gap-1.5">
           <span className="text-xs text-[#1B0F0080]">
             <FormattedMessage
-              id="pages.onboarding.confirmIdentity.emailAddress"
+              id="Email address"
               defaultMessage="Email address"
               description="Label for email address input"
             />
@@ -48,7 +48,7 @@ function RequiredInformation() {
         <div className="flex flex-col gap-1.5">
           <span className="text-xs text-[#1B0F0080]">
             <FormattedMessage
-              id="pages.onboarding.confirmIdentity.postalAddress"
+              id="Postal address"
               defaultMessage="Postal address"
               description="Label for postal address input"
             />
@@ -68,7 +68,7 @@ function OptionalInformation() {
       <div className="flex justify-between">
         <span className="text-text-300 font-medium">
           <FormattedMessage
-            id="pages.onboarding.confirmIdentity.optionalInformation"
+            id="Optional information"
             defaultMessage="Optional information"
             description="Header for optional information section"
           />
@@ -79,7 +79,7 @@ function OptionalInformation() {
         <div className="flex flex-col gap-1.5">
           <span className="text-xs text-[#1B0F0080]">
             <FormattedMessage
-              id="pages.onboarding.confirmIdentity.birthDate"
+              id="Birth date"
               defaultMessage="Birth date"
               description="Label for birth date input"
             />
@@ -92,8 +92,8 @@ function OptionalInformation() {
         <div className="flex flex-col gap-1.5">
           <span className="text-xs text-[#1B0F0080]">
             <FormattedMessage
-              id="pages.onboarding.confirmIdentity.countryOfBirth"
-              defaultMessage="Couyntry of birth"
+              id="Country of birth"
+              defaultMessage="Country of birth"
               description="Label for country of birth input"
             />
           </span>
@@ -105,7 +105,7 @@ function OptionalInformation() {
         <div className="flex flex-col gap-1.5">
           <span className="text-xs text-[#1B0F0080]">
             <FormattedMessage
-              id="pages.onboarding.confirmIdentity.cityOfBirth"
+              id="City of birth"
               defaultMessage="City of birth"
               description="Label for city of birth input"
             />
@@ -118,7 +118,7 @@ function OptionalInformation() {
         <div className="flex flex-col gap-1.5">
           <span className="text-xs text-[#1B0F0080]">
             <FormattedMessage
-              id="pages.onboarding.confirmIdentity.socialSecurityNumber"
+              id="Social security number"
               defaultMessage="Social security number"
               description="Label for social security number input"
             />
@@ -129,7 +129,7 @@ function OptionalInformation() {
         <div className="flex flex-col gap-1.5">
           <span className="text-xs text-[#1B0F0080]">
             <FormattedMessage
-              id="pages.onboarding.confirmIdentity.identityDocument"
+              id="Identity document"
               defaultMessage="Identity document"
               description="Label for identity document input"
             />
@@ -151,7 +151,7 @@ export default function ConfirmIdentity() {
       <div className="flex flex-col gap-2 items-center">
         <h1 className="font-sans font-medium text-2xl tracking-tight mb-0 text-center mx-6">
           <FormattedMessage
-            id="pages.onboarding.confirmIdentity.title"
+            id="Confirm identity"
             defaultMessage="Confirm identity"
             description="Header copy for confirm identity page"
           />
@@ -159,7 +159,7 @@ export default function ConfirmIdentity() {
 
         <span className="font-normal text-text-200 text-base text-center">
           <FormattedMessage
-            id="pages.onboarding.confirmIdentity.subtitle"
+            id="Please check if all the details are correct before proceeding"
             defaultMessage="Please check if all the details are correct before proceeding"
             description="Subheader copy for confirm identity page"
           />
@@ -176,7 +176,7 @@ export default function ConfirmIdentity() {
         className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
       >
         <FormattedMessage
-          id="pages.onboarding.confirmIdentity.signToConfirm"
+          id="Sign to confirm"
           defaultMessage="Sign to confirm"
           description="Action to sign the information and create identity"
         />
