@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { LabelHTMLAttributes, PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CalendarDaysIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -9,6 +9,21 @@ import { formatDate, parseFloatSafe, parseIntSafe } from "@/utils";
 import { Button } from "./ui/button";
 import { FormattedCurrency } from "./FormattedCurrency";
 import { daysBetween, Act360 } from "./discount-util";
+
+type InputContainerProps = PropsWithChildren<{
+  htmlFor: LabelHTMLAttributes<HTMLLabelElement>['htmlFor'],
+  label: React.ReactNode
+ }>
+
+const InputContainer = ({ children, htmlFor, label }: InputContainerProps) => {
+  return (<div className={cn("flex gap-2 justify-between items-center font-semibold",
+    "peer flex h-[58px] w-full rounded-[8px] border bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-none",
+    "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-0",
+  )}>
+    <label htmlFor={htmlFor}>{label}</label>
+    {children}
+  </div>);
+}
 
 export type DiscountFormProps = {
   startDate?: Date
@@ -134,17 +149,12 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
       </div>
 
       <div className="flex flex-col">
-        <div className={cn("flex gap-2 justify-between items-center font-semibold",
-          "peer flex h-[58px] w-full rounded-[8px] border bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-none",
-          "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-0",
-        )}>
-          <label htmlFor="daysInput">
-            <FormattedMessage
+        <InputContainer htmlFor="daysInput" label={
+          <FormattedMessage
               id="Days"
               defaultMessage="Days"
               description="Days label in discount form"
-            />
-          </label>
+          />}>
           <input
             id="daysInput"
             step="1"
@@ -156,7 +166,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
               max: 360,
             })}
           />
-        </div>
+        </InputContainer>
         {errors.daysInput && (<div className="text-xxs text-signal-error">
           {intl.formatMessage({
             id: "Please enter a valid value between {min} and {max}.",
@@ -170,17 +180,11 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
       </div>
 
       <div className="flex flex-col">
-        <div className={cn("flex gap-2 justify-between items-center font-semibold",
-          "peer flex h-[58px] w-full rounded-[8px] border bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-none",
-          "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-0",
-        )}>
-          <label htmlFor="discountRateInput">
-            <FormattedMessage
-              id="Discount rate"
-              defaultMessage="Discount rate"
-              description="Discount rate label in discount form"
-            />
-          </label>
+        <InputContainer htmlFor="discountRateInput" label={<FormattedMessage
+            id="Discount rate"
+            defaultMessage="Discount rate"
+            description="Discount rate label in discount form"
+          />}>
           <div>
             <input
               id="discountRateInput"
@@ -195,7 +199,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
             />
             %
           </div>
-        </div>
+        </InputContainer>
         {errors.discountRateInput && (<div className="text-xxs text-signal-error">
           {intl.formatMessage({
             id: "Please enter a valid value between {min} and {max}.",
@@ -209,17 +213,11 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
       </div>
 
       <div className="flex flex-col">
-        <div className={cn("flex gap-2 justify-between items-center font-semibold",
-          "peer flex h-[58px] w-full rounded-[8px] border bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none focus:outline-none",
-          "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-0",
-        )}>
-          <label htmlFor="netInput">
-            <FormattedMessage
-              id="Net amount"
-              defaultMessage="Net amount"
-              description="Net amount label in discount form"
-            />
-          </label>
+        <InputContainer htmlFor="netInput" label={<FormattedMessage
+            id="Net amount"
+            defaultMessage="Net amount"
+            description="Net amount label in discount form"
+          />}>
           <div className="flex gap-1 items-center">
             <input
               id="netInput"
@@ -235,7 +233,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
             />
             <span className="font-medium text-xxs text-text-200 leading-3">{currency}</span>
           </div>
-        </div>
+        </InputContainer>
         {errors.netInput && (<div className="text-xxs text-signal-error">
           {intl.formatMessage({
             id: "Please enter a valid value.",
