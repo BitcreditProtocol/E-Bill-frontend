@@ -25,14 +25,14 @@ export default function CreateBill() {
       <div className="flex flex-col gap-2 items-center">
         <h1 className="font-sans font-medium text-2xl tracking-tight mb-0">
           <FormattedMessage
-            id="pages.issueBill.title"
+            id="Issue a bill"
             defaultMessage="Issue a bill"
             description="Header copy for Issue bill page"
           />
         </h1>
         <span className="font-normal text-text-200 text-base text-center px-0.5 leading-6">
           <FormattedMessage
-            id="pages.issueBill.subtitle"
+            id="Issue a promissory note where you, the drawer, commit to making the payment"
             defaultMessage="Issue a promissory note where you, the drawer, commit to making the payment"
             description="Subheader copy for Issue bill page"
           />
@@ -78,7 +78,7 @@ export default function CreateBill() {
       <div className="flex flex-col gap-4 mt-2">
         <span className="text-text-300 text-base font-medium">
           <FormattedMessage
-            id="pages.issueBill.billInformation"
+            id="Against this bill of exchange"
             defaultMessage="Against this bill of exchange"
             description="Title for bill information section"
           />
@@ -88,7 +88,7 @@ export default function CreateBill() {
           <div className="flex flex-col gap-2">
             <span className="text-text-300 text-sm font-medium">
               <FormattedMessage
-                id="pages.issueBill.billInformation.orderOf"
+                id="To the order of"
                 defaultMessage="To the order of"
                 description="Label for payee name input"
               />
@@ -99,7 +99,7 @@ export default function CreateBill() {
           <div className="flex flex-col gap-2">
             <span className="text-text-300 text-sm font-medium">
               <FormattedMessage
-                id="pages.issueBill.billInformation.payer"
+                id="Payer"
                 defaultMessage="Payer"
                 description="Label for payer information section"
               />
@@ -142,7 +142,7 @@ export default function CreateBill() {
           <div className="flex flex-col gap-4">
             <span className="text-text-300 text-sm font-medium">
               <FormattedMessage
-                id="pages.issueBill.billInformation.noProtest"
+                id="No protest"
                 defaultMessage="No protest"
                 description="Label for invoice file upload"
               />
@@ -153,7 +153,7 @@ export default function CreateBill() {
 
         <Button className="h-[54px] w-full bg-text-300 text-white font-medium rounded-[8px] py-[18px] px-8 mt-1">
           <FormattedMessage
-            id="pages.issueBill.preview"
+            id="Preview"
             defaultMessage="Preview"
             description="Button to trigger bill preview"
           />

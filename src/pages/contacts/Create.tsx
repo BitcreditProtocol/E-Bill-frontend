@@ -24,7 +24,7 @@ function Header() {
       <div className="flex justify-between items-center">
         <h1 className="text-text-300 text-xl font-medium">
           <FormattedMessage
-            id="pages.createContact.header.title"
+            id="New contact"
             defaultMessage="New contact"
             description="Title for create contact page"
           />
@@ -36,7 +36,7 @@ function Header() {
         >
           <SearchIcon className="w-4 h-4 text-text-300" />
           <FormattedMessage
-            id="pages.createContact.search"
+            id="Search contacts"
             defaultMessage="Search contacts"
             description="Search contacts button"
           />
@@ -63,7 +63,7 @@ function Form() {
         onClick={() => { setIsExtraFieldsVisible(!isExtraFieldsVisible); }}
       >
         <FormattedMessage
-          id="pages.createContact.viewAllFields"
+          id="View more"
           defaultMessage="View more"
           description="View more fields button"
         />
@@ -129,7 +129,7 @@ export default function Create() {
           onClick={() => { navigate(routes.CONTACTS); }}
         >
           <FormattedMessage
-            id="pages.createContact.cancel"
+            id="Cancel"
             defaultMessage="Cancel"
             description="Cancel contact creation button"
           />
@@ -140,7 +140,7 @@ export default function Create() {
           onClick={() => { navigate(routes.CONTACTS); }}
         >
           <FormattedMessage
-            id="pages.createContact.save"
+            id="Save"
             defaultMessage="Save"
             description="Save contact button"
           />

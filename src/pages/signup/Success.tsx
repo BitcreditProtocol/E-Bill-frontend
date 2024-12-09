@@ -9,7 +9,7 @@ export default function Success() {
         <div className="flex flex-col gap-2 items-center">
           <h1 className="font-sans font-medium text-2xl tracking-tight mb-0 text-center mx-6">
             <FormattedMessage
-              id="pages.onboarding.success.title"
+              id="Successfully created your identity"
               defaultMessage="Successfully created your identity"
               description="Header copy for Success page"
             />
@@ -17,7 +17,7 @@ export default function Success() {
 
           <span className="font-normal text-text-200 text-base text-center">
             <FormattedMessage
-              id="pages.onboarding.success.subtitle"
+              id="We have successfully created your identity and you can now use the app"
               defaultMessage="We have successfully created your identity and you can now use the app"
               description="Subheader copy for Success page"
             />
@@ -33,7 +33,7 @@ export default function Success() {
 
       <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]">
         <FormattedMessage
-          id="pages.onboarding.success.enterApp"
+          id="Enter app"
           defaultMessage="Enter app"
           description="Action to enter the app after finishing the onboarding"
         />

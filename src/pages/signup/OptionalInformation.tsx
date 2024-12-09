@@ -24,7 +24,7 @@ export default function OptionalInformation() {
         <div className="flex flex-col gap-2 items-center">
           <h1 className="font-sans font-medium text-[24px] tracking-tight mb-0">
             <FormattedMessage
-              id="pages.onboarding.optionalInformation.title"
+              id="Optional information"
               defaultMessage="Optional information"
               description="Header copy for Optional information page"
             />
@@ -32,7 +32,7 @@ export default function OptionalInformation() {
 
           <span className="font-normal text-text-200 text-base text-center">
             <FormattedMessage
-              id="pages.onboarding.optionalInformation.subtitle"
+              id="This information will give you better credibility with your counter parties"
               defaultMessage="This information will give you better credibility with your counter parties"
               description="Subheader copy for Optional information page"
             />
@@ -83,7 +83,7 @@ export default function OptionalInformation() {
           className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
         >
           <FormattedMessage
-            id="pages.onboarding.optionalInformation.continue"
+            id="Continue"
             defaultMessage="Continue"
             description="Continue button copy for Optional information page"
           />
@@ -95,7 +95,7 @@ export default function OptionalInformation() {
           variant="outline"
         >
           <FormattedMessage
-            id="pages.onboarding.optionalInformation.skip"
+            id="Skip for now"
             defaultMessage="Skip for now"
             description="Skip button copy for Optional information page"
           />
