@@ -6,8 +6,8 @@ import Big from "big.js";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/language/LanguageContext";
 import { formatDate, parseFloatSafe, parseIntSafe } from "@/utils";
-import { Button } from "./ui/button";
-import { FormattedCurrency } from "./FormattedCurrency";
+import { Button } from "../ui/button";
+import { FormattedCurrency } from "../FormattedCurrency";
 import { daysBetween, Act360 } from "./discount-util";
 
 type InputContainerProps = PropsWithChildren<{
@@ -25,17 +25,27 @@ const InputContainer = ({ children, htmlFor, label }: InputContainerProps) => {
   </div>);
 }
 
-export type DiscountFormProps = {
-  startDate?: Date
-  endDate: Date
-  currency?: string
-  onSubmit: (values: FormResult) => void
-};
-
 type CurrencyAmount = {
   value: Big
   currency: string
 };
+
+
+type CommonDiscountFormProps = {
+  startDate?: Date
+  endDate: Date
+  onSubmit: (values: FormResult) => void
+};
+
+type NetToGrossProps = CommonDiscountFormProps & {
+  currency: string
+};
+
+type GrossToNetProps = CommonDiscountFormProps & {
+  gross: CurrencyAmount
+};
+
+export type DiscountFormProps = NetToGrossProps | GrossToNetProps;
 
 type FormResult = {
   days: number
@@ -47,15 +57,27 @@ type FormResult = {
 type FormValues = {
   daysInput?: string
   discountRateInput?: string
+};
+
+const DiscountForm = ({ ...props } : DiscountFormProps) => {
+  if ('currency' in props) {
+    return (<NetToGrossDiscountForm { ...props } />);
+  }
+  return (<GrossToNetDiscountForm { ...props } />);
+};
+
+DiscountForm.displayName = "DiscountForm";
+
+type NetToGrossFormValues = FormValues & {
   netInput?: string
 };
 
-const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onSubmit } : DiscountFormProps) => {
+const NetToGrossDiscountForm = ({ startDate: userStartDate, endDate, currency, onSubmit } : NetToGrossProps) => {
   const intl = useIntl();
   const lang = useLanguage();
   const startDate = useMemo(() => userStartDate || new Date(Date.now()), [userStartDate])
 
-  const { watch, register, setValue, handleSubmit, formState: { isValid, errors }, } = useForm<FormValues>({
+  const { watch, register, setValue, handleSubmit, formState: { isValid, errors }, } = useForm<NetToGrossFormValues>({
     mode: "all"
   });
 
@@ -288,6 +310,209 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
   </form>);
 };
 
-DiscountForm.displayName = "DiscountForm";
+NetToGrossDiscountForm.displayName = "NetToGrossDiscountForm";
 
-export { DiscountForm };
+type GrossToNetFormValues = FormValues
+
+const GrossToNetDiscountForm = ({ startDate: userStartDate, endDate, gross, onSubmit } : GrossToNetProps) => {
+  const intl = useIntl();
+  const lang = useLanguage();
+  const startDate = useMemo(() => userStartDate || new Date(Date.now()), [userStartDate])
+
+  const { watch, register, setValue, handleSubmit, formState: { isValid, errors }, } = useForm<GrossToNetFormValues>({
+    mode: "all"
+  });
+
+  const { daysInput, discountRateInput } = watch();
+
+  const days = useMemo<number | undefined>(() => {
+    return parseIntSafe(daysInput);
+  }, [daysInput]);
+
+  const discountRate = useMemo<Big | undefined>(() => {
+    const parsed = parseFloatSafe(discountRateInput);
+    return parsed === undefined ? undefined : new Big(parsed).div(new Big("100"))
+  }, [discountRateInput]);
+
+  const [net, setNet] = useState<CurrencyAmount>();
+
+  const discount = useMemo<CurrencyAmount | undefined>(() => {
+    return net === undefined ? undefined : {
+      value: gross.value.sub(net.value),
+      currency: net.currency
+    }
+  }, [gross, net]);
+
+  useEffect(() => {
+    setValue("daysInput", String(daysBetween(startDate, endDate)), {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  }, [startDate, endDate, setValue]);
+
+  useEffect(() => {
+    if (!isValid || discountRate === undefined || days === undefined) {
+      setNet(undefined);
+      return;
+    }
+
+    const grossValue = Act360.netToGross(gross.value, discountRate, days);
+    setNet(grossValue === undefined ? undefined : {
+      value: grossValue,
+      currency: gross.currency
+    });
+  }, [isValid, gross, days, discountRate]);
+
+  return (<form className="flex flex-col gap-2 min-w-[8rem]"
+    onSubmit={(e) => {
+      handleSubmit(() => {
+        if (net === undefined || discountRate === undefined || days === undefined) return;
+
+        onSubmit({
+          days,
+          discountRate,
+          net,
+          gross,
+        });
+      })(e).catch(() => {
+        // TODO
+      })
+    }}>
+      <h2 className="text-text-300 text-lg font-medium">
+        <FormattedMessage
+          id="Calculate discount"
+          defaultMessage="Calculate discount"
+          description="Title of discount form"
+        />
+      </h2>
+
+      <div className="flex gap-1 text-xs py-[4px]">
+        <div className="flex gap-1 text-text-200">
+          <CalendarDaysIcon size={16} strokeWidth={1} />
+
+          <FormattedMessage
+            id="Dates"
+            defaultMessage="Dates"
+            description="Dates label in discount form"
+          />
+        </div>
+        <div className="flex gap-1 text-text-300">
+          <span>{formatDate(startDate, lang.locale)}</span>
+          <span>to</span>
+          <span>{formatDate(endDate, lang.locale)}</span>
+        </div>
+      </div>
+
+      <div className="flex flex-col">
+        <InputContainer htmlFor="daysInput" label={
+          <FormattedMessage
+              id="Days"
+              defaultMessage="Days"
+              description="Days label in discount form"
+          />}>
+          <input
+            id="daysInput"
+            step="1"
+            type="number"
+            className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            {...register("daysInput", {
+              required: true,
+              min: 1,
+              max: 360,
+            })}
+          />
+        </InputContainer>
+        {errors.daysInput && (<div className="text-xxs text-signal-error">
+          {intl.formatMessage({
+            id: "Please enter a valid value between {min} and {max}.",
+            defaultMessage: "Please enter a valid value between 1 and 360.",
+            description: "Error message for field 'days' in discount form",
+          }, {
+            min: intl.formatNumber(1),
+            max: intl.formatNumber(360),
+          })}
+        </div>)}
+      </div>
+
+      <div className="flex flex-col">
+        <InputContainer htmlFor="discountRateInput" label={<FormattedMessage
+            id="Discount rate"
+            defaultMessage="Discount rate"
+            description="Discount rate label in discount form"
+          />}>
+          <div>
+            <input
+              id="discountRateInput"
+              step="0.0001"
+              type="number"
+              className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              {...register("discountRateInput", {
+                required: true,
+                min: 0,
+                max: 99.9999,
+              })}
+            />
+            %
+          </div>
+        </InputContainer>
+        {errors.discountRateInput && (<div className="text-xxs text-signal-error">
+          {intl.formatMessage({
+            id: "Please enter a valid value between {min} and {max}.",
+            defaultMessage: "Please enter a valid value between 0 and 99.9999.",
+            description: "Error message for field 'discountRate' in discount form",
+          }, {
+            min: `${intl.formatNumber(0)}%`,
+            max: `${intl.formatNumber(99.9999)}%`,
+          })}
+        </div>)}
+      </div>
+
+      <div className="mt-1 flex justify-between text-sm text-text-200 font-normal">
+        <FormattedMessage
+          id="Discount"
+          defaultMessage="Discount"
+          description="Discount label in discount form"
+        />
+
+        <div className="flex gap-1 items-center">
+          {discount === undefined ? (<>?</>) : (<FormattedCurrency
+            value={discount.value.toNumber()}
+            currency={discount.currency}
+            currencyDisplay="none"
+            color="none"
+          />)}
+          <span className="text-xxs text-text-200 leading-3">{discount?.currency}</span>
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center text-md text-text-300 font-medium">
+        <FormattedMessage
+          id="Gross amount"
+          defaultMessage="Gross amount"
+          description="Gross amount label in discount form"
+        />
+
+        <div className="flex gap-1 items-center">
+          <FormattedCurrency
+            value={gross.value.toNumber()}
+            currency={gross.currency}
+            currencyDisplay="none"
+          />
+          <span className="text-xxs text-text-200 leading-3">{gross.currency}</span>
+        </div>
+      </div>
+
+      <Button type="submit" size="sm" className="my-[16px]" disabled={!isValid}>
+        <FormattedMessage
+          id="Confirm"
+          defaultMessage="Confirm"
+          description="Submit button in discount form"
+        />
+      </Button>
+  </form>);
+};
+
+GrossToNetDiscountForm.displayName = "GrossToNetDiscountForm";
+
+export { DiscountForm, NetToGrossDiscountForm, GrossToNetDiscountForm };

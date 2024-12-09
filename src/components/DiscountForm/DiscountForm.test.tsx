@@ -19,7 +19,8 @@ describe("DiscountForm", () => {
     render({
       startDate: new Date(2009, 0, 1),
       endDate: new Date(2009, 0, 31),
-      onSubmit: () => {}
+      onSubmit: () => {},
+      currency: "BTC"
     });
 
     const headings = screen.getAllByRole("heading");
@@ -45,7 +46,8 @@ describe("DiscountForm", () => {
     render({
       startDate: new Date(2009, 0, 3),
       endDate: new Date(2009, 2, 3),
-      onSubmit
+      onSubmit,
+      currency: "BTC"
     });
 
     await userEvent.clear(screen.getByLabelText("Days"));
@@ -74,7 +76,8 @@ describe("DiscountForm", () => {
     render({
       startDate: new Date(2009, 0, 3),
       endDate: new Date(2009, 2, 3),
-      onSubmit
+      onSubmit,
+      currency: "BTC"
     });
 
     await userEvent.clear(screen.getByLabelText("Days"));
@@ -103,7 +106,8 @@ describe("DiscountForm", () => {
     render({
       startDate: new Date(2009, 0, 3),
       endDate: new Date(2009, 2, 3),
-      onSubmit
+      onSubmit,
+      currency: "BTC"
     });
 
     await userEvent.clear(screen.getByLabelText("Days"));
@@ -121,7 +125,8 @@ describe("DiscountForm", () => {
     render({
       startDate: new Date(2009, 0, 3),
       endDate: new Date(2009, 2, 3),
-      onSubmit
+      onSubmit,
+      currency: "BTC"
     });
 
     await userEvent.clear(screen.getByLabelText("Days"));
