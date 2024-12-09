@@ -93,7 +93,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
     });
   }, [isValid, net, days, discountRate]);
 
-  return (<form className="flex flex-col gap-1 min-w-[8rem]"
+  return (<form className="flex flex-col gap-2 min-w-[8rem]"
     onSubmit={(e) => {
       handleSubmit(() => {
         if (gross === undefined || net === undefined || discountRate === undefined || days === undefined) return;
@@ -245,7 +245,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
         </div>)}
       </div>
 
-      <div className="flex justify-between text-sm text-text-200 font-normal">
+      <div className="mt-1 flex justify-between text-sm text-text-200 font-normal">
         <FormattedMessage
           id="Mark up"
           defaultMessage="Mark up"
@@ -280,7 +280,7 @@ const DiscountForm = ({ startDate: userStartDate, endDate, currency = "BTC", onS
         </div>
       </div>
 
-      <Button type="submit" size="xs" className="my-[16px]" disabled={!isValid}>
+      <Button type="submit" size="sm" className="my-[16px]" disabled={!isValid}>
         <FormattedMessage
           id="Confirm"
           defaultMessage="Confirm"
