@@ -12,7 +12,7 @@ import { YearPicker } from "./yearPicker"
 import { MonthPicker } from "./monthPicker"
 import { DateRange } from "../../types/DateRange"
 import { useIntl } from "react-intl"
-import { formatDateShort } from "@/utils/dates"
+import { formatDateLong, formatDateShort } from "@/utils/dates"
 import { useLanguage } from "@/context/language/LanguageContext"
 
 
@@ -113,7 +113,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                       {intl.formatMessage({ id: "datePicker.selectDate", defaultMessage: "Selected date" })}
                     </div>
                     <div className="text-base">
-                      {formatDateShort(date, lang.locale)}
+                      {formatDateLong(date, lang.locale)}
                     </div>
                   </>)
                 }

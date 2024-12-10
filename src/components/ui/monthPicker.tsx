@@ -1,8 +1,7 @@
 "use client"
 
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatMonthLong } from "@/utils/dates";
+import { formatDateShort, formatMonthLong } from "@/utils/dates";
 import { useLanguage } from "@/context/language/LanguageContext";
 
 interface YearPickerProps {
@@ -15,29 +14,20 @@ interface YearPickerProps {
 const MonthPicker = ({baseDate, setDate, setShowYearPicker, setShowMonthPicker }: YearPickerProps) => {   
   const lang = useLanguage();
 
-  const formatDate = (date: Date | undefined) => {
-    if(!date) return "Pick a date";
-    return new Intl.DateTimeFormat("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  };
-
   const handleMonthClick = (monthIndex: number) => {
     const newDate = new Date(baseDate);
     newDate.setMonth(monthIndex);
     setDate(newDate);
-  }
+  };
 
   return(
     <div className="h-full w-full">
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div>
           <ChevronLeft />
         </div>
-        <div className={cn("flex justify-between items-center gap-2")}>
-          {formatDate(baseDate)}
+        <div className="flex justify-between items-center gap-2">
+          {formatDateShort(baseDate, lang.locale)}
           <ChevronDown strokeWidth={3} size={15} />
         </div>
         <div>
