@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { format } from "date-fns"
-import { CalendarIcon, MoveRight } from "lucide-react"
+import { ArrowRight, CalendarIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -89,58 +89,45 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
           showCalendar ? "translate-y-0" : "translate-y-full"
         )}
       >
-        <div className="grid grid-rows-9 h-full w-full">
+        <div className="grid grid-rows-8 h-full w-full">
           <div className={`grid ${allowRangeSelection ? "row-span-2 grid-rows-5" : "row-span-1 grid-rows-2"} w-full h-full`}>
-            <div className="row-span-1 h-full w-full">
-              <div className="h-full w-full flex justify-start items-start">
-                {allowRangeSelection ? (
-                  <div className="text-sm flex items-center justify-start text-gray-400 h-full">
-                    {intl.formatMessage({ id: "datePicker.selectDateRange", defaultMessage: "Selected date range" })}
-                  </div>                    
-                ) : (
-                  <div className="text-sm text-gray-400 h-full">
-                    {intl.formatMessage({ id: "datePicker.selectDate", defaultMessage: "Selected date" })}
-                  </div>
-                )}
-              </div>
-            </div>
-
             <div className={`${allowRangeSelection ? "row-span-4" : "row-span-1"} h-full w-full`}>
-              {allowRangeSelection ? 
-                (
-                  <div className="grid grid-rows-2 h-full w-full gap-1">
-                    <div className="row-span-1 w-full h-full">
-                      <div className="">
-                        <DateRangeDropdown onRangeChange={setSelectedRange}/>
-                      </div>
+              <div className="flex flex-col gap-2">
+                {allowRangeSelection ? 
+                  (<>
+                    <div className="text-xs text-text-200">
+                      {intl.formatMessage({ id: "datePicker.selectDateRange", defaultMessage: "Select date range" })}
                     </div>
+                  
+                    <DateRangeDropdown onRangeChange={setSelectedRange}/>
 
-                    <div className="row-span-1 grid grid-cols-12">
-                      <div className="col-span-5">
-                        <div className="h-10 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg text-sm flex justify-center items-center">
+                    <div className="grid grid-cols-9 text-sm">
+                      <div className="col-span-4">
+                        <div className="py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
                           {formatDate(date)}
                         </div>
                       </div>
 
-                      <div className="col-span-2 flex justify-center items-center">
-                        <MoveRight strokeWidth={1} size={30}/>
+                      <div className="col-auto flex justify-center items-center">
+                        <ArrowRight className="text-text-200" strokeWidth={1} size={24} />
                       </div>
 
-                      <div className="col-span-5 h-full">
-                        <div className="h-10 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg text-sm flex justify-center items-center">
+                      <div className="col-span-4">
+                        <div className="py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
                           {formatDate(rangedDate(date))}
                         </div>
                       </div>
                     </div>
-                  </div>
-                )
-              :
-                (
-                  <div className="text-base">
-                    {formatDate(date)}
-                  </div>
-                )
-              }
+                  </>) : (<>
+                    <div className="text-xs text-text-200">
+                      {intl.formatMessage({ id: "datePicker.selectDate", defaultMessage: "Selected date" })}
+                    </div>
+                    <div className="text-base">
+                      {formatDate(date)}
+                    </div>
+                  </>)
+                }
+              </div>
             </div>
           </div>
 

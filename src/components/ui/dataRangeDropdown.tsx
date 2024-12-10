@@ -60,9 +60,9 @@ export function DateRangeDropdown({ onRangeChange }: DateRangeDropdownProps) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="w-full h-10 relative rounded-lg bg-[#f6f2e7]"
+          className="w-full rounded-lg bg-[#f6f2e7] justify-start py-3 px-4"
         >
-          <div className="absolute left-3">{handleDisplayRange(selectedRange)}</div>
+          {handleDisplayRange(selectedRange)}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64 bg-[#f6f2e7]">
