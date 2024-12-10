@@ -74,9 +74,9 @@ function Calendar({
         IconLeft: () => <ChevronLeft className="h-4 w-4" />,
         IconRight: () => <ChevronRight className="h-4 w-4" />,
         CaptionLabel: () => (
-          <div className={cn("flex justify-between items-center gap-2")}>
-            <div>{formatDateShort(selectedDate, lang.locale)}</div>
-            <ChevronDown strokeWidth={3} size={15} onClick={onToggleYearPicker}/>
+          <div className={cn("flex justify-between items-center gap-2 cursor-pointer")} onClick={onToggleYearPicker}>
+            {formatDateShort(selectedDate, lang.locale)}
+            <ChevronDown strokeWidth={3} size={15} />
           </div>
         ),
       }}

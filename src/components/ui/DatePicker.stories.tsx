@@ -10,18 +10,6 @@ const message = {
         "displayRange.sixMonths": "6 Months",
         "displayRange.oneYear": "1 Year",
         "displayRange.selectRange": "Select range",
-        "months.january": "January",
-        "months.february": "February",
-        "months.march": "March",
-        "months.april": "April",
-        "months.may": "May",
-        "months.june": "June",
-        "months.july": "July",
-        "months.august": "August",
-        "months.september": "September",
-        "months.october": "October",
-        "months.november": "November",
-        "months.december": "December"
     },
 };
 

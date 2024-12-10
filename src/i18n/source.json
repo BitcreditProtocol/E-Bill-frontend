@@ -114,17 +114,5 @@
   "dropdown.option.30days": "30 days",
   "dropdown.option.60days": "60 days",
   "dropdown.option.6months": "6 Months",
-  "dropdown.option.90days": "90 days",
-  "months.april": "April",
-  "months.august": "August",
-  "months.december": "December",
-  "months.february": "February",
-  "months.january": "January",
-  "months.july": "July",
-  "months.june": "June",
-  "months.march": "March",
-  "months.may": "May",
-  "months.november": "November",
-  "months.october": "October",
-  "months.september": "September"
+  "dropdown.option.90days": "90 days"
 }

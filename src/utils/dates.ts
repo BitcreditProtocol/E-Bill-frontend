@@ -16,8 +16,14 @@ export const formatDateShort = (date: Date, locale: string) => {
 
 export const formatDateLong = (date: Date, locale: string) => {
   return new Intl.DateTimeFormat(locale, {
-    month: "long", 
-    day: "numeric", 
-    year: "numeric", 
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+};
+
+export const formatMonthLong = (date: Date, locale: string) => {
+  return new Intl.DateTimeFormat(locale, {
+    month: "long",
   }).format(date);
 };
