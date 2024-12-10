@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/language/LanguageContext";
-import { cn } from "@/lib/utils";
 import { formatDateLong } from "@/utils/dates";
 
 interface YearPickerProps {
@@ -24,29 +23,25 @@ const YearPicker = ({baseDate, setDate, setShowYearPicker, setShowMonthPicker }:
     setDate(updateDate);
   }
 
-  return (<div className="h-full w-full">
-    <div className="flex justify-between">
-      <div>
-        <ChevronLeft onClick={() => {
-          setBaseYear(baseYear - numberYears);
-        }} />
-      </div>
-      <div className={cn("flex justify-between items-center gap-2")}>
+  return (<div className="flex flex-col gap-2">
+    <div className="flex justify-between items-center">
+      <ChevronLeft className="cursor-pointer" onClick={() => {
+        setBaseYear(baseYear - numberYears);
+      }} />
+      <div className="flex justify-between items-center gap-2">
         <div>{formatDateLong(baseDate, lang.locale)}</div>
         <ChevronDown strokeWidth={3} size={15} />
       </div>
-      <div>
-        <ChevronRight onClick={() => {
-          setBaseYear(baseYear + numberYears);
-        }} />
-      </div>
+      <ChevronRight className="cursor-pointer" onClick={() => {
+        setBaseYear(baseYear + numberYears);
+      }} />
     </div>
-    <div className="h-full w-full grid grid-rows-7 grid-cols-3">
+    <div className="grid grid-rows-7 grid-cols-3">
       {Array.from({ length: numberYears }).map((_, index) => {
         const year = baseYear + index;
         return (
           <div
-            className="flex items-center justify-center"
+            className="h-[40px] flex justify-center items-center cursor-pointer"
             key={index}
             onClick={() => {
               handleYearClick(year);

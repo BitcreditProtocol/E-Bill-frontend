@@ -21,24 +21,20 @@ const MonthPicker = ({baseDate, setDate, setShowYearPicker, setShowMonthPicker }
   };
 
   return(
-    <div className="h-full w-full">
+    <div className="flex flex-col gap-2">
       <div className="flex justify-between items-center">
-        <div>
-          <ChevronLeft />
-        </div>
+        <ChevronLeft />
         <div className="flex justify-between items-center gap-2">
           {formatDateShort(baseDate, lang.locale)}
           <ChevronDown strokeWidth={3} size={15} />
         </div>
-        <div>
-          <ChevronRight />
-        </div>
+        <ChevronRight />
       </div>
-      <div className="h-full w-full grid grid-rows-4 grid-cols-3">
+      <div className="grid grid-rows-4 grid-cols-3">
         {Array(12).fill('').map((_, index) => new Date(1970, index)).map((date, index) => (
           <div
             key={index}
-            className="flex justify-center items-center cursor-pointer"
+            className="h-[40px] flex justify-center items-center cursor-pointer"
             onClick={() => {
               handleMonthClick(index)
               setShowMonthPicker(false);

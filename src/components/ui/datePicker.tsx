@@ -79,81 +79,71 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
           showCalendar ? "translate-y-0" : "translate-y-full"
         )}
       >
-        <div className="grid grid-rows-8 h-full w-full">
-          <div className={`grid ${allowRangeSelection ? "row-span-2 grid-rows-5" : "row-span-1 grid-rows-2"} w-full h-full`}>
-            <div className={`${allowRangeSelection ? "row-span-4" : "row-span-1"} h-full w-full`}>
-              <div className="flex flex-col gap-2">
-                {allowRangeSelection ? 
-                  (<>
-                    <div className="text-xs text-text-200">
-                      {intl.formatMessage({ id: "datePicker.selectDateRange", defaultMessage: "Select date range" })}
-                    </div>
-                  
-                    <DateRangeDropdown onRangeChange={setSelectedRange}/>
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
+            {allowRangeSelection ?
+              (<>
+                <div className="text-xs text-text-200">
+                  {intl.formatMessage({ id: "datePicker.selectDateRange", defaultMessage: "Select date range" })}
+                </div>
 
-                    <div className="grid grid-cols-9 text-sm">
-                      <div className="col-span-4">
-                        <div className="py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
-                          {formatDateShort(date, lang.locale)}
-                        </div>
-                      </div>
+                <DateRangeDropdown onRangeChange={setSelectedRange}/>
 
-                      <div className="col-auto flex justify-center items-center">
-                        <ArrowRight className="text-text-200" strokeWidth={1} size={24} />
-                      </div>
+                <div className="grid grid-cols-9 text-sm">
+                  <div className="col-span-4">
+                    <div className="py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
+                      {formatDateShort(date, lang.locale)}
+                    </div>
+                  </div>
 
-                      <div className="col-span-4">
-                        <div className="py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
-                          {formatDateShort(rangedDate(date), lang.locale)}
-                        </div>
-                      </div>
+                  <div className="col-auto flex justify-center items-center">
+                    <ArrowRight className="text-text-200" strokeWidth={1} size={24} />
+                  </div>
+
+                  <div className="col-span-4">
+                    <div className="py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
+                      {formatDateShort(rangedDate(date), lang.locale)}
                     </div>
-                  </>) : (<>
-                    <div className="text-xs text-text-200">
-                      {intl.formatMessage({ id: "datePicker.selectDate", defaultMessage: "Selected date" })}
-                    </div>
-                    <div className="text-base">
-                      {formatDateLong(date, lang.locale)}
-                    </div>
-                  </>)
-                }
-              </div>
-            </div>
+                  </div>
+                </div>
+              </>) : (<>
+                <div className="text-xs text-text-200">
+                  {intl.formatMessage({ id: "datePicker.selectDate", defaultMessage: "Selected date" })}
+                </div>
+                <div className="text-base">
+                  {formatDateLong(date, lang.locale)}
+                </div>
+              </>)
+            }
           </div>
 
-          <div className={`${allowRangeSelection ? "row-span-6" : "row-span-7"} w-full h-full`}>
-            {showYearPicker ? (
-              <div className="h-full w-full pb-5">
-                <YearPicker
-                  baseDate={date}
-                  setDate={setDate}
-                  setShowYearPicker={setShowYearPicker}
-                  setShowMonthPicker={setShowMonthPicker}
-                />
-              </div>
-            ) : showMonthPicker ? (
-              <div className="h-full w-full pb-5"> 
-                <MonthPicker 
-                  baseDate={date}
-                  setDate={setDate}
-                  setShowYearPicker={setShowYearPicker}
-                  setShowMonthPicker={setShowMonthPicker}
-                />
-              </div>
-            ) :
-            (
-              <div className="w-full h-full">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onToggleYearPicker={toggleYearPicker}
-                  onSelect={(day, selectDate: Date) => {
-                    setDate(selectDate)
-                  }}
-                  initialFocus
-                  className="w-full h-full"
-                />
-              </div>
+          <div className="min-h-[320px]">
+            {showYearPicker && (
+              <YearPicker
+                baseDate={date}
+                setDate={setDate}
+                setShowYearPicker={setShowYearPicker}
+                setShowMonthPicker={setShowMonthPicker}
+              />
+            )}
+            {showMonthPicker && (
+              <MonthPicker
+                baseDate={date}
+                setDate={setDate}
+                setShowYearPicker={setShowYearPicker}
+                setShowMonthPicker={setShowMonthPicker}
+              />
+            )}
+            {!showYearPicker && !showMonthPicker && (
+              <Calendar
+                mode="single"
+                selected={date}
+                onToggleYearPicker={toggleYearPicker}
+                onSelect={(day, selectDate: Date) => {
+                  setDate(selectDate)
+                }}
+                initialFocus
+              />
             )}
           </div>
           
