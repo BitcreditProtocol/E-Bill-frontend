@@ -13,6 +13,7 @@ export type CalendarProps = ComponentProps<typeof DayPicker> & {
   onSelect: SelectSingleEventHandler
   onToggleYearPicker: () => void
   selected: Date
+  ISOWeek?: boolean
 }
 
 function Calendar({
@@ -21,6 +22,7 @@ function Calendar({
   onToggleYearPicker,
   selected,
   onSelect,
+  ISOWeek = true,
   ...restProps
 }: CalendarProps) {
   const lang = useLanguage();
@@ -33,6 +35,7 @@ function Calendar({
 
   return (
     <DayPicker
+      ISOWeek={ISOWeek}
       showOutsideDays={true}
       onSelect={handleOnSelect}
       className={cn("flex justify-center", className)}
@@ -68,8 +71,8 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: () => <ChevronLeft className="h-4 w-4" />,
-        IconRight: () => <ChevronRight className="h-4 w-4" />,
+        IconLeft: () => <ChevronLeft />,
+        IconRight: () => <ChevronRight />,
         CaptionLabel: () => (
           <div className={cn("flex justify-between items-center gap-2 cursor-pointer")} onClick={onToggleYearPicker}>
             {formatDateShort(selectedDate, lang.locale)}
