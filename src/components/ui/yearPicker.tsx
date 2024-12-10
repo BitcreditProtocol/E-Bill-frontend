@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { useLanguage } from "@/context/language/LanguageContext";
 import { formatDateLong } from "@/utils/dates";
 
@@ -25,14 +25,14 @@ const YearPicker = ({baseDate, setDate, setShowYearPicker, setShowMonthPicker }:
 
   return (<div className="flex flex-col gap-2">
     <div className="flex justify-between items-center">
-      <ChevronLeft className="cursor-pointer" onClick={() => {
+      <ChevronLeft className="mx-1 cursor-pointer" onClick={() => {
         setBaseYear(baseYear - numberYears);
       }} />
       <div className="flex justify-between items-center gap-2">
-        <div>{formatDateLong(baseDate, lang.locale)}</div>
-        <ChevronDown strokeWidth={3} size={15} />
+        {formatDateLong(baseDate, lang.locale)}
+        <ChevronUp strokeWidth={3} size={15} />
       </div>
-      <ChevronRight className="cursor-pointer" onClick={() => {
+      <ChevronRight className="mx-1 cursor-pointer" onClick={() => {
         setBaseYear(baseYear + numberYears);
       }} />
     </div>

@@ -1,8 +1,9 @@
 "use client"
 
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { formatDateShort, formatMonthLong } from "@/utils/dates";
 import { useLanguage } from "@/context/language/LanguageContext";
+import { useState } from "react";
 
 interface YearPickerProps {
   baseDate: Date
@@ -14,6 +15,8 @@ interface YearPickerProps {
 const MonthPicker = ({baseDate, setDate, setShowYearPicker, setShowMonthPicker }: YearPickerProps) => {   
   const lang = useLanguage();
 
+  const [baseYear, setBaseYear] = useState(baseDate.getFullYear())
+
   const handleMonthClick = (monthIndex: number) => {
     const newDate = new Date(baseDate);
     newDate.setMonth(monthIndex);
@@ -23,15 +26,19 @@ const MonthPicker = ({baseDate, setDate, setShowYearPicker, setShowMonthPicker }
   return(
     <div className="flex flex-col gap-2">
       <div className="flex justify-between items-center">
-        <ChevronLeft />
+        <ChevronLeft className="mx-1 cursor-pointer" onClick={() => {
+          setBaseYear(baseYear - 1);
+        }} />
         <div className="flex justify-between items-center gap-2">
           {formatDateShort(baseDate, lang.locale)}
-          <ChevronDown strokeWidth={3} size={15} />
+          <ChevronUp strokeWidth={3} size={15} />
         </div>
-        <ChevronRight />
+        <ChevronRight className="mx-1 cursor-pointer" onClick={() => {
+          setBaseYear(baseYear + 1);
+        }} />
       </div>
       <div className="grid grid-rows-4 grid-cols-3">
-        {Array(12).fill('').map((_, index) => new Date(1970, index)).map((date, index) => (
+        {Array(12).fill('').map((_, index) => new Date(baseYear, index)).map((date, index) => (
           <div
             key={index}
             className="h-[40px] flex justify-center items-center cursor-pointer"

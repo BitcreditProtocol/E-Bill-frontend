@@ -117,7 +117,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
             }
           </div>
 
-          <div className="min-h-[320px]">
+          <div className="min-h-[330px] mb-4">
             {showYearPicker && (
               <YearPicker
                 baseDate={date}
@@ -139,7 +139,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                 mode="single"
                 selected={date}
                 onToggleYearPicker={toggleYearPicker}
-                onSelect={(day, selectDate: Date) => {
+                onSelect={(_: Date | undefined, selectDate: Date) => {
                   setDate(selectDate)
                 }}
                 initialFocus
