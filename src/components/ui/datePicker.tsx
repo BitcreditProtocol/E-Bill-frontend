@@ -125,10 +125,10 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
             {showYearPicker ? (
               <div className="h-full w-full pb-5">
                 <YearPicker
-                 baseDate={date}
-                 setDate={setDate}
-                 setShowYearPicker={setShowYearPicker}
-                 setShowMonthPicker={setShowMonthPicker}
+                  baseDate={date}
+                  setDate={setDate}
+                  setShowYearPicker={setShowYearPicker}
+                  setShowMonthPicker={setShowMonthPicker}
                 />
               </div>
             ) : showMonthPicker ? (
@@ -147,10 +147,8 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                   mode="single"
                   selected={date}
                   onToggleYearPicker={toggleYearPicker}
-                  onSelect={(selectDate) => {
-                    if(selectDate) {
-                      setDate(selectDate)
-                    }
+                  onSelect={(day, selectDate: Date) => {
+                    setDate(selectDate)
                   }}
                   initialFocus
                   className="w-full h-full"

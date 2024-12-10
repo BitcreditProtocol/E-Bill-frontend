@@ -1,13 +1,16 @@
-import * as React from "react"
+
+import { type ComponentProps, useState } from "react"
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker } from "react-day-picker"
+import { DayPicker, SelectSingleEventHandler } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { useLanguage } from "@/context/language/LanguageContext"
 import { formatDateShort } from "@/utils/dates"
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+export type CalendarProps = ComponentProps<typeof DayPicker> & {
+  mode: 'single'
+  onSelect: SelectSingleEventHandler
   onToggleYearPicker: () => void
   selected: Date
 }
@@ -15,22 +18,23 @@ export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
 function Calendar({
   className,
   classNames,
-  showOutsideDays = true,
   onToggleYearPicker,
   selected,
+  onSelect,
   ...restProps
 }: CalendarProps) {
   const lang = useLanguage();
-  const [selectedDate, setSelectedDate] = React.useState<Date>(selected);
+  const [selectedDate, setSelectedDate] = useState<Date>(selected);
 
-  const handleDayClick = (date: Date) => {
-    setSelectedDate(date)
-  };
+  const handleOnSelect : SelectSingleEventHandler = (day, selectedDay, modifiers, e) => {
+    setSelectedDate(selectedDay)
+    onSelect(day, selectedDay, modifiers, e);
+  }
 
   return (
     <DayPicker
-      showOutsideDays={showOutsideDays}
-      onDayClick={handleDayClick}
+      showOutsideDays={true}
+      onSelect={handleOnSelect}
       className={cn("flex justify-center", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full",
