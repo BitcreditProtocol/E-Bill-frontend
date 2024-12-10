@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { DateRangeDropdown } from "./dataRangeDropdown"
-import {YearPicker} from "./yearPicker"
+import { YearPicker } from "./yearPicker"
 import { MonthPicker } from "./monthPicker"
 import { DateRange } from "../../types/DateRange"
 import { useIntl } from "react-intl"
@@ -182,32 +182,26 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
             )}
           </div>
           
-          <div className="row-span-1 grid grid-cols-2 w-full h-full justify-center items-center">
-            <div  className="col-span-1 flex justify-center items-center">
-              <Button 
-                className="w-40 h-12 rounded-xl bg-inherit border border-black "
-                onClick={() => {
-                  setDate(new Date());
-                  setshowYearPicker(false);
-                  setShowCalendar(false);
-                }}
-              >
-                <span className="text-black">
-                  {intl.formatMessage({ id:"datePicker.button.canvel", defaultMessage: "Cancel"})}
-                </span>
-              </Button>
-            </div>
-
-            <div  className="col-span-1 flex justify-center items-center">
-              <Button 
-                className="w-40 h-12 rounded-xl bg-black"
-                onClick={() => { setShowCalendar(false); }}
-              >
-                <span>
-                  {intl.formatMessage({ id:"datePicker.button.confirm", defaultMessage: "Confirm"})}
-                </span>
-              </Button>
-            </div>
+          <div className="flex gap-1 items-center">
+            <Button
+              className="w-full border-text-300"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setDate(new Date());
+                setshowYearPicker(false);
+                setShowCalendar(false);
+              }}
+            >
+              {intl.formatMessage({ id:"datePicker.button.canvel", defaultMessage: "Cancel"})}
+            </Button>
+            <Button
+              className="w-full"
+              size="sm"
+              onClick={() => { setShowCalendar(false); }}
+            >
+              {intl.formatMessage({ id:"datePicker.button.confirm", defaultMessage: "Confirm"})}
+            </Button>
           </div>
         </div>
       </div>
