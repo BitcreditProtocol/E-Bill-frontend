@@ -34,7 +34,7 @@ export interface DatePickerProps {
 }
 
 export default {
-    title: "Component/DatePicker",
+    title: "Components/DatePicker",
     component: DatePicker
 } as Meta<DatePickerProps>;
 
