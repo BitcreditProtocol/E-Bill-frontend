@@ -4,6 +4,8 @@ import { DayPicker } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import { useLanguage } from "@/context/language/LanguageContext"
+import { formatDateShort } from "@/utils/dates"
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
   onToggleYearPicker: () => void
@@ -18,19 +20,12 @@ function Calendar({
   selected,
   ...restProps
 }: CalendarProps) {
-  const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
+  const lang = useLanguage();
+  const [selectedDate, setSelectedDate] = React.useState<Date>(selected);
 
   const handleDayClick = (date: Date) => {
     setSelectedDate(date)
-  }
-
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("en-US", {
-      month: "long", 
-      day: "numeric", 
-      year: "numeric", 
-    }).format(date);
-  }
+  };
 
   return (
     <DayPicker
@@ -53,11 +48,11 @@ function Calendar({
         head_row: "flex justify-around",
         head_cell:
           "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-        row: "flex w-full mt-7 justify-around",
-        cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+        row: "flex w-full mt-1 justify-around",
+        cell: "h-10 w-10 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-9 w-9 p-0 font-normal aria-selected:opacity-100"
+          "h-10 w-10 p-0 font-normal aria-selected:opacity-100"
         ),
         day_range_end: "day-range-end",
         day_selected:
@@ -76,7 +71,7 @@ function Calendar({
         IconRight: () => <ChevronRight className="h-4 w-4" />,
         CaptionLabel: () => (
           <div className={cn("flex justify-between items-center gap-2")}>
-            <div>{selected ? formatDate(selected) : formatDate(selectedDate)}</div>
+            <div>{formatDateShort(selectedDate, lang.locale)}</div>
             <ChevronDown strokeWidth={3} size={15} onClick={onToggleYearPicker}/>
           </div>
         ),

@@ -12,6 +12,8 @@ import { YearPicker } from "./yearPicker"
 import { MonthPicker } from "./monthPicker"
 import { DateRange } from "../../types/DateRange"
 import { useIntl } from "react-intl"
+import { formatDateShort } from "@/utils/dates"
+import { useLanguage } from "@/context/language/LanguageContext"
 
 
 interface DatePickerProps {
@@ -24,6 +26,7 @@ interface DatePickerProps {
 
 export function DatePicker({allowRangeSelection = false, date, setDate, setDateRange}: DatePickerProps) {
   const intl = useIntl();
+  const lang = useLanguage();
   const [showCalendar, setShowCalendar] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
@@ -36,14 +39,6 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
   const toggleYearPicker = () => {
     setShowYearPicker((prev => !prev));
   }
-
-  const formatDate = (date: Date | undefined) => {
-    return new Intl.DateTimeFormat("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  };
 
   const rangedDate = useCallback((date: Date) => {
     const newDate = new Date(date);
@@ -99,7 +94,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                     <div className="grid grid-cols-9 text-sm">
                       <div className="col-span-4">
                         <div className="py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
-                          {formatDate(date)}
+                          {formatDateShort(date, lang.locale)}
                         </div>
                       </div>
 
@@ -109,7 +104,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
 
                       <div className="col-span-4">
                         <div className="py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
-                          {formatDate(rangedDate(date))}
+                          {formatDateShort(rangedDate(date), lang.locale)}
                         </div>
                       </div>
                     </div>
@@ -118,7 +113,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                       {intl.formatMessage({ id: "datePicker.selectDate", defaultMessage: "Selected date" })}
                     </div>
                     <div className="text-base">
-                      {formatDate(date)}
+                      {formatDateShort(date, lang.locale)}
                     </div>
                   </>)
                 }
