@@ -43,15 +43,17 @@ const Template: StoryFn<DatePickerProps> = (args) => {
     const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
     
     return(
-        <IntlProvider locale="en" messages={message['en']}>
-            <DatePicker 
-                {...args}
-                date={date}
-                setDate={setDate}
-                dateRange={dateRange}
-                setDateRange={setDateRange}
-            />
-        </IntlProvider>
+      <IntlProvider locale="en" messages={message['en']}>
+        <div className="w-[280px]">
+          <DatePicker
+              {...args}
+              date={date}
+              setDate={setDate}
+              dateRange={dateRange}
+              setDateRange={setDateRange}
+          />
+        </div>
+      </IntlProvider>
     );
 };
 

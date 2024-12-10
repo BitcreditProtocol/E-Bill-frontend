@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import { useState, useEffect, useCallback } from "react"
 import { format } from "date-fns"
 import { ArrowRight, CalendarIcon } from "lucide-react"
 
@@ -24,17 +24,17 @@ interface DatePickerProps {
 
 export function DatePicker({allowRangeSelection = false, date, setDate, setDateRange}: DatePickerProps) {
   const intl = useIntl();
-  const [showCalendar, setShowCalendar] = React.useState(false);
-  const [showYearPicker, setshowYearPicker] = React.useState(false);
-  const [showMonthPicker, setShowMonthPicker] = React.useState(false);
-  const [selectedRange, setSelectedRange] = React.useState<number | null>(null);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [showYearPicker, setShowYearPicker] = useState(false);
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
+  const [selectedRange, setSelectedRange] = useState<number | null>(null);
 
   const toggleCalendar = () => {
     setShowCalendar((prev) => !prev);
   }
 
   const toggleYearPicker = () => {
-    setshowYearPicker((prev => !prev));
+    setShowYearPicker((prev => !prev));
   }
 
   const formatDate = (date: Date | undefined) => {
@@ -45,13 +45,13 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
     }).format(date);
   };
 
-  const rangedDate = React.useCallback((date: Date) => {
+  const rangedDate = useCallback((date: Date) => {
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() + (selectedRange ?? 0));
     return newDate;
   }, [selectedRange]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const newDate: DateRange = {
       startDate: date,
       endDate: rangedDate(date),
@@ -64,19 +64,14 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
   return (
     <div>
       <Button
-        variant={"outline"}
-        className={cn(
-          "w-[280px] justify-start text-left font-normal",
-          "text-muted-foreground"
-        )}
-        onClick={toggleCalendar}
-      >
-        <CalendarIcon />
+        variant="outline"
+        className="w-full flex gap-1 justify-start items-center"
+        onClick={toggleCalendar}>
+        <CalendarIcon className="text-muted-foreground" />
         {format(date, "PPP")}
       </Button>
 
-      <div
-        className={cn(
+      <div className={cn(
           "fixed inset-0 bg-black/30 transition-opacity duration-300 max-w-[375px] left-1/2 -translate-x-1/2",
           showCalendar ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
@@ -137,7 +132,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                 <YearPicker
                  baseDate={date}
                  setDate={setDate}
-                 setShowYearPicker={setshowYearPicker}
+                 setShowYearPicker={setShowYearPicker}
                  setShowMonthPicker={setShowMonthPicker}
                 />
               </div>
@@ -146,7 +141,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                 <MonthPicker 
                   baseDate={date}
                   setDate={setDate}
-                  setShowYearPicker={setshowYearPicker}
+                  setShowYearPicker={setShowYearPicker}
                   setShowMonthPicker={setShowMonthPicker}
                 />
               </div>
@@ -176,7 +171,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
               size="sm"
               onClick={() => {
                 setDate(new Date());
-                setshowYearPicker(false);
+                setShowYearPicker(false);
                 setShowCalendar(false);
               }}
             >
