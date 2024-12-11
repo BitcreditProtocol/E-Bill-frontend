@@ -8,6 +8,7 @@ export default defineConfig({
     name: 'html-transform',
     transformIndexHtml(html) {
       if (process.env.NODE_ENV !== 'development') return html;
+      if (process.env.VITE_BITCR_DEV_INCLUDE_CROWIN_IN_CONTEXT_TOOLING === 'false') return html;
 
       return html.replace(
         "</body>",
