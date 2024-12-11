@@ -21,9 +21,7 @@ const meta = {
 export default meta;
 
 const Template: StoryFn<typeof meta.component> = (args) => {
-    const [dateRange, setDateRange] = React.useState<DateRange>({
-      from: new Date()
-    });
+    const [dateRange, setDateRange] = React.useState<DateRange | undefined>(args.value);
     
     return(
       <IntlProvider locale="en" messages={message['en']}>
@@ -40,7 +38,10 @@ const Template: StoryFn<typeof meta.component> = (args) => {
 
 export const SingleDate = Template.bind({});
 SingleDate.args = {
-  mode: 'single'
+  mode: 'single',
+  value: {
+    from: new Date()
+  }
 };
 
 export const RangeDate = Template.bind({});

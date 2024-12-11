@@ -83,7 +83,16 @@ export function DatePicker({ mode, value, onChange }: DatePickerProps) {
         className="w-full flex gap-1 justify-start items-center"
         onClick={toggleCalendar}>
         <CalendarIcon className="text-muted-foreground" />
-        {current.from && (<>{formatDateLong(current.from, lang.locale)}</>)}
+        {mode === 'single' ? (
+          <>{value && value.from && formatDateLong(value.from, lang.locale)}</>
+        ) : (<>
+          <div className="flex gap-1 justify-start items-center truncate">
+            {value && (<>{value.from && formatDateShort(value.from, lang.locale)}
+              <span>-</span>
+              {value.to && formatDateShort(value.to, lang.locale)}
+            </>)}
+          </div>
+        </>)}
       </Button>
 
       <div className={cn(
