@@ -6,10 +6,10 @@ import Big from "big.js";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/language/LanguageContext";
 import { parseFloatSafe, parseIntSafe } from "@/utils/numbers";
-import { formatDate } from "@/utils/dates";
+import { daysBetween, formatDate } from "@/utils/dates";
 import { Button } from "../ui/button";
 import { FormattedCurrency } from "../FormattedCurrency";
-import { daysBetween, Act360 } from "./discount-util";
+import { Act360 } from "./discount-util";
 
 type InputContainerProps = PropsWithChildren<{
   htmlFor: LabelHTMLAttributes<HTMLLabelElement>['htmlFor'],

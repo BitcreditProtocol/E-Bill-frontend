@@ -1,10 +1,9 @@
 import type { Meta,  StoryObj } from '@storybook/react';
-import { DiscountForm, GrossToNetDiscountForm } from './DiscountForm';
 import { fn } from '@storybook/test';
-import LanguageProvider from '@/context/language/LanguageProvider';
 import Big from 'big.js';
-
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1_000;
+import { addDays } from 'date-fns';
+import LanguageProvider from '@/context/language/LanguageProvider';
+import { DiscountForm, GrossToNetDiscountForm } from './DiscountForm';
 
 const now = Date.now();
 
@@ -13,7 +12,7 @@ const meta = {
   component: GrossToNetDiscountForm,
   args: {
     startDate: new Date(now),
-    endDate: new Date(now + 90 * MILLISECONDS_PER_DAY),
+    endDate: addDays(now, 90),
     onSubmit: fn(),
     gross: {
       value: new Big(12.47568),
