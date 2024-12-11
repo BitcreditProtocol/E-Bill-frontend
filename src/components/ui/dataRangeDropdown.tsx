@@ -15,20 +15,19 @@ import {
 import { useIntl } from "react-intl";
 
 interface DateRangeDropdownProps {
+  value?: number
   onRangeChange: (range: number) => void;
 }
 
-export function DateRangeDropdown({ onRangeChange }: DateRangeDropdownProps) {
+export function DateRangeDropdown({ value, onRangeChange }: DateRangeDropdownProps) {
   const intl = useIntl(); 
-  const [selectedRange, setSelectedRange] = React.useState<number | null>(null);
 
   const handleRangeChanged = (value: string) => {
     const range = Number(value);
-    setSelectedRange(range);
     onRangeChange(range);
   };
 
-  const handleDisplayRange = (value: number | null): string => {
+  const handleDisplayRange = (value: number | undefined): string => {
     switch (value) {
       case 30:
       case 60:
@@ -62,14 +61,14 @@ export function DateRangeDropdown({ onRangeChange }: DateRangeDropdownProps) {
           variant="outline"
           className="w-full rounded-lg bg-[#f6f2e7] justify-start py-3 px-4"
         >
-          {handleDisplayRange(selectedRange)}
+          {handleDisplayRange(value)}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64 bg-[#f6f2e7]">
         <DropdownMenuLabel>Select Range</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
-          value={String(selectedRange)}
+          value={String(value)}
           onValueChange={handleRangeChanged}
         >
           <DropdownMenuRadioItem value="30">

@@ -98,7 +98,7 @@ export function DatePicker({ mode, value, onChange }: DatePickerProps) {
                   />
                 </div>
 
-                <DateRangeDropdown onRangeChange={setSelectedRange}/>
+                <DateRangeDropdown value={selectedRange} onRangeChange={setSelectedRange}/>
 
                 <div className="grid grid-cols-9 text-sm">
                   <div className="col-span-4">
