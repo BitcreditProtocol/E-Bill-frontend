@@ -1,4 +1,10 @@
 
+import { differenceInCalendarDays } from "date-fns"
+
+export const daysBetween = (startDate: Date, endDate: Date): number => {
+  return differenceInCalendarDays(endDate, startDate);
+};
+
 export const formatDate = (date: Date, locale: string): string => {
   const year = new Intl.DateTimeFormat(locale, { year: "2-digit" }).format(date);
   const month = new Intl.DateTimeFormat(locale, { month: "short" }).format(date);
