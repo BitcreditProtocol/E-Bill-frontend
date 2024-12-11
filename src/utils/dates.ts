@@ -27,3 +27,10 @@ export const formatMonthLong = (date: Date, locale: string) => {
     month: "long",
   }).format(date);
 };
+
+export const formatMonthYear = (date: Date, locale: string) => {
+  return new Intl.DateTimeFormat(locale, {
+    month: "long",
+    year: "numeric",
+  }).format(date);
+};

@@ -1,6 +1,6 @@
 
 import { describe, it, expect } from "vitest";
-import { formatDate, formatDateShort, formatDateLong, formatMonthLong } from "./dates";
+import { formatDate, formatDateShort, formatDateLong, formatMonthLong, formatMonthYear } from "./dates";
 
 describe("util", () => {
 
@@ -41,6 +41,16 @@ describe("util", () => {
       expect(formatMonthLong(new Date(2009, 0, 3), "tr")).toBe("Ocak");
       expect(formatMonthLong(new Date(2009, 0, 3), "fr")).toBe("janvier");
       expect(formatMonthLong(new Date(2009, 0, 3), "zh")).toBe("一月");
+    });
+  });
+
+  describe("formatMonthYear", () => {
+    it("should format month and year according to designs (long)", () => {
+      expect(formatMonthYear(new Date(2009, 0, 3), "en-US")).toBe("January 2009");
+      expect(formatMonthYear(new Date(2009, 0, 3), "es-AR")).toBe("enero de 2009");
+      expect(formatMonthYear(new Date(2009, 0, 3), "tr")).toBe("Ocak 2009");
+      expect(formatMonthYear(new Date(2009, 0, 3), "fr")).toBe("janvier 2009");
+      expect(formatMonthYear(new Date(2009, 0, 3), "zh")).toBe("2009年1月");
     });
   });
 });

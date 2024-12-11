@@ -56,7 +56,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
   }, [selectedRange, date, setDateRange, rangedDate]);
 
   return (
-    <div>
+    <>
       <Button
         variant="outline"
         className="w-full flex gap-1 justify-start items-center"
@@ -70,14 +70,12 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
           showCalendar ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
         onClick={() => { setShowCalendar(false); }} 
-      ></div>
+      />
 
-      <div
-        className={cn(
-          `fixed bottom-0 left-1/2 -translate-x-1/2 max-w-[375px] w-full ${allowRangeSelection ? "h-5/6" : "h-3/4"} bg-elevation-50 p-3 transition-transform duration-300 ease-in-out rounded-t-2xl justify-center`,
-          showCalendar ? "translate-y-0" : "translate-y-full"
-        )}
-      >
+      <div className={cn(
+        `fixed bottom-0 left-1/2 -translate-x-1/2 max-w-[375px] w-full ${allowRangeSelection ? "h-5/6" : "h-3/4"} bg-elevation-50 p-3 transition-transform duration-300 ease-in-out rounded-t-2xl justify-center`,
+        showCalendar ? "translate-y-0" : "translate-y-full"
+      )}>
         <div className="flex flex-col gap-2">
           <div className="flex flex-col gap-2">
             {allowRangeSelection ?
@@ -185,6 +183,6 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

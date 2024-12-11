@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { useLanguage } from "@/context/language/LanguageContext";
-import { formatDateLong } from "@/utils/dates";
+import { formatMonthYear } from "@/utils/dates";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./button";
 
@@ -34,7 +34,7 @@ const YearPicker = ({baseDate, setDate, setShowYearPicker, setShowMonthPicker }:
         setShowYearPicker(false);
         setShowMonthPicker(false);
       }}>
-        {formatDateLong(baseDate, lang.locale)}
+        {formatMonthYear(baseDate, lang.locale)}
         <ChevronUp strokeWidth={3} size={15} />
       </div>
       <ChevronRight className="mx-1 cursor-pointer" onClick={() => {
