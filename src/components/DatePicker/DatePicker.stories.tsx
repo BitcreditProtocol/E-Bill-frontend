@@ -1,5 +1,5 @@
 import React from "react";
-import { DatePicker } from "@/components/ui/datePicker";
+import { DatePicker } from "./datePicker"; 
 import { Meta, StoryFn } from "@storybook/react";
 import { IntlProvider } from "react-intl";
 import { DateRange } from "react-day-picker";

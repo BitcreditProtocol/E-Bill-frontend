@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { useLanguage } from "@/context/language/LanguageContext";
 import { formatYearNumeric } from "@/utils/dates";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "./button";
+import { buttonVariants } from "../ui/button";
 
 interface YearPickerProps {
     value: Date
