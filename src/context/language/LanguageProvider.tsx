@@ -31,11 +31,15 @@ for (const path in modules) {
 }
 
 export default function LanguageProvider({
+  defaultLocale = DEFAULT_LOCALE,
+  initWithBrowserLocale = import.meta.env.PROD,
   children,
 }: {
+  defaultLocale?: string
+  initWithBrowserLocale?: boolean,
   children: React.ReactNode;
 }) {
-  const [locale, setLocale] = useState(detectBrowserLanguage() || DEFAULT_LOCALE);
+  const [locale, setLocale] = useState(initWithBrowserLocale ? detectBrowserLanguage() || defaultLocale : defaultLocale);
 
   return (
     <LanguageContext.Provider value={{ locale, setLocale }}>
