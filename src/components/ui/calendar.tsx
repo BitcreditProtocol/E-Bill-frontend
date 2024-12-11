@@ -38,6 +38,7 @@ function Calendar({
       ISOWeek={ISOWeek}
       showOutsideDays={true}
       onSelect={handleOnSelect}
+      defaultMonth={selected}
       selected={selected}
       className={cn("flex justify-center", className)}
       classNames={{
