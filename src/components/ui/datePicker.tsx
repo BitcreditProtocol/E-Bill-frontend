@@ -13,7 +13,7 @@ import { MonthPicker } from "./monthPicker"
 import { FormattedMessage } from "react-intl"
 import { formatDateLong, formatDateShort } from "@/utils/dates"
 import { useLanguage } from "@/context/language/LanguageContext"
-import { differenceInCalendarDays } from "date-fns"
+import { addDays, differenceInCalendarDays } from "date-fns"
 
 interface DatePickerProps {
   mode: 'single' | 'range'
@@ -50,23 +50,16 @@ export function DatePicker({ mode, value, onChange }: DatePickerProps) {
   }
 
   useEffect(() => {
-    if (selectedRange === undefined) return;
-
     setCurrent((val) => {
-      if (val.from === undefined) return val;
-
-      const newEndDate = new Date();
-      newEndDate.setDate(val.from.getDate() + selectedRange);
-
+      if (selectedRange === undefined || val.from === undefined) return val;
       return ({
         ...val,
-        to: newEndDate,
+        to: addDays(val.from, selectedRange),
       })
     });
   }, [selectedRange]);
 
   useEffect(() => {
-    if (current.from === undefined || current.to === undefined) return;
       setSelectedRange((val) => {
         if (current.from === undefined || current.to === undefined) {
           return val;
