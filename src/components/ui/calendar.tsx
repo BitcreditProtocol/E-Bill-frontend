@@ -38,6 +38,7 @@ function Calendar({
       ISOWeek={ISOWeek}
       showOutsideDays={true}
       onSelect={handleOnSelect}
+      selected={selected}
       className={cn("flex justify-center", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full",
@@ -59,8 +60,7 @@ function Calendar({
           "h-10 w-10 p-0 font-normal aria-selected:opacity-100"
         ),
         day_range_end: "day-range-end",
-        day_selected:
-          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+        day_selected: "bg-elevation-200 hover:bg-elevation-200 border-[1px] border-divider-100",
         day_today: "bg-accent text-accent-foreground",
         day_outside:
           "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground",

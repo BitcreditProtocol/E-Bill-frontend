@@ -19,8 +19,8 @@ interface DateRangeDropdownProps {
 }
 
 export function DateRangeDropdown({ onRangeChange }: DateRangeDropdownProps) {
-  const [selectedRange, setSelectedRange] = React.useState<number | null>(null);
   const intl = useIntl(); 
+  const [selectedRange, setSelectedRange] = React.useState<number | null>(null);
 
   const handleRangeChanged = (value: string) => {
     const range = Number(value);

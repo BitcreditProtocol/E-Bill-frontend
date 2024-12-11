@@ -11,7 +11,7 @@ import { DateRangeDropdown } from "./dataRangeDropdown"
 import { YearPicker } from "./yearPicker"
 import { MonthPicker } from "./monthPicker"
 import { DateRange } from "../../types/DateRange"
-import { useIntl } from "react-intl"
+import { FormattedMessage } from "react-intl"
 import { formatDateLong, formatDateShort } from "@/utils/dates"
 import { useLanguage } from "@/context/language/LanguageContext"
 
@@ -25,7 +25,6 @@ interface DatePickerProps {
 }
 
 export function DatePicker({allowRangeSelection = false, date, setDate, setDateRange}: DatePickerProps) {
-  const intl = useIntl();
   const lang = useLanguage();
   const [showCalendar, setShowCalendar] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
@@ -84,7 +83,11 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
             {allowRangeSelection ?
               (<>
                 <div className="text-xs text-text-200">
-                  {intl.formatMessage({ id: "datePicker.selectDateRange", defaultMessage: "Select date range" })}
+                  <FormattedMessage
+                    id="Select date range"
+                    defaultMessage="Select date range"
+                    description="Header label for picking date range in datepicker form"
+                  />
                 </div>
 
                 <DateRangeDropdown onRangeChange={setSelectedRange}/>
@@ -108,7 +111,11 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                 </div>
               </>) : (<>
                 <div className="text-xs text-text-200">
-                  {intl.formatMessage({ id: "datePicker.selectDate", defaultMessage: "Selected date" })}
+                  <FormattedMessage
+                    id="Selected date"
+                    defaultMessage="Selected date"
+                    description="Header label for picking single date in datepicker form"
+                  />
                 </div>
                 <div className="text-base">
                   {formatDateLong(date, lang.locale)}
@@ -158,14 +165,22 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                 setShowCalendar(false);
               }}
             >
-              {intl.formatMessage({ id:"datePicker.button.canvel", defaultMessage: "Cancel"})}
+              <FormattedMessage
+                id="Cancel"
+                defaultMessage="Cancel"
+                description="Cancel button text in datepicker form"
+              />
             </Button>
             <Button
               className="w-full"
               size="sm"
               onClick={() => { setShowCalendar(false); }}
             >
-              {intl.formatMessage({ id:"datePicker.button.confirm", defaultMessage: "Confirm"})}
+              <FormattedMessage
+                id="Confirm"
+                defaultMessage="Confirm"
+                description="Confirm button text in datepicker form"
+              />
             </Button>
           </div>
         </div>
