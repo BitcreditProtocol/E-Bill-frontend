@@ -34,3 +34,9 @@ export const formatMonthYear = (date: Date, locale: string) => {
     year: "numeric",
   }).format(date);
 };
+
+export const formatYearNumeric = (date: Date, locale: string) => {
+  return new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+  }).format(date);
+};

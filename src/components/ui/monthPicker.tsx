@@ -1,58 +1,64 @@
 "use client"
 
 import { ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
-import { formatDateShort, formatMonthLong } from "@/utils/dates";
+import { formatMonthLong, formatMonthYear } from "@/utils/dates";
 import { useLanguage } from "@/context/language/LanguageContext";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./button";
 
-interface YearPickerProps {
-  baseDate: Date
-  setDate: (date: Date) => void
-  setShowYearPicker: (value: boolean) => void
-  setShowMonthPicker: (value: boolean) => void
+interface MonthPickerProps {
+  value: Date
+  onChange: (date: Date) => void
+  onCaptionLabelClicked: () => void
 }
 
-const MonthPicker = ({baseDate, setDate, setShowYearPicker, setShowMonthPicker }: YearPickerProps) => {   
+const MonthPicker = ({ value, onChange, onCaptionLabelClicked }: MonthPickerProps) => {   
   const lang = useLanguage();
 
-  const [baseYear, setBaseYear] = useState(baseDate.getFullYear())
+  const [base, setBase] = useState(value)
 
-  const handleMonthClick = (monthIndex: number) => {
-    const newDate = new Date(baseDate);
+  const handleOnChange = (monthIndex: number) => {
+    const newDate = new Date(base);
     newDate.setMonth(monthIndex);
-    setDate(newDate);
+    onChange(newDate);
+  };
+
+  const addYears = (years: number) => {
+    setBase((val) => {
+      const newVal = new Date(val);
+      newVal.setFullYear(val.getFullYear() + years);
+      return newVal;
+    });
+  };
+  const nextYear = () => {
+    addYears(1);
+  };
+  const prevYear = () => {
+    addYears(-1);
   };
 
   return(
     <div className="flex flex-col gap-2">
       <div className="flex justify-between items-center">
-        <ChevronLeft className="mx-1 cursor-pointer" onClick={() => {
-          setBaseYear(baseYear - 1);
-        }} />
+        <ChevronLeft className="mx-1 cursor-pointer" onClick={() => { prevYear() }} />
         <div className="flex justify-between items-center gap-2 cursor-pointer" onClick={() => {
-          setShowYearPicker(false);
-          setShowMonthPicker(false);
+          onCaptionLabelClicked();
         }}>
-          {formatDateShort(baseDate, lang.locale)}
+          {formatMonthYear(base, lang.locale)}
           <ChevronUp strokeWidth={3} size={15} />
         </div>
-        <ChevronRight className="mx-1 cursor-pointer" onClick={() => {
-          setBaseYear(baseYear + 1);
-        }} />
+        <ChevronRight className="mx-1 cursor-pointer" onClick={() => { nextYear() }} />
       </div>
       <div className="grid grid-rows-4 grid-cols-3">
-        {Array(12).fill('').map((_, index) => new Date(baseYear, index)).map((date, index) => (
+        {Array(12).fill('').map((_, index) => new Date(base.getFullYear(), index)).map((date, index) => (
           <div
             key={index}
             className={cn("h-[42px] flex justify-center items-center cursor-pointer", buttonVariants({ variant: "ghost" }), {
-              "bg-elevation-200 hover:bg-elevation-200 border-[1px] border-divider-100": date.getMonth() === baseDate.getMonth()
+              "bg-elevation-200 hover:bg-elevation-200 border-[1px] border-divider-100": date.getMonth() === value.getMonth()
             })}
             onClick={() => {
-              handleMonthClick(index)
-              setShowMonthPicker(false);
-              setShowYearPicker(false);
+              handleOnChange(index);
             }}
           >
             {formatMonthLong(date, lang.locale)}

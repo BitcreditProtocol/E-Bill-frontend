@@ -135,28 +135,36 @@ export function DatePicker({ mode, value, onChange }: DatePickerProps) {
           <div className="min-h-[330px] mb-4">
             {showYearPicker && (
               <YearPicker
-                baseDate={current.from || baseDate}
-                setDate={(date) => {
+                value={current.from || baseDate}
+                onChange={(date) => {
                   setCurrent({
                     ...value,
                     from: date
-                  })
+                  });
+                  setShowYearPicker(false);
+                  setShowMonthPicker(true);
                 }}
-                setShowYearPicker={setShowYearPicker}
-                setShowMonthPicker={setShowMonthPicker}
+                onCaptionLabelClicked={() => {
+                  setShowYearPicker(false);
+                  setShowMonthPicker(false);
+                }}
               />
             )}
             {showMonthPicker && (
               <MonthPicker
-                baseDate={current.from || baseDate}
-                setDate={(date) => {
+                value={current.from || baseDate}
+                onChange={(date) => {
                   setCurrent({
                     ...value,
                     from: date
                   })
+                  setShowYearPicker(false);
+                  setShowMonthPicker(false);
                 }}
-                setShowYearPicker={setShowYearPicker}
-                setShowMonthPicker={setShowMonthPicker}
+                onCaptionLabelClicked={() => {
+                  setShowYearPicker(true);
+                  setShowMonthPicker(false);
+                }}
               />
             )}
             {!showYearPicker && !showMonthPicker && (

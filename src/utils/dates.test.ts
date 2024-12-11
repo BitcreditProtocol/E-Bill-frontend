@@ -1,6 +1,6 @@
 
 import { describe, it, expect } from "vitest";
-import { formatDate, formatDateShort, formatDateLong, formatMonthLong, formatMonthYear } from "./dates";
+import { formatDate, formatDateShort, formatDateLong, formatMonthLong, formatMonthYear, formatYearNumeric } from "./dates";
 
 describe("util", () => {
 
@@ -51,6 +51,16 @@ describe("util", () => {
       expect(formatMonthYear(new Date(2009, 0, 3), "tr")).toBe("Ocak 2009");
       expect(formatMonthYear(new Date(2009, 0, 3), "fr")).toBe("janvier 2009");
       expect(formatMonthYear(new Date(2009, 0, 3), "zh")).toBe("2009年1月");
+    });
+  });
+
+  describe("formatYearNumeric", () => {
+    it("should format year according to designs (numeric)", () => {
+      expect(formatYearNumeric(new Date(2009, 0, 3), "en-US")).toBe("2009");
+      expect(formatYearNumeric(new Date(2009, 0, 3), "es-AR")).toBe("2009");
+      expect(formatYearNumeric(new Date(2009, 0, 3), "tr")).toBe("2009");
+      expect(formatYearNumeric(new Date(2009, 0, 3), "fr")).toBe("2009");
+      expect(formatYearNumeric(new Date(2009, 0, 3), "zh")).toBe("2009年");
     });
   });
 });
