@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -33,7 +31,7 @@ export function DateRangeDropdown({ value, onRangeChange }: DateRangeDropdownPro
       case 60:
       case 90:
         return intl.formatMessage(
-          { id: "displayRange.days", defaultMessage: "{value} days" },
+          { id: "displayRange.days", defaultMessage: "{value} Days" },
           { value }
         );
       case 180:
@@ -72,19 +70,19 @@ export function DateRangeDropdown({ value, onRangeChange }: DateRangeDropdownPro
           onValueChange={handleRangeChanged}
         >
           <DropdownMenuRadioItem value="30">
-            {intl.formatMessage({ id: 'dropdown.option.30days', defaultMessage: "30 days" })}
+            {intl.formatMessage({ id: 'dropdown.option.30days', defaultMessage: "30 Days" })}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="60">
-            {intl.formatMessage({ id: 'dropdown.option.60days', defaultMessage: "60 days" })}
+            {intl.formatMessage({ id: 'dropdown.option.60days', defaultMessage: "60 Days" })}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="90">
-            {intl.formatMessage({ id: 'dropdown.option.90days', defaultMessage: "90 days" })}
+            {intl.formatMessage({ id: 'dropdown.option.90days', defaultMessage: "90 Days" })}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="180">
             {intl.formatMessage({ id: 'dropdown.option.6months', defaultMessage: "6 Months" })}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="365">
-            {intl.formatMessage({ id: 'dropdown.option.1year', defaultMessage: "1 year" })}
+            {intl.formatMessage({ id: 'dropdown.option.1year', defaultMessage: "1 Year" })}
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

@@ -13,7 +13,7 @@ import { MonthPicker } from "./monthPicker"
 import { FormattedMessage } from "react-intl"
 import { formatDateLong, formatDateShort } from "@/utils/dates"
 import { useLanguage } from "@/context/language/LanguageContext"
-
+import { differenceInCalendarDays } from "date-fns"
 
 interface DatePickerProps {
   mode: 'single' | 'range'
@@ -64,6 +64,17 @@ export function DatePicker({ mode, value, onChange }: DatePickerProps) {
       })
     });
   }, [selectedRange]);
+
+  useEffect(() => {
+    if (current.from === undefined || current.to === undefined) return;
+      setSelectedRange((val) => {
+        if (current.from === undefined || current.to === undefined) {
+          return val;
+        }
+        const diffDays = differenceInCalendarDays(current.to, current.from);
+        return diffDays !== val ? undefined : val;
+      });
+  }, [current]);
 
   return (
     <>
