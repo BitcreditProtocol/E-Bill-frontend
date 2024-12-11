@@ -1,8 +1,8 @@
 import React from "react";
 import { DatePicker } from "@/components/ui/datePicker";
 import { Meta, StoryFn } from "@storybook/react";
-import { DateRange } from "@/types/DateRange";
 import { IntlProvider } from "react-intl";
+import { DateRange } from "react-day-picker";
 
 const message = {
     en: {
@@ -13,32 +13,25 @@ const message = {
     },
 };
 
-export interface DatePickerProps {
-    date: Date;
-    setDate: (date: Date) => void;
-    dateRange?: DateRange;
-    setDateRange?: (range?: DateRange) => void;
-    allowRangeSelection?: boolean;
-}
+const meta = {
+  title: "Components/DatePicker",
+  component: DatePicker
+} satisfies Meta<typeof DatePicker>;
 
-export default {
-    title: "Components/DatePicker",
-    component: DatePicker
-} as Meta<DatePickerProps>;
+export default meta;
 
-const Template: StoryFn<DatePickerProps> = (args) => {
-    const [date, setDate] = React.useState(new Date);
-    const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
+const Template: StoryFn<typeof meta.component> = (args) => {
+    const [dateRange, setDateRange] = React.useState<DateRange>({
+      from: new Date()
+    });
     
     return(
       <IntlProvider locale="en" messages={message['en']}>
         <div className="w-[280px]">
           <DatePicker
               {...args}
-              date={date}
-              setDate={setDate}
-              dateRange={dateRange}
-              setDateRange={setDateRange}
+              value={dateRange}
+              onChange={setDateRange}
           />
         </div>
       </IntlProvider>
@@ -46,9 +39,11 @@ const Template: StoryFn<DatePickerProps> = (args) => {
 };
 
 export const SingleDate = Template.bind({});
+SingleDate.args = {
+  mode: 'single'
+};
 
 export const RangeDate = Template.bind({});
 RangeDate.args = {
-    allowRangeSelection: true
+  mode: 'range'
 };
-

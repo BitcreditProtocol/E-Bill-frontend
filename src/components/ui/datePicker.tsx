@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { format } from "date-fns"
+import { useState, useEffect, useMemo } from "react"
 import { ArrowRight, CalendarIcon } from "lucide-react"
+import { DateRange } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -10,26 +10,36 @@ import { Calendar } from "@/components/ui/calendar"
 import { DateRangeDropdown } from "./dataRangeDropdown"
 import { YearPicker } from "./yearPicker"
 import { MonthPicker } from "./monthPicker"
-import { DateRange } from "../../types/DateRange"
 import { FormattedMessage } from "react-intl"
 import { formatDateLong, formatDateShort } from "@/utils/dates"
 import { useLanguage } from "@/context/language/LanguageContext"
 
 
 interface DatePickerProps {
-  date: Date;
-  setDate: (date: Date) => void;
-  allowRangeSelection?: boolean;
-  dateRange?: DateRange;
-  setDateRange?: (dateRange: DateRange) => void; 
+  mode: 'single' | 'range'
+  value?: DateRange
+  onChange: (dateRange: DateRange) => void
 }
 
-export function DatePicker({allowRangeSelection = false, date, setDate, setDateRange}: DatePickerProps) {
+export function DatePicker({ mode, value, onChange }: DatePickerProps) {
   const lang = useLanguage();
   const [showCalendar, setShowCalendar] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
-  const [selectedRange, setSelectedRange] = useState<number | null>(null);
+  const [selectedRange, setSelectedRange] = useState<number>();
+  const allowRangeSelection = useMemo(() => mode === 'range', [mode]);
+  const [current, setCurrent] = useState(value || {
+    from: new Date(),
+    to: undefined
+  });
+  const baseDate = useMemo(() => current.from || new Date(), [current]);
+
+  useEffect(() => {
+    setCurrent(value || {
+      from: new Date(),
+      to: undefined
+    })
+  }, [value]);
 
   const toggleCalendar = () => {
     setShowCalendar((prev) => !prev);
@@ -39,21 +49,21 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
     setShowYearPicker((prev => !prev));
   }
 
-  const rangedDate = useCallback((date: Date) => {
-    const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + (selectedRange ?? 0));
-    return newDate;
-  }, [selectedRange]);
-
   useEffect(() => {
-    const newDate: DateRange = {
-      startDate: date,
-      endDate: rangedDate(date),
-    };
-    if (setDateRange) {
-      setDateRange(newDate);
-    }
-  }, [selectedRange, date, setDateRange, rangedDate]);
+    if (selectedRange === undefined) return;
+
+    setCurrent((val) => {
+      if (val.from === undefined) return val;
+
+      const newEndDate = new Date();
+      newEndDate.setDate(val.from.getDate() + selectedRange);
+
+      return ({
+        ...val,
+        to: newEndDate,
+      })
+    });
+  }, [selectedRange]);
 
   return (
     <>
@@ -62,7 +72,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
         className="w-full flex gap-1 justify-start items-center"
         onClick={toggleCalendar}>
         <CalendarIcon className="text-muted-foreground" />
-        {format(date, "PPP")}
+        {current.from && (<>{formatDateLong(current.from, lang.locale)}</>)}
       </Button>
 
       <div className={cn(
@@ -92,8 +102,8 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
 
                 <div className="grid grid-cols-9 text-sm">
                   <div className="col-span-4">
-                    <div className="py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
-                      {formatDateShort(date, lang.locale)}
+                    <div className="h-[46px] py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
+                      {current.from && formatDateShort(current.from, lang.locale)}
                     </div>
                   </div>
 
@@ -102,8 +112,8 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                   </div>
 
                   <div className="col-span-4">
-                    <div className="py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
-                      {formatDateShort(rangedDate(date), lang.locale)}
+                    <div className="h-[46px] py-3 px-4 w-full bg-[#f6f2e7] border border-gray-200 rounded-lg truncate">
+                      {current.to && formatDateShort(current.to, lang.locale)}
                     </div>
                   </div>
                 </div>
@@ -116,7 +126,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
                   />
                 </div>
                 <div className="text-base">
-                  {formatDateLong(date, lang.locale)}
+                  {current.from && formatDateLong(current.from, lang.locale)}
                 </div>
               </>)
             }
@@ -125,27 +135,39 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
           <div className="min-h-[330px] mb-4">
             {showYearPicker && (
               <YearPicker
-                baseDate={date}
-                setDate={setDate}
+                baseDate={current.from || baseDate}
+                setDate={(date) => {
+                  setCurrent({
+                    ...value,
+                    from: date
+                  })
+                }}
                 setShowYearPicker={setShowYearPicker}
                 setShowMonthPicker={setShowMonthPicker}
               />
             )}
             {showMonthPicker && (
               <MonthPicker
-                baseDate={date}
-                setDate={setDate}
+                baseDate={current.from || baseDate}
+                setDate={(date) => {
+                  setCurrent({
+                    ...value,
+                    from: date
+                  })
+                }}
                 setShowYearPicker={setShowYearPicker}
                 setShowMonthPicker={setShowMonthPicker}
               />
             )}
             {!showYearPicker && !showMonthPicker && (
               <Calendar
-                mode="single"
-                selected={date}
-                onToggleYearPicker={toggleYearPicker}
-                onSelect={(_: Date | undefined, selectDate: Date) => {
-                  setDate(selectDate)
+                mode={mode}
+                selected={current}
+                onCaptionLabelClicked={toggleYearPicker}
+                onSelect={(range: DateRange | undefined) => {
+                  if (range) {
+                    setCurrent(range)
+                  }
                 }}
                 initialFocus
               />
@@ -158,7 +180,7 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
               variant="outline"
               size="sm"
               onClick={() => {
-                setDate(new Date());
+                setShowMonthPicker(false);
                 setShowYearPicker(false);
                 setShowCalendar(false);
               }}
@@ -172,7 +194,13 @@ export function DatePicker({allowRangeSelection = false, date, setDate, setDateR
             <Button
               className="w-full"
               size="sm"
-              onClick={() => { setShowCalendar(false); }}
+              disabled={current.from === undefined || (mode === 'range' && current.to === undefined)}
+              onClick={() => {
+                onChange(current);
+                setShowMonthPicker(false);
+                setShowYearPicker(false);
+                setShowCalendar(false);
+              }}
             >
               <FormattedMessage
                 id="Confirm"
