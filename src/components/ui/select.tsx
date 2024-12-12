@@ -5,16 +5,16 @@ import { cn } from "@/lib/utils";
 
 interface SelectProps {
   children: React.ReactNode;
+  value?: string;
   onValueChange?: (value: string) => void;
 }
 
-const Select: React.FC<SelectProps> = ({ children, onValueChange }) => {
-  const [hasValue, setHasValue] = React.useState(false);
+const Select: React.FC<SelectProps> = ({ children, value, onValueChange }) => {
+  const hasValue = React.useMemo(() => !!value, [value]);
   const [triggerWidth, setTriggerWidth] = React.useState<number | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
 
   const handleValueChange = (value: string) => {
-    setHasValue(!!value);
     if (onValueChange) onValueChange(value);
   };
 
@@ -22,6 +22,7 @@ const Select: React.FC<SelectProps> = ({ children, onValueChange }) => {
     <SelectPrimitive.Root
       onValueChange={handleValueChange}
       onOpenChange={setIsOpen}
+      value={value}
     >
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child) && child.type === SelectTrigger) {
