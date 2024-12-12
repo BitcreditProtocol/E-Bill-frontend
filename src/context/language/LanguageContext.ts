@@ -13,11 +13,13 @@ const DEFAULT_LOCALE = import.meta.env.DEV ? DEFAULT_LOCALE_DEV : DEFAULT_LOCALE
 export type LanguageContextType = {
   locale: string;
   setLocale: (locale: string) => void;
+  availableLocales: () => string[];
 };
 
 const LanguageContext = createContext<LanguageContextType>({
   locale: DEFAULT_LOCALE,
   setLocale: () => {},
+  availableLocales: () =>[DEFAULT_LOCALE],
 });
 
 const useLanguage = () => useContext(LanguageContext);
