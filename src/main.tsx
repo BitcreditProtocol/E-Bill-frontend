@@ -19,7 +19,7 @@ import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
-import { Bills, BillsEmpty } from "./pages/Bills";
+import { BillsEmpty } from "./pages/Bills";
 import EmailVerification from "./pages/signup/EmailVerification";
 import OptionalInformation from "./pages/signup/OptionalInformation";
 import ConfirmIdentity from "./pages/signup/ConfirmIdentity";
@@ -31,6 +31,8 @@ import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
+
+import Bills from "./pages/bills";
 
 const queryClient = new QueryClient();
 
