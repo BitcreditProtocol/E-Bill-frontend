@@ -27,11 +27,13 @@ const mockedBills = [
 
 type BillsResponse = Bill[];
 
-export const recentBills = http.get<never, never, BillsResponse, "/bills">(
-  "/bills",
-  async () => {
-    await delay(1000);
+export const recentBills = http.get<
+  never,
+  never,
+  BillsResponse,
+  "/recent-bills"
+>("/recent-bills", async () => {
+  await delay(1000);
 
-    return HttpResponse.json(mockedBills);
-  }
-);
+  return HttpResponse.json(mockedBills);
+});

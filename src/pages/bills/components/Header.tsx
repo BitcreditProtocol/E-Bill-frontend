@@ -1,9 +1,13 @@
+import { useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CalendarDaysIcon } from "lucide-react";
+
 import Search from "@/components/ui/search";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { searchBills } from "@/services/bill";
+import type { SearchBillsFilter } from "@/types/bill";
 
 type FilterOptions = "all" | "payee" | "payer" | "contingent";
 
@@ -12,13 +16,77 @@ type FiltersProps = {
   onSelect: (filter: FilterOptions) => void;
 };
 
+const buildFilterPayload = ({
+  search_term,
+  date_range,
+  role,
+  currency,
+}: {
+  search_term?: string;
+  date_range?: { from: string; to: string };
+  role?: string;
+  currency?: string;
+}): { filter: SearchBillsFilter } => {
+  const filterPayload: SearchBillsFilter = {};
+
+  if (search_term) {
+    filterPayload.search_term = search_term;
+  }
+
+  if (date_range) {
+    filterPayload.date_range = date_range;
+  }
+
+  if (role) {
+    filterPayload.role = role;
+  }
+
+  if (currency) {
+    filterPayload.currency = currency;
+  }
+
+  return { filter: filterPayload };
+};
+
 function Filters({ selected, onSelect }: FiltersProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  // const [dateRange, setDateRange] = useState({ from: "", to: "" });
+  const role = selected;
+
   const intl = useIntl();
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending, data } = useMutation({
+    mutationFn: async () => {
+      const payload = buildFilterPayload({
+        search_term: searchTerm,
+        role,
+      });
+
+      return await searchBills(payload);
+    },
+    onSuccess: (data) => {
+      console.log(data);
+
+      queryClient.setQueryData(["bills"], data);
+    },
+  });
+
+  useEffect(() => {
+    if (isPending) {
+      console.log("Searching bills...");
+    }
+
+    console.log("Bills found:", data);
+  }, [isPending, data]);
+
+  const activeFilter = "!font-medium border-text-300";
   const isActive = (filter: FilterOptions) => selected === filter;
 
   return (
     <div className="flex flex-col gap-2">
       <Search
+        onChange={setSearchTerm}
         size="sm"
         placeholder={intl.formatMessage({
           id: "Search for bills",
@@ -26,14 +94,14 @@ function Filters({ selected, onSelect }: FiltersProps) {
           description: "Placeholder text for bills search input",
         })}
         onSearch={() => {
-          console.log("search");
+          mutate();
         }}
       />
 
       <div className="flex gap-2">
         <Button
           className={cn("filter", {
-            "!font-medium border-text-300": isActive("all"),
+            [activeFilter]: isActive("all"),
           })}
           onClick={() => {
             onSelect("all");
@@ -50,7 +118,7 @@ function Filters({ selected, onSelect }: FiltersProps) {
 
         <Button
           className={cn("filter", {
-            "!font-medium border-text-300": isActive("payee"),
+            [activeFilter]: isActive("payee"),
           })}
           onClick={() => {
             onSelect("payee");
@@ -67,7 +135,7 @@ function Filters({ selected, onSelect }: FiltersProps) {
 
         <Button
           className={cn("filter", {
-            "!font-medium border-text-300": isActive("payer"),
+            [activeFilter]: isActive("payer"),
           })}
           onClick={() => {
             onSelect("payer");
@@ -84,7 +152,7 @@ function Filters({ selected, onSelect }: FiltersProps) {
 
         <Button
           className={cn("filter", {
-            "!font-medium border-text-300": isActive("contingent"),
+            [activeFilter]: isActive("contingent"),
           })}
           onClick={() => {
             onSelect("contingent");
