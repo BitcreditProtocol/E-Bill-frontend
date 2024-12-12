@@ -88,6 +88,8 @@
   "See all bills": "crwdns844:0crwdne844:0",
   "See history": "crwdns780:0crwdne780:0",
   "Select date": "crwdns782:0crwdne782:0",
+  "Select date range": "crwdns846:0crwdne846:0",
+  "Selected date": "crwdns848:0crwdne848:0",
   "Sell": "crwdns784:0crwdne784:0",
   "Sell a bill": "crwdns786:0crwdne786:0",
   "Settings": "crwdns788:0crwdne788:0",
@@ -104,5 +106,14 @@
   "Verify your email address": "crwdns810:0crwdne810:0",
   "View more": "crwdns812:0crwdne812:0",
   "We have successfully created your identity and you can now use the app": "crwdns814:0crwdne814:0",
-  "We've sent a one-time passcode to {email}": "crwdns816:0{email}crwdne816:0"
+  "We've sent a one-time passcode to {email}": "crwdns816:0{email}crwdne816:0",
+  "displayRange.days": "crwdns850:0{value}crwdne850:0",
+  "displayRange.oneYear": "crwdns852:0crwdne852:0",
+  "displayRange.selectRange": "crwdns854:0crwdne854:0",
+  "displayRange.sixMonths": "crwdns856:0crwdne856:0",
+  "dropdown.option.1year": "crwdns858:0crwdne858:0",
+  "dropdown.option.30days": "crwdns860:0crwdne860:0",
+  "dropdown.option.60days": "crwdns862:0crwdne862:0",
+  "dropdown.option.6months": "crwdns864:0crwdne864:0",
+  "dropdown.option.90days": "crwdns866:0crwdne866:0"
 }
