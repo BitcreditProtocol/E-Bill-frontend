@@ -2,14 +2,18 @@ import { useLanguage } from "@/context/language/LanguageContext";
 import { ChevronLeftIcon } from "lucide-react";
 import { FormattedMessage } from "react-intl";
 import { LocaleDropdown } from "./LocaleDropdown";
+import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
+  const navigate = useNavigate();
   const lang = useLanguage();
 
   return (
     <div className="flex flex-col gap-6 w-full min-h-fit h-screen py-4 px-5">
       <div className="w-full">
-        <button className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6">
+        <button data-testid="settingsBackButton"
+          onClick={() => { navigate(-1); }}
+          className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6">
           <ChevronLeftIcon width={16} strokeWidth={1} color="#1B0F00" />
         </button>
       </div>

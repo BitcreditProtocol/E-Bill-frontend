@@ -3,6 +3,7 @@ import { describe, it, afterEach, beforeEach, expect, vi} from "vitest";
 import userEvent from "@testing-library/user-event";
 import Settings from ".";
 import LanguageProvider from "@/context/language/LanguageProvider";
+import { MemoryRouter } from "react-router-dom";
 
 describe("Settings", () => {
 
@@ -15,7 +16,9 @@ describe("Settings", () => {
 
   const render = ({locale = "en-US", ...props}: { locale?: string }) => reactRender(
     <LanguageProvider defaultLocale={locale}>
-      <Settings {...props} />
+      <MemoryRouter>
+        <Settings {...props} />
+      </MemoryRouter>
     </LanguageProvider>
   );
 
@@ -25,6 +28,15 @@ describe("Settings", () => {
     const headings = screen.getAllByRole("heading");
     expect(headings).toHaveLength(1);
     expect(headings[0].innerHTML).toBe("Settings");
+  });
+
+  it("should have a back button", async () => {
+    render({});
+
+    const backBtn = screen.getByTestId("settingsBackButton");
+    expect(backBtn).toBeInTheDocument();
+
+    await userEvent.click(backBtn);
   });
 
   it("should have ability to change locale", async () => {
