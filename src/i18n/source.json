@@ -87,7 +87,10 @@
   "See all": "See all",
   "See all bills": "See all bills",
   "See history": "See history",
-  "Select date": "Select dates",
+  "Select dates": "Select dates",
+  "Select date": "Select date",
+  "Select date range": "Select date range",
+  "Selected date": "Selected date",
   "Sell": "Sell",
   "Sell a bill": "Sell a bill",
   "Settings": "Settings",
@@ -104,5 +107,14 @@
   "Verify your email address": "Verify your email address",
   "View more": "View more",
   "We have successfully created your identity and you can now use the app": "We have successfully created your identity and you can now use the app",
-  "We've sent a one-time passcode to {email}": "We've sent a one-time passcode to {email}"
+  "We've sent a one-time passcode to {email}": "We've sent a one-time passcode to {email}",
+  "displayRange.days": "{value} Days",
+  "displayRange.oneYear": "1 Year",
+  "displayRange.selectRange": "Select range",
+  "displayRange.sixMonths": "6 Months",
+  "dropdown.option.1year": "1 Year",
+  "dropdown.option.30days": "30 Days",
+  "dropdown.option.60days": "60 Days",
+  "dropdown.option.6months": "6 Months",
+  "dropdown.option.90days": "90 Days"
 }

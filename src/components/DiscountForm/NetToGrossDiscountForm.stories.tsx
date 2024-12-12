@@ -1,9 +1,8 @@
 import type { Meta,  StoryObj } from '@storybook/react';
-import { DiscountForm, NetToGrossDiscountForm } from './DiscountForm';
 import { fn } from '@storybook/test';
+import { addDays } from 'date-fns';
+import { DiscountForm, NetToGrossDiscountForm } from './DiscountForm';
 import LanguageProvider from '@/context/language/LanguageProvider';
-
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1_000;
 
 const now = Date.now();
 
@@ -12,7 +11,7 @@ const meta = {
   component: NetToGrossDiscountForm,
   args: {
     startDate: new Date(now),
-    endDate: new Date(now + 90 * MILLISECONDS_PER_DAY),
+    endDate: addDays(now, 90),
     onSubmit: fn(),
     currency: "BTC"
   },
