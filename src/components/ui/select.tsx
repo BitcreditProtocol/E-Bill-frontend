@@ -5,16 +5,16 @@ import { cn } from "@/lib/utils";
 
 interface SelectProps {
   children: React.ReactNode;
+  value?: string;
   onValueChange?: (value: string) => void;
 }
 
-const Select: React.FC<SelectProps> = ({ children, onValueChange }) => {
-  const [hasValue, setHasValue] = React.useState(false);
+const Select: React.FC<SelectProps> = ({ children, value, onValueChange }) => {
+  const hasValue = React.useMemo(() => !!value, [value]);
   const [triggerWidth, setTriggerWidth] = React.useState<number | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
 
   const handleValueChange = (value: string) => {
-    setHasValue(!!value);
     if (onValueChange) onValueChange(value);
   };
 
@@ -22,6 +22,7 @@ const Select: React.FC<SelectProps> = ({ children, onValueChange }) => {
     <SelectPrimitive.Root
       onValueChange={handleValueChange}
       onOpenChange={setIsOpen}
+      value={value}
     >
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child) && child.type === SelectTrigger) {
@@ -53,7 +54,7 @@ interface SelectTriggerProps
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   SelectTriggerProps
->(({ className, label, hasValue, setTriggerWidth, isOpen, ...props }, ref) => {
+>(({ id, className, label, hasValue, setTriggerWidth, isOpen, ...props }, ref) => {
   const triggerRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
@@ -65,6 +66,7 @@ const SelectTrigger = React.forwardRef<
   return (
     <div className="relative">
       <SelectPrimitive.Trigger
+        id={id}
         ref={(node) => {
           // @ts-expect-error This is a valid mutable property
           triggerRef.current = node;
@@ -92,7 +94,7 @@ const SelectTrigger = React.forwardRef<
           </SelectPrimitive.Icon>
         </div>
       </SelectPrimitive.Trigger>
-      <label
+      <label htmlFor={id}
         className={cn(
           "absolute left-4 transition-all duration-200 ease-out text-text-300 font-medium text-sm",
           hasValue

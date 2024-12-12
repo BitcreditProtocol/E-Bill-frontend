@@ -26,6 +26,7 @@ describe("DiscountForm", () => {
 
       const headings = screen.getAllByRole("heading");
       expect(headings).toHaveLength(1);
+      expect(headings[0].innerHTML).toBe("Calculate discount");
 
       const daysInput = screen.getByLabelText("Days");
       expect(daysInput).toBeInTheDocument();
