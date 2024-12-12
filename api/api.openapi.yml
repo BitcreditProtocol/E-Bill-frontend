@@ -1,0 +1,1253 @@
+openapi: 3.0.3
+info:
+  title: E-Bill API rework
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: ''
+  - url: Change Identity
+paths:
+  /identity/create:
+    post:
+      tags:
+        - Identity
+      summary: Create Identity (Authorised Signer)
+      description: |-
+        Mandatory fields are
+
+        - `name`
+            
+        - `email`
+      operationId: createIdentityAuthorisedSigner
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: jsmith@example.com
+                name:
+                  type: string
+                  example: Johanna Smith
+            example:
+              email: jsmith@example.com
+              name: Johanna Smith
+      responses:
+        '200':
+          description: Create identity
+          content:
+            text/plain:
+              examples:
+                Create identity:
+                  value: ''
+  /identity/upload_file:
+    post:
+      tags:
+        - Identity
+      summary: Upload File
+      description: Upload File
+      operationId: uploadFile
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Upload File
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file_upload_id:
+                    type: string
+                    example: 2414-388e-4360-b4ad-692728831fdd
+              examples:
+                Upload File:
+                  value:
+                    file_upload_id: 2414-388e-4360-b4ad-692728831fdd
+  /identity/file/testsmallpdf_0d0c8a78-fe28-43dc-9f61-459832074e82.pdf:
+    get:
+      tags:
+        - Identity
+      summary: Get File
+      description: Get File
+      operationId: getFile
+      responses:
+        '200':
+          description: ''
+  /identity/recover:
+    post:
+      tags:
+        - Identity
+      summary: Recover with seed phrase
+      description: Recover with seed phrase
+      operationId: recoverWithSeedPhrase
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seed_phrase:
+                  type: string
+                  example: camel jumps over some fox
+            example:
+              seed_phrase: camel jumps over some fox
+      responses:
+        '200':
+          description: ''
+  /identity/detail:
+    get:
+      tags:
+        - Identity
+      summary: Identity Detail
+      description: Identity Detail
+      operationId: identityDetail
+      responses:
+        '200':
+          description: ''
+  /bill/issue:
+    post:
+      tags:
+        - Bill
+      summary: Issue
+      description: >-
+        Mandatory fields are:
+
+
+        - type
+            
+        - country of issue
+            
+        - city of issue
+            
+        - issue date
+            
+        - city of payment
+            
+        - country of payment
+            
+        - payer
+            
+        - language
+            
+
+        If the sum is set, the currency is also mandatory.
+
+
+        If the sum is empty (important! NOT zero, actually empty), it is a blank
+        bill of exchange.
+
+
+        The `file_upload_id` will be filled with the `id` the caller gets back
+        from the `/bill/upload_files` endpoint, where multiple files can be
+        uploaded.  
+
+        The `file_upload_id` is then used to join all the uploaded files to the
+        bill.
+
+
+        The `type` can have the values:
+
+
+        - `0 (promissory_note)`
+            
+        - `1 (three_parties)`
+            
+        - `2 (draw_on_payer)`
+      operationId: issue
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                city_of_issuing:
+                  type: string
+                  example: Vienna
+                city_of_payment:
+                  type: string
+                  example: London
+                country_of_issuing:
+                  type: string
+                  example: AT
+                country_of_payment:
+                  type: string
+                  example: UK
+                currency:
+                  type: string
+                  example: BTC
+                file_upload_id:
+                  type: string
+                  example: 16762414-388e-4360-b4ad-692728831fdd
+                issue_date:
+                  type: string
+                  example: '2025-01-05'
+                language:
+                  type: string
+                  example: en-UK
+                maturity_date:
+                  type: string
+                  example: '2025-06-05'
+                payee:
+                  type: string
+                  example: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                payer:
+                  type: string
+                  example: 12D3BooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77555
+                sum:
+                  type: string
+                  example: '5000'
+                type:
+                  type: number
+                  example: 0
+            example:
+              city_of_issuing: Vienna
+              city_of_payment: London
+              country_of_issuing: AT
+              country_of_payment: UK
+              currency: BTC
+              file_upload_id: 16762414-388e-4360-b4ad-692728831fdd
+              issue_date: '2025-01-05'
+              language: en-UK
+              maturity_date: '2025-06-05'
+              payee: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+              payer: 12D3BooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77555
+              sum: '5000'
+              type: 0
+      responses:
+        '200':
+          description: Issue
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bill_name:
+                    type: string
+                    example: >-
+                      02dad7a11d8c6c7e2fec2bc1340d1ab1461bc39eb75bc41889b79d02cd8bfb54
+              examples:
+                Issue:
+                  value:
+                    bill_name: >-
+                      02dad7a11d8c6c7e2fec2bc1340d1ab1461bc39eb75bc41889b79d02cd8bfb54
+  /bill/upload_files:
+    post:
+      tags:
+        - Bill
+      summary: Upload Files
+      description: Upload Files
+      operationId: uploadFiles
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Upload Files
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file_upload_id:
+                    type: string
+                    example: 16762414-388e-4360-b4ad-692728831fdd
+              examples:
+                Upload Files:
+                  value:
+                    file_upload_id: 16762414-388e-4360-b4ad-692728831fdd
+  /bill/96085b59c5ed430d6fc1fa6d7ea81761528de3d2aac97f42f61173933692f7ca/endorse:
+    put:
+      tags:
+        - Bill
+      summary: Endorse
+      description: All fields are mandatory
+      operationId: endorse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endorsee:
+                  type: string
+                  example: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+            example:
+              endorsee: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+      responses:
+        '200':
+          description: Endorse
+          content:
+            text/plain:
+              examples:
+                Endorse:
+                  value: ''
+  /bill/96085b59c5ed430d6fc1fa6d7ea81761528de3d2aac97f42f61173933692f7ca/mint:
+    put:
+      tags:
+        - Bill
+      summary: Mint
+      description: All fields are mandatory
+      operationId: mint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currency:
+                  type: string
+                  example: crbtc
+                endorsee:
+                  type: string
+                  example: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                sum:
+                  type: string
+                  example: '6000'
+            example:
+              currency: crbtc
+              endorsee: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+              sum: '6000'
+      responses:
+        '200':
+          description: Mint
+          content:
+            text/plain:
+              examples:
+                Mint:
+                  value: ''
+  /bill/96085b59c5ed430d6fc1fa6d7ea81761528de3d2aac97f42f61173933692f7ca/sell:
+    put:
+      tags:
+        - Bill
+      summary: Sell
+      description: All fields are mandatory
+      operationId: sell
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currency:
+                  type: string
+                  example: btc
+                endorsee:
+                  type: string
+                  example: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                sum:
+                  type: string
+                  example: '6000'
+            example:
+              currency: btc
+              endorsee: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+              sum: '6000'
+      responses:
+        '200':
+          description: Sell
+          content:
+            text/plain:
+              examples:
+                Sell:
+                  value: ''
+  /bill/96085b59c5ed430d6fc1fa6d7ea81761528de3d2aac97f42f61173933692f7ca:
+    get:
+      tags:
+        - Bill
+      summary: Bill Detail
+      description: >-
+        The `bill_name` in the url is mandatory
+
+
+        Regarding the response, it's not yet 100% clear, which fields we will
+        have, but the ones that are currently in there should definitely be
+        there.  
+
+        Of course, if e.g. the Bill wasn't endorsed, then the endorsee won't be
+        set etc.
+      operationId: billDetail
+      responses:
+        '200':
+          description: Detail
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bill:
+                    type: object
+                    properties:
+                      accepted:
+                        type: boolean
+                        example: true
+                      bill_name:
+                        type: string
+                        example: >-
+                          96085b59c5ed430d6fc1fa6d7ea81761528de3d2aac97f42f61173933692f7ca
+                      city_of_issuing:
+                        type: string
+                        example: Vienna
+                      city_of_payment:
+                        type: string
+                        example: London
+                      country_of_issuing:
+                        type: string
+                        example: AT
+                      country_of_payment:
+                        type: string
+                        example: UK
+                      currency:
+                        type: string
+                        example: sat
+                      drawee:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: Hayek Ltd.
+                      drawer:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: Hayek Ltd.
+                      endorsed:
+                        type: boolean
+                        example: true
+                      endorsee:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: Might or might not exist
+                      files:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            file_name:
+                              type: string
+                              example: >-
+                                screenshot2024-10-23at11_16762414-388e-4360-b4ad-692728831fdd.png
+                        example:
+                          - file_name: >-
+                              screenshot2024-10-23at11_16762414-388e-4360-b4ad-692728831fdd.png
+                      issue_date:
+                        type: string
+                        example: '2025-01-05'
+                      maturity_date:
+                        type: string
+                        example: '2025-06-05'
+                      paid:
+                        type: boolean
+                        example: false
+                      payee:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: John Smith
+                      sum:
+                        type: string
+                        example: '5000'
+                      time_of_drawing:
+                        type: number
+                        example: 1731593928
+              examples:
+                Detail:
+                  value:
+                    bill:
+                      accepted: true
+                      bill_name: >-
+                        96085b59c5ed430d6fc1fa6d7ea81761528de3d2aac97f42f61173933692f7ca
+                      city_of_issuing: Vienna
+                      city_of_payment: London
+                      country_of_issuing: AT
+                      country_of_payment: UK
+                      currency: sat
+                      drawee:
+                        name: Hayek Ltd.
+                      drawer:
+                        name: Hayek Ltd.
+                      endorsed: true
+                      endorsee:
+                        name: Might or might not exist
+                      files:
+                        - file_name: >-
+                            screenshot2024-10-23at11_16762414-388e-4360-b4ad-692728831fdd.png
+                      issue_date: '2025-01-05'
+                      maturity_date: '2025-06-05'
+                      paid: false
+                      payee:
+                        name: John Smith
+                      sum: '5000'
+                      time_of_drawing: 1731593928
+  /bill/search:
+    post:
+      tags:
+        - Bill
+      summary: Search
+      description: |-
+        Mandatory Fields:
+
+        - `role`
+            
+        - `currency`
+            
+
+        The `role` field can have the following fields:
+
+        - `all` / `payee / payer / contingent`
+      operationId: search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: object
+                  properties:
+                    currency:
+                      type: string
+                      example: btc
+                    date_range:
+                      type: object
+                      properties:
+                        from:
+                          type: string
+                          example: '2024-01-01'
+                        to:
+                          type: string
+                          example: '2024-12-31'
+                    role:
+                      type: string
+                      example: all
+                    search_term:
+                      type: string
+                      example: smith
+            example:
+              filter:
+                currency: btc
+                date_range:
+                  from: '2024-01-01'
+                  to: '2024-12-31'
+                role: all
+                search_term: smith
+      responses:
+        '200':
+          description: Search
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bills:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        bill_name:
+                          type: string
+                          example: >-
+                            02dad7a11d8c6c7e2fec2bc1340d1ab1461bc39eb75bc41889b79d02cd8bfb54
+                        drawer:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: Hayek Ltd.
+                        holder:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: John Smith
+                        issue_date:
+                          type: string
+                          example: '2024-11-31'
+                        payee:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: John Smith
+                        payer:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: Hayek Ltd.
+                        role:
+                          type: string
+                          example: payee
+                        sum:
+                          type: object
+                          properties:
+                            amount:
+                              type: string
+                              example: '15000'
+                            currency:
+                              type: string
+                              example: sat
+                    example:
+                      - bill_name: >-
+                          02dad7a11d8c6c7e2fec2bc1340d1ab1461bc39eb75bc41889b79d02cd8bfb54
+                        drawer:
+                          name: Hayek Ltd.
+                        holder:
+                          name: John Smith
+                        issue_date: '2024-11-31'
+                        payee:
+                          name: John Smith
+                        payer:
+                          name: Hayek Ltd.
+                        role: payee
+                        sum:
+                          amount: '15000'
+                          currency: sat
+              examples:
+                Search:
+                  value:
+                    bills:
+                      - bill_name: >-
+                          02dad7a11d8c6c7e2fec2bc1340d1ab1461bc39eb75bc41889b79d02cd8bfb54
+                        drawer:
+                          name: Hayek Ltd.
+                        holder:
+                          name: John Smith
+                        issue_date: '2024-11-31'
+                        payee:
+                          name: John Smith
+                        payer:
+                          name: Hayek Ltd.
+                        role: payee
+                        sum:
+                          amount: '15000'
+                          currency: sat
+  /contacts/upload_file:
+    post:
+      tags:
+        - Contacts
+      summary: Upload File
+      description: Upload File
+      operationId: uploadFile1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: ''
+  /contacts/file/12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3/face_123252423432423.png:
+    get:
+      tags:
+        - Contacts
+      summary: Get File
+      description: Get File
+      operationId: getFile1
+      responses:
+        '200':
+          description: ''
+  /contacts/create:
+    post:
+      tags:
+        - Contacts
+      summary: Create Contact
+      description: |-
+        This endpoint works for both companies (type = 1) and people (type = 0).
+
+        Mandatory are:
+
+        - name
+            
+        - email
+            
+        - postal address
+            
+        - public key
+            
+        - type
+      operationId: createContact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  example: Smithstreet 15, Top 22
+                avatar_file_upload_id:
+                  type: string
+                  example: 2414-388e-4360-b4ad-692728831fdd
+                city:
+                  type: string
+                  example: Vienna
+                city_of_birth_or_registration:
+                  type: string
+                  example: Vienna
+                country:
+                  type: string
+                  example: AT
+                country_of_birth_or_registration:
+                  type: string
+                  example: AT
+                date_of_birth_or_registration:
+                  type: string
+                  example: '1998-10-17'
+                email:
+                  type: string
+                  example: johnny_smith@example.com
+                identification_number:
+                  type: string
+                  example: '12315412312'
+                name:
+                  type: string
+                  example: John Smith
+                proof_document_file_upload_id:
+                  type: string
+                  example: 2556-388e-4360-b4ad-692728831fdd
+                public_key:
+                  type: string
+                  example: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                type:
+                  type: number
+                  example: 0
+                zip:
+                  type: string
+                  example: '1020'
+            example:
+              address: Smithstreet 15, Top 22
+              avatar_file_upload_id: 2414-388e-4360-b4ad-692728831fdd
+              city: Vienna
+              city_of_birth_or_registration: Vienna
+              country: AT
+              country_of_birth_or_registration: AT
+              date_of_birth_or_registration: '1998-10-17'
+              email: johnny_smith@example.com
+              identification_number: '12315412312'
+              name: John Smith
+              proof_document_file_upload_id: 2556-388e-4360-b4ad-692728831fdd
+              public_key: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+              type: 0
+              zip: '1020'
+      responses:
+        '200':
+          description: Create Contact
+          content:
+            text/plain:
+              examples:
+                Create Contact:
+                  value: ''
+  /contacts/edit:
+    put:
+      tags:
+        - Contacts
+      summary: Change Contact
+      description: >-
+        This endpoint works for both companies (type = 1) and people (type = 0).
+
+
+        There are no mandatory fields, except for the `node_id` field, which
+        identifies which record to change.
+
+
+        The other fields are optional and if not set, will simply be left the
+        same.
+      operationId: changeContact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                avatar_file_upload_id:
+                  type: string
+                  example: 2414-388e-4360-b4ad-692728831fdd
+                city:
+                  type: string
+                  example: Vienna
+                country:
+                  type: string
+                  example: AT
+                date_of_birth_or_registration:
+                  type: string
+                  example: '1998-10-17'
+                email:
+                  type: string
+                  example: johnny_smith@example.com
+                identification_number:
+                  type: string
+                  example: '12315412312'
+                name:
+                  type: string
+                  example: John Smith
+                node_id:
+                  type: string
+                  example: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                postal_address:
+                  type: string
+                  example: Smithstreet 272, 1030 Vienna
+                proof_document_file_upload_id:
+                  type: string
+                  example: 2556-388e-4360-b4ad-692728831fdd
+            example:
+              avatar_file_upload_id: 2414-388e-4360-b4ad-692728831fdd
+              city: Vienna
+              country: AT
+              date_of_birth_or_registration: '1998-10-17'
+              email: johnny_smith@example.com
+              identification_number: '12315412312'
+              name: John Smith
+              node_id: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+              postal_address: Smithstreet 272, 1030 Vienna
+              proof_document_file_upload_id: 2556-388e-4360-b4ad-692728831fdd
+      responses:
+        '200':
+          description: Edit Contact
+          content:
+            text/plain:
+              examples:
+                Edit Contact:
+                  value: ''
+  /contacts/list:
+    get:
+      tags:
+        - Contacts
+      summary: Contact List
+      description: |-
+        This endpoint works for both companies (type = 1) and people (type = 0).
+
+        Mandatory are:
+
+        - name
+            
+        - email
+            
+        - postal address
+            
+        - public key
+            
+        - type
+      operationId: contactList
+      responses:
+        '200':
+          description: Contact List
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contacts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                          example: Smithstreet 15, Top 22
+                        avatar:
+                          type: string
+                          example: face_123252423432423.png
+                        city:
+                          type: string
+                          example: Vienna
+                        country:
+                          type: string
+                          example: AT
+                        name:
+                          type: string
+                          example: John Smith
+                        node_id:
+                          type: string
+                          example: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                        type:
+                          type: number
+                          example: 0
+                        zip:
+                          type: string
+                          example: '1020'
+                    example:
+                      - address: Smithstreet 15, Top 22
+                        avatar: face_123252423432423.png
+                        city: Vienna
+                        country: AT
+                        name: John Smith
+                        node_id: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                        type: 0
+                        zip: '1020'
+                      - address: Smithstreet 15, Top 22
+                        avatar: logo_123252423432423_.png
+                        city: Vienna
+                        country: AT
+                        name: Hayek Ltd.
+                        node_id: 12D3KooWBN48JhNXAKhKx3523423423HTfPYxjWiGpcKYGuR77cy3
+                        type: 1
+                        zip: '1020'
+              examples:
+                Contact List:
+                  value:
+                    contacts:
+                      - address: Smithstreet 15, Top 22
+                        avatar: face_123252423432423.png
+                        city: Vienna
+                        country: AT
+                        name: John Smith
+                        node_id: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                        type: 0
+                        zip: '1020'
+                      - address: Smithstreet 15, Top 22
+                        avatar: logo_123252423432423_.png
+                        city: Vienna
+                        country: AT
+                        name: Hayek Ltd.
+                        node_id: 12D3KooWBN48JhNXAKhKx3523423423HTfPYxjWiGpcKYGuR77cy3
+                        type: 1
+                        zip: '1020'
+  /contacts/detail:
+    get:
+      tags:
+        - Contacts
+      summary: Contact Detail
+      description: |-
+        This endpoint works for both companies (type = 1) and people (type = 0).
+
+        Mandatory are:
+
+        - name
+            
+        - email
+            
+        - postal address
+            
+        - public key
+            
+        - type
+      operationId: contactDetail
+      responses:
+        '200':
+          description: Contact Detail
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  address:
+                    type: string
+                    example: Smithstreet 15, Top 22
+                  avatar:
+                    type: string
+                    example: face_123252423432423.png
+                  city:
+                    type: string
+                    example: Vienna
+                  city_of_birth_or_registration:
+                    type: string
+                    example: Vienna
+                  country:
+                    type: string
+                    example: AT
+                  country_of_birth_or_registration:
+                    type: string
+                    example: AT
+                  date_of_birth_or_registration:
+                    type: string
+                    example: '1998-10-17'
+                  email:
+                    type: string
+                    example: johnny_smith@example.com
+                  identification_number:
+                    type: string
+                    example: '12315412312'
+                  name:
+                    type: string
+                    example: John Smith
+                  node_id:
+                    type: string
+                    example: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                  proof_document:
+                    type: string
+                    example: passport1423523423.pdf
+                  public_key:
+                    type: string
+                    example: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                  type:
+                    type: number
+                    example: 0
+                  zip:
+                    type: string
+                    example: '1020'
+              examples:
+                Contact Detail:
+                  value:
+                    address: Smithstreet 15, Top 22
+                    avatar: face_123252423432423.png
+                    city: Vienna
+                    city_of_birth_or_registration: Vienna
+                    country: AT
+                    country_of_birth_or_registration: AT
+                    date_of_birth_or_registration: '1998-10-17'
+                    email: johnny_smith@example.com
+                    identification_number: '12315412312'
+                    name: John Smith
+                    node_id: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                    proof_document: passport1423523423.pdf
+                    public_key: 12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3
+                    type: 0
+                    zip: '1020'
+  /overview:
+    get:
+      tags:
+        - Other
+      summary: Home
+      description: |-
+        Mandatory query parameters:
+
+        `currency`
+      operationId: home
+      parameters:
+        - name: currency
+          in: query
+          schema:
+            type: string
+            example: btc
+      responses:
+        '200':
+          description: Home
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balances:
+                    type: object
+                    properties:
+                      contingent:
+                        type: object
+                        properties:
+                          amount:
+                            type: string
+                            example: '15.06532'
+                          currency:
+                            type: string
+                            example: btc
+                      payee:
+                        type: object
+                        properties:
+                          amount:
+                            type: string
+                            example: '0.06532'
+                          currency:
+                            type: string
+                            example: btc
+                      payer:
+                        type: object
+                        properties:
+                          amount:
+                            type: string
+                            example: '2.06532'
+                          currency:
+                            type: string
+                            example: btc
+              examples:
+                Home:
+                  value:
+                    balances:
+                      contingent:
+                        amount: '15.06532'
+                        currency: btc
+                      payee:
+                        amount: '0.06532'
+                        currency: btc
+                      payer:
+                        amount: '2.06532'
+                        currency: btc
+        '400':
+          description: Home invalid currency Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: parameter_error
+                  message:
+                    type: string
+                    example: Currency with code 'invalid' not found
+              examples:
+                Home invalid currency Error:
+                  value:
+                    error: parameter_error
+                    message: Currency with code 'invalid' not found
+  /lock:
+    post:
+      tags:
+        - Other
+      summary: Unlock
+      description: Unlock
+      operationId: unlock
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pin:
+                  type: string
+                  example: '1234'
+            example:
+              pin: '1234'
+      responses:
+        '200':
+          description: ''
+  /company/upload_file:
+    post:
+      tags:
+        - Company
+      summary: Upload File
+      description: Upload File
+      operationId: uploadFile2
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Upload File
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  file_upload_id:
+                    type: string
+                    example: 2414-388e-4360-b4ad-692728831fdd
+              examples:
+                Upload File:
+                  value:
+                    file_upload_id: 2414-388e-4360-b4ad-692728831fdd
+  /company/create:
+    post:
+      tags:
+        - Company
+      summary: Create Company
+      description: >-
+        All fields, except for the `logo_upload_id and
+        proof_of_registration_upload_id` are mandatory.
+
+
+        The file uploads use the same mechanism as for bills. Use the
+        `/company/upload_file` endpoint to upload a file, receiving an `id` and
+        use it for the corresponding `upload_id`.
+      operationId: createCompany
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  example: Smithstreet 15, Top 22
+                city:
+                  type: string
+                  example: Vienna
+                city_of_registration:
+                  type: string
+                  example: Vienna
+                country:
+                  type: string
+                  example: AT
+                country_of_registration:
+                  type: string
+                  example: AT
+                email:
+                  type: string
+                  example: hayek_ltd@example.com
+                logo_upload_id:
+                  type: string
+                  example: 1efa32d0-ef38-41b0-bc55-23642f0643e5
+                name:
+                  type: string
+                  example: Hayek Ltd.
+                proof_of_registration_upload_id:
+                  type: string
+                  example: 1efa2808-7632-44f0-b423-5d77b05da97f
+                registration_date:
+                  type: string
+                  example: '2011-08-22'
+                registration_number:
+                  type: string
+                  example: 1234 555 4321
+                zip:
+                  type: string
+                  example: '1020'
+            example:
+              address: Smithstreet 15, Top 22
+              city: Vienna
+              city_of_registration: Vienna
+              country: AT
+              country_of_registration: AT
+              email: hayek_ltd@example.com
+              logo_upload_id: 1efa32d0-ef38-41b0-bc55-23642f0643e5
+              name: Hayek Ltd.
+              proof_of_registration_upload_id: 1efa2808-7632-44f0-b423-5d77b05da97f
+              registration_date: '2011-08-22'
+              registration_number: 1234 555 4321
+              zip: '1020'
+      responses:
+        '200':
+          description: Create Company
+          content:
+            text/plain:
+              examples:
+                Create Company:
+                  value: ''
+  /company/file/83b7a44dd89bfa6f4d3f10bdc758c6c3801e9d6b8467e9964f18f959f053dabb/testsmallpdf_0d0c8a78-fe28-43dc-9f61-459832074e82.pdf:
+    get:
+      tags:
+        - Company
+      summary: Get File
+      description: Get File
+      operationId: getFile2
+      responses:
+        '200':
+          description: ''
+tags:
+  - name: Identity
+  - name: Bill
+  - name: Contacts
+    description: |-
+      - delete contact
+          
+      - change contact
+  - name: Other
+    description: '- easy bills?'
+  - name: Company
