@@ -1,26 +1,30 @@
-const LOGIN = "/login";
-const UNLOCK = "/unlock";
-const RESTORE_WITH_PRIVATE_KEY = "/private-key";
-const RESTORE_WITH_SEED_PHRASE = "/seed-phrase";
-const CREATE_IDENTITY = "/create-identity";
-const HOME = "/home";
-const REQUIRED_INFORMATION = "/required-information";
-const EMAIL_VERIFICATION = "/email-verification";
-const OPTIONAL_INFORMATION = "/optional-information";
-const NOTIFICATIONS = "/notifications";
-const BILLS = "/bills";
+const ROOT = "/";
+const LOGIN = "login";
+const UNLOCK = "unlock";
+const RESTORE_WITH_PRIVATE_KEY = "private-key";
+const RESTORE_WITH_SEED_PHRASE = "seed-phrase";
+const CREATE_IDENTITY = "create-identity";
+const HOME = "home";
+const REQUIRED_INFORMATION = "required-information";
+const EMAIL_VERIFICATION = "email-verification";
+const OPTIONAL_INFORMATION = "optional-information";
+const NOTIFICATIONS = "notifications";
+const BILLS = "bills";
 // todo: replace by /bills/:id once we integrate the api
-const VIEW_BILL = "/bill";
-const ISSUE_BILL = "/issue-bill";
-const CREATE_BILL = "/create-bill";
-const PREVIEW_BILL = "/preview-bill";
-const MINT_BILL = "/mint-bill";
-const SELL_BILL = "/sell-bill";
-const CONTACTS = "/contacts";
-const CREATE_CONTACT = "/create-contact";
-const SIGNUP = "/signup";
+
+const SIGNUP = "signup";
+const VIEW_BILL = "bill";
+const ISSUE_BILL = "issue-bill";
+const CREATE_BILL = "create-bill";
+const PREVIEW_BILL = "preview-bill";
+const MINT_BILL = "mint-bill";
+const SELL_BILL = "sell-bill";
+const CONTACTS = "contacts";
+const CREATE_CONTACT = "create-contact";
+const SETTINGS = "settings";
 
 export default {
+  ROOT,
   LOGIN,
   UNLOCK,
   HOME,
@@ -41,4 +45,5 @@ export default {
   CONTACTS,
   CREATE_CONTACT,
   SIGNUP,
+  SETTINGS,
 };
