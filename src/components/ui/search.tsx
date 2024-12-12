@@ -7,10 +7,11 @@ interface SearchProps {
   onSearch: (query: string) => void;
   placeholder: string;
   size?: "xs" | "sm" | "md" | "lg";
+  className?: string;
 }
 
 const searchVariants = cva(
-  "flex items-center gap-2 bg-elevation-50 border-[1px] border-divider-75 rounded-[8px] transition-all ease-in-out duration-200    hover:bg-elevation-250 hover:border-divider-50 focus-within:bg-elevation-250 focus-within:border-divider-300",
+  "flex items-center gap-1.5 bg-elevation-50 border-[1px] border-divider-75 rounded-[8px] transition-all ease-in-out duration-200 hover:bg-elevation-250 hover:border-divider-50 focus-within:bg-elevation-250 focus-within:border-divider-300",
   {
     variants: {
       size: {
@@ -26,7 +27,7 @@ const searchVariants = cva(
   }
 );
 
-function Search({ onSearch, placeholder, size }: SearchProps) {
+function Search({ onSearch, placeholder, size, className }: SearchProps) {
   const searchFieldRef = useRef<HTMLInputElement>(null);
 
   const focusSearchField = () => {
@@ -40,9 +41,13 @@ function Search({ onSearch, placeholder, size }: SearchProps) {
   };
 
   return (
-    <div onClick={focusSearchField} className={cn(searchVariants({ size }))}>
+    <div
+      onClick={focusSearchField}
+      className={cn(searchVariants({ size }), className)}
+    >
       <SearchIcon
         className={`${size === "xs" ? "h-4 w-4" : "h-5 w-5"} text-text-300`}
+        strokeWidth={1}
       />
 
       <input

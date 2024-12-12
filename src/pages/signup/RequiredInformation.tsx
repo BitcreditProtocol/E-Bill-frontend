@@ -14,7 +14,7 @@ export default function RequiredInformation() {
         <div className="flex flex-col gap-2 items-center">
           <h1 className="font-sans font-medium text-[24px] tracking-tight mb-0">
             <FormattedMessage
-              id="pages.onboarding.requiredInformation.title"
+              id="Required information"
               defaultMessage="Required information"
               description="Header copy for Required information page"
             />
@@ -22,7 +22,7 @@ export default function RequiredInformation() {
 
           <span className="font-normal text-text-200 text-base text-center">
             <FormattedMessage
-              id="pages.onboarding.requiredInformation.subtitle"
+              id="Please fill in your personal details, all details are handled confidentially"
               defaultMessage="Please fill in your personal details, all details are handled confidentially"
               description="Subheader copy for Required information page"
             />
@@ -41,7 +41,7 @@ export default function RequiredInformation() {
         className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
       >
         <FormattedMessage
-          id="pages.onboarding.requiredInformation.continue"
+          id="Continue"
           defaultMessage="Continue"
           description="Continue button copy for Required information page"
         />

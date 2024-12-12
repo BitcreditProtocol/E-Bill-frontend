@@ -27,7 +27,7 @@ describe("LanguageProvider", () => {
   };
 
   const render = ({ onLocaleChange }: TestComponentProps) => reactRender(
-    <LanguageProvider>
+    <LanguageProvider initWithBrowserLocale={true}>
       <TestComponent onLocaleChange={onLocaleChange} />
     </LanguageProvider>
   );
