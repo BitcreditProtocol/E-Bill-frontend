@@ -54,7 +54,7 @@ interface SelectTriggerProps
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   SelectTriggerProps
->(({ className, label, hasValue, setTriggerWidth, isOpen, ...props }, ref) => {
+>(({ id, className, label, hasValue, setTriggerWidth, isOpen, ...props }, ref) => {
   const triggerRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
@@ -66,6 +66,7 @@ const SelectTrigger = React.forwardRef<
   return (
     <div className="relative">
       <SelectPrimitive.Trigger
+        id={id}
         ref={(node) => {
           // @ts-expect-error This is a valid mutable property
           triggerRef.current = node;
@@ -93,7 +94,7 @@ const SelectTrigger = React.forwardRef<
           </SelectPrimitive.Icon>
         </div>
       </SelectPrimitive.Trigger>
-      <label
+      <label htmlFor={id}
         className={cn(
           "absolute left-4 transition-all duration-200 ease-out text-text-300 font-medium text-sm",
           hasValue
