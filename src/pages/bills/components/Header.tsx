@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CalendarDaysIcon } from "lucide-react";
@@ -56,7 +56,7 @@ function Filters({ selected, onSelect }: FiltersProps) {
   const intl = useIntl();
   const queryClient = useQueryClient();
 
-  const { mutate, isPending, data } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async () => {
       const payload = buildFilterPayload({
         search_term: searchTerm,
@@ -71,14 +71,6 @@ function Filters({ selected, onSelect }: FiltersProps) {
       queryClient.setQueryData(["bills"], data);
     },
   });
-
-  useEffect(() => {
-    if (isPending) {
-      console.log("Searching bills...");
-    }
-
-    console.log("Bills found:", data);
-  }, [isPending, data]);
 
   const activeFilter = "!font-medium border-text-300";
   const isActive = (filter: FilterOptions) => selected === filter;
