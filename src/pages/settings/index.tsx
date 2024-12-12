@@ -3,7 +3,6 @@ import { ChevronLeftIcon } from "lucide-react";
 import { FormattedMessage } from "react-intl";
 import { LocaleDropdown } from "./LocaleDropdown";
 
-
 export default function Settings() {
   const lang = useLanguage();
 
