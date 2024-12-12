@@ -4,7 +4,7 @@ import { useIntl } from "react-intl";
 import { Select, SelectTrigger, SelectContent, SelectValue, SelectGroup, SelectItem } from "@/components/ui/select";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
-interface LocaleDropdownProps {
+export interface LocaleDropdownProps {
   value?: string
   values: string[]
   onChange: (locale: string) => void;
