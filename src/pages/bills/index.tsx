@@ -15,12 +15,8 @@ export default function Bills() {
     <div className="flex flex-col gap-6 w-full min-h-fit h-screen py-6 px-5 select-none">
       <Header />
 
-      {isSuccess &&
-        (data.length === 0 ? (
-          <Empty />
-        ) : (
-          <List isLoading={isPending} bills={data} />
-        ))}
+      {isSuccess && data.length === 0 && <Empty />}
+      {<List isLoading={isPending} bills={data || []} />}
     </div>
   );
 }
