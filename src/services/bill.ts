@@ -1,5 +1,5 @@
 import { SEARCH_BILLS } from "@/constants/endpoints";
-import type { Bill, BillDetails } from "@/types/bill";
+import type { Bill } from "@/types/bill";
 
 type BillsResponse = Bill[];
 
@@ -36,7 +36,7 @@ type SearchBillsPayload = {
 };
 
 type SearchBillsResponse = Pick<
-  BillDetails,
+  Bill,
   "bill_name" | "role" | "drawer" | "sum" | "issue_date"
 >[];
 
