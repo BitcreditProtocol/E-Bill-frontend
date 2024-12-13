@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "VITE_BITCR_DEV_INCLUDE_CROWIN_IN_CONTEXT_TOOLING=false vite",
     "dev:build": "NODE_ENV=development npm run build -- --mode development",
     "build": "tsc -b && vite build",
     "lint": "eslint . --max-warnings=0",
