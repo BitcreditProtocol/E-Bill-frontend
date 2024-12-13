@@ -84,4 +84,21 @@ describe("LanguageProvider", () => {
     });
   });
 
+  describe("available locales", () => {
+    beforeEach(() => vi.useFakeTimers());
+
+    it("should return available locales", async () => {
+      let availableLocales: string[] = [];
+      render({
+        onLocaleChange: (ctx) => {
+          availableLocales = ctx.availableLocales();
+        }
+      });
+
+      await vi.runAllTimersAsync();
+
+      expect(availableLocales).toMatchObject([ 'ach-UG', 'en-US', 'es-AR', 'tr-TR' ]);
+    });
+  });
+
 });
