@@ -33,7 +33,12 @@ import SellBill from "./pages/SellBill";
 import Onboarding from "./pages/onboarding/Onboarding";
 import Settings from "./pages/settings";
 
+import Create from "./pages/contacts/Create";
+import Overview from "./pages/contacts/Overview";
+import View from "./pages/contacts/View";
+import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
+
 
 const queryClient = new QueryClient();
 
@@ -142,6 +147,22 @@ const router = createBrowserRouter(
         {
           path: "get-started",
           element: <Onboarding />,
+        },
+        {
+          path: routes.CONTACTS,
+          element: <Overview />,
+        },
+        {
+          path: routes.CREATE_CONTACT,
+          element: <Create />,
+        },
+        {
+          path: routes.VIEW_CONTACT,
+          element: <View />,
+        },
+        {
+          path: routes.EDIT_CONTACT,
+          element: <Edit />,
         },
       ],
     },
