@@ -15,7 +15,6 @@ import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/home";
 import CreateNewIdentity from "./pages/signup/CreateNewIdentity";
-import Success from "./pages/signup/Success";
 import { Notifications, NotificationsEmpty } from "./pages/Notifications";
 import routes from "./constants/routes";
 
@@ -39,7 +38,9 @@ import Bills from "./pages/bills";
 
 import Warning from "./pages/create-identity/Warning";
 import Category from "./pages/create-identity/Category";
+import AuthorizedSigner from "./pages/create-identity/AuthorizedSigner";
 import BillIssuer from "./pages/create-identity/BillIssuer";
+import Success from "./pages/create-identity/Success";
 
 const queryClient = new QueryClient();
 
@@ -160,8 +161,16 @@ const router = createBrowserRouter(
           element: <Category />,
         },
         {
+          path: routes.AUTHORIZED_SIGNER,
+          element: <AuthorizedSigner />,
+        },
+        {
           path: routes.BILL_ISSUER,
           element: <BillIssuer />,
+        },
+        {
+          path: routes.SUCCESS,
+          element: <Success />,
         },
       ],
     },

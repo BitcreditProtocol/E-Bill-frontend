@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence } from "motion/react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -7,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import StepIndicator from "@/components/StepIndicator";
+import routes from "@/constants/routes";
 
 import RequiredInformation from "./RequiredInformation";
 import EmailVerification from "./EmailVerification";
@@ -30,6 +32,7 @@ const formSchema = z.object({
 export default function BillIssuer() {
   const [currentStep, setCurrentStep] = useState(0);
   const [profilePicturePreview, setProfilePicturePreview] = useState("");
+  const navigate = useNavigate();
 
   const methods = useForm({
     resolver: zodResolver(formSchema),
@@ -68,7 +71,7 @@ export default function BillIssuer() {
     <PreviewIdentity
       profilePicturePreview={profilePicturePreview}
       continueToNextStep={() => {
-        setCurrentStep((current) => current + 1);
+        navigate(`${routes.CREATE_IDENTITY}/${routes.SUCCESS}`);
       }}
       editRequiredInformation={() => {
         setCurrentStep(0);

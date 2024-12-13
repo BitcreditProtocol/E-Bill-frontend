@@ -26,6 +26,7 @@ const CREATE_IDENTITY = "/create-identity";
 const IDENTITY_CATEGORY = "category";
 const BILL_ISSUER = "bill-issuer";
 const AUTHORIZED_SIGNER = "authorized-signer";
+const SUCCESS = "success";
 
 export default {
   ROOT,
@@ -54,4 +55,5 @@ export default {
   IDENTITY_CATEGORY,
   BILL_ISSUER,
   AUTHORIZED_SIGNER,
+  SUCCESS,
 };
