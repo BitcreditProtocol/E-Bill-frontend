@@ -68,9 +68,7 @@ export default function Overview() {
 
         <Search
           placeholder="Name, address, email..."
-          onSearch={(e) => {
-            console.log(e);
-          }}
+          onSearch={() => {}}
         />
       </div>
 
