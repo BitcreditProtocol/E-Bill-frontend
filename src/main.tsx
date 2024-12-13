@@ -37,6 +37,9 @@ import AuthorizedSigner from "./pages/create-identity/AuthorizedSigner";
 import BillIssuer from "./pages/create-identity/BillIssuer";
 import Success from "./pages/create-identity/Success";
 
+import CreateCompany from "./pages/create-company";
+import CreateCompanySuccess from "./pages/create-company/Success";
+
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter(
@@ -142,6 +145,20 @@ const router = createBrowserRouter(
         {
           path: routes.SUCCESS,
           element: <Success />,
+        },
+      ],
+    },
+    {
+      path: routes.CREATE_COMPANY,
+      element: <CreateIdentityLayout />,
+      children: [
+        {
+          path: routes.CREATE_COMPANY,
+          element: <CreateCompany />,
+        },
+        {
+          path: routes.CREATE_COMPANY_SUCCESS,
+          element: <CreateCompanySuccess />,
         },
       ],
     },

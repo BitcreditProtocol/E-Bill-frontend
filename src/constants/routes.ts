@@ -28,6 +28,9 @@ const BILL_ISSUER = "bill-issuer";
 const AUTHORIZED_SIGNER = "authorized-signer";
 const SUCCESS = "success";
 
+const CREATE_COMPANY = "/create-company";
+const CREATE_COMPANY_SUCCESS = "success";
+
 export default {
   ROOT,
   LOGIN,
@@ -56,4 +59,7 @@ export default {
   BILL_ISSUER,
   AUTHORIZED_SIGNER,
   SUCCESS,
+
+  CREATE_COMPANY,
+  CREATE_COMPANY_SUCCESS,
 };
