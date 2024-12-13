@@ -4,13 +4,15 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 interface SearchProps {
-  onSearch: (query: string) => void;
   placeholder: string;
   size?: "xs" | "sm" | "md" | "lg";
+  className?: string;
+  onChange?: (value: string) => void;
+  onSearch: () => void;
 }
 
 const searchVariants = cva(
-  "flex items-center gap-2 bg-elevation-50 border-[1px] border-divider-75 rounded-[8px] transition-all ease-in-out duration-200    hover:bg-elevation-250 hover:border-divider-50 focus-within:bg-elevation-250 focus-within:border-divider-300",
+  "flex items-center gap-1.5 bg-elevation-50 border-[1px] border-divider-75 rounded-[8px] transition-all ease-in-out duration-200 hover:bg-elevation-250 hover:border-divider-50 focus-within:bg-elevation-250 focus-within:border-divider-300",
   {
     variants: {
       size: {
@@ -26,7 +28,13 @@ const searchVariants = cva(
   }
 );
 
-function Search({ onSearch, placeholder, size }: SearchProps) {
+function Search({
+  placeholder,
+  size,
+  className,
+  onChange,
+  onSearch,
+}: SearchProps) {
   const searchFieldRef = useRef<HTMLInputElement>(null);
 
   const focusSearchField = () => {
@@ -35,22 +43,25 @@ function Search({ onSearch, placeholder, size }: SearchProps) {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && searchFieldRef.current?.value) {
-      onSearch(searchFieldRef.current.value);
+      onSearch();
     }
   };
 
   return (
-    <div onClick={focusSearchField} className={cn(searchVariants({ size }))}>
+    <div
+      onClick={focusSearchField}
+      className={cn(searchVariants({ size }), className)}
+    >
       <SearchIcon
         className={`${size === "xs" ? "h-4 w-4" : "h-5 w-5"} text-text-300`}
+        strokeWidth={1}
       />
 
       <input
         ref={searchFieldRef}
+        onChange={(e) => onChange?.(e.target.value)}
         type="text"
-        placeholder={
-          placeholder
-        }
+        placeholder={placeholder}
         className="w-full text-text-300 bg-transparent font-medium placeholder-text-300 focus:outline-none"
         onKeyDown={handleKeyDown}
       />

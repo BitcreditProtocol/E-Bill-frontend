@@ -1,5 +1,5 @@
 import { IntlProvider } from "react-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { detectBrowserLanguage } from "@/utils";
 import { DEFAULT_LOCALE, LanguageContext } from "./LanguageContext";
 
@@ -30,19 +30,26 @@ for (const path in modules) {
   }
 }
 
+const availableLocales = Object.keys(translations);
+
 export default function LanguageProvider({
+  defaultLocale = DEFAULT_LOCALE,
+  initWithBrowserLocale = import.meta.env.PROD,
   children,
 }: {
+  defaultLocale?: string
+  initWithBrowserLocale?: boolean,
   children: React.ReactNode;
 }) {
-  const [locale, setLocale] = useState(detectBrowserLanguage() || DEFAULT_LOCALE);
+  const [locale, setLocale] = useState(initWithBrowserLocale ? detectBrowserLanguage() || defaultLocale : defaultLocale);
+  const messages = useMemo(() => translations[locale], [locale]);
 
   return (
-    <LanguageContext.Provider value={{ locale, setLocale }}>
+    <LanguageContext.Provider value={{ locale, setLocale, availableLocales: () => (availableLocales) }}>
       <IntlProvider
         defaultLocale={DEFAULT_LOCALE}
         locale={locale}
-        messages={translations[locale]}
+        messages={messages}
       >
         {children}
       </IntlProvider>

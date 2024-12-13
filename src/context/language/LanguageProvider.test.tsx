@@ -27,7 +27,7 @@ describe("LanguageProvider", () => {
   };
 
   const render = ({ onLocaleChange }: TestComponentProps) => reactRender(
-    <LanguageProvider>
+    <LanguageProvider initWithBrowserLocale={true}>
       <TestComponent onLocaleChange={onLocaleChange} />
     </LanguageProvider>
   );
@@ -81,6 +81,23 @@ describe("LanguageProvider", () => {
       await vi.runAllTimersAsync();
 
       expect(container.textContent).toBe("it-IT");
+    });
+  });
+
+  describe("available locales", () => {
+    beforeEach(() => vi.useFakeTimers());
+
+    it("should return available locales", async () => {
+      let availableLocales: string[] = [];
+      render({
+        onLocaleChange: (ctx) => {
+          availableLocales = ctx.availableLocales();
+        }
+      });
+
+      await vi.runAllTimersAsync();
+
+      expect(availableLocales).toMatchObject([ 'ach-UG', 'en-US', 'es-AR', 'tr-TR' ]);
     });
   });
 

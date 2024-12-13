@@ -11,6 +11,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function OptionalInformation() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function OptionalInformation() {
         <div className="flex flex-col gap-2 items-center">
           <h1 className="font-sans font-medium text-[24px] tracking-tight mb-0">
             <FormattedMessage
-              id="pages.onboarding.optionalInformation.title"
+              id="Optional information"
               defaultMessage="Optional information"
               description="Header copy for Optional information page"
             />
@@ -31,7 +32,7 @@ export default function OptionalInformation() {
 
           <span className="font-normal text-text-200 text-base text-center">
             <FormattedMessage
-              id="pages.onboarding.optionalInformation.subtitle"
+              id="This information will give you better credibility with your counter parties"
               defaultMessage="This information will give you better credibility with your counter parties"
               description="Subheader copy for Optional information page"
             />
@@ -46,28 +47,30 @@ export default function OptionalInformation() {
               <SelectValue placeholder="Select an option" />
             </SelectTrigger>
             <SelectContent>
-              <SelectGroup>
-                <SelectItem value="option1">Afghanistan</SelectItem>
-                <SelectItem value="option2">Albania</SelectItem>
-                <SelectItem value="option3">Algeria</SelectItem>
-                <SelectItem value="option4">Andorra</SelectItem>
-                <SelectItem value="option5">Angola</SelectItem>
-                <SelectItem value="option6">Antigua and Barbuda</SelectItem>
-                <SelectItem value="option7">Argentina</SelectItem>
-                <SelectItem value="option8">Armenia</SelectItem>
-                <SelectItem value="option9">Australia</SelectItem>
-                <SelectItem value="option10">Austria</SelectItem>
-                <SelectItem value="option11">Azerbaijan</SelectItem>
-                <SelectItem value="option12">Bahamas</SelectItem>
-                <SelectItem value="option13">Bahrain</SelectItem>
-                <SelectItem value="option14">Bangladesh</SelectItem>
-                <SelectItem value="option15">Barbados</SelectItem>
-                <SelectItem value="option16">Belarus</SelectItem>
-                <SelectItem value="option17">Belgium</SelectItem>
-                <SelectItem value="option18">Belize</SelectItem>
-                <SelectItem value="option19">Benin</SelectItem>
-                <SelectItem value="option20">Bhutan</SelectItem>
-              </SelectGroup>
+              <ScrollArea className="h-[10rem]">
+                <SelectGroup>
+                  <SelectItem value="option1">Afghanistan</SelectItem>
+                  <SelectItem value="option2">Albania</SelectItem>
+                  <SelectItem value="option3">Algeria</SelectItem>
+                  <SelectItem value="option4">Andorra</SelectItem>
+                  <SelectItem value="option5">Angola</SelectItem>
+                  <SelectItem value="option6">Antigua and Barbuda</SelectItem>
+                  <SelectItem value="option7">Argentina</SelectItem>
+                  <SelectItem value="option8">Armenia</SelectItem>
+                  <SelectItem value="option9">Australia</SelectItem>
+                  <SelectItem value="option10">Austria</SelectItem>
+                  <SelectItem value="option11">Azerbaijan</SelectItem>
+                  <SelectItem value="option12">Bahamas</SelectItem>
+                  <SelectItem value="option13">Bahrain</SelectItem>
+                  <SelectItem value="option14">Bangladesh</SelectItem>
+                  <SelectItem value="option15">Barbados</SelectItem>
+                  <SelectItem value="option16">Belarus</SelectItem>
+                  <SelectItem value="option17">Belgium</SelectItem>
+                  <SelectItem value="option18">Belize</SelectItem>
+                  <SelectItem value="option19">Benin</SelectItem>
+                  <SelectItem value="option20">Bhutan</SelectItem>
+                </SelectGroup>
+              </ScrollArea>
             </SelectContent>
           </Select>
           <DocumentUpload />
@@ -80,7 +83,7 @@ export default function OptionalInformation() {
           className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
         >
           <FormattedMessage
-            id="pages.onboarding.optionalInformation.continue"
+            id="Continue"
             defaultMessage="Continue"
             description="Continue button copy for Optional information page"
           />
@@ -92,7 +95,7 @@ export default function OptionalInformation() {
           variant="outline"
         >
           <FormattedMessage
-            id="pages.onboarding.optionalInformation.skip"
+            id="Skip for now"
             defaultMessage="Skip for now"
             description="Skip button copy for Optional information page"
           />

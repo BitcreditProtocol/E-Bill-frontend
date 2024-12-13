@@ -23,12 +23,16 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
+      "@types/*": [
+        "./src/types/*"
+      ],
       "@/*": [
         "./src/*"
       ]
     }
   },
   "include": [
-    "src"
+    "src",
+    "vitest-setup.ts"
   ]
 }
