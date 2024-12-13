@@ -1,5 +1,5 @@
 import { http, delay, HttpResponse } from "msw";
-import type { Bill } from "@/types/bill";
+import { Bill } from "@/types/bill";
 
 const data = [
   {
@@ -72,13 +72,20 @@ type BillsResponse = Pick<
   "bill_name" | "payer" | "holder" | "payee" | "drawer" | "sum" | "issue_date"
 >[];
 
-export const recentBills = http.get<
-  never,
-  never,
-  BillsResponse,
-  "/recent-bills"
->("/recent-bills", async () => {
-  await delay(1000);
+export const billsList = http.get<never, never, BillsResponse, "/bills">(
+  "/bills",
+  async () => {
+    await delay(1000);
 
-  return HttpResponse.json(data);
-});
+    return HttpResponse.json(data);
+  }
+);
+
+export const emptyBillsList = http.get<never, never, BillsResponse, "/bills">(
+  "/bills",
+  async () => {
+    await delay(1000);
+
+    return HttpResponse.json([]);
+  }
+);

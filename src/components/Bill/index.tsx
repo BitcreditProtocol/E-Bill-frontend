@@ -3,7 +3,7 @@ import { FormattedCurrency } from "../FormattedCurrency";
 type BillProps = {
   title: string;
   date: string;
-  amount: number;
+  amount: number | string;
   currency: string;
   hasPendingAction?: boolean;
   onClick?: () => void;
@@ -35,7 +35,7 @@ export default function Bill({
 
       <div className="flex justify-between">
         <div className="flex gap-1 items-baseline">
-          <FormattedCurrency value={amount} className="text-sm" />
+          <FormattedCurrency value={Number(amount)} className="text-sm" />
           <span className="text-xs text-text-300">{currency}</span>
         </div>
       </div>

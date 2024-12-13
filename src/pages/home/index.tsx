@@ -24,8 +24,8 @@ export default function Home() {
             className="w-full"
             size="xs"
             placeholder="Search..."
-            onSearch={(e) => {
-              console.log(e);
+            onSearch={() => {
+              console.log("search");
             }}
           />
         }
