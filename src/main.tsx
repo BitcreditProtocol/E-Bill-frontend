@@ -7,6 +7,8 @@ import { Toaster } from "./components/ui/toaster";
 import LanguageProvider from "./context/language/LanguageProvider";
 
 import DefaultLayout from "./layouts/Default";
+import CreateIdentityLayout from "./layouts/CreateIdentity";
+
 import RequiredInformation from "./pages/signup/RequiredInformation";
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
@@ -34,6 +36,8 @@ import Onboarding from "./pages/onboarding/Onboarding";
 
 import Signup from "./pages/signup/Signup";
 import Bills from "./pages/bills";
+import Warning from "./pages/create-identity/Warning";
+import Category from "./pages/create-identity/Category";
 
 const queryClient = new QueryClient();
 
@@ -138,6 +142,20 @@ const router = createBrowserRouter(
         {
           path: "get-started",
           element: <Onboarding />,
+        },
+      ],
+    },
+    {
+      path: routes.CREATE_IDENTITY,
+      element: <CreateIdentityLayout />,
+      children: [
+        {
+          path: routes.CREATE_IDENTITY,
+          element: <Warning />,
+        },
+        {
+          path: routes.IDENTITY_CATEGORY,
+          element: <Category />,
         },
       ],
     },
