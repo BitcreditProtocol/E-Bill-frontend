@@ -5,10 +5,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
-import RequiredInformation from "./components/RequiredInformation";
-import OptionalInformation from "./components/OptionalInformation";
+import Information from "./Information";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -64,14 +62,9 @@ export default function CreateCompany() {
 
       <div className="flex flex-col gap-9">
         <FormProvider {...methods}>
-          <div className="flex flex-col gap-6">
-            <RequiredInformation validate={setIsDataValid} />
-
-            <Separator />
-
-            <OptionalInformation />
-          </div>
+          <Information validate={setIsDataValid} />
         </FormProvider>
+
         <Button size="md" className="w-full" disabled={!isDataValid}>
           <FormattedMessage
             id="Preview"
