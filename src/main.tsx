@@ -153,11 +153,11 @@ const router = createBrowserRouter(
       element: <Create />,
     },
     {
-      path: "/view-contact",
+      path: routes.VIEW_CONTACT,
       element: <View />,
     },
     {
-      path: "/edit-contact",
+      path: routes.EDIT_CONTACT,
       element: <Edit />,
     },
   ],

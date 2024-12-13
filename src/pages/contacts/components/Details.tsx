@@ -1,7 +1,9 @@
 import { useIntl } from "react-intl";
 import { CopyIcon, CircleCheckIcon } from "lucide-react";
+
 import { Separator } from "@/components/ui/separator";
 import type { Contact } from "@/types/contact";
+import { copyToClipboard } from "@/utils";
 
 type BasicDetailsProps = {
   name: string;
@@ -20,7 +22,12 @@ function BasicDetails({ name, public_key }: BasicDetailsProps) {
           <span className="text-text-200 text-xs leading-[18px]">
             {public_key}
           </span>
-          <CopyIcon className="w-4 h-4 text-text-200" />
+          <CopyIcon
+            className="w-4 h-4 text-text-200"
+            onClick={() => {
+              void copyToClipboard(public_key);
+            }}
+          />
         </button>
       </div>
     </div>

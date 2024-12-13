@@ -3,15 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
 import { ChevronLeftIcon, PencilIcon } from "lucide-react";
 
-import Form from "./components/Form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import routes from "@/constants/routes";
+
+import Form from "./components/Form";
 
 function TopBar() {
   const navigate = useNavigate();
   const goBack = () => {
-    navigate("/contacts");
+    navigate(routes.CONTACTS);
   };
 
   return (

@@ -20,6 +20,8 @@ const SELL_BILL = "sell-bill";
 const CONTACTS = "contacts";
 const CREATE_CONTACT = "create-contact";
 const SETTINGS = "settings";
+const VIEW_CONTACT = "/view-contact";
+const EDIT_CONTACT = "/edit-contact";
 
 export default {
   ROOT,
@@ -43,4 +45,6 @@ export default {
   CONTACTS,
   CREATE_CONTACT,
   SETTINGS,
+  VIEW_CONTACT,
+  EDIT_CONTACT,
 };

@@ -4,13 +4,15 @@ import { ChevronLeftIcon, CopyIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { copyToClipboard } from "@/utils";
+import routes from "@/constants/routes";
 
 import Form from "./components/Form";
 
 function TopBar() {
   const navigate = useNavigate();
   const goBack = () => {
-    navigate("/contacts");
+    navigate(routes.CONTACTS);
   };
 
   return (
@@ -57,7 +59,12 @@ function BasicDetails({ name, public_key }: BasicDetailsProps) {
           <span className="text-text-200 text-xs leading-[18px]">
             {public_key}
           </span>
-          <CopyIcon className="w-4 h-4 text-text-200" />
+          <CopyIcon
+            className="w-4 h-4 text-text-200"
+            onClick={() => {
+              void copyToClipboard(public_key);
+            }}
+          />
         </button>
       </div>
     </div>

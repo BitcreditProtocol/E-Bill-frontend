@@ -64,7 +64,11 @@ export default function Form({ type }: { type: number }) {
         icon={
           <CalendarIcon className="w-5 h-5 text-text-300" strokeWidth={1} />
         }
-        label="Registration date (MM/DD/YYYY)"
+        label={intl.formatMessage({
+          id: "Registration date (MM/DD/YYYY)",
+          defaultMessage: "Registration date (MM/DD/YYYY)",
+          description: "Registration date in contact form",
+        })}
         type="text"
       />
 

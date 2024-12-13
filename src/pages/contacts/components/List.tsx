@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronRightIcon } from "lucide-react";
 
+import routes from "@/constants/routes";
+
 function Contact() {
   const navigate = useNavigate();
   const goToContact = () => {
-    navigate("/view-contact");
+    navigate(routes.VIEW_CONTACT);
   };
 
   return (

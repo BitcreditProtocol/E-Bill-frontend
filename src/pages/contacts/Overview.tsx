@@ -5,6 +5,7 @@ import { ChevronRightIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Search from "@/components/ui/search";
 import { Separator } from "@/components/ui/separator";
+import routes from "@/constants/routes";
 import contactsIllustration from "@/assets/contacts-illustration.svg";
 
 import List from "./components/List";
@@ -49,8 +50,9 @@ function EmptyList() {
 
 export default function Overview() {
   const navigate = useNavigate();
+
   const goToCreate = () => {
-    navigate("/create-contact");
+    navigate(routes.CREATE_CONTACT);
   };
 
   return (
