@@ -28,6 +28,7 @@ import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
+import Settings from "./pages/settings";
 
 import Bills from "./pages/bills";
 
@@ -60,6 +61,10 @@ const router = createBrowserRouter(
         {
           path: routes.HOME,
           element: <Home />,
+        },
+        {
+          path: routes.SETTINGS,
+          element: <Settings />,
         },
         {
           path: routes.RESTORE_WITH_SEED_PHRASE,
