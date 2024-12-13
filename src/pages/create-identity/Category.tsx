@@ -1,21 +1,28 @@
+import { useNavigate } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
+import { motion } from "motion/react";
 import { UserPenIcon, BuildingIcon } from "lucide-react";
 
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
+import routes from "@/constants/routes";
 
 type OptionProps = {
   title: string;
   description: string;
   icon: React.ReactNode;
-  onClick: () => void;
+  route: string;
 };
 
-function Option({ title, description, icon, onClick }: OptionProps) {
+function Option({ title, description, icon, route }: OptionProps) {
+  const navigate = useNavigate();
+
   return (
     <button
       className="flex items-center gap-2 py-4 px-5 bg-elevation-200 border-[1px] border-divider-50 rounded-xl"
-      onClick={onClick}
+      onClick={() => {
+        navigate(`${routes.CREATE_IDENTITY}/${route}`);
+      }}
     >
       <div className="flex items-center justify-center w-9 h-9 p-2 bg-elevation-50 border-[1px] border-divider-50 rounded-full">
         {icon}
@@ -35,7 +42,13 @@ export default function Category() {
   const intl = useIntl();
 
   return (
-    <div className="flex flex-col gap-16 w-full min-h-fit h-screen py-6 px-5">
+    <motion.div
+      initial={{ x: 10, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: -10, opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="flex flex-col gap-16 w-full min-h-fit h-screen py-6 px-5"
+    >
       <Topbar
         lead={<NavigateBack />}
         middle={
@@ -64,7 +77,7 @@ export default function Category() {
           icon={
             <UserPenIcon className="text-text-300 w-5 h-5" strokeWidth={1} />
           }
-          onClick={() => {}}
+          route={routes.AUTHORIZED_SIGNER}
         />
         <Option
           title={intl.formatMessage({
@@ -80,9 +93,9 @@ export default function Category() {
           icon={
             <BuildingIcon className="text-text-300 w-5 h-5" strokeWidth={1} />
           }
-          onClick={() => {}}
+          route={routes.BILL_ISSUER}
         />
       </div>
-    </div>
+    </motion.div>
   );
 }

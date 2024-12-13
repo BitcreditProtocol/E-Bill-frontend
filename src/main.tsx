@@ -36,8 +36,10 @@ import Onboarding from "./pages/onboarding/Onboarding";
 
 import Signup from "./pages/signup/Signup";
 import Bills from "./pages/bills";
+
 import Warning from "./pages/create-identity/Warning";
 import Category from "./pages/create-identity/Category";
+import BillIssuer from "./pages/create-identity/BillIssuer";
 
 const queryClient = new QueryClient();
 
@@ -156,6 +158,10 @@ const router = createBrowserRouter(
         {
           path: routes.IDENTITY_CATEGORY,
           element: <Category />,
+        },
+        {
+          path: routes.BILL_ISSUER,
+          element: <BillIssuer />,
         },
       ],
     },

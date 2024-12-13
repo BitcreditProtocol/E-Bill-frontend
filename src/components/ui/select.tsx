@@ -48,6 +48,7 @@ interface SelectTriggerProps
   hasValue?: boolean;
   setTriggerWidth?: (width: number) => void;
   isOpen?: boolean;
+  icon?: React.ReactNode;
 }
 
 const SelectTrigger = React.forwardRef<
