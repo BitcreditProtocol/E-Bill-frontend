@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, PencilIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -81,7 +81,6 @@ function SwitchType({
 
 export default function Create() {
   const [type, setType] = useState(0);
-  const intl = useIntl();
 
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5 select-none">
@@ -103,11 +102,19 @@ export default function Create() {
         </div>
 
         <span className="text-brand-200 text-xs font-medium">
-          {intl.formatMessage({
-            id: "Upload picture",
-            defaultMessage: type === 0 ? "Add photo" : "Add logo",
-            description: "Upload picture button",
-          })}
+          {type === 0 ? (
+            <FormattedMessage
+              id="Add photo"
+              defaultMessage="Add photo"
+              description="Upload photo button"
+            />
+          ) : (
+            <FormattedMessage
+              id="Add logo"
+              defaultMessage="Add logo"
+              description="Upload logo button"
+            />
+          )}
         </span>
       </div>
 

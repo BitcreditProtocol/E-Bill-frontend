@@ -29,11 +29,19 @@ export default function Form({ type }: { type: number }) {
 
       <Input
         icon={<UserPenIcon className="w-5 h-5 text-text-300" strokeWidth={1} />}
-        label={intl.formatMessage({
-          id: "Name",
-          defaultMessage: type === 0 ? "Legal full name" : "Legal company name",
-          description: "Name input label",
-        })}
+        label={
+          type === 0
+            ? intl.formatMessage({
+                id: "Legal full name",
+                defaultMessage: "Legal full name",
+                description: "Legal full name input label",
+              })
+            : intl.formatMessage({
+                id: "Legal company name",
+                defaultMessage: "Legal company name",
+                description: "Legal company name input label",
+              })
+        }
         type="text"
         required
       />
@@ -74,11 +82,19 @@ export default function Form({ type }: { type: number }) {
 
       <Input
         icon={<MapIcon className="w-5 h-5 text-text-300" strokeWidth={1} />}
-        label={intl.formatMessage({
-          id: "City",
-          defaultMessage: type === 0 ? "City of birth" : "City of registration",
-          description: "City input label",
-        })}
+        label={
+          type === 0
+            ? intl.formatMessage({
+                id: "City of birth",
+                defaultMessage: "City of birth",
+                description: "City of birth input label",
+              })
+            : intl.formatMessage({
+                id: "City of registration",
+                defaultMessage: "City of registration",
+                description: "City input label",
+              })
+        }
         type="text"
       />
 
@@ -86,12 +102,19 @@ export default function Form({ type }: { type: number }) {
         icon={
           <ShieldCheckIcon className="w-5 h-5 text-text-300" strokeWidth={1} />
         }
-        label={intl.formatMessage({
-          id: "Identification number",
-          defaultMessage:
-            type === 0 ? "Social security number" : "Registration number",
-          description: "Identification number input label",
-        })}
+        label={
+          type === 0
+            ? intl.formatMessage({
+                id: "Social security number",
+                defaultMessage: "Social security number",
+                description: "Social security number input label",
+              })
+            : intl.formatMessage({
+                id: "Registration number",
+                defaultMessage: "Registration number",
+                description: "Registration number input label",
+              })
+        }
         type="text"
       />
 
