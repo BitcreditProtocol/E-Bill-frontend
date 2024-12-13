@@ -8,7 +8,7 @@ import routes from "@/constants/routes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getRecentBills } from "@/services/bill";
 
-function BillsLoader() {
+function Loader() {
   return (
     <>
       {Array.from({ length: 3 }, (_, i) => (
@@ -41,15 +41,15 @@ export default function Bills() {
 
       <div className="flex flex-col gap-3">
         {isPending || !data ? (
-          <BillsLoader />
+          <Loader />
         ) : (
           data.map((bill) => (
             <Bill
-              key={bill.id}
-              title={bill.name}
-              amount={bill.amount_numbers}
-              currency={bill.currency_code}
-              date={bill.date_of_issue}
+              key={bill.bill_name}
+              title={bill.drawer.name}
+              amount={bill.sum.amount}
+              currency={bill.sum.currency}
+              date={bill.issue_date}
             />
           ))
         )}

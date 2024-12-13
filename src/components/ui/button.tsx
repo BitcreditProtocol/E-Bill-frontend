@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           "bg-text-300 text-white hover:bg-base-hover focus:ring-[6px] focus:ring-divider-75 active:bg-base-active disabled:bg-elevation-300",
         outline:
-          "border border-base text-base hover:border-divider-100 hover:text-divider-100 focus:ring-[6px] focus:ring-divider-75 active:border-base-active disabled:border-base-inactive disabled:text-base-inactive bg-transparent",
+          "border border-text-300 text-base hover:border-divider-100 hover:text-divider-100 focus:ring-[6px] focus:ring-divider-75 active:border-base-active disabled:border-base-inactive disabled:text-base-inactive bg-transparent",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         secondary:
@@ -20,7 +20,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         filter:
-          "bg-transparent max-h-7 !py-1 !px-3 border-[1px] border-divider-100 rounded-lg text-text-300 text-xs font-medium hover:bg-transparent",
+          "bg-transparent max-h-7 !py-1 !px-3 border-[1px] border-divider-100 rounded-lg text-text-300 text-xs !font-normal hover:bg-transparent",
       },
       size: {
         xxs: "text-xs px-2 py-1 rounded-[6px]",

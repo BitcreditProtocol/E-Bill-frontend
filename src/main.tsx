@@ -7,22 +7,19 @@ import { Toaster } from "./components/ui/toaster";
 import LanguageProvider from "./context/language/LanguageProvider";
 
 import DefaultLayout from "./layouts/Default";
-import RequiredInformation from "./pages/signup/RequiredInformation";
+import CreateIdentityLayout from "./layouts/CreateIdentity";
+
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/home";
-import CreateNewIdentity from "./pages/signup/CreateNewIdentity";
-import Success from "./pages/signup/Success";
 import { Notifications, NotificationsEmpty } from "./pages/Notifications";
 import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
-import { Bills, BillsEmpty } from "./pages/Bills";
-import EmailVerification from "./pages/signup/EmailVerification";
-import OptionalInformation from "./pages/signup/OptionalInformation";
-import ConfirmIdentity from "./pages/signup/ConfirmIdentity";
+import { BillsEmpty } from "./pages/Bills";
+
 import Bill from "./pages/Bill";
 import IssueBill from "./pages/IssueBill";
 import CreateBill from "./pages/CreateBill";
@@ -31,6 +28,17 @@ import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
+
+import Bills from "./pages/bills";
+
+import Warning from "./pages/create-identity/Warning";
+import Category from "./pages/create-identity/Category";
+import AuthorizedSigner from "./pages/create-identity/AuthorizedSigner";
+import BillIssuer from "./pages/create-identity/BillIssuer";
+import Success from "./pages/create-identity/Success";
+
+import CreateCompany from "./pages/create-company";
+import CreateCompanySuccess from "./pages/create-company/Success";
 
 const queryClient = new QueryClient();
 
@@ -59,30 +67,6 @@ const router = createBrowserRouter(
         {
           path: routes.RESTORE_WITH_SEED_PHRASE,
           element: <RecoverWithSeedPhrase />,
-        },
-        {
-          path: routes.CREATE_IDENTITY,
-          element: <CreateNewIdentity />,
-        },
-        {
-          path: routes.REQUIRED_INFORMATION,
-          element: <RequiredInformation />,
-        },
-        {
-          path: routes.EMAIL_VERIFICATION,
-          element: <EmailVerification />,
-        },
-        {
-          path: routes.OPTIONAL_INFORMATION,
-          element: <OptionalInformation />,
-        },
-        {
-          path: "success",
-          element: <Success />,
-        },
-        {
-          path: "confirm-identity",
-          element: <ConfirmIdentity />,
         },
         {
           path: routes.NOTIFICATIONS,
@@ -135,6 +119,46 @@ const router = createBrowserRouter(
         {
           path: "get-started",
           element: <Onboarding />,
+        },
+      ],
+    },
+    {
+      path: routes.CREATE_IDENTITY,
+      element: <CreateIdentityLayout />,
+      children: [
+        {
+          path: routes.CREATE_IDENTITY,
+          element: <Warning />,
+        },
+        {
+          path: routes.IDENTITY_CATEGORY,
+          element: <Category />,
+        },
+        {
+          path: routes.AUTHORIZED_SIGNER,
+          element: <AuthorizedSigner />,
+        },
+        {
+          path: routes.BILL_ISSUER,
+          element: <BillIssuer />,
+        },
+        {
+          path: routes.SUCCESS,
+          element: <Success />,
+        },
+      ],
+    },
+    {
+      path: routes.CREATE_COMPANY,
+      element: <CreateIdentityLayout />,
+      children: [
+        {
+          path: routes.CREATE_COMPANY,
+          element: <CreateCompany />,
+        },
+        {
+          path: routes.CREATE_COMPANY_SUCCESS,
+          element: <CreateCompanySuccess />,
         },
       ],
     },
