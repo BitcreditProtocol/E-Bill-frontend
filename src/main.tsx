@@ -9,21 +9,17 @@ import LanguageProvider from "./context/language/LanguageProvider";
 import DefaultLayout from "./layouts/Default";
 import CreateIdentityLayout from "./layouts/CreateIdentity";
 
-import RequiredInformation from "./pages/signup/RequiredInformation";
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/home";
-import CreateNewIdentity from "./pages/signup/CreateNewIdentity";
 import { Notifications, NotificationsEmpty } from "./pages/Notifications";
 import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
 import { BillsEmpty } from "./pages/Bills";
-import EmailVerification from "./pages/signup/EmailVerification";
-import OptionalInformation from "./pages/signup/OptionalInformation";
-import ConfirmIdentity from "./pages/signup/ConfirmIdentity";
+
 import Bill from "./pages/Bill";
 import IssueBill from "./pages/IssueBill";
 import CreateBill from "./pages/CreateBill";
@@ -33,7 +29,6 @@ import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
 
-import Signup from "./pages/signup/Signup";
 import Bills from "./pages/bills";
 
 import Warning from "./pages/create-identity/Warning";
@@ -69,30 +64,6 @@ const router = createBrowserRouter(
         {
           path: routes.RESTORE_WITH_SEED_PHRASE,
           element: <RecoverWithSeedPhrase />,
-        },
-        {
-          path: routes.CREATE_IDENTITY,
-          element: <CreateNewIdentity />,
-        },
-        {
-          path: routes.REQUIRED_INFORMATION,
-          element: <RequiredInformation />,
-        },
-        {
-          path: routes.EMAIL_VERIFICATION,
-          element: <EmailVerification />,
-        },
-        {
-          path: routes.OPTIONAL_INFORMATION,
-          element: <OptionalInformation />,
-        },
-        {
-          path: "success",
-          element: <Success />,
-        },
-        {
-          path: "confirm-identity",
-          element: <ConfirmIdentity />,
         },
         {
           path: routes.NOTIFICATIONS,
@@ -173,10 +144,6 @@ const router = createBrowserRouter(
           element: <Success />,
         },
       ],
-    },
-    {
-      path: routes.SIGNUP,
-      element: <Signup />,
     },
   ],
   {
