@@ -1,13 +1,18 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useIntl } from "react-intl";
 import { useFormContext } from "react-hook-form";
 import { BuildingIcon, MailIcon, MapPinIcon } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 
-export default function RequiredInformation() {
+type RequiredInformationProps = {
+  validate: (isValid: boolean) => void;
+};
+
+export default function RequiredInformation({
+  validate,
+}: RequiredInformationProps) {
   const intl = useIntl();
-  const [, setIsDataValid] = useState(false);
 
   const { register, watch, trigger } = useFormContext();
   const watchRequiredValues = watch(["name", "email", "address"]);
@@ -16,11 +21,12 @@ export default function RequiredInformation() {
     const validateData = async () => {
       const isValid = await trigger(["name", "email", "address"]);
 
-      setIsDataValid(isValid);
+      validate(isValid);
     };
 
     void validateData();
-  }, [watchRequiredValues, trigger]);
+  }, [watchRequiredValues, trigger, validate]);
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">

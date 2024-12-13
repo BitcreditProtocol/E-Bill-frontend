@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 import RequiredInformation from "./components/RequiredInformation";
@@ -23,6 +25,8 @@ const formSchema = z.object({
 });
 
 export default function CreateCompany() {
+  const [isDataValid, setIsDataValid] = useState(false);
+
   const methods = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,15 +62,24 @@ export default function CreateCompany() {
         </span>
       </div>
 
-      <FormProvider {...methods}>
-        <div className="flex flex-col gap-6">
-          <RequiredInformation />
+      <div className="flex flex-col gap-9">
+        <FormProvider {...methods}>
+          <div className="flex flex-col gap-6">
+            <RequiredInformation validate={setIsDataValid} />
 
-          <Separator />
+            <Separator />
 
-          <OptionalInformation />
-        </div>
-      </FormProvider>
+            <OptionalInformation />
+          </div>
+        </FormProvider>
+        <Button size="md" className="w-full" disabled={!isDataValid}>
+          <FormattedMessage
+            id="Preview"
+            defaultMessage="Preview"
+            description="Preview"
+          />
+        </Button>
+      </div>
     </div>
   );
 }
