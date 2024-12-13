@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { First, Second, Third, Fourth } from "./Screens";
+import { useNavigate } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
 import DotIndicator from "@/components/DotIndicator";
 import layoutLogo from "@/assets/images/layout-logo.svg";
+import routes from "@/constants/routes";
+
+import { First, Second, Third, Fourth } from "./Screens";
 
 export default function Onboarding() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
 
   const steps = [<First />, <Second />, <Third />, <Fourth />];
@@ -18,7 +23,7 @@ export default function Onboarding() {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      console.log("Get Started clicked!");
+      navigate(routes.CREATE_IDENTITY);
     }
   };
 
