@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { ChevronRightIcon, PlusIcon } from "lucide-react";
 
@@ -9,6 +9,7 @@ import routes from "@/constants/routes";
 import contactsIllustration from "@/assets/contacts-illustration.svg";
 
 import List from "./components/List";
+import type { Contact } from "@/types/contact";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function EmptyList() {
@@ -50,6 +51,7 @@ function EmptyList() {
 
 export default function Overview() {
   const navigate = useNavigate();
+  const values = useLoaderData() as Contact[];
 
   const goToCreate = () => {
     navigate(routes.CREATE_CONTACT);
@@ -96,7 +98,43 @@ export default function Overview() {
         <Separator className="bg-divider-75" />
       </div>
 
-      <List />
+      <List values={values} />
     </div>
   );
 }
+
+const loader: LoaderFunction = async (): Promise<Contact[]> =>{
+  return await Promise.resolve([{
+    name: "Terry White #1",
+    type: 0,
+    email: "terry@white.com",
+    postal_address: "1650 Rinehart Road, Miami, FL 33179",
+    public_key: "0x1234567890abcdef",
+    date_of_birth_or_registration: "1990-01-01",
+    country: "United States",
+    city: "Miami",
+    identification_number: "1234567890",
+  }, {
+    name: "Terry White #2",
+    type: 0,
+    email: "terry@white.com",
+    postal_address: "1650 Rinehart Road, Miami, FL 33179",
+    public_key: "0x1234567890abcdef",
+    date_of_birth_or_registration: "1990-01-01",
+    country: "United States",
+    city: "Miami",
+    identification_number: "1234567890",
+  }, {
+    name: "Terry White #3",
+    type: 0,
+    email: "terry@white.com",
+    postal_address: "1650 Rinehart Road, Miami, FL 33179",
+    public_key: "0x1234567890abcdef",
+    date_of_birth_or_registration: "1990-01-01",
+    country: "United States",
+    city: "Miami",
+    identification_number: "1234567890",
+  }]);
+}
+
+Overview.loader = loader;

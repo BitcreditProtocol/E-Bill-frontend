@@ -2,11 +2,16 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRightIcon } from "lucide-react";
 
 import routes from "@/constants/routes";
+import type { Contact } from "@/types/contact";
 
-function Contact() {
+interface ContactProps {  
+  value: Contact;
+}
+
+function Contact({ value }: ContactProps) {
   const navigate = useNavigate();
   const goToContact = () => {
-    navigate(routes.VIEW_CONTACT);
+    navigate(`${routes.VIEW_CONTACT}/${value.public_key}`);
   };
 
   return (
@@ -21,10 +26,10 @@ function Contact() {
 
         <div className="flex flex-col">
           <span className="text-text-300 text-base font-medium">
-            Terry White
+            {value.name}
           </span>
           <span className="text-text-200 text-xs">
-            1650 Rinehart Road, Miami, FL 33179
+            {value.postal_address}
           </span>
         </div>
       </div>
@@ -33,12 +38,16 @@ function Contact() {
   );
 }
 
-export default function List() {
+interface ListProps {
+  values: Contact[];
+}
+
+export default function List({ values }: ListProps) {
   return (
     <div className="flex flex-col gap-2 w-full">
-      <Contact />
-      <Contact />
-      <Contact />
+      {values.map((value, index) => (
+        <Contact key={index} value={value} />
+      ))}
     </div>
   );
 }
