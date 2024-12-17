@@ -10,8 +10,8 @@ import contactsIllustration from "@/assets/contacts-illustration.svg";
 
 import List from "./components/List";
 import type { Contact } from "@/types/contact";
+import { useState } from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function EmptyList() {
   return (
     <div className="flex-1 flex flex-col items-center pt-10 w-52">
@@ -51,10 +51,15 @@ function EmptyList() {
 
 export default function Overview() {
   const navigate = useNavigate();
-  const values = useLoaderData() as Contact[];
+  const data = useLoaderData() as Contact[];
+  const [values, setValues] = useState(data);
 
   const goToCreate = () => {
     navigate(routes.CREATE_CONTACT);
+  };
+
+  const __dev_clearContacts = () => {
+    setValues([])
   };
 
   return (
@@ -73,6 +78,12 @@ export default function Overview() {
           onSearch={() => {}}
         />
       </div>
+
+      {import.meta.env.DEV && (<>
+        <Button size="xxs" onClick={__dev_clearContacts} variant="destructive">
+          [dev] Clear
+        </Button>
+      </>)}
 
       <div className="flex flex-col gap-4 w-full">
         <button
@@ -98,16 +109,20 @@ export default function Overview() {
         <Separator className="bg-divider-75" />
       </div>
 
-      <List values={values} />
+      {values.length === 0 ? (<>
+        <EmptyList />
+      </>) : (<>
+        <List values={values} />
+      </>)}
     </div>
   );
 }
 
 const loader: LoaderFunction = async (): Promise<Contact[]> =>{
   return await Promise.resolve([{
-    name: "Terry White #1",
+    name: "Bob White #1",
     type: 0,
-    email: "terry@white.com",
+    email: "bob@white.com",
     postal_address: "1650 Rinehart Road, Miami, FL 33179",
     public_key: "0x1234567890abcdef",
     date_of_birth_or_registration: "1990-01-01",
@@ -125,9 +140,9 @@ const loader: LoaderFunction = async (): Promise<Contact[]> =>{
     city: "Miami",
     identification_number: "1234567890",
   }, {
-    name: "Terry White #3",
+    name: "Alice White #3",
     type: 0,
-    email: "terry@white.com",
+    email: "alice@white.com",
     postal_address: "1650 Rinehart Road, Miami, FL 33179",
     public_key: "0x1234567890abcdef",
     date_of_birth_or_registration: "1990-01-01",
