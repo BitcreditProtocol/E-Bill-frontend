@@ -3,10 +3,7 @@ import { useLanguage } from "@/context/language/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export interface IconProps {  
-  type: Contact["type"];
-  name: Contact["name"];
-}
+export type IconProps = Pick<Contact, 'type' | 'name'>;
 
 export default function Icon({ name, type }: IconProps) {
   const lang = useLanguage();
