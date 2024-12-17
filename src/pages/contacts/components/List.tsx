@@ -5,6 +5,7 @@ import { ChevronRightIcon } from "lucide-react";
 import routes from "@/constants/routes";
 import type { Contact } from "@/types/contact";
 import { useLanguage } from "@/context/language/LanguageContext";
+import { cn } from "@/lib/utils";
 
 interface ContactProps {  
   value: Contact;
@@ -23,7 +24,10 @@ function Contact({ value }: ContactProps) {
       onClick={goToContact}
     >
       <div className="flex items-center gap-3">
-        <div className="flex items-center justify-center w-8 h-8 py-1.5 px-2.5 bg-brand-50 text-brand-200 rounded-full">
+        <div className={cn("flex items-center justify-center w-8 h-8 py-1.5 px-2.5 bg-brand-50 text-brand-200", {
+          "rounded-full": value.type === 0,
+          "rounded-md": value.type !== 0,
+        })}>
           {value.name.charAt(0).toLocaleUpperCase(lang.locale) || '?'}
         </div>
 
