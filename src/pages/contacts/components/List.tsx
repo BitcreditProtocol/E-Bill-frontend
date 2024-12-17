@@ -39,27 +39,33 @@ function Contact({ value }: ContactProps) {
   );
 }
 
+type Category = string;
+
+const sortContacts = (values: Contact[], locale: string): Record<Category, Contact[]> => {
+  return [...values]
+    .sort((a, b) => a.name.localeCompare(b.name, locale))
+    .map((it) => {
+      const firstChar: Category = it.name.charAt(0).toLocaleUpperCase(locale);
+      return { category: firstChar, value: it };
+    })
+    .reduce<Record<Category, Contact[]>>((acc, item) => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      acc[item.category] = acc[item.category] || [];
+      acc[item.category].push(item.value);
+      return acc;
+    }, {});
+}
+
 export interface ListProps {
   values: Contact[];
 }
 
 export default function List({ values }: ListProps) {
   const lang = useLanguage();
-
-  const valuesMap = useMemo(() => {
-    const map: Record<string, Contact[]> = {};
-    values.forEach((it) => {
-      const firstChar = it.name.charAt(0).toLocaleUpperCase(lang.locale);
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      map[firstChar] = map[firstChar] || [];
-      map[firstChar].push(it);
-    });
-    return map;
-  }, [values, lang.locale]);
-
-  const categories = useMemo(() => {
-    return Object.keys(valuesMap).sort();
-  }, [valuesMap]);
+  const valuesMap = useMemo(() => sortContacts(values, lang.locale), [values, lang.locale]);
+  const categories = useMemo<Category[]>(() => {
+    return Object.keys(valuesMap).sort((a, b) => a.localeCompare(b, lang.locale));
+  }, [valuesMap, lang.locale]);
 
   return (
     <div className="flex flex-col gap-3 w-full" data-testid="contact-list-container">
