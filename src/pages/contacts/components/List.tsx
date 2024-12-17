@@ -4,6 +4,7 @@ import { ChevronRightIcon } from "lucide-react";
 
 import routes from "@/constants/routes";
 import type { Contact } from "@/types/contact";
+import { useLanguage } from "@/context/language/LanguageContext";
 
 interface ContactProps {  
   value: Contact;
@@ -44,16 +45,18 @@ export interface ListProps {
 }
 
 export default function List({ values }: ListProps) {
+  const lang = useLanguage();
+
   const valuesMap = useMemo(() => {
     const map: Record<string, Contact[]> = {};
     values.forEach((it) => {
-      const firstChar = it.name.charAt(0);
+      const firstChar = it.name.charAt(0).toLocaleUpperCase(lang.locale);
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       map[firstChar] = map[firstChar] || [];
       map[firstChar].push(it);
     });
     return map;
-  }, [values]);
+  }, [values, lang.locale]);
 
   const categories = useMemo(() => {
     return Object.keys(valuesMap).sort();

@@ -4,6 +4,42 @@ import List, { ListProps } from "./List";
 import LanguageProvider from "@/context/language/LanguageProvider";
 import { MemoryRouter } from "react-router-dom";
 
+const ALICE = {
+  name: "Alice",
+  type: 0,
+  email: "alice@example.com",
+  postal_address: "",
+  public_key: "0x01",
+  date_of_birth_or_registration: "1970-01-01",
+  country: "United States",
+  city: "Miami",
+  identification_number: "1234567890",
+};
+
+const ADA = {
+  name: "Ada".toLocaleLowerCase(),
+  type: 0,
+  email: "ada@example.com",
+  postal_address: "",
+  public_key: "0x02",
+  date_of_birth_or_registration: "1970-01-01",
+  country: "United States",
+  city: "Miami",
+  identification_number: "1234567890",
+};
+
+const BOB = {
+  name: "Bob",
+  type: 0,
+  email: "bob@example.com",
+  postal_address: "",
+  public_key: "0x03",
+  date_of_birth_or_registration: "1970-01-01",
+  country: "United States",
+  city: "Miami",
+  identification_number: "1234567890",
+};
+
 describe("List", () => {
 
   afterEach(cleanup);
@@ -32,19 +68,7 @@ describe("List", () => {
   });
 
   it("should render list correctly (1 value, 1 category)", async () => {
-    render({ 
-      values: [{
-        name: "Alice",
-        type: 0,
-        email: "alice@example.com",
-        postal_address: "",
-        public_key: "0x01",
-        date_of_birth_or_registration: "1970-01-01",
-        country: "United States",
-        city: "Miami",
-        identification_number: "1234567890",
-      }]
-    });
+    render({ values: [ALICE] });
 
     const container = screen.getByTestId("contact-list-container");
     expect(container.childNodes).toHaveLength(1);
@@ -57,29 +81,7 @@ describe("List", () => {
   });
 
   it("should render list correctly (2 values, 1 category)", async () => {
-    render({ 
-      values: [{
-        name: "Alice",
-        type: 0,
-        email: "alice@example.com",
-        postal_address: "",
-        public_key: "0x01",
-        date_of_birth_or_registration: "1970-01-01",
-        country: "United States",
-        city: "Miami",
-        identification_number: "1234567890",
-      }, {
-        name: "Ada",
-        type: 0,
-        email: "alice@example.com",
-        postal_address: "",
-        public_key: "0x01",
-        date_of_birth_or_registration: "1970-01-01",
-        country: "United States",
-        city: "Miami",
-        identification_number: "1234567890",
-      }]
-    });
+    render({ values: [ALICE, ADA] });
 
     const container = screen.getByTestId("contact-list-container");
     expect(container.childNodes).toHaveLength(1);
@@ -92,29 +94,7 @@ describe("List", () => {
   });
 
   it("should render list correctly (2 values, 2 categories)", async () => {
-    render({ 
-      values: [{
-        name: "Alice",
-        type: 0,
-        email: "alice@example.com",
-        postal_address: "",
-        public_key: "0x01",
-        date_of_birth_or_registration: "1970-01-01",
-        country: "United States",
-        city: "Miami",
-        identification_number: "1234567890",
-      }, {
-        name: "Bob",
-        type: 0,
-        email: "alice@example.com",
-        postal_address: "",
-        public_key: "0x01",
-        date_of_birth_or_registration: "1970-01-01",
-        country: "United States",
-        city: "Miami",
-        identification_number: "1234567890",
-      }]
-    });
+    render({ values: [BOB, ALICE] });
 
     const container = screen.getByTestId("contact-list-container");
     expect(container).toBeInTheDocument();
