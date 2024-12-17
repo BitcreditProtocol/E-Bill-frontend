@@ -3,6 +3,7 @@ import { ChevronRightIcon } from "lucide-react";
 
 import routes from "@/constants/routes";
 import type { Contact } from "@/types/contact";
+import { useMemo } from "react";
 
 interface ContactProps {  
   value: Contact;
@@ -43,11 +44,26 @@ interface ListProps {
 }
 
 export default function List({ values }: ListProps) {
+  const valuesMap = useMemo(() => {
+    const map: Record<string, Contact[]> = {};
+    values.forEach((it) => {
+      const firstChar = it.name.charAt(0);
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      map[firstChar] = map[firstChar] || [];
+      map[firstChar].push(it);
+    });
+    return map;
+  }, [values]);
+
   return (
     <div className="flex flex-col gap-2 w-full">
-      {values.map((value, index) => (
-        <Contact key={index} value={value} />
-      ))}
+      {Object.entries(valuesMap).map(([category, values], categoryIndex) => (
+        <div key={categoryIndex}>
+          <div>{category}</div>
+          {values.map((value, valueIndex) => (
+            <Contact key={valueIndex} value={value} />
+          ))}
+      </div>))}
     </div>
   );
 }
