@@ -63,9 +63,9 @@ export default function List({ values }: ListProps) {
   }, [valuesMap]);
 
   return (
-    <div className="flex flex-col gap-2 w-full" data-testid="contact-list-container">
+    <div className="flex flex-col gap-3 w-full" data-testid="contact-list-container">
       {categories.map((category) => (<div key={category} data-testid={`contact-category-container-${category}`}>
-        <div data-testid={`contact-category-title-${category}`}>{category}</div>
+        <div className="text-text-300 text-xs ps-5 mb-3 font-medium" data-testid={`contact-category-title-${category}`}>{category}</div>
         <div className="flex flex-col gap-2" data-testid={`contact-category-items-${category}`}>
           {valuesMap[category].map((value, valueIndex) => (
             <Contact key={valueIndex} value={value} />
