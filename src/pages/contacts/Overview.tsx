@@ -28,6 +28,12 @@ export default function Overview() {
 
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
+      {import.meta.env.DEV && (<>
+        <Button size="xxs" variant="destructive" className="absolute top-1 right-1" onClick={__dev_clearData} >
+          [dev] Clear contacts
+        </Button>
+      </>)}
+
       <div className="flex flex-col gap-3 w-full">
         <h1 className="text-text-300 text-xl font-medium">
           <FormattedMessage
@@ -42,12 +48,6 @@ export default function Overview() {
           onSearch={() => {}}
         />
       </div>
-
-      {import.meta.env.DEV && (<>
-        <Button size="xxs" variant="destructive" onClick={__dev_clearData} >
-          [dev] Clear
-        </Button>
-      </>)}
 
       <div className="flex flex-col gap-4 w-full">
         <button
