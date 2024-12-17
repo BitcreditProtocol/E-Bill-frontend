@@ -11,6 +11,7 @@ import routes from "@/constants/routes";
 import List from "./components/List";
 import EmptyList from "./components/EmptyList";
 import type { Contact } from "@/types/contact";
+import __DATA from "./__data";
 
 export default function Overview() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function Overview() {
     navigate(routes.CREATE_CONTACT);
   };
 
-  const __dev_clearContacts = () => {
+  const __dev_clearData = () => {
     setValues([])
   };
 
@@ -43,7 +44,7 @@ export default function Overview() {
       </div>
 
       {import.meta.env.DEV && (<>
-        <Button size="xxs" onClick={__dev_clearContacts} variant="destructive">
+        <Button size="xxs" variant="destructive" onClick={__dev_clearData} >
           [dev] Clear
         </Button>
       </>)}
@@ -82,37 +83,7 @@ export default function Overview() {
 }
 
 const loader: LoaderFunction = async (): Promise<Contact[]> =>{
-  return await Promise.resolve([{
-    name: "Bob White #1",
-    type: 0,
-    email: "bob@white.com",
-    postal_address: "1650 Rinehart Road, Miami, FL 33179",
-    public_key: "0x1234567890abcdef",
-    date_of_birth_or_registration: "1990-01-01",
-    country: "United States",
-    city: "Miami",
-    identification_number: "1234567890",
-  }, {
-    name: "Terry White #2",
-    type: 0,
-    email: "terry@white.com",
-    postal_address: "1650 Rinehart Road, Miami, FL 33179",
-    public_key: "0x1234567890abcdef",
-    date_of_birth_or_registration: "1990-01-01",
-    country: "United States",
-    city: "Miami",
-    identification_number: "1234567890",
-  }, {
-    name: "Alice White #3",
-    type: 0,
-    email: "alice@white.com",
-    postal_address: "1650 Rinehart Road, Miami, FL 33179",
-    public_key: "0x1234567890abcdef",
-    date_of_birth_or_registration: "1990-01-01",
-    country: "United States",
-    city: "Miami",
-    identification_number: "1234567890",
-  }]);
+  return await Promise.resolve(__DATA);
 }
 
 Overview.loader = loader;

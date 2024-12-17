@@ -3,6 +3,7 @@ import { ChevronLeftIcon, PencilIcon } from "lucide-react";
 import Details from "./components/Details";
 import Delete from "./components/Delete";
 import type { Contact } from "@/types/contact";
+import __DATA from "./__data";
 
 function TopBar() {
   const navigate = useNavigate();
@@ -38,31 +39,21 @@ function TopBar() {
 }
 
 export default function View() {
-  const value = useLoaderData() as Contact
+  const value = useLoaderData() as Contact | null;
 
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5 select-none">
       <TopBar />
-
-      <Details {...value} />
-
-      <Delete />
+      {value !== null && (<>
+        <Details {...value} />
+        <Delete />
+      </>)}
     </div>
   );
 }
 
-const loader: LoaderFunction<Contact['public_key']> = async ({ params }): Promise<Contact> =>{
-  return await Promise.resolve({
-    name: "Terry White #1",
-    type: 0,
-    email: "terry@white.com",
-    postal_address: "1650 Rinehart Road, Miami, FL 33179",
-    public_key: params.public_key || '',
-    date_of_birth_or_registration: "1990-01-01",
-    country: "United States",
-    city: "Miami",
-    identification_number: "1234567890",
-  });
+const loader: LoaderFunction<Contact['public_key']> = async ({ params }): Promise<Contact | null> => {
+  return await Promise.resolve(__DATA.find((it) => it.public_key === params.public_key) || null);
 }
 
 View.loader = loader;

@@ -22,7 +22,7 @@ function Contact({ value }: ContactProps) {
     >
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-8 h-8 py-1.5 px-2.5 bg-brand-50 text-brand-200 rounded-full">
-          T
+          {value.name.charAt(0) || '?'}
         </div>
 
         <div className="flex flex-col">
@@ -39,7 +39,7 @@ function Contact({ value }: ContactProps) {
   );
 }
 
-interface ListProps {
+export interface ListProps {
   values: Contact[];
 }
 
@@ -60,12 +60,14 @@ export default function List({ values }: ListProps) {
   }, [valuesMap]);
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      {categories.map((category, categoryIndex) => (<div key={categoryIndex}>
-        <div>{category}</div>
-        {valuesMap[category].map((value, valueIndex) => (
-          <Contact key={valueIndex} value={value} />
-        ))}
+    <div className="flex flex-col gap-2 w-full" data-testid="contact-list-container">
+      {categories.map((category) => (<div key={category}>
+        <div data-testid={`contact-category-title-${category}`}>{category}</div>
+        <div className="flex flex-col gap-2" data-testid={`contact-category-container-${category}`}>
+          {valuesMap[category].map((value, valueIndex) => (
+            <Contact key={valueIndex} value={value} />
+          ))}
+        </div>
       </div>))}
     </div>
   );
