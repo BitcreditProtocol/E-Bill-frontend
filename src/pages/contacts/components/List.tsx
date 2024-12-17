@@ -1,9 +1,9 @@
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRightIcon } from "lucide-react";
 
 import routes from "@/constants/routes";
 import type { Contact } from "@/types/contact";
-import { useMemo } from "react";
 
 interface ContactProps {  
   value: Contact;
@@ -55,14 +55,17 @@ export default function List({ values }: ListProps) {
     return map;
   }, [values]);
 
+  const categories = useMemo(() => {
+    return Object.keys(valuesMap).sort();
+  }, [valuesMap]);
+
   return (
     <div className="flex flex-col gap-2 w-full">
-      {Object.entries(valuesMap).map(([category, values], categoryIndex) => (
-        <div key={categoryIndex}>
-          <div>{category}</div>
-          {values.map((value, valueIndex) => (
-            <Contact key={valueIndex} value={value} />
-          ))}
+      {categories.map((category, categoryIndex) => (<div key={categoryIndex}>
+        <div>{category}</div>
+        {valuesMap[category].map((value, valueIndex) => (
+          <Contact key={valueIndex} value={value} />
+        ))}
       </div>))}
     </div>
   );
