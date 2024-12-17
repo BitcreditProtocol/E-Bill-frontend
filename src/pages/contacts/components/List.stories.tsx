@@ -1,5 +1,5 @@
 import type { Meta,  StoryObj } from '@storybook/react';
-import { MemoryRouter } from 'react-router-dom';
+import { withRouter } from 'storybook-addon-remix-react-router';
 import LanguageProvider from '@/context/language/LanguageProvider';
 import List from './List';
 import __DATA from '../__data';
@@ -11,15 +11,11 @@ const meta = {
     values: __DATA
   },
   decorators: [
+    withRouter,
     (Story) => (
-      <MemoryRouter future={{
-        v7_relativeSplatPath: true,
-        v7_startTransition: true,
-      }}>
-        <LanguageProvider>
-          <Story />
-        </LanguageProvider>
-      </MemoryRouter>
+      <LanguageProvider>
+        <Story />
+      </LanguageProvider>
     ),
   ],
 } satisfies Meta<typeof List>;

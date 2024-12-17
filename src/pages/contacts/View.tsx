@@ -39,12 +39,12 @@ function TopBar() {
 }
 
 export default function View() {
-  const value = useLoaderData() as Contact | null;
+  const value = useLoaderData() as Contact | null | undefined;
 
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5 select-none">
       <TopBar />
-      {value !== null && (<>
+      {value && (<>
         <Details {...value} />
         <Delete />
       </>)}
