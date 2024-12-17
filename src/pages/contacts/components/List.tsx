@@ -11,6 +11,7 @@ interface ContactProps {
 }
 
 function Contact({ value }: ContactProps) {
+  const lang = useLanguage();
   const navigate = useNavigate();
   const goToContact = () => {
     navigate(`${routes.VIEW_CONTACT}/${value.public_key}`);
@@ -23,7 +24,7 @@ function Contact({ value }: ContactProps) {
     >
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-8 h-8 py-1.5 px-2.5 bg-brand-50 text-brand-200 rounded-full">
-          {value.name.charAt(0) || '?'}
+          {value.name.charAt(0).toLocaleUpperCase(lang.locale) || '?'}
         </div>
 
         <div className="flex flex-col">
