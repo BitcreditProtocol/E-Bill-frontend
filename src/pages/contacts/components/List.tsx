@@ -5,14 +5,13 @@ import { ChevronRightIcon } from "lucide-react";
 import routes from "@/constants/routes";
 import type { Contact } from "@/types/contact";
 import { useLanguage } from "@/context/language/LanguageContext";
-import { cn } from "@/lib/utils";
+import Icon from "./Icon";
 
 interface ContactProps {  
   value: Contact;
 }
 
 function Contact({ value }: ContactProps) {
-  const lang = useLanguage();
   const navigate = useNavigate();
   const goToContact = () => {
     navigate(`${routes.VIEW_CONTACT}/${value.public_key}`);
@@ -24,12 +23,7 @@ function Contact({ value }: ContactProps) {
       onClick={goToContact}
     >
       <div className="flex items-center gap-3">
-        <div className={cn("flex items-center justify-center w-8 h-8 py-1.5 px-2.5 bg-brand-50 text-brand-200", {
-          "rounded-full": value.type === 0,
-          "rounded-md": value.type !== 0,
-        })}>
-          {value.name.charAt(0).toLocaleUpperCase(lang.locale) || '?'}
-        </div>
+        <Icon type={value.type} name={value.name} />
 
         <div className="flex flex-col">
           <span className="text-text-300 text-base font-medium">

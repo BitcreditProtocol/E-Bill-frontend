@@ -6,8 +6,8 @@ import type { Contact } from "@/types/contact";
 import { copyToClipboard } from "@/utils";
 
 type BasicDetailsProps = {
-  name: string;
-  public_key: string;
+  name: Contact["name"];
+  public_key: Contact["public_key"];
 };
 
 function BasicDetails({ name, public_key }: BasicDetailsProps) {

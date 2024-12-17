@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, PencilIcon } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import routes from "@/constants/routes";
 
 import Form from "./components/Form";
+import Icon from "./components/Icon";
 
 function TopBar() {
   const navigate = useNavigate();
@@ -89,12 +89,7 @@ export default function Create() {
 
       <div className="flex flex-col gap-3 w-16">
         <div className="relative cursor-pointer">
-          <Avatar className="bg-brand-50 relative">
-            <AvatarImage src="https://randomuser.me/api/portraits" />
-            <AvatarFallback className="bg-brand-50 text-brand-200 text-[20px] font-medium">
-              J
-            </AvatarFallback>
-          </Avatar>
+          <Icon type={type} name="John Doe" />
 
           <div className="absolute -bottom-1 right-2 flex items-center justify-center w-6 h-6 bg-brand-200 rounded-full">
             <PencilIcon className="w-2.5 h-2.5 text-white" />
