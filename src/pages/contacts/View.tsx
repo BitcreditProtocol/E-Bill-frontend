@@ -8,11 +8,11 @@ import __DATA from "./__data";
 function TopBar() {
   const navigate = useNavigate();
   const goBack = () => {
-    navigate("/contacts");
+    navigate("../");
   };
 
   const goToEdit = () => {
-    navigate("/edit-contact");
+    navigate("edit");
   };
 
   return (
