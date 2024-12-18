@@ -4,13 +4,13 @@ import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, PencilIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import routes from "@/constants/routes";
 
-import Form from "./components/Form";
-import Icon from "./components/Icon";
 import type { Contact } from "@/types/contact";
 import { ContactTypes } from "@/types/contact";
+import Form from "./components/Form";
+import Icon from "./components/Icon";
+import TypeFilter from "./components/TypeFilter";
 
 function TopBar() {
   const navigate = useNavigate();
@@ -34,52 +34,6 @@ function TopBar() {
           description="Create new contact title"
         />
       </h1>
-    </div>
-  );
-}
-
-function TypeFilter({
-  value,
-  onChange,
-}: {
-  value: Contact['type'];
-  onChange: (type: Contact['type']) => void;
-}) {
-  return (
-    <div className="flex gap-2">
-      <Button variant="filter" size="xs" className={cn({
-          "!font-semibold border-text-300": value === ContactTypes.Person
-        })}
-        onClick={() => { onChange(ContactTypes.Person); }}
-      >
-        <FormattedMessage
-          id="Person"
-          defaultMessage="Person"
-          description="Person contact type"
-        />
-      </Button>
-      <Button variant="filter" size="xs" className={cn({
-          "!font-semibold border-text-300": value === ContactTypes.Company
-        })}
-        onClick={() => { onChange(ContactTypes.Company); }}
-      >
-        <FormattedMessage
-          id="Company"
-          defaultMessage="Company"
-          description="Company contact type"
-        />
-      </Button>
-      <Button variant="filter" size="xs" className={cn({
-          "!font-semibold border-text-300": value === ContactTypes.Mint
-        })}
-        onClick={() => { onChange(ContactTypes.Mint); }}
-      >
-        <FormattedMessage
-          id="Mint"
-          defaultMessage="Mint"
-          description="Mint contact type"
-        />
-      </Button>
     </div>
   );
 }
