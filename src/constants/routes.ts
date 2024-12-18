@@ -9,7 +9,7 @@ const REQUIRED_INFORMATION = "required-information";
 const EMAIL_VERIFICATION = "email-verification";
 const OPTIONAL_INFORMATION = "optional-information";
 const NOTIFICATIONS = "notifications";
-const BILLS = "bills";
+const BILLS = "/bills";
 // todo: replace by /bills/:id once we integrate the api
 const VIEW_BILL = "bill";
 const ISSUE_BILL = "issue-bill";
