@@ -1,4 +1,5 @@
 import type { Contact } from "@/types/contact";
+import { ContactTypes } from "@/types/contact";
 import { useLanguage } from "@/context/language/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,8 +11,8 @@ export default function Icon({ name, type }: IconProps) {
 
   return (
     <Avatar className={cn("bg-brand-50 relative", {
-      "rounded-full": type === 0,
-      "rounded-md": type !== 0,
+      "rounded-full": type === ContactTypes.Person,
+      "rounded-md": type !== ContactTypes.Person,
     })}>
       <AvatarImage src="https://randomuser.me/api/portraits" />
       <AvatarFallback className="bg-brand-50 text-brand-200 text-[20px] font-medium">

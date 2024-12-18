@@ -9,6 +9,8 @@ import routes from "@/constants/routes";
 
 import Form from "./components/Form";
 import Icon from "./components/Icon";
+import type { Contact } from "@/types/contact";
+import { ContactTypes } from "@/types/contact";
 
 function TopBar() {
   const navigate = useNavigate();
@@ -40,18 +42,17 @@ function SwitchType({
   type,
   switchType,
 }: {
-  type: number;
-  switchType: (type: number) => void;
+  type: Contact['type'];
+  switchType: (type: Contact['type']) => void;
 }) {
   return (
     <div className="flex gap-2">
       <button
-        className={cn(
-          "bg-transparent py-1 px-3 text-text-300 text-xs font-normal border-[1px] border-divider-100 rounded-lg",
-          type === 1 && "font-semibold border-text-300"
-        )}
+        className={cn("bg-transparent py-1 px-3 text-text-300 text-xs font-normal border-[1px] border-divider-100 rounded-lg", {
+          "font-semibold border-text-300": type === ContactTypes.Company
+        })}
         onClick={() => {
-          switchType(1);
+          switchType(ContactTypes.Company);
         }}
       >
         <FormattedMessage
@@ -61,12 +62,11 @@ function SwitchType({
         />
       </button>
       <button
-        className={cn(
-          "bg-transparent py-1 px-3 text-text-300 text-xs font-normal border-[1px] border-divider-100 rounded-lg",
-          type === 0 && "font-semibold border-text-300"
-        )}
+        className={cn("bg-transparent py-1 px-3 text-text-300 text-xs font-normal border-[1px] border-divider-100 rounded-lg", {
+          "font-semibold border-text-300": type === ContactTypes.Person
+        })}
         onClick={() => {
-          switchType(0);
+          switchType(ContactTypes.Person);
         }}
       >
         <FormattedMessage
@@ -80,7 +80,7 @@ function SwitchType({
 }
 
 export default function Create() {
-  const [type, setType] = useState(0);
+  const [type, setType] = useState<Contact['type']>(ContactTypes.Person);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5 select-none">
@@ -97,7 +97,7 @@ export default function Create() {
         </div>
 
         <span className="text-brand-200 text-xs font-medium">
-          {type === 0 ? (
+          {type === ContactTypes.Person ? (
             <FormattedMessage
               id="Add photo"
               defaultMessage="Add photo"

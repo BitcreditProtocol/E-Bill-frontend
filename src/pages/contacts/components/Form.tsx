@@ -11,7 +11,10 @@ import {
 import { Input } from "@/components/ui/input";
 import Upload from "@/components/ui/upload";
 
-export default function Form({ type }: { type: number }) {
+import type { Contact } from "@/types/contact";
+import { ContactTypes } from "@/types/contact";
+
+export default function Form({ type }: { type: Contact['type'] }) {
   const intl = useIntl();
 
   return (
@@ -30,7 +33,7 @@ export default function Form({ type }: { type: number }) {
       <Input
         icon={<UserPenIcon className="w-5 h-5 text-text-300" strokeWidth={1} />}
         label={
-          type === 0
+          type === ContactTypes.Person
             ? intl.formatMessage({
                 id: "Legal full name",
                 defaultMessage: "Legal full name",
@@ -83,7 +86,7 @@ export default function Form({ type }: { type: number }) {
       <Input
         icon={<MapIcon className="w-5 h-5 text-text-300" strokeWidth={1} />}
         label={
-          type === 0
+          type === ContactTypes.Person
             ? intl.formatMessage({
                 id: "City of birth",
                 defaultMessage: "City of birth",
@@ -103,7 +106,7 @@ export default function Form({ type }: { type: number }) {
           <ShieldCheckIcon className="w-5 h-5 text-text-300" strokeWidth={1} />
         }
         label={
-          type === 0
+          type === ContactTypes.Person
             ? intl.formatMessage({
                 id: "Social security number",
                 defaultMessage: "Social security number",
