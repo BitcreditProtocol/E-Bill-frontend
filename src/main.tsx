@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { Toaster } from "./components/ui/toaster";
@@ -38,7 +38,6 @@ import Overview from "./pages/contacts/Overview";
 import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
-
 
 const queryClient = new QueryClient();
 
@@ -150,21 +149,28 @@ const router = createBrowserRouter(
         },
         {
           path: routes.CONTACTS,
-          element: <Overview />,
-          loader: Overview.loader,
-        },
-        {
-          path: routes.CREATE_CONTACT,
-          element: <Create />,
-        },
-        {
-          path: `${routes.VIEW_CONTACT}/:public_key`,
-          element: <View />,
-          loader: View.loader,
-        },
-        {
-          path: routes.EDIT_CONTACT,
-          element: <Edit />,
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <Overview />,
+              loader: Overview.loader,
+            },
+            {
+              path: routes.CREATE_CONTACT,
+              element: <Create />,
+            },
+            {
+              path: routes.VIEW_CONTACT,
+              element: <View />,
+              loader: View.loader,
+            },
+            {
+              path: routes.EDIT_CONTACT,
+              element: <Edit />,
+              loader: View.loader,
+            },
+          ]
         },
       ],
     },
@@ -179,6 +185,7 @@ const router = createBrowserRouter(
     },
   }
 );
+
 const prepare = async () => {
   if (import.meta.env.DEV) {
     const { worker } = await import("./mocks/browser");
