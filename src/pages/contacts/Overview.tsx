@@ -52,7 +52,7 @@ export default function Overview() {
     queryFn: getContacts,
   });
 
-  const [values, setValues] = useState<Contact[]>(data || []);
+  const [values, setValues] = useState<Contact[]>(data?.contacts || []);
   const [filteredResults, setFilteredResults] = useState<Contact[]>(values);
   const [typeFilters, setTypeFilters] = useState<Contact['type'][]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -68,7 +68,7 @@ export default function Overview() {
 
   useEffect(() => {
     if (isSuccess) {
-      setValues(data);
+      setValues(data.contacts);
     }
   }, [isSuccess, data]);
 

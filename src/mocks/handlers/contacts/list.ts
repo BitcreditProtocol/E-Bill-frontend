@@ -87,14 +87,18 @@ const BARNEY = {
 
 const data: Contact[] = [AMAZON, BOB, APPLE, TERRY, ALICE, BARNEY, ADA];
 
-type ContactsResponse = Contact[];
+type ContactsResponse = {
+  contacts: Contact[];
+}
 
 export const contactList = http.get<never, never, ContactsResponse, "/contacts/list">(
   "/contacts/list",
   async () => {
     await delay(3000);
 
-    return HttpResponse.json(data);
+    return HttpResponse.json({
+      contacts: data
+    });
   }
 );
 
@@ -103,6 +107,8 @@ export const emptyContactsList = http.get<never, never, ContactsResponse, "/cont
   async () => {
     await delay(1000);
 
-    return HttpResponse.json([]);
+    return HttpResponse.json({
+      contacts: []
+    });
   }
 );

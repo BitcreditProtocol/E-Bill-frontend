@@ -1,7 +1,9 @@
 import { GET_CONTACTS } from "@/constants/endpoints";
 import type { Contact } from "@/types/contact";
 
-type ContactsResponse = Contact[];
+type ContactsResponse = {
+  contacts: Contact[];
+}
 
 export const getContacts = async () => {
   const response = await fetch(GET_CONTACTS);
