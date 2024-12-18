@@ -2,18 +2,18 @@ import { useIntl } from "react-intl";
 import { CopyIcon, CircleCheckIcon } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
+import Icon from "./Icon";
 import type { Contact } from "@/types/contact";
 import { copyToClipboard } from "@/utils";
 
-type BasicDetailsProps = {
-  name: string;
-  public_key: string;
-};
+type BasicDetailsProps = Pick<Contact, 'type' | 'name' | 'public_key'>;
 
-function BasicDetails({ name, public_key }: BasicDetailsProps) {
+function BasicDetails({ type, name, public_key }: BasicDetailsProps) {
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="flex flex-col items-center gap-3">
+        <Icon type={type} name={name} />
+
         <span className="text-text-300 text-base font-medium leading-6">
           {name}
         </span>
@@ -157,9 +157,10 @@ function Information({
   );
 }
 
-type ContactDetailsProps = Omit<Contact, "type">;
+type ContactDetailsProps = Contact;
 
 export default function Details({
+  type,
   name,
   email,
   postal_address,
@@ -171,7 +172,7 @@ export default function Details({
 }: ContactDetailsProps) {
   return (
     <div className="flex flex-col gap-6 w-full">
-      <BasicDetails name={name} public_key={public_key} />
+      <BasicDetails type={type} name={name} public_key={public_key} />
 
       <Information
         email={email}

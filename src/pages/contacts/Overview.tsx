@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { ChevronRightIcon, PlusIcon } from "lucide-react";
 
@@ -6,57 +7,33 @@ import { Button } from "@/components/ui/button";
 import Search from "@/components/ui/search";
 import { Separator } from "@/components/ui/separator";
 import routes from "@/constants/routes";
-import contactsIllustration from "@/assets/contacts-illustration.svg";
 
 import List from "./components/List";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function EmptyList() {
-  return (
-    <div className="flex-1 flex flex-col items-center pt-10 w-52">
-      <img src={contactsIllustration} className="w-18 h-18 mx-auto mb-5" />
-
-      <div className="flex flex-col items-center gap-2 text-center mb-4">
-        <h2 className="text-text-300 text-xl font-medium leading-[30px]">
-          <FormattedMessage
-            id="contacts.empty.title"
-            defaultMessage="No contacts yet"
-            description="Title for empty contacts list"
-          />
-        </h2>
-
-        <span className="text-text-200 text-md leading-6">
-          <FormattedMessage
-            id="contacts.empty.description"
-            defaultMessage="Create your first contact to start a relation"
-            description="Description for empty contacts list"
-          />
-        </span>
-      </div>
-
-      <Button
-        className="w-fit text-text-300 bg-transparent text-sm font-medium border-text-300 rounded-[8px] py-3 px-6 hover:bg-transparent"
-        variant="outline"
-      >
-        <FormattedMessage
-          id="New Contact"
-          defaultMessage="New contact"
-          description="New contact button"
-        />
-      </Button>
-    </div>
-  );
-}
+import EmptyList from "./components/EmptyList";
+import type { Contact } from "@/types/contact";
+import __DATA from "./__data";
 
 export default function Overview() {
   const navigate = useNavigate();
+  const data = useLoaderData() as Contact[];
+  const [values, setValues] = useState(data);
 
   const goToCreate = () => {
     navigate(routes.CREATE_CONTACT);
   };
 
+  const __dev_clearData = () => {
+    setValues([])
+  };
+
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
+      {import.meta.env.DEV && (<>
+        <Button size="xxs" variant="destructive" className="absolute top-1 right-1" onClick={__dev_clearData} >
+          [dev] Clear contacts
+        </Button>
+      </>)}
+
       <div className="flex flex-col gap-3 w-full">
         <h1 className="text-text-300 text-xl font-medium">
           <FormattedMessage
@@ -96,7 +73,17 @@ export default function Overview() {
         <Separator className="bg-divider-75" />
       </div>
 
-      <List />
+      {values.length === 0 ? (<>
+        <EmptyList />
+      </>) : (<>
+        <List values={values} />
+      </>)}
     </div>
   );
 }
+
+const loader: LoaderFunction = async (): Promise<Contact[]> =>{
+  return await Promise.resolve(__DATA);
+}
+
+Overview.loader = loader;

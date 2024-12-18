@@ -16,7 +16,10 @@ describe("Settings", () => {
 
   const render = ({locale = "en-US", ...props}: { locale?: string }) => reactRender(
     <LanguageProvider defaultLocale={locale}>
-      <MemoryRouter>
+      <MemoryRouter future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}>
         <Settings {...props} />
       </MemoryRouter>
     </LanguageProvider>

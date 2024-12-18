@@ -1,5 +1,17 @@
+
+
+
+export const ContactTypes = {
+  Person: 0,
+  Company: 1,
+  Mint: 2,
+} as const;
+
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+export type ContactType = typeof ContactTypes.Person | typeof ContactTypes.Company | typeof ContactTypes.Mint | number;
+
 export type Contact = {
-  type: number;
+  type: ContactType;
   name: string;
   email: string;
   postal_address: string;

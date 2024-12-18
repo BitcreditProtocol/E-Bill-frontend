@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, PencilIcon } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import routes from "@/constants/routes";
 
+import type { Contact } from "@/types/contact";
+import { ContactTypes } from "@/types/contact";
 import Form from "./components/Form";
+import Icon from "./components/Icon";
+import TypeFilter from "./components/TypeFilter";
 
 function TopBar() {
   const navigate = useNavigate();
@@ -36,65 +38,17 @@ function TopBar() {
   );
 }
 
-function SwitchType({
-  type,
-  switchType,
-}: {
-  type: number;
-  switchType: (type: number) => void;
-}) {
-  return (
-    <div className="flex gap-2">
-      <button
-        className={cn(
-          "bg-transparent py-1 px-3 text-text-300 text-xs font-normal border-[1px] border-divider-100 rounded-lg",
-          type === 1 && "font-semibold border-text-300"
-        )}
-        onClick={() => {
-          switchType(1);
-        }}
-      >
-        <FormattedMessage
-          id="Company"
-          defaultMessage="Company"
-          description="Company contact type"
-        />
-      </button>
-      <button
-        className={cn(
-          "bg-transparent py-1 px-3 text-text-300 text-xs font-normal border-[1px] border-divider-100 rounded-lg",
-          type === 0 && "font-semibold border-text-300"
-        )}
-        onClick={() => {
-          switchType(0);
-        }}
-      >
-        <FormattedMessage
-          id="Person"
-          defaultMessage="Person"
-          description="Person contact type"
-        />
-      </button>
-    </div>
-  );
-}
-
 export default function Create() {
-  const [type, setType] = useState(0);
+  const [type, setType] = useState<Contact['type']>(ContactTypes.Person);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5 select-none">
       <TopBar />
-      <SwitchType type={type} switchType={setType} />
+      <TypeFilter value={type} onChange={setType} />
 
       <div className="flex flex-col gap-3 w-16">
         <div className="relative cursor-pointer">
-          <Avatar className="bg-brand-50 relative">
-            <AvatarImage src="https://randomuser.me/api/portraits" />
-            <AvatarFallback className="bg-brand-50 text-brand-200 text-[20px] font-medium">
-              J
-            </AvatarFallback>
-          </Avatar>
+          <Icon type={type} name="John Doe" />
 
           <div className="absolute -bottom-1 right-2 flex items-center justify-center w-6 h-6 bg-brand-200 rounded-full">
             <PencilIcon className="w-2.5 h-2.5 text-white" />
@@ -102,7 +56,7 @@ export default function Create() {
         </div>
 
         <span className="text-brand-200 text-xs font-medium">
-          {type === 0 ? (
+          {type === ContactTypes.Person ? (
             <FormattedMessage
               id="Add photo"
               defaultMessage="Add photo"

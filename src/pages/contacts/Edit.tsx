@@ -2,12 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, CopyIcon } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { copyToClipboard } from "@/utils";
 import routes from "@/constants/routes";
+import type { Contact } from "@/types/contact";
 
 import Form from "./components/Form";
+import Icon from "./components/Icon";
 
 function TopBar() {
   const navigate = useNavigate();
@@ -35,20 +36,12 @@ function TopBar() {
   );
 }
 
-type BasicDetailsProps = {
-  name: string;
-  public_key: string;
-};
+type BasicDetailsProps = Pick<Contact, 'type' | 'name' | 'public_key'>;
 
-function BasicDetails({ name, public_key }: BasicDetailsProps) {
+function BasicDetails({ type, name, public_key }: BasicDetailsProps) {
   return (
     <div className="flex flex-col items-center gap-4">
-      <Avatar className="bg-brand-50 relative">
-        <AvatarImage src="https://randomuser.me/api/portraits" />
-        <AvatarFallback className="bg-brand-50 text-brand-200 text-[20px] font-medium">
-          J
-        </AvatarFallback>
-      </Avatar>
+      <Icon type={type} name={name} />
 
       <div className="flex flex-col items-center gap-3">
         <span className="text-text-300 text-base font-medium leading-6">
@@ -77,7 +70,7 @@ export default function Edit() {
       <TopBar />
 
       <div className="flex flex-col w-full gap-6">
-        <BasicDetails name="John Doe" public_key="0x1234567890abcdef" />
+        <BasicDetails type={0} name="John Doe" public_key="0x1234567890abcdef" />
         <Form type={0} />
       </div>
 
