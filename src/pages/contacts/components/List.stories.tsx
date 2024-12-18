@@ -7,7 +7,7 @@ const meta = {
   title: 'Element/Contacts/List',
   component: List,
   args: {
-    values: __DATA
+    values: __DATA,
   },
   decorators: [
     withRouter,

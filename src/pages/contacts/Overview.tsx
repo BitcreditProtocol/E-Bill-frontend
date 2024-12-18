@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
 import { ChevronRightIcon, PlusIcon, SearchIcon } from "lucide-react";
 
@@ -11,8 +11,10 @@ import routes from "@/constants/routes";
 import List from "./components/List";
 import EmptyList from "./components/EmptyList";
 import type { Contact } from "@/types/contact";
-import __DATA from "./__data";
 import TypeFilter from "./components/TypeFilter";
+import { getContacts } from "@/services/contact";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function NoResults() {
   return (
@@ -30,12 +32,28 @@ function NoResults() {
   );
 }
 
+function Loader() {
+  return (
+    <div className="flex flex-col gap-3 w-full">
+      <Skeleton className="w-full h-4 bg-elevation-200 rounded-lg" />
+      {Array.from({ length: 3 }, (_, index) => (
+        <Skeleton key={index} className="w-full h-16 bg-elevation-200 rounded-lg" />
+      ))}
+    </div>
+  );
+}
+
 export default function Overview() {
   const intl = useIntl();
   const navigate = useNavigate();
-  const data = useLoaderData() as Contact[];
-  const [values, setValues] = useState(data);
-  const [filteredResults, setFilteredResults] = useState(values);
+
+  const { isPending, isSuccess, data } = useQuery({
+    queryKey: ["contacts"],
+    queryFn: getContacts,
+  });
+
+  const [values, setValues] = useState<Contact[]>(data || []);
+  const [filteredResults, setFilteredResults] = useState<Contact[]>(values);
   const [typeFilters, setTypeFilters] = useState<Contact['type'][]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [search, setSearch] = useState<string>();
@@ -47,6 +65,12 @@ export default function Overview() {
   const __dev_clearData = () => {
     setValues([])
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setValues(data);
+    }
+  }, [isSuccess, data]);
 
   useEffect(() => {
     setFilteredResults(typeFilters.length === 0 ? values : values.filter(value => typeFilters.includes(value.type)));
@@ -103,21 +127,20 @@ export default function Overview() {
 
         <Separator className="bg-divider-75" />
       </div>
-      {values.length === 0 ? (<>
-        <EmptyList />
+
+      {isPending ? (<>
+        <Loader />
       </>) : (<>
+        {values.length === 0 ? (<>
+          <EmptyList />
+        </>) : (<>
         {filteredResults.length === 0 ? (<>
           <NoResults />
         </>) : (<>
-          <List values={filteredResults} />
+            <List values={filteredResults} />
+          </>)}
         </>)}
       </>)}
     </div>
   );
 }
-
-const loader: LoaderFunction = async (): Promise<Contact[]> =>{
-  return await Promise.resolve(__DATA);
-}
-
-Overview.loader = loader;

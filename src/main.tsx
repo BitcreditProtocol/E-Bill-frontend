@@ -151,7 +151,6 @@ const router = createBrowserRouter(
         {
           path: routes.CONTACTS,
           element: <Overview />,
-          loader: Overview.loader,
         },
         {
           path: routes.CREATE_CONTACT,
