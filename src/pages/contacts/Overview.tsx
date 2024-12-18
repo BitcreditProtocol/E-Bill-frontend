@@ -12,12 +12,14 @@ import List from "./components/List";
 import EmptyList from "./components/EmptyList";
 import type { Contact } from "@/types/contact";
 import __DATA from "./__data";
+import TypeFilter from "./components/TypeFilter";
 
 export default function Overview() {
   const intl = useIntl();
   const navigate = useNavigate();
   const data = useLoaderData() as Contact[];
   const [values, setValues] = useState(data);
+  const [typeFilters, setTypeFilters] = useState<Contact['type'][]>([]);
 
   const goToCreate = () => {
     navigate(routes.CREATE_CONTACT);
@@ -51,6 +53,7 @@ export default function Overview() {
           })}
           onSearch={() => {}}
         />
+        <TypeFilter values={typeFilters} onChange={setTypeFilters} multiple />
       </div>
 
       <div className="flex flex-col gap-4 w-full">
