@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
-import { ChevronRightIcon, PlusIcon } from "lucide-react";
+import { ChevronRightIcon, PlusIcon, SearchIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import Search from "@/components/ui/search";
@@ -14,11 +14,28 @@ import type { Contact } from "@/types/contact";
 import __DATA from "./__data";
 import TypeFilter from "./components/TypeFilter";
 
+function NoResults() {
+  return (
+    <div className="flex flex-col gap-4 w-full">
+      <div className="text-text-200 text-xs font-medium">No results</div>
+      <div className="flex items-center gap-2 text-text-300 text-sm font-medium">
+        <SearchIcon className="h-4 w-4" strokeWidth={1} />
+        <FormattedMessage
+          id="Try searching another contact"
+          defaultMessage="Try searching another contact"
+          description="Text for no search results on contacts page"
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function Overview() {
   const intl = useIntl();
   const navigate = useNavigate();
   const data = useLoaderData() as Contact[];
   const [values, setValues] = useState(data);
+  const [filteredResults, setFilteredResults] = useState(values);
   const [typeFilters, setTypeFilters] = useState<Contact['type'][]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [search, setSearch] = useState<string>();
@@ -32,8 +49,8 @@ export default function Overview() {
   };
 
   useEffect(() => {
-    setValues(typeFilters.length === 0 ? data : data.filter(value => typeFilters.includes(value.type)));
-  }, [data, typeFilters]);
+    setFilteredResults(typeFilters.length === 0 ? values : values.filter(value => typeFilters.includes(value.type)));
+  }, [values, typeFilters]);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
@@ -86,11 +103,14 @@ export default function Overview() {
 
         <Separator className="bg-divider-75" />
       </div>
-
       {values.length === 0 ? (<>
         <EmptyList />
       </>) : (<>
-        <List values={values} />
+        {filteredResults.length === 0 ? (<>
+          <NoResults />
+        </>) : (<>
+          <List values={filteredResults} />
+        </>)}
       </>)}
     </div>
   );
