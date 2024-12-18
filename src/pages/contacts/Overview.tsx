@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { ChevronRightIcon, PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import type { Contact } from "@/types/contact";
 import __DATA from "./__data";
 
 export default function Overview() {
+  const intl = useIntl();
   const navigate = useNavigate();
   const data = useLoaderData() as Contact[];
   const [values, setValues] = useState(data);
@@ -43,8 +44,11 @@ export default function Overview() {
           />
         </h1>
 
-        <Search
-          placeholder="Name, address, email..."
+        <Search placeholder={intl.formatMessage({
+            id: "Name, address, email",
+            defaultMessage: "Name, address, email...",
+            description: "Placeholder text for contacts search input",
+          })}
           onSearch={() => {}}
         />
       </div>
