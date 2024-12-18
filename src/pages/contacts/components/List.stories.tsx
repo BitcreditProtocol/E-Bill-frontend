@@ -1,6 +1,5 @@
 import type { Meta,  StoryObj } from '@storybook/react';
 import { withRouter } from 'storybook-addon-remix-react-router';
-import LanguageProvider from '@/context/language/LanguageProvider';
 import List from './List';
 import __DATA from '../__data';
 
@@ -12,11 +11,6 @@ const meta = {
   },
   decorators: [
     withRouter,
-    (Story) => (
-      <LanguageProvider>
-        <Story />
-      </LanguageProvider>
-    ),
   ],
 } satisfies Meta<typeof List>;
 
