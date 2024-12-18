@@ -36,11 +36,7 @@ function TopBar() {
   );
 }
 
-type BasicDetailsProps = {
-  type: Contact["type"];
-  name: Contact["name"];
-  public_key: Contact["public_key"];
-};
+type BasicDetailsProps = Pick<Contact, 'type' | 'name' | 'public_key'>;
 
 function BasicDetails({ type, name, public_key }: BasicDetailsProps) {
   return (

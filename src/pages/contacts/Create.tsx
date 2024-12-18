@@ -38,43 +38,48 @@ function TopBar() {
   );
 }
 
-function SwitchType({
-  type,
-  switchType,
+function TypeFilter({
+  value,
+  onChange,
 }: {
-  type: Contact['type'];
-  switchType: (type: Contact['type']) => void;
+  value: Contact['type'];
+  onChange: (type: Contact['type']) => void;
 }) {
   return (
     <div className="flex gap-2">
-      <button
-        className={cn("bg-transparent py-1 px-3 text-text-300 text-xs font-normal border-[1px] border-divider-100 rounded-lg", {
-          "font-semibold border-text-300": type === ContactTypes.Company
+      <Button variant="filter" size="xs" className={cn({
+          "!font-semibold border-text-300": value === ContactTypes.Person
         })}
-        onClick={() => {
-          switchType(ContactTypes.Company);
-        }}
-      >
-        <FormattedMessage
-          id="Company"
-          defaultMessage="Company"
-          description="Company contact type"
-        />
-      </button>
-      <button
-        className={cn("bg-transparent py-1 px-3 text-text-300 text-xs font-normal border-[1px] border-divider-100 rounded-lg", {
-          "font-semibold border-text-300": type === ContactTypes.Person
-        })}
-        onClick={() => {
-          switchType(ContactTypes.Person);
-        }}
+        onClick={() => { onChange(ContactTypes.Person); }}
       >
         <FormattedMessage
           id="Person"
           defaultMessage="Person"
           description="Person contact type"
         />
-      </button>
+      </Button>
+      <Button variant="filter" size="xs" className={cn({
+          "!font-semibold border-text-300": value === ContactTypes.Company
+        })}
+        onClick={() => { onChange(ContactTypes.Company); }}
+      >
+        <FormattedMessage
+          id="Company"
+          defaultMessage="Company"
+          description="Company contact type"
+        />
+      </Button>
+      <Button variant="filter" size="xs" className={cn({
+          "!font-semibold border-text-300": value === ContactTypes.Mint
+        })}
+        onClick={() => { onChange(ContactTypes.Mint); }}
+      >
+        <FormattedMessage
+          id="Mint"
+          defaultMessage="Mint"
+          description="Mint contact type"
+        />
+      </Button>
     </div>
   );
 }
@@ -85,7 +90,7 @@ export default function Create() {
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5 select-none">
       <TopBar />
-      <SwitchType type={type} switchType={setType} />
+      <TypeFilter value={type} onChange={setType} />
 
       <div className="flex flex-col gap-3 w-16">
         <div className="relative cursor-pointer">
