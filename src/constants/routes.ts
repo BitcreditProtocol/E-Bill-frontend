@@ -18,10 +18,10 @@ const PREVIEW_BILL = "preview-bill";
 const MINT_BILL = "mint-bill";
 const SELL_BILL = "sell-bill";
 const CONTACTS = "contacts";
-const CREATE_CONTACT = "create-contact";
+const CREATE_CONTACT = "new";
+const VIEW_CONTACT = ":node_id";
+const EDIT_CONTACT = ":node_id/edit";
 const SETTINGS = "settings";
-const VIEW_CONTACT = "/view-contact";
-const EDIT_CONTACT = "/edit-contact";
 
 export default {
   ROOT,
@@ -44,7 +44,7 @@ export default {
   SELL_BILL,
   CONTACTS,
   CREATE_CONTACT,
-  SETTINGS,
   VIEW_CONTACT,
   EDIT_CONTACT,
+  SETTINGS,
 };
