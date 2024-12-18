@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
 import { ChevronRightIcon, PlusIcon } from "lucide-react";
@@ -20,6 +20,8 @@ export default function Overview() {
   const data = useLoaderData() as Contact[];
   const [values, setValues] = useState(data);
   const [typeFilters, setTypeFilters] = useState<Contact['type'][]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [search, setSearch] = useState<string>();
 
   const goToCreate = () => {
     navigate(routes.CREATE_CONTACT);
@@ -28,6 +30,10 @@ export default function Overview() {
   const __dev_clearData = () => {
     setValues([])
   };
+
+  useEffect(() => {
+    setValues(typeFilters.length === 0 ? data : data.filter(value => typeFilters.includes(value.type)));
+  }, [data, typeFilters]);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
@@ -51,6 +57,7 @@ export default function Overview() {
             defaultMessage: "Name, address, email...",
             description: "Placeholder text for contacts search input",
           })}
+          onChange={setSearch}
           onSearch={() => {}}
         />
         <TypeFilter values={typeFilters} onChange={setTypeFilters} multiple />
