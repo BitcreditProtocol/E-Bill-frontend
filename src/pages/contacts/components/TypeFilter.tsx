@@ -7,20 +7,31 @@ import type { Contact } from "@/types/contact";
 import { ContactTypes } from "@/types/contact";
 
 type TypeFilterProps = {
-  value: Contact['type'];
-  onChange: (type: Contact['type']) => void;
+  values: Contact['type'][];
+  multiple?: boolean;
+  onChange: (values: Contact['type'][]) => void;
 };
 
-export default function TypeFilter({
-  value,
-  onChange,
-}: TypeFilterProps) {
+export default function TypeFilter({ values, onChange, multiple = false }: TypeFilterProps) {
+
+  const handleOnClick = (type: Contact['type']) => {
+    if (!multiple) {
+      onChange([type]);
+    } else {
+      if (values.includes(type)) {  
+        onChange(values.filter(value => value !== type));
+      } else {
+        onChange([...values, type]);
+      }
+    }
+  };
+
   return (
     <div className="flex gap-2">
       <Button variant="filter" size="xs" className={cn({
-          "!font-semibold border-text-300": value === ContactTypes.Person
+          "!font-semibold border-text-300": values.includes(ContactTypes.Person)
         })}
-        onClick={() => { onChange(ContactTypes.Person); }}
+        onClick={() => { handleOnClick(ContactTypes.Person); }}
       >
         <FormattedMessage
           id="Person"
@@ -29,9 +40,9 @@ export default function TypeFilter({
         />
       </Button>
       <Button variant="filter" size="xs" className={cn({
-          "!font-semibold border-text-300": value === ContactTypes.Company
+          "!font-semibold border-text-300": values.includes(ContactTypes.Company)
         })}
-        onClick={() => { onChange(ContactTypes.Company); }}
+        onClick={() => { handleOnClick(ContactTypes.Company); }}
       >
         <FormattedMessage
           id="Company"
@@ -40,9 +51,9 @@ export default function TypeFilter({
         />
       </Button>
       <Button variant="filter" size="xs" className={cn({
-          "!font-semibold border-text-300": value === ContactTypes.Mint
+          "!font-semibold border-text-300": values.includes(ContactTypes.Mint)
         })}
-        onClick={() => { onChange(ContactTypes.Mint); }}
+        onClick={() => { handleOnClick(ContactTypes.Mint); }}
       >
         <FormattedMessage
           id="Mint"
