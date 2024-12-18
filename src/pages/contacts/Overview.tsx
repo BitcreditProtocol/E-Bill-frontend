@@ -12,8 +12,8 @@ import List from "./components/List";
 import EmptyList from "./components/EmptyList";
 import type { Contact } from "@/types/contact";
 import TypeFilter from "./components/TypeFilter";
-import { getContacts } from "@/services/contact";
-import { useQuery } from "@tanstack/react-query";
+import { getContacts, searchContacts } from "@/services/contact";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function NoResults() {
@@ -46,17 +46,30 @@ function Loader() {
 export default function Overview() {
   const intl = useIntl();
   const navigate = useNavigate();
-
+  const queryClient = useQueryClient();
   const { isPending, isSuccess, data } = useQuery({
     queryKey: ["contacts"],
     queryFn: getContacts,
-  });
+  }, queryClient);
+
+  const {
+    data: searchData,
+    isPending: isSearchPending,
+    isSuccess: isSearchSuccess,
+    mutate
+  } = useMutation({
+    mutationFn: () => searchContacts({ 
+      filter: {
+        search_term: searchTerm,
+        types: typeFilters.length === 0 ? undefined : typeFilters,
+      }
+    })
+  }, queryClient);
 
   const [values, setValues] = useState<Contact[]>(data?.contacts || []);
   const [filteredResults, setFilteredResults] = useState<Contact[]>(values);
   const [typeFilters, setTypeFilters] = useState<Contact['type'][]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [search, setSearch] = useState<string>();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const goToCreate = () => {
     navigate(routes.CREATE_CONTACT);
@@ -71,6 +84,12 @@ export default function Overview() {
       setValues(data.contacts);
     }
   }, [isSuccess, data]);
+
+  useEffect(() => {
+    if (isSearchSuccess) {
+      setFilteredResults(searchData.contacts);
+    }
+  }, [isSearchSuccess, searchData]);
 
   useEffect(() => {
     setFilteredResults(typeFilters.length === 0 ? values : values.filter(value => typeFilters.includes(value.type)));
@@ -98,8 +117,10 @@ export default function Overview() {
             defaultMessage: "Name, address, email...",
             description: "Placeholder text for contacts search input",
           })}
-          onChange={setSearch}
-          onSearch={() => {}}
+          onChange={setSearchTerm}
+          onSearch={() => { 
+            mutate();
+          }}
         />
         <TypeFilter values={typeFilters} onChange={setTypeFilters} multiple />
       </div>
@@ -128,7 +149,7 @@ export default function Overview() {
         <Separator className="bg-divider-75" />
       </div>
 
-      {isPending ? (<>
+      {isPending || isSearchPending ? (<>
         <Loader />
       </>) : (<>
         {values.length === 0 ? (<>

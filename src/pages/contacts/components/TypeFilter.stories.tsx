@@ -7,7 +7,7 @@ const meta = {
   title: 'Element/Contacts/TypeFilter',
   component: TypeFilter,
   args: {
-    value: ContactTypes.Company,
+    values: [ContactTypes.Company, ContactTypes.Person],
     onChange: fn(),
   }
 } satisfies Meta<typeof TypeFilter>;

@@ -85,7 +85,7 @@ const BARNEY = {
   identification_number: "1234567890",
 };
 
-const data: Contact[] = [AMAZON, BOB, APPLE, TERRY, ALICE, BARNEY, ADA];
+export const data: Contact[] = [AMAZON, BOB, APPLE, TERRY, ALICE, BARNEY, ADA];
 
 type ContactsResponse = {
   contacts: Contact[];
@@ -94,7 +94,7 @@ type ContactsResponse = {
 export const contactList = http.get<never, never, ContactsResponse, "/contacts/list">(
   "/contacts/list",
   async () => {
-    await delay(3000);
+    await delay(2_000);
 
     return HttpResponse.json({
       contacts: data
@@ -105,7 +105,7 @@ export const contactList = http.get<never, never, ContactsResponse, "/contacts/l
 export const emptyContactsList = http.get<never, never, ContactsResponse, "/contacts/list">(
   "/contacts/list",
   async () => {
-    await delay(1000);
+    await delay(1_000);
 
     return HttpResponse.json({
       contacts: []

@@ -3,6 +3,7 @@ import { recentBills } from "./handlers/home/recent-bills";
 import { billsList } from "./handlers/bills/list";
 import { searchBills } from "./handlers/bills/search";
 import { contactList } from "./handlers/contacts/list";
+import { searchContacts } from "./handlers/contacts/search";
 
 export const handlers = [
   recentBills,
@@ -10,4 +11,5 @@ export const handlers = [
   billsList,
   searchBills,
   contactList,
+  searchContacts,
 ];
