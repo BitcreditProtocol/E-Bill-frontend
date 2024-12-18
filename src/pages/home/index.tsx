@@ -1,5 +1,3 @@
-import { ReceiptTextIcon } from "lucide-react";
-
 import Topbar from "@/components/Topbar";
 import Search from "@/components/ui/search";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,14 +26,6 @@ export default function Home() {
               console.log("search");
             }}
           />
-        }
-        trail={
-          <button className="flex items-center justify-center w-8 h-8 p-1.5 bg-elevation-200 border-[1px] border-divider-50 rounded-md">
-            <ReceiptTextIcon
-              className="h-5 w-5 text-text-300"
-              strokeWidth={1}
-            />
-          </button>
         }
       />
 
