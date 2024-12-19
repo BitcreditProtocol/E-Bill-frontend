@@ -4,6 +4,8 @@ import type { Bill } from "@/types/bill";
 import type { Company } from "@/types/company";
 import type { Contact } from "@/types/contact";
 
+import * as bills from "@/mocks/handlers/bills/list";
+
 const matchesSearchTerm = (it: Record<string, unknown>, search_term: string | undefined) => {
   return !search_term ? true : Object.entries(it).some(([, value]) => {
     if (value !== null && typeof value === "object") {
@@ -31,76 +33,63 @@ type SearchResponse = {
   | "sum"
   | "issue_date"
   >[];
-  companies: Company[];
-  contacts: Contact[];
+  companies: Pick<Company,
+  | "id"
+  | "name"
+  | "country_of_registration"
+  | "city_of_registration"
+  | "postal_address"
+  | "email"
+  | "registration_number"
+  | "registration_date"
+  | "public_key"
+  | "signatories"
+  | "logo_file"
+  | "proof_of_registration_file"
+  >[];
+  contacts: Pick<Contact,
+  | "type"
+  | "name"
+  | "country"
+  | "city"
+  // TODO: add these fields once #211 is merged
+  //| "node_id"
+  //| "avatar"
+  //| "zip"
+  //| "address"
+  >[];
 };
 
 const data: SearchResponse = {
-  bills: [{
-    bill_name: "xxs1",
-    role: "payee",
-    payer: {
-      name: "Mises Inc.",
-    },
-    holder: {
-      name: "Rothbard Corp.",
-    },
-    payee: {
-      name: "Rayek Ltd.",
-    },
-    drawer: {
-      name: "Mises 2 Inc.",
-    },
-    sum: {
-      amount: "100",
-      currency: "USD",
-    },
-    issue_date: "2021-01-01",
-  },
-  {
-    bill_name: "xxs",
-    role: "payer",
-    payer: {
-      name: "Rothbard Corp.",
-    },
-    holder: {
-      name: "Hayek Ltd.",
-    },
-    payee: {
-      name: "Mises Corp",
-    },
-    drawer: {
-      name: "Rothbard Corp.",
-    },
-    sum: {
-      amount: "50",
-      currency: "USD",
-    },
-    issue_date: "2021-01-02",
-  },
-  {
-    bill_name: "axs",
-    role: "drawer",
-    payer: {
-      name: "Hayek Ltd.",
-    },
-    holder: {
-      name: "Mises Inc.",
-    },
-    payee: {
-      name: "Mises Corp",
-    },
-    drawer: {
-      name: "Hayek Ltd.",
-    },
-    sum: {
-      amount: "1075.9",
-      currency: "USD",
-    },
-    issue_date: "2021-01-03",
+  bills: bills.data,
+  // TODO: use mocked company data once it exists
+  companies: [{
+    "id": "C5Pjn2jmz7W9xqty3qZ9V9SKBAxqoirRaibF1zqp2abX",
+    "name": "Hayek Ltd.",
+    "country_of_registration": "AT",
+    "city_of_registration": "Vienna",
+    "postal_address": "Smithstreet 34, 1030 Vienna",
+    "email": "hayek_ltd@example.com",
+    "registration_number": "1234 555 4321",
+    "registration_date": "2011-08-22",
+    "proof_of_registration_file": null,
+    "logo_file": null,
+    "signatories": [
+        "16Uiu2HAm2dEM2YBqhvMyRCiFrRWbU35yDzfKNd9EwmW71vECKXk2"
+    ],
+    "public_key": "0249dff13e8c97e6a2633386b2322b17d0a3b319affff1b92ef31d0b18f56abf37"
   }],
-  companies: [],
-  contacts: [],
+  // TODO: use mocked contacts data once #211 is merged
+  contacts: [{
+    "type": 0,
+    //"node_id": "12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3",
+    "name": "John Smith",
+    //"avatar": "face_123252423432423.png",
+    "country": "AT",
+    "city": "Vienna",
+    //"zip": "1020",
+    //"address": "Smithstreet 15, Top 22"
+}],
 };
 
 type SearchFilter = {
