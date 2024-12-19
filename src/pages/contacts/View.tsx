@@ -3,7 +3,7 @@ import { ChevronLeftIcon, PencilIcon } from "lucide-react";
 import Details from "./components/Details";
 import Delete from "./components/Delete";
 import type { Contact } from "@/types/contact";
-import __DATA from "./__data";
+import * as contacts from "@/mocks/handlers/contacts/list";
 
 function TopBar() {
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ export default function View() {
 }
 
 const loader: LoaderFunction<Contact['node_id']> = async ({ params }): Promise<Contact | null> => {
-  return await Promise.resolve(__DATA.find((it) => it.node_id === params.node_id) || null);
+  return await Promise.resolve(contacts.data.find((it) => it.node_id === params.node_id) || null);
 }
 
 View.loader = loader;
