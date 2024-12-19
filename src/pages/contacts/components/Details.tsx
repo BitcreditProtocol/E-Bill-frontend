@@ -80,6 +80,7 @@ function Information({
   country,
   city,
   identification_number,
+  proof_document,
 }: InformationProps) {
   const intl = useIntl();
 
@@ -151,7 +152,7 @@ function Information({
           defaultMessage: "Proof of registration",
           description: "Label for proof of registration",
         })}
-        value={<ProofOfRegistration file="registration.pdf" size="120 KB" />}
+        value={proof_document ? (<ProofOfRegistration file={proof_document} size="120 KB" />) : null}
       />
     </div>
   );
@@ -159,29 +160,11 @@ function Information({
 
 type ContactDetailsProps = Contact;
 
-export default function Details({
-  type,
-  name,
-  email,
-  postal_address,
-  public_key,
-  date_of_birth_or_registration,
-  country,
-  city,
-  identification_number,
-}: ContactDetailsProps) {
+export default function Details(details: ContactDetailsProps) {
   return (
     <div className="flex flex-col gap-6 w-full">
-      <BasicDetails type={type} name={name} public_key={public_key} />
-
-      <Information
-        email={email}
-        postal_address={postal_address}
-        date_of_birth_or_registration={date_of_birth_or_registration}
-        country={country}
-        city={city}
-        identification_number={identification_number}
-      />
+      <BasicDetails type={details.type} name={details.name} public_key={details.public_key} />
+      <Information {...details} />
     </div>
   );
 }

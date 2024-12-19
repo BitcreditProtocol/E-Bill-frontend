@@ -14,7 +14,7 @@ interface ContactProps {
 function Contact({ value }: ContactProps) {
   const navigate = useNavigate();
   const goToContact = () => {
-    navigate(`${routes.VIEW_CONTACT}/${value.public_key}`);
+    navigate(`${routes.VIEW_CONTACT}/${value.node_id}`);
   };
 
   return (
