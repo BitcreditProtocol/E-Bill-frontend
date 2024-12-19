@@ -52,8 +52,8 @@ export default function View() {
   );
 }
 
-const loader: LoaderFunction<Contact['public_key']> = async ({ params }): Promise<Contact | null> => {
-  return await Promise.resolve(__DATA.find((it) => it.public_key === params.public_key) || null);
+const loader: LoaderFunction<Contact['node_id']> = async ({ params }): Promise<Contact | null> => {
+  return await Promise.resolve(__DATA.find((it) => it.node_id === params.node_id) || null);
 }
 
 View.loader = loader;

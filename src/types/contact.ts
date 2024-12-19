@@ -31,9 +31,7 @@ export type ContactType = typeof ContactTypes.Person | typeof ContactTypes.Compa
 */
 export type Contact = {
   type: ContactType;
-  // TODO: `node_id` is mandatory
-  //node_id: string;
-  node_id?: string;
+  node_id: string;
   name: string;
   email: string;
   country: string;
