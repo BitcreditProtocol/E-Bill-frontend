@@ -5,22 +5,7 @@ import type { Company } from "@/types/company";
 import type { Contact } from "@/types/contact";
 
 import * as bills from "@/mocks/handlers/bills/list";
-
-const matchesSearchTerm = (it: Record<string, unknown>, search_term: string | undefined) => {
-  return !search_term ? true : Object.entries(it).some(([, value]) => {
-    if (value !== null && typeof value === "object") {
-      return Object.values(value).some(
-        (innerValue) =>
-          typeof innerValue === "string" &&
-          innerValue.toLowerCase().includes(search_term.toLowerCase())
-      );
-    }
-    return (
-      typeof value === "string" &&
-      value.toLowerCase().includes(search_term.toLowerCase())
-    );
-  });
-};
+import { matchesSearchTerm } from "../utils";
 
 type SearchResponse = {
   bills: Pick<Bill,
