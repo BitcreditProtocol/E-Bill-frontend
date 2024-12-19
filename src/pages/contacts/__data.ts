@@ -11,6 +11,7 @@ const ALICE = {
   country: "United States",
   city: "Miami",
   identification_number: "1234567890",
+  proof_document: "passport1.pdf",
 };
 
 const ADA = {
@@ -23,6 +24,7 @@ const ADA = {
   country: "United States",
   city: "Miami",
   identification_number: "1234567890",
+  //proof_document: "passport2.pdf",
 };
 
 const APPLE = {
@@ -35,6 +37,7 @@ const APPLE = {
   country: "United States",
   city: "Palo Alto, CA",
   identification_number: "1234567890",
+  proof_document: "registration3.pdf",
 };
 
 const AMAZON = {
@@ -47,6 +50,7 @@ const AMAZON = {
   country: "United States",
   city: "Palo Alto, CA",
   identification_number: "1234567890",
+  proof_document: "registration4.pdf",
 };
 
 const BOB = {
@@ -59,6 +63,7 @@ const BOB = {
   country: "United States",
   city: "Miami",
   identification_number: "1234567890",
+  proof_document: "passport5.pdf",
 };
 
 const TERRY = {
@@ -71,6 +76,7 @@ const TERRY = {
   country: "United States",
   city: "Miami",
   identification_number: "1234567890",
+  proof_document: "passport6.pdf",
 };
 
 const BARNEY = {
@@ -83,6 +89,7 @@ const BARNEY = {
   country: "United States",
   city: "Miami",
   identification_number: "1234567890",
+  proof_document: "passport7.pdf",
 };
 
 const __DATA: Contact[] = [AMAZON, BOB, APPLE, TERRY, ALICE, BARNEY, ADA];
