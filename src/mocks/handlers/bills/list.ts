@@ -69,7 +69,7 @@ export const data: BillsResponse = [
 
 type BillsResponse = Pick<
   Bill,
-  "bill_name" | "role"| "payer" | "holder" | "payee" | "drawer" | "sum" | "issue_date"
+  "bill_name" | "role" | "payer" | "holder" | "payee" | "drawer" | "sum" | "issue_date"
 >[];
 
 export const billsList = http.get<never, never, BillsResponse, "/bills">(

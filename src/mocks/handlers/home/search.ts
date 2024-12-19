@@ -1,49 +1,9 @@
 import { http, HttpResponse } from "msw";
 import { SEARCH } from "@/constants/endpoints";
-import type { Bill } from "@/types/bill";
-import type { Company } from "@/types/company";
-import type { Contact } from "@/types/contact";
 
 import * as bills from "@/mocks/handlers/bills/list";
 import { matchesSearchTerm } from "../utils";
-
-type SearchResponse = {
-  bills: Pick<Bill,
-  | "bill_name"
-  | "role"
-  | "payer"
-  | "holder"
-  | "payee"
-  | "drawer"
-  | "sum"
-  | "issue_date"
-  >[];
-  companies: Pick<Company,
-  | "id"
-  | "name"
-  | "country_of_registration"
-  | "city_of_registration"
-  | "postal_address"
-  | "email"
-  | "registration_number"
-  | "registration_date"
-  | "public_key"
-  | "signatories"
-  | "logo_file"
-  | "proof_of_registration_file"
-  >[];
-  contacts: Pick<Contact,
-  | "type"
-  | "name"
-  | "country"
-  | "city"
-  // TODO: add these fields once #211 is merged
-  //| "node_id"
-  //| "avatar"
-  //| "zip"
-  //| "address"
-  >[];
-};
+import type { SearchPayload, SearchResponse } from "@/services/search";
 
 const data: SearchResponse = {
   bills: bills.data,
@@ -77,14 +37,9 @@ const data: SearchResponse = {
 }],
 };
 
-type SearchFilter = {
-  search_term?: string;
-  item_types?: string[];
-};
-
 const filterSearchResponse = (
   data: SearchResponse,
-  { search_term, item_types }: SearchFilter
+  { filter: { search_term, item_types } }: SearchPayload
 ): SearchResponse => {
   const filteredData: SearchResponse = {
     bills: [],
@@ -106,9 +61,9 @@ export const search = http.post<
   SearchResponse,
   typeof SEARCH
 >(SEARCH, async ({ request }) => {
-  const { filter } = await request.json();
+  const payload = await request.json();
 
-  const filteredData = filterSearchResponse(data, filter);
+  const filteredData = filterSearchResponse(data, payload);
 
   return HttpResponse.json(filteredData);
 });

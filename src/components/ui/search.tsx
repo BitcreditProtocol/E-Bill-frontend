@@ -8,6 +8,8 @@ interface SearchProps {
   size?: "xs" | "sm" | "md" | "lg";
   className?: string;
   onChange?: (value: string) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   onSearch: () => void;
 }
 
@@ -33,6 +35,8 @@ function Search({
   size,
   className,
   onChange,
+  onFocus,
+  onBlur,
   onSearch,
 }: SearchProps) {
   const searchFieldRef = useRef<HTMLInputElement>(null);
@@ -63,6 +67,8 @@ function Search({
         type="text"
         placeholder={placeholder}
         className="w-full text-text-300 bg-transparent font-medium placeholder-text-300 focus:outline-none"
+        onFocus={onFocus}
+        onBlur={onBlur}
         onKeyDown={handleKeyDown}
       />
     </div>
