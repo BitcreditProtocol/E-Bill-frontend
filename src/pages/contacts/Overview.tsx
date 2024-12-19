@@ -19,7 +19,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 function NoResults() {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="text-text-200 text-xs font-medium">No results</div>
+      <div className="text-text-200 text-xs font-medium">
+        <FormattedMessage
+          id="No results"
+          defaultMessage="No results"
+          description="Title for no search results on contacts page"
+        />
+      </div>
       <div className="flex items-center gap-2 text-text-300 text-sm font-medium">
         <SearchIcon className="h-4 w-4" strokeWidth={1} />
         <FormattedMessage
@@ -67,7 +73,6 @@ export default function Overview() {
   }, queryClient);
 
   const [values, setValues] = useState<Contact[]>(data?.contacts || []);
-  const [filteredResults, setFilteredResults] = useState<Contact[]>(values);
   const [typeFilters, setTypeFilters] = useState<Contact['type'][]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -87,13 +92,9 @@ export default function Overview() {
 
   useEffect(() => {
     if (isSearchSuccess) {
-      setFilteredResults(searchData.contacts);
+      setValues(searchData.contacts);
     }
   }, [isSearchSuccess, searchData]);
-
-  useEffect(() => {
-    setFilteredResults(typeFilters.length === 0 ? values : values.filter(value => typeFilters.includes(value.type)));
-  }, [values, typeFilters]);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
@@ -122,7 +123,10 @@ export default function Overview() {
             mutate();
           }}
         />
-        <TypeFilter values={typeFilters} onChange={setTypeFilters} multiple />
+        <TypeFilter multiple values={typeFilters} onChange={(types) => {
+          setTypeFilters(types);
+          mutate();
+        }} />
       </div>
 
       <div className="flex flex-col gap-4 w-full">
@@ -152,13 +156,13 @@ export default function Overview() {
       {isPending || isSearchPending ? (<>
         <Loader />
       </>) : (<>
-        {values.length === 0 ? (<>
+        {values.length === 0 && data?.contacts.length === 0 ? (<>
           <EmptyList />
         </>) : (<>
-        {filteredResults.length === 0 ? (<>
+        {values.length === 0 ? (<>
           <NoResults />
         </>) : (<>
-            <List values={filteredResults} />
+            <List values={values} />
           </>)}
         </>)}
       </>)}
