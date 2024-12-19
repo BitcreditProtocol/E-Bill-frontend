@@ -80,8 +80,12 @@ export default function Overview() {
     navigate(routes.CREATE_CONTACT);
   };
 
-  const __dev_clearData = () => {
-    setValues([])
+  const __dev_toggleEmptyScenario = () => {
+    navigate({
+      pathname: ".",
+      search: window.location.search.includes("scenario=empty") ? "" : "scenario=empty",
+    });
+    navigate(0); // triggers reload
   };
 
   useEffect(() => {
@@ -99,8 +103,8 @@ export default function Overview() {
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
       {import.meta.env.DEV && (<>
-        <Button size="xxs" variant="destructive" className="absolute top-1 right-1" onClick={__dev_clearData} >
-          [dev] Clear contacts
+        <Button size="xxs" variant="destructive" className="absolute top-1 right-1" onClick={__dev_toggleEmptyScenario} >
+          [dev] Toggle empty scenario
         </Button>
       </>)}
 
