@@ -4,9 +4,9 @@ import { useLanguage } from "@/context/language/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export type IconProps = Pick<Contact, 'type' | 'name'>;
+export type IconProps = Pick<Contact, 'type' | 'name' | 'avatar'>;
 
-export default function Icon({ name, type }: IconProps) {
+export default function Icon({ name, type, avatar}: IconProps) {
   const lang = useLanguage();
 
   return (
@@ -14,7 +14,7 @@ export default function Icon({ name, type }: IconProps) {
       "rounded-full": type === ContactTypes.Person,
       "rounded-md": type !== ContactTypes.Person,
     })}>
-      <AvatarImage src="https://randomuser.me/api/portraits" />
+      <AvatarImage src={avatar} alt={name} />
       <AvatarFallback className="bg-brand-50 text-brand-200 text-[20px] font-medium">
         {name.charAt(0).toLocaleUpperCase(lang.locale) || '?'}
       </AvatarFallback>
