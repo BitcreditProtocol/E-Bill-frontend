@@ -2,6 +2,7 @@ import { http, HttpResponse } from "msw";
 import { SEARCH } from "@/constants/endpoints";
 
 import * as bills from "@/mocks/handlers/bills/list";
+import * as contacts from "@/mocks/handlers/contacts/list";
 import { matchesSearchTerm } from "../utils";
 import type { SearchPayload, SearchResponse } from "@/services/search";
 
@@ -24,17 +25,7 @@ const data: SearchResponse = {
     ],
     "public_key": "0249dff13e8c97e6a2633386b2322b17d0a3b319affff1b92ef31d0b18f56abf37"
   }],
-  // TODO: use mocked contacts data once #211 is merged
-  contacts: [{
-    "type": 0,
-    //"node_id": "12D3KooWBN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKYGuR77cy3",
-    "name": "John Smith",
-    //"avatar": "face_123252423432423.png",
-    "country": "AT",
-    "city": "Vienna",
-    //"zip": "1020",
-    //"address": "Smithstreet 15, Top 22"
-}],
+  contacts: contacts.data,
 };
 
 const filterSearchResponse = (
