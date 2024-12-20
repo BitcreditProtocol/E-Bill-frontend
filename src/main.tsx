@@ -151,14 +151,13 @@ const router = createBrowserRouter(
         {
           path: routes.CONTACTS,
           element: <Overview />,
-          loader: Overview.loader,
         },
         {
           path: routes.CREATE_CONTACT,
           element: <Create />,
         },
         {
-          path: `${routes.VIEW_CONTACT}/:public_key`,
+          path: `${routes.VIEW_CONTACT}/:node_id`,
           element: <View />,
           loader: View.loader,
         },

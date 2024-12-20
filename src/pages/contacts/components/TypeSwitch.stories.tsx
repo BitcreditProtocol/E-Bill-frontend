@@ -1,23 +1,22 @@
 import type { Meta,  StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
-import TypeFilter from './TypeFilter';
+import TypeSwitch from './TypeSwitch';
 import { ContactTypes } from '@/types/contact';
 
 const meta = {
-  title: 'Element/Contacts/TypeFilter',
-  component: TypeFilter,
+  title: 'Element/Contacts/TypeSwitch',
+  component: TypeSwitch,
   args: {
-    values: [ContactTypes.Company, ContactTypes.Person],
-    multiple: true,
+    value: ContactTypes.Company,
     onChange: fn(),
   }
-} satisfies Meta<typeof TypeFilter>;
+} satisfies Meta<typeof TypeSwitch>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => (
-    <TypeFilter {...args} />
+    <TypeSwitch {...args} />
   ),
 };

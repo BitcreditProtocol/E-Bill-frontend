@@ -5,23 +5,26 @@ import LanguageProvider from "@/context/language/LanguageProvider";
 import { MemoryRouter } from "react-router-dom";
 
 const ALICE = {
-  name: "Alice",
+  node_id: "11111111BN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKY11111111",
+  name: "Alice White",
   type: 0,
   email: "alice@example.com",
-  postal_address: "",
-  public_key: "0x01",
+  postal_address: "1650 Rinehart Road, Miami, FL 33179",
+  public_key: "0x1234567890abcdef00000000",
   date_of_birth_or_registration: "1970-01-01",
   country: "United States",
   city: "Miami",
   identification_number: "1234567890",
+  proof_document: "passport1.pdf",
 };
 
 const ADA = {
-  name: "Ada".toLocaleLowerCase(),
+  node_id: "22222222BN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKY22222222",
+  name: "Ada Purple".toLocaleLowerCase("en-US"),
   type: 0,
   email: "ada@example.com",
-  postal_address: "",
-  public_key: "0x02",
+  postal_address: "1650 Rinehart Road, Miami, FL 33179",
+  public_key: "0x1234567890abcdef00000001",
   date_of_birth_or_registration: "1970-01-01",
   country: "United States",
   city: "Miami",
@@ -29,18 +32,21 @@ const ADA = {
 };
 
 const BOB = {
-  name: "Bob",
+  node_id: "55555555BN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKY55555555",
+  name: "Bob Black",
   type: 0,
   email: "bob@example.com",
-  postal_address: "",
-  public_key: "0x03",
+  postal_address: "1650 Rinehart Road, Miami, FL 33179",
+  public_key: "0x1234567890abcdef11111111",
   date_of_birth_or_registration: "1970-01-01",
   country: "United States",
   city: "Miami",
   identification_number: "1234567890",
+  proof_document: "passport5.pdf",
 };
 
 const CHARLIE = {
+  node_id: "99999999BN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKY99999999",
   name: "Charlie",
   type: 0,
   email: "charlie@example.com",
