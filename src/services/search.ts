@@ -29,13 +29,13 @@ export type SearchResponse = {
   | "proof_of_registration_file"
   >[];
   contacts: Pick<Contact,
+  | "node_id"
   | "type"
   | "name"
   | "country"
   | "city"
-  // TODO: add these fields once #211 is merged
-  //| "node_id"
-  //| "avatar"
+  | "avatar"
+  // TODO: add these fields once try are available in Contact type
   //| "zip"
   //| "address"
   >[];
