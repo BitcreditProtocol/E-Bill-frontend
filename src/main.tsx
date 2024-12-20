@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { Toaster } from "./components/ui/toaster";
 import LanguageProvider from "./context/language/LanguageProvider";
+import IdentityProvider from "./context/identity/IdentityProvider";
 
 import DefaultLayout from "./layouts/Default";
 import RequiredInformation from "./pages/signup/RequiredInformation";
@@ -39,6 +40,9 @@ import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
 
+import Identity from "./pages/identity";
+import ViewIdentity from "./pages/identity/View";
+import AuthorizedSigners from "./pages/identity/AuthorizedSigners";
 
 const queryClient = new QueryClient();
 
@@ -166,6 +170,18 @@ const router = createBrowserRouter(
           path: routes.EDIT_CONTACT,
           element: <Edit />,
         },
+        {
+          path: routes.IDENTITY,
+          element: <Identity />,
+        },
+        {
+          path: routes.VIEW_IDENTITY,
+          element: <ViewIdentity />,
+        },
+        {
+          path: routes.AUTHORIZED_SIGNERS,
+          element: <AuthorizedSigners />,
+        },
       ],
     },
   ],
@@ -199,15 +215,17 @@ void prepare().then(() => {
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <LanguageProvider>
-          <RouterProvider
-            router={router}
-            future={{
-              v7_startTransition: true,
-            }}
-          />
-          <Toaster />
-        </LanguageProvider>
+        <IdentityProvider>
+          <LanguageProvider>
+            <RouterProvider
+              router={router}
+              future={{
+                v7_startTransition: true,
+              }}
+            />
+            <Toaster />
+          </LanguageProvider>
+        </IdentityProvider>
       </QueryClientProvider>
     </StrictMode>
   );

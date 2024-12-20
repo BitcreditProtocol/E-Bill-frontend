@@ -127,6 +127,7 @@
   "We have successfully created your identity and you can now use the app": "We have successfully created your identity and you can now use the app",
   "We've sent a one-time passcode to {email}": "We've sent a one-time passcode to {email}",
   "You can always re-add a contact later": "You can always re-add a contact later",
+  "authorizedSigners.title": "Authorized Signers",
   "contacts.empty.description": "Create your first contact to start a relation",
   "contacts.empty.title": "No contacts yet",
   "displayRange.days": "{value} Days",
@@ -137,5 +138,13 @@
   "dropdown.option.30days": "30 Days",
   "dropdown.option.60days": "60 Days",
   "dropdown.option.6months": "6 Months",
-  "dropdown.option.90days": "90 Days"
+  "dropdown.option.90days": "90 Days",
+  "identity.companyIdentities.title": "Company identities",
+  "identity.createNewCompanyIdentity": "Create new company",
+  "identity.logout": "Log out account",
+  "identity.title": "Identity",
+  "viewIdentity.addAuthorizedSigner": "Add authorized signer",
+  "viewIdentity.editAuthorizedSigners": "Edit authorized signers",
+  "viewIdentity.titleForCompanyIdentity": "Company information",
+  "viewIdentity.titleForPersonalIdentity": "Personal identity"
 }

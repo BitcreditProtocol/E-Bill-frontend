@@ -23,6 +23,10 @@ const SETTINGS = "settings";
 const VIEW_CONTACT = "/view-contact";
 const EDIT_CONTACT = "/edit-contact";
 
+const IDENTITY = "/identity";
+const VIEW_IDENTITY = "/view-identity";
+const AUTHORIZED_SIGNERS = "/authorized-signers";
+
 export default {
   ROOT,
   LOGIN,
@@ -47,4 +51,7 @@ export default {
   SETTINGS,
   VIEW_CONTACT,
   EDIT_CONTACT,
+  IDENTITY,
+  VIEW_IDENTITY,
+  AUTHORIZED_SIGNERS,
 };
