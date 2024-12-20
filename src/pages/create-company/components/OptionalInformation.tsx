@@ -46,9 +46,9 @@ export default function OptionalInformation() {
       <div className="flex flex-col gap-3">
         <DatePicker
           label={intl.formatMessage({
-            id: "Birth date (MM/DD/YYYY)",
-            defaultMessage: "Birth date (MM/DD/YYYY)",
-            description: "Label for birth date input",
+            id: "Registration date (MM/DD/YYYY)",
+            defaultMessage: "Registration date (MM/DD/YYYY)",
+            description: "Label for registration date input",
           })}
           mode="single"
           value={{ from: currentDate }}
@@ -66,7 +66,7 @@ export default function OptionalInformation() {
             setValue("country_of_registration", e);
           }}
         >
-          <SelectTrigger label="Country of birth" id="country_of_birth">
+          <SelectTrigger label="Country of registration" id="country_of_birth">
             <SelectValue placeholder="Select an option" />
           </SelectTrigger>
           <SelectContent>

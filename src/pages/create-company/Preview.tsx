@@ -1,4 +1,7 @@
-import { FormattedMessage, useIntl } from "react-intl";
+import { useFormContext } from "react-hook-form";
+import { useIntl } from "react-intl";
+import { Separator } from "@/components/ui/separator";
+import avatar from "@/assets/avatar.png";
 
 function Property({
   label,
@@ -24,30 +27,18 @@ function Property({
 }
 
 export default function Preview() {
+  const { getValues } = useFormContext();
   const intl = useIntl();
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="text-text-300 font-medium text-2xl leading-8">
-          <FormattedMessage
-            id="Preview company"
-            defaultMessage="Preview company"
-            description="Header title for preview company page"
-          />
-        </h1>
-
-        <span className="text-text-200 text-base text-center leading-6 mx-3">
-          <FormattedMessage
-            id="Make it easier to create bills with colleagues from your company"
-            defaultMessage="Make it easier to create bills with colleagues from your company"
-            description="Header subtitle for create company page"
-          />
-        </span>
-      </div>
-
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4"></div>
+        <div className="flex items-center flex-col gap-4">
+          <img src={avatar} className="h-12 w-12" />
+          <span className="w-[16.75rem] text-[#1b0f00] text-center font-['Geist'] text-xl font-medium leading-[1.875rem]">
+            {getValues("name")}
+          </span>
+        </div>
 
         <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
           <Property
@@ -56,8 +47,67 @@ export default function Preview() {
               defaultMessage: "Email address",
               description: "Label for email address",
             })}
-            value={"gg@gg.com"}
+            value={getValues("email") as string}
           />
+
+          <Separator className="bg-divider-75" />
+
+          <Property
+            label={intl.formatMessage({
+              id: "Postal address",
+              defaultMessage: "Postal address",
+              description: "Label for Postal address",
+            })}
+            value={getValues("address") as string}
+          />
+
+          <Separator className="bg-divider-75" />
+
+          <Property
+            label={intl.formatMessage({
+              id: "Registration date",
+              defaultMessage: "Registration date",
+              description: "Label for Registration date",
+            })}
+            value={(getValues("registration_date") as string) || "-"}
+          />
+
+          <Separator className="bg-divider-75" />
+
+          <Property
+            label={intl.formatMessage({
+              id: "Country of registration",
+              defaultMessage: "Country of registration",
+              description: "Label for Country of registration",
+            })}
+            value={(getValues("country_of_registration") as string) || "-"}
+          />
+
+          <Separator className="bg-divider-75" />
+
+          <Property
+            label={intl.formatMessage({
+              id: "City of registration",
+              defaultMessage: "City of registration",
+              description: "Label for City of registration",
+            })}
+            value={(getValues("city_of_registration") as string) || "-"}
+          />
+
+          <Separator className="bg-divider-75" />
+
+          <Property
+            label={intl.formatMessage({
+              id: "Registration number",
+              defaultMessage: "Registration number",
+              description: "Label for Registration number",
+            })}
+            value={(getValues("registration_number") as string) || "-"}
+          />
+
+          <Separator className="bg-divider-75" />
+
+          <Property label="Proof of registration" value="-" />
         </div>
       </div>
     </div>
