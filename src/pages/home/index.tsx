@@ -1,4 +1,4 @@
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import Topbar from "@/components/Topbar";
 import Search from "@/components/ui/search";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,6 +14,31 @@ import SearchTypeFilter, { type SearchTypeFilterValue } from "./components/Searc
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import Icon from "../contacts/components/Icon";
+import { type Contact, ContactTypes } from "@/types/contact";
+import { randomAvatar } from "@/utils/dev";
+
+function RecentContactItem({ name, type, avatar }: Pick<Contact, "name" | "type" | "avatar">) { 
+  return (
+    <div className="flex flex-col items-center gap-2 w-16">
+        <Icon name={name} type={type} avatar={avatar} />
+        <div className="text-text-300 text-sm font-normal text-center">{name}</div>
+    </div>
+  );
+}
+
+function RecentContacts() { 
+  return (
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex gap-2 text-text-300 text-sm font-medium">
+        <RecentContactItem name="Matt Preziegka" type={ContactTypes.Person} avatar={randomAvatar("men")} />
+        <RecentContactItem name="Jurica Kolectic" type={ContactTypes.Person} avatar={randomAvatar("men")} />
+        <RecentContactItem name="Testla Inc." type={ContactTypes.Company} />
+        <RecentContactItem name="Frank Flores" type={ContactTypes.Person} avatar={randomAvatar("men")} />
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const intl = useIntl();
@@ -67,6 +92,12 @@ export default function Home() {
           />
         }
       />
+      <div className={cn("flex flex-col gap-8", {
+        "hidden": searchModeEnabled,
+      })}>
+        <Balances />
+        <Bills />
+      </div>
 
       <div className={cn("flex flex-col gap-2", "transition-opacity duration-200 ease-in-out", {
         "opacity-0 pointer-events-none": !searchModeEnabled,
@@ -74,15 +105,35 @@ export default function Home() {
         <div className="flex flex-col gap-2">
           <SearchTypeFilter multiple values={typeFilters} onChange={setTypeFilters} />
           <Separator className="bg-divider-75" />
+
+          <div className="flex flex-col gap-4 w-full">
+            <div className="flex flex-col gap-4 w-full">
+              <div className="text-text-200 text-xs font-medium">
+                <FormattedMessage
+                  id="Recent"
+                  defaultMessage="Recent"
+                  description="Title for recent contacts on home page"
+                />
+              </div>
+              <RecentContacts />
+            </div>
+
+            <div className="flex flex-col gap-4 w-full">
+              <div className="text-text-200 text-xs font-medium">
+                <FormattedMessage
+                  id="Search results"
+                  defaultMessage="Search results"
+                  description="Title for search results on home page"
+                />
+              </div>
+              <div className="flex items-center gap-2 text-text-300 text-sm font-medium">
+                
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className={cn("flex flex-col gap-8", {
-        "hidden": searchModeEnabled,
-      })}>
-        <Balances />
-        <Bills />
-      </div>
     </div>
   );
 }
