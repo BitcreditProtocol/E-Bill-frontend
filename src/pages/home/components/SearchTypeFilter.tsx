@@ -3,24 +3,25 @@ import { cn } from "@/lib/utils";
 import { FormattedMessage } from "react-intl";
 import { Button } from "@/components/ui/button";
 
-export type SearchTypeFilterValues = "all" | "bills" | "companies" | "contacts";
+export type SearchTypeFilterValue = "all" | "bills" | "companies" | "contacts";
 
 export type SearchTypeFilterProps = {
-  values: SearchTypeFilterValues[];
+  values: SearchTypeFilterValue[];
   multiple?: boolean;
-  onChange: (values: SearchTypeFilterValues[]) => void;
+  onChange: (values: SearchTypeFilterValue[]) => void;
+  unionType?: SearchTypeFilterValue;
 };
 
-export default function SearchTypeFilter({ values, onChange, multiple = false }: SearchTypeFilterProps) {
+export default function SearchTypeFilter({ values, onChange, multiple = false, unionType = "all" }: SearchTypeFilterProps) {
 
-  const handleOnClick = (type: SearchTypeFilterValues) => {
+  const handleOnClick = (type: SearchTypeFilterValue) => {
     if (!multiple) {
       onChange([type]);
     } else {
       if (values.includes(type)) {
         onChange(values.filter(value => value !== type));
       } else {
-        onChange([...values, type]);
+        onChange(type === unionType ? [type] : [...values.filter(value => value !== unionType), type]);
       }
     }
   };
