@@ -1,7 +1,7 @@
 import { FormattedMessage, useIntl } from "react-intl";
 import Topbar from "@/components/Topbar";
 import Search from "@/components/ui/search";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import Balances from "./components/Balances";
 import Bills from "./components/Bills";
@@ -12,33 +12,100 @@ import { cn } from "@/lib/utils";
 
 import SearchTypeFilter, { type SearchTypeFilterValue } from "./components/SearchTypeFilter";
 import { Button } from "@/components/ui/button";
-import { ChevronLeftIcon } from "lucide-react";
+import { ChevronLeftIcon, SearchIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import Icon from "../contacts/components/Icon";
 import { type Contact, ContactTypes } from "@/types/contact";
 import { randomAvatar } from "@/utils/dev";
 
-function RecentContactItem({ name, type, avatar }: Pick<Contact, "name" | "type" | "avatar">) { 
+
+type RecentContactItemProps = Pick<Contact, "name" | "type" | "avatar">;
+function RecentContactItem({ name, type, avatar }: RecentContactItemProps) {
   return (
-    <div className="flex flex-col items-center gap-2 w-16">
-        <Icon name={name} type={type} avatar={avatar} />
-        <div className="text-text-300 text-sm font-normal text-center">{name}</div>
+    <div className="flex flex-col items-center gap-1 w-14">
+        <Icon name={name} type={type} avatar={avatar} className="w-8 h-8" />
+        <div className="text-text-300 text-[11px] font-medium text-center">{name}</div>
     </div>
   );
 }
 
-function RecentContacts() { 
+function RecentContacts({ values }: { values: RecentContactItemProps[] }) {
+  return (
+  <div className="flex flex-col gap-2 w-full">
+    <div className="text-text-200 text-xs font-medium">
+      <FormattedMessage
+        id="Recent"
+        defaultMessage="Recent"
+        description="Title for recent contacts on home page"
+      />
+    </div>
+    <div className="flex gap-4">
+      {values.map((value) => (
+        <RecentContactItem key={value.name} {...value} />
+      ))}
+    </div>
+  </div>
+  );
+}
+
+function SearchSuggestions() {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="flex gap-2 text-text-300 text-sm font-medium">
-        <RecentContactItem name="Matt Preziegka" type={ContactTypes.Person} avatar={randomAvatar("men")} />
-        <RecentContactItem name="Jurica Kolectic" type={ContactTypes.Person} avatar={randomAvatar("men")} />
-        <RecentContactItem name="Testla Inc." type={ContactTypes.Company} />
-        <RecentContactItem name="Frank Flores" type={ContactTypes.Person} avatar={randomAvatar("men")} />
+      <div className="text-text-200 text-xs font-medium">
+        <FormattedMessage
+          id="Try searching for"
+          defaultMessage="Try searching for"
+          description="Title for search suggestions on home page"
+        />
+      </div>
+      <div className="flex flex-col gap-6 text-text-300 text-sm font-medium">
+        <div className="flex items-center gap-2">
+          <SearchIcon className="w-5 h-5" strokeWidth={1} />
+          <FormattedMessage
+            id="Recent bills"
+            defaultMessage="Recent bills"
+            description="Search suggestion for recent bills on home page"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <SearchIcon className="w-5 h-5" strokeWidth={1} />
+          <FormattedMessage
+            id="All contacts"
+            defaultMessage="All contacts"
+            description="Search suggestion for all contacts on home page"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <SearchIcon className="w-5 h-5" strokeWidth={1} />
+          Something here
+        </div>
       </div>
     </div>
   );
 }
+
+function SearchResults() {
+  return (
+    <div className="flex flex-col gap-4 w-full">
+      <div className="text-text-200 text-xs font-medium">
+        <FormattedMessage
+          id="Search results"
+          defaultMessage="Search results"
+          description="Title for search results on home page"
+        />
+      </div>
+      <div className="flex items-center gap-2 text-text-300 text-sm font-medium">
+      </div>
+    </div>
+  );
+}
+
+const __dev__RECENT_CONTACTS = [
+  { name: "Matt Preziegka", type: ContactTypes.Person, avatar: randomAvatar("men") },
+  { name: "Jurica Kolectic", type: ContactTypes.Person, avatar: randomAvatar("men") },
+  { name: "Testla Inc", type: ContactTypes.Company },
+  { name: "Mia Flores", type: ContactTypes.Person, avatar: randomAvatar("women") },
+];
 
 export default function Home() {
   const intl = useIntl();
@@ -64,12 +131,16 @@ export default function Home() {
       <Topbar
         lead={<>
           {!searchModeEnabled ? (<Avatar className="h-8 w-8">
-            <AvatarImage src="https://randomuser.me/api/portraits" />
             <AvatarFallback className="bg-brand-100 text-brand-200 text-sm font-medium">
               AM
             </AvatarFallback>
           </Avatar>) : (<>
-            <Button variant="outline" size="xs" className="p-0 w-full h-full bg-elevation-200 border-divider-50 text-text-300" onClick={() => { setSearchModeEnabled(false); }}>
+            <Button variant="outline" size="xs"
+              className="p-0 w-full h-full bg-elevation-200 border-divider-50 text-text-300"
+              onClick={() => {
+                setSearchModeEnabled(false);
+              }}
+            >
               <ChevronLeftIcon className="w-5 h-5" strokeWidth={1} />
             </Button>
           </>)}
@@ -106,30 +177,10 @@ export default function Home() {
           <SearchTypeFilter multiple values={typeFilters} onChange={setTypeFilters} />
           <Separator className="bg-divider-75" />
 
-          <div className="flex flex-col gap-4 w-full">
-            <div className="flex flex-col gap-4 w-full">
-              <div className="text-text-200 text-xs font-medium">
-                <FormattedMessage
-                  id="Recent"
-                  defaultMessage="Recent"
-                  description="Title for recent contacts on home page"
-                />
-              </div>
-              <RecentContacts />
-            </div>
-
-            <div className="flex flex-col gap-4 w-full">
-              <div className="text-text-200 text-xs font-medium">
-                <FormattedMessage
-                  id="Search results"
-                  defaultMessage="Search results"
-                  description="Title for search results on home page"
-                />
-              </div>
-              <div className="flex items-center gap-2 text-text-300 text-sm font-medium">
-                
-              </div>
-            </div>
+          <div className="flex flex-col gap-6 mt-2 w-full">
+            <RecentContacts values={__dev__RECENT_CONTACTS} />
+            <SearchSuggestions />
+            <SearchResults />
           </div>
         </div>
       </div>
