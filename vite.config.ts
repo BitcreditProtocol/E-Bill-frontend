@@ -1,9 +1,9 @@
-import { defineConfig } from "vite";
+import { defineConfig as defineViteConfig, mergeConfig } from "vite";
+import { defineConfig as defineVitestConfig, configDefaults } from "vitest/config";
 import react from "@vitejs/plugin-react";
-import { configDefaults } from "vitest/config";
 import path from "path";
 
-export default defineConfig({
+const viteConfig = defineViteConfig({
   plugins: [react(), {
     name: 'html-transform',
     transformIndexHtml(html) {
@@ -29,6 +29,9 @@ export default defineConfig({
     },
   },
   assetsInclude: ["**/*.woff2"],
+});
+
+const vitestConfig = defineVitestConfig({
   test: {
     environment: "jsdom",
     include: ["**/*.test.{ts,tsx}"],
@@ -41,3 +44,5 @@ export default defineConfig({
     exclude: [...configDefaults.exclude],
   },
 });
+
+export default mergeConfig(viteConfig, vitestConfig);
