@@ -10,7 +10,7 @@ import { search } from "@/services/search";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-import SearchTypeFilter, { type SearchTypeFilterValues } from "./components/SearchTypeFilter";
+import SearchTypeFilter, { type SearchTypeFilterValue } from "./components/SearchTypeFilter";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator";
 export default function Home() {
   const intl = useIntl();
 
-  const [typeFilters, setTypeFilters] = useState<SearchTypeFilterValues[]>([]);
+  const [typeFilters, setTypeFilters] = useState<SearchTypeFilterValue[]>(["all"]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchModeEnabled, setSearchModeEnabled] = useState(searchTerm.length > 0);
 
@@ -27,7 +27,7 @@ export default function Home() {
     queryFn: () => search({
       filter: {
         search_term: searchTerm,
-        item_types: typeFilters.length === 0 ? undefined : typeFilters,
+        item_types: typeFilters.length === 0 || typeFilters.includes("all") ? undefined : typeFilters,
       }
     }),
   });
