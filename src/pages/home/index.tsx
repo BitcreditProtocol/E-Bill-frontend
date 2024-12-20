@@ -138,6 +138,7 @@ export default function Home() {
             <Button variant="outline" size="xs"
               className="p-0 w-full h-full bg-elevation-200 border-divider-50 text-text-300"
               onClick={() => {
+                setSearchTerm("");
                 setSearchModeEnabled(false);
               }}
             >
@@ -155,6 +156,7 @@ export default function Home() {
               defaultMessage: "Search...",
               description: "Search placeholder for home page",
             })}
+            value={searchTerm}
             onChange={setSearchTerm}
             onFocus={() => { setSearchModeEnabled(true); }}
             onSearch={() => {
