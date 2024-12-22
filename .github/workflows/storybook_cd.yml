@@ -40,7 +40,7 @@ jobs:
       uses: google-github-actions/setup-gcloud@v0.6.0
 
     - name: Cleanup GCP bucket
-      run: gcloud storage rm -r '${{ env.DEST_BUCKET }}/**'
+      run: gcloud storage rm --recursive --continue-on-error '${{ env.DEST_BUCKET }}/**'
 
     - name: Upload Storybook static sources
-      run: gcloud stroage cp -r storybook-static ${{ env.DEST_BUCKET }}
+      run: gcloud stroage cp --recursive storybook-static ${{ env.DEST_BUCKET }}
