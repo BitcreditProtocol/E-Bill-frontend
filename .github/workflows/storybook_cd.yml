@@ -3,8 +3,7 @@ name: Build and Deploy Storybook
 on:
   push:
     branches:
-      - feature/storybook_deploy
-      - master
+      - main
 
 permissions:
   contents: read
