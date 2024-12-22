@@ -41,7 +41,7 @@ jobs:
 
     - name: Cleanup GCP bucket
       run: |
-        FILES_COUNT = $(gcloud storage ls --recursive ${{ env.DEST_BUCKET }} | wc -l)
+        FILES_COUNT=$(gcloud storage ls --recursive ${{ env.DEST_BUCKET }} | wc -l)
         if [ $FILES_COUNT -gt 0 ]; then
           gcloud storage rm --recursive '${{ env.DEST_BUCKET }}/**'
         fi
