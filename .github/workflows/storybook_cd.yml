@@ -47,4 +47,4 @@ jobs:
         fi
 
     - name: Upload Storybook static sources
-      run: gcloud storage cp --recursive storybook-static ${{ env.DEST_BUCKET }}
+      run: gcloud storage cp --recursive storybook-static/* ${{ env.DEST_BUCKET }}
