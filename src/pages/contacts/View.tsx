@@ -8,7 +8,7 @@ import * as contacts from "@/mocks/handlers/contacts/list";
 function TopBar() {
   const navigate = useNavigate();
   const goBack = () => {
-    navigate("../");
+    navigate(-1);
   };
 
   const goToEdit = () => {

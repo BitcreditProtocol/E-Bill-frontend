@@ -12,7 +12,7 @@ import Icon from "./components/Icon";
 function TopBar() {
   const navigate = useNavigate();
   const goBack = () => {
-    navigate("../");
+    navigate(-1);
   };
 
   return (
