@@ -30,11 +30,14 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  align-items: center;
   place-items: center;
   justify-content: center;
   min-width: 100vw;
   min-height: 100vh;
+}
+
+#root {
+  overflow: auto;
 }
 
 @media (prefers-color-scheme: light) {
@@ -101,7 +104,7 @@ body {
   * {
     @apply border-border;
   }
-  body {
+  #root {
     @apply bg-background text-foreground;
   }
 }
