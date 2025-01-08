@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, CircleXIcon, CopyIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import routes from "@/constants/routes";
 
 type WordFieldProps = {
   id: number;
@@ -31,7 +30,7 @@ function WordField({ id, value, onChange, onPaste }: WordFieldProps) {
 export default function RecoverWithSeedPhrase() {
   const navigate = useNavigate();
 
-  const goBack = () => { navigate(routes.LOGIN); };
+  const goBack = () => { navigate(-1); };
 
   const [seedWords, setSeedWords] = useState(Array<string>(12).fill(""));
 
