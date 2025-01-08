@@ -140,7 +140,7 @@ const router = createBrowserRouter(
           element: <PreviewBill />,
         },
         {
-          path: "get-started",
+          path: routes.ONBOARDING,
           element: <Onboarding />,
         },
         {

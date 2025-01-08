@@ -22,6 +22,7 @@ const CREATE_CONTACT = "new";
 const VIEW_CONTACT = ":node_id";
 const EDIT_CONTACT = ":node_id/edit";
 const SETTINGS = "settings";
+const ONBOARDING = "get-started";
 
 export default {
   ROOT,
@@ -47,4 +48,5 @@ export default {
   VIEW_CONTACT,
   EDIT_CONTACT,
   SETTINGS,
+  ONBOARDING,
 };

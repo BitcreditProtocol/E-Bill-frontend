@@ -3,6 +3,8 @@ import { ChevronLeftIcon } from "lucide-react";
 import { FormattedMessage } from "react-intl";
 import { LocaleDropdown } from "./LocaleDropdown";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import routes from "@/constants/routes";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -28,7 +30,18 @@ export default function Settings() {
         </h1>
       </div>
 
-      <LocaleDropdown value={lang.locale} values={lang.availableLocales()} onChange={lang.setLocale} />
+      <div className="flex flex-col gap-2">
+        <LocaleDropdown value={lang.locale} values={lang.availableLocales()} onChange={lang.setLocale} />
+      </div>
+
+      {import.meta.env.DEV && (<div>
+        <span className="font-sans font-medium text-xs tracking-tight mb-2">DEV</span>
+        <div className="flex flex-col gap-2">
+          <Button onClick={() => { navigate(`/${routes.ONBOARDING}`) }} size="xs">
+            Onboarding
+          </Button>
+        </div>
+      </div>)}
     </div>
   );
 }
