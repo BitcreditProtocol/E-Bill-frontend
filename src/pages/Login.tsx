@@ -10,10 +10,14 @@ import logo from "@/assets/logo.svg";
 export default function Login() {
   const navigate = useNavigate();
 
-  const goToUnlockWithPin = () => { navigate(routes.UNLOCK); };
+  const goToUnlockWithPin = () => { navigate(`/${routes.UNLOCK}`); };
 
-  const goToIdentityRestoration = () =>
-    { navigate(routes.RESTORE_WITH_SEED_PHRASE); };
+  const goToIdentityRestoration = () => {
+    navigate(`/${routes.RESTORE_WITH_SEED_PHRASE}`);
+  };
+  const goToIdentityCreation = () => {
+    navigate(`/${routes.CREATE_IDENTITY}`);
+  };
 
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-12 px-[30px]">
@@ -56,7 +60,8 @@ export default function Login() {
             />
           </Button>
 
-          <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]">
+          <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
+            onClick={goToIdentityCreation}>
             <FormattedMessage
               id="New identity"
               defaultMessage="New identity"

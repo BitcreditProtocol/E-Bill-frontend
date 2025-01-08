@@ -40,7 +40,7 @@ describe("Unlock Component", () => {
 
     fireEvent.click(backButton);
 
-    expect(navigate).toHaveBeenCalledWith(routes.LOGIN);
+    expect(navigate).toHaveBeenCalledWith(-1);
   });
 
   it("should navigate to identity restoration page when 'Recover with seed phrase' button is clicked", () => {
@@ -50,7 +50,7 @@ describe("Unlock Component", () => {
 
     fireEvent.click(recoveryButton);
 
-    expect(navigate).toHaveBeenCalledWith(routes.RESTORE_WITH_SEED_PHRASE);
+    expect(navigate).toHaveBeenCalledWith('/' + routes.RESTORE_WITH_SEED_PHRASE);
   });
 
   it("should add digits to the PIN and display them as filled dots", () => {

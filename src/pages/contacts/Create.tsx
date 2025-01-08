@@ -4,7 +4,6 @@ import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, PencilIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import routes from "@/constants/routes";
 
 import type { Contact } from "@/types/contact";
 import { ContactTypes } from "@/types/contact";
@@ -15,7 +14,7 @@ import TypeSwitch from "./components/TypeSwitch";
 function TopBar() {
   const navigate = useNavigate();
   const goBack = () => {
-    navigate(routes.CONTACTS);
+    navigate("../");
   };
 
   return (

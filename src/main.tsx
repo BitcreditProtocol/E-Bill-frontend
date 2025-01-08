@@ -1,9 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouteObject, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { Toaster } from "./components/ui/toaster";
 import LanguageProvider from "./context/language/LanguageProvider";
 
 import DefaultLayout from "./layouts/Default";
@@ -39,7 +38,6 @@ import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
 
-
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter(
@@ -51,10 +49,6 @@ const router = createBrowserRouter(
         {
           path: routes.UNLOCK,
           element: <Unlock />,
-        },
-        {
-          path: routes.LOGIN,
-          element: <Login />,
         },
         {
           path: routes.LOGIN,
@@ -145,25 +139,32 @@ const router = createBrowserRouter(
           element: <PreviewBill />,
         },
         {
-          path: "get-started",
+          path: routes.ONBOARDING,
           element: <Onboarding />,
         },
         {
           path: routes.CONTACTS,
-          element: <Overview />,
-        },
-        {
-          path: routes.CREATE_CONTACT,
-          element: <Create />,
-        },
-        {
-          path: `${routes.VIEW_CONTACT}/:node_id`,
-          element: <View />,
-          loader: View.loader,
-        },
-        {
-          path: routes.EDIT_CONTACT,
-          element: <Edit />,
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <Overview />,
+            },
+            {
+              path: routes.CREATE_CONTACT,
+              element: <Create />,
+            },
+            {
+              path: routes.VIEW_CONTACT,
+              element: <View />,
+              loader: View.loader,
+            },
+            {
+              path: routes.EDIT_CONTACT,
+              element: <Edit />,
+              loader: View.loader,
+            },
+          ]
         },
       ],
     },
@@ -178,17 +179,23 @@ const router = createBrowserRouter(
     },
   }
 );
+
 const prepare = async () => {
   if (import.meta.env.DEV) {
-    const { worker } = await import("./mocks/browser");
+    const flatten = (it: RouteObject) => it.children === undefined ? it : it.children.flatMap(c => ({
+      ...c, path: `${(it.path ?? '')}/${(c.path ?? '')}`.replace('//', '/')
+    } as RouteObject));
 
     console.info("[dev] quickly navigate through all routes while developing:");
     console.table(
       router.routes
         .filter((it) => it.path !== undefined)
-        .map((it) => [it.path, location.origin + (it.path || "")])
+        .flatMap((it) => flatten(it))
+        .flatMap((it) => flatten(it))
+        .map((it) => [it.path, location.origin + (it.path || '')])
     );
 
+    const { worker } = await import("./mocks/browser");
     await worker.start();
   }
 };
@@ -205,7 +212,6 @@ void prepare().then(() => {
               v7_startTransition: true,
             }}
           />
-          <Toaster />
         </LanguageProvider>
       </QueryClientProvider>
     </StrictMode>

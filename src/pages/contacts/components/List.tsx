@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRightIcon } from "lucide-react";
 
-import routes from "@/constants/routes";
 import type { Contact } from "@/types/contact";
 import { useLanguage } from "@/context/language/LanguageContext";
 import Icon from "./Icon";
@@ -14,7 +13,7 @@ interface ContactProps {
 function Contact({ value }: ContactProps) {
   const navigate = useNavigate();
   const goToContact = () => {
-    navigate(`${routes.VIEW_CONTACT}/${value.node_id}`);
+    navigate(`./${value.node_id}`);
   };
 
   return (

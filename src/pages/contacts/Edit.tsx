@@ -1,10 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, CopyIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { copyToClipboard } from "@/utils";
-import routes from "@/constants/routes";
 import type { Contact } from "@/types/contact";
 
 import Form from "./components/Form";
@@ -13,7 +12,7 @@ import Icon from "./components/Icon";
 function TopBar() {
   const navigate = useNavigate();
   const goBack = () => {
-    navigate(routes.CONTACTS);
+    navigate(-1);
   };
 
   return (
@@ -65,32 +64,36 @@ function BasicDetails({ type, name, public_key }: BasicDetailsProps) {
 }
 
 export default function Edit() {
+  const value = useLoaderData() as Contact | null | undefined;
+
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
       <TopBar />
 
-      <div className="flex flex-col w-full gap-6">
-        <BasicDetails type={0} name="John Doe" public_key="0x1234567890abcdef" />
-        <Form type={0} />
-      </div>
+      {value && (<>
+        <div className="flex flex-col w-full gap-6">
+          <BasicDetails {...value} />
+          <Form type={value.type} />
+        </div>
 
-      <div className="flex gap-3 w-full">
-        <Button className="w-full" size="sm" variant="outline">
-          <FormattedMessage
-            id="Cancel"
-            defaultMessage="Cancel"
-            description="Cancel button"
-          />
-        </Button>
+        <div className="flex gap-3 w-full">
+          <Button className="w-full" size="sm" variant="outline">
+            <FormattedMessage
+              id="Cancel"
+              defaultMessage="Cancel"
+              description="Cancel button"
+            />
+          </Button>
 
-        <Button className="w-full" size="sm">
-          <FormattedMessage
-            id="Save"
-            defaultMessage="Save"
-            description="Save button"
-          />
-        </Button>
-      </div>
+          <Button className="w-full" size="sm">
+            <FormattedMessage
+              id="Save"
+              defaultMessage="Save"
+              description="Save button"
+            />
+          </Button>
+        </div>
+      </>)}
     </div>
   );
 }
