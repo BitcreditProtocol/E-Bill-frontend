@@ -40,6 +40,9 @@ export default function Settings() {
           <Button onClick={() => { navigate(`/${routes.ONBOARDING}`) }} size="xs">
             Onboarding
           </Button>
+          <Button onClick={() => { navigate(`/${routes.LOGIN}`) }} size="xs">
+            Login
+          </Button>
         </div>
       </div>)}
     </div>
