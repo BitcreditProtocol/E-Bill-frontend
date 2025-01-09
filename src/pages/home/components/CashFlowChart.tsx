@@ -7,10 +7,10 @@ import CurrencySelector from "./CurrencySelector";
 import { RotateCwSquareIcon } from "lucide-react";
 
 const extrapolate = (values: number[]) => {
-  const xValues = values.map((_, i) => i);
-  const slope = (values[values.length - 1] - values[values.length - 2]) / (xValues[xValues.length - 1] - xValues[xValues.length - 2]);
-  const extrapolated = values[values.length - 1] + slope * (values.length - xValues[xValues.length - 1]);
-  
+  const xs = values.map((_, i) => i);
+  const slope = (values[values.length - 1] - values[values.length - 2]) / (xs[xs.length - 1] - xs[xs.length - 2]);
+  const extrapolated = values[values.length - 1] + slope * (values.length - xs[xs.length - 1]);
+
   return extrapolated;
 };
 
@@ -45,8 +45,13 @@ type ChartPoint = {
 const toChartData = (values: Pick<Bill, 'sum' | 'issue_date'>[]) : ChartPoint[] => {
   const d0 = values.map((it) => ({
     date: it.issue_date,
+    ts: Date.parse(it.issue_date),
     value: parseFloat(it.sum.amount),
-  }))
+  })).sort((a, b) => {
+    const tsDiff = a.ts - b.ts;
+    return tsDiff !== 0 ? tsDiff : a.value - b.value;
+  });
+
   return d0.map((it, index) => ({
     date: it.date,
     value: d0.slice(0, index + 1).reduce((acc, item) => acc + item.value, 0),
@@ -68,7 +73,7 @@ const ProjectedValue = ({ value }: {value : number }) => {
       <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
         {value > 0 ? (<path d="M8 6H0L4 0L8 6Z" fill="#5FCE5F" />) : (<path d="M0 0H8L4 6L0 0Z" fill="#A32B16" />)}
       </svg>
-      <span className={`text-[${ value > 0 ? '#5FCE5F' : '#A32B16'}]`}>
+      <span className={value > 0 ? 'text-[#5FCE5F]' : 'text-[#A32B16]'}>
         {val}%
       </span>
     </>)}
