@@ -74,7 +74,7 @@ export default function Bills() {
         <button
           className="flex items-center gap-1 bg-transparent text-brand-200 text-sm font-medium leading-5 mx-auto"
           onClick={() => {
-            console.log("/cashflow");
+            navigate(`/${routes.CASHFLOW}`);
           }}
         >
           <FormattedMessage

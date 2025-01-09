@@ -38,6 +38,7 @@
   "Country of birth": "Country of birth",
   "Create new contact": "Create new contact",
   "Create new identity": "Create new identity",
+  "Date range": "Date range",
   "Dates": "Dates",
   "Days": "Days",
   "Delete contact": "Delete",
@@ -150,4 +151,7 @@
   "pages.onboarding.emailVerification.openEmailInbox": "Open email inbox",
   "pages.onboarding.emailVerification.resendCode": "Resend (30s)",
   "pages.onboarding.emailVerification.title": "Verify your email address"
+  "page.cashflow.title": "Cash flow",
+  "page.chartflow.chart.projection.label": "Projection",
+  "page.chartflow.chart.title": "Cash flow"
 }

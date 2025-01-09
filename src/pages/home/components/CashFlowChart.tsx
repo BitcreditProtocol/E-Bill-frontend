@@ -1,0 +1,73 @@
+import { useMemo } from "react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+
+import type { Bill } from "@/types/bill";
+import { FormattedMessage } from "react-intl";
+
+const toChartData = (values: Bill[]) => {
+  return values.map((it) => ({
+    date: it.issue_date,
+    value: parseFloat(it.sum.amount),
+  }));
+};
+
+type ChashFlowChartProps = {
+  values: Bill[]
+}
+
+export default function ChashFlowChart({ values }: ChashFlowChartProps) {
+  const data = useMemo(() => toChartData(values), [values]);
+
+  return (
+    <div className="flex flex-col gap-2 w-full bg-elevation-200 border-[1px] border-divider-50 rounded-lg">
+      <div className="flex flex-col px-4 py-2 border-b-[1px] border-divider-75">
+        <div>
+          <span className="text-xs text-[#1B0F0080]">
+            <FormattedMessage
+              id="page.chartflow.chart.title"
+              defaultMessage="Cash flow"
+              description="Chart title for Cash flow chart"
+            />
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">
+            <FormattedMessage
+              id="page.chartflow.chart.projection.label"
+              defaultMessage="Projection"
+              description="Projection label for Cash flow chart"
+            />
+          </span>
+          <div className="flex items-center gap-1">
+            <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 6H0L4 0L8 6Z" fill="#5FCE5F"/>
+            </svg>
+            <span className="text-xs text-[#5FCE5F] font-mono">
+              + 2.31%
+            </span>
+          </div>
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart
+          data={data}
+          margin={{
+            top: 5,
+            right: 0,
+            left: 0,
+            bottom: 5,
+          }}
+        >
+          <XAxis dataKey="date" />
+          <YAxis orientation="right" tick={({ x, y, payload }) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            return (<text x={x as number + 20} y={y as number + 10 } fill="#666" textAnchor="middle" dy={-6}>{payload.value as number / 1000}k</text>)
+          }} />
+          <Tooltip cursor={true} isAnimationActive={true} />
+          <Line type="step" dataKey="value" stroke="#5FCE5F" />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
