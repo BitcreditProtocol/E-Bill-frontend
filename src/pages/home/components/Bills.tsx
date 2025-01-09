@@ -7,6 +7,7 @@ import Bill from "@/components/Bill";
 import routes from "@/constants/routes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getRecentBills } from "@/services/bill";
+import { Button } from "@/components/ui/button";
 
 function Loader() {
   return (
@@ -71,20 +72,20 @@ export default function Bills() {
           ))
         )}
 
-        <button
-          className="flex items-center gap-1 bg-transparent text-brand-200 text-sm font-medium leading-5 mx-auto"
+        <Button
+          variant="link"
+          className="flex items-center gap-1"
           onClick={() => {
             navigate(`/${routes.CASHFLOW}`);
           }}
         >
           <FormattedMessage
-            id="Cashflow"
-            defaultMessage="Cashflow"
-            description="Button to access the cashflow"
+            id="home.link.text_chash_flow_chart"
+            defaultMessage="Cash flow chart"
+            description="Link text to access the cashflow chart"
           />
-
           <ChartColumnIcon className="h-4 w-4 text-brand-200" strokeWidth={1} />
-        </button>
+        </Button>
       </div>
     </div>
   );

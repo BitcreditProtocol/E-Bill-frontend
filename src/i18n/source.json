@@ -19,7 +19,6 @@
   "Bitcoin for the real economy": "Bitcoin for the real economy",
   "Calculate discount": "Calculate discount",
   "Cancel": "Cancel",
-  "Cashflow": "Cashflow",
   "City of birth": "City of birth",
   "City of registration": "City of registration",
   "Clear all": "Clear all",
@@ -150,7 +149,8 @@
   "pages.onboarding.emailVerification.continue": "Continue",
   "pages.onboarding.emailVerification.openEmailInbox": "Open email inbox",
   "pages.onboarding.emailVerification.resendCode": "Resend (30s)",
-  "pages.onboarding.emailVerification.title": "Verify your email address"
+  "pages.onboarding.emailVerification.title": "Verify your email address",
+  "home.link.text_chash_flow_chart": "Cash flow chart",
   "page.cashflow.title": "Cash flow",
   "page.chartflow.chart.projection.label": "Projection",
   "page.chartflow.chart.text_empty": "No data available",

@@ -2,9 +2,23 @@ import { useMemo } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 import type { Bill } from "@/types/bill";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, IntlShape, useIntl } from "react-intl";
 import CurrencySelector from "./CurrencySelector";
 import { RotateCwSquareIcon } from "lucide-react";
+
+const formatYAxisLabel = (intl: IntlShape, amount: number) => {
+  if (amount < 1000) {
+    return intl.formatNumber(amount, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  return `${intl.formatNumber(amount / 1_000, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}k`;
+};
 
 type ChartPoint = {
   date: string
@@ -12,9 +26,13 @@ type ChartPoint = {
 }
 
 const toChartData = (values: Pick<Bill, 'sum' | 'issue_date'>[]) : ChartPoint[] => {
-  return values.map((it) => ({
+  const d0 = values.map((it) => ({
     date: it.issue_date,
     value: parseFloat(it.sum.amount),
+  }))
+  return d0.map((it, index) => ({
+    date: it.date,
+    value: d0.slice(0, index + 1).reduce((acc, item) => acc + item.value, 0),
   }));
 };
 
@@ -23,6 +41,7 @@ type ChashFlowChartProps = {
 }
 
 export default function ChashFlowChart({ values }: ChashFlowChartProps) {
+  const intl = useIntl();
   const data = useMemo(() => toChartData(values), [values]);
 
   return (
@@ -86,7 +105,7 @@ export default function ChashFlowChart({ values }: ChashFlowChartProps) {
           >
             <XAxis dataKey="date" />
             <YAxis orientation="right" tick={({ x, y, payload } : {x :number, y:number, payload: ChartPoint}) => {
-              return (<text x={x + 20} y={y + 5} fill="#8D8579" textAnchor="middle" >{payload.value / 1000}k</text>)
+              return (<text x={x + 20} y={y + 5} fill="#8D8579" textAnchor="middle" >{formatYAxisLabel(intl, payload.value)}</text>)
             }} />
             <Tooltip cursor={true} isAnimationActive={true} />
             <Line type="step" dataKey="value" stroke="#5FCE5F" />
