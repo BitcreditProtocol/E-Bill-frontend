@@ -8,7 +8,7 @@ const REQUIRED_INFORMATION = "required-information";
 const EMAIL_VERIFICATION = "email-verification";
 const OPTIONAL_INFORMATION = "optional-information";
 const NOTIFICATIONS = "notifications";
-const BILLS = "bills";
+const BILLS = "/bills";
 // todo: replace by /bills/:id once we integrate the api
 
 const SIGNUP = "signup";
@@ -19,8 +19,11 @@ const PREVIEW_BILL = "preview-bill";
 const MINT_BILL = "mint-bill";
 const SELL_BILL = "sell-bill";
 const CONTACTS = "contacts";
-const CREATE_CONTACT = "create-contact";
+const CREATE_CONTACT = "new";
+const VIEW_CONTACT = ":node_id";
+const EDIT_CONTACT = ":node_id/edit";
 const SETTINGS = "settings";
+const ONBOARDING = "get-started";
 
 const CREATE_IDENTITY = "/create-identity";
 const IDENTITY_CATEGORY = "category";
@@ -50,10 +53,13 @@ export default {
   CREATE_CONTACT,
   SIGNUP,
   SETTINGS,
-
   CREATE_IDENTITY,
   IDENTITY_CATEGORY,
   BILL_ISSUER,
   AUTHORIZED_SIGNER,
   SUCCESS,
+  VIEW_CONTACT,
+  EDIT_CONTACT,
+  SETTINGS,
+  ONBOARDING,
 };

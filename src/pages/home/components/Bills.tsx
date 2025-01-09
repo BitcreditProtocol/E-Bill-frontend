@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { useQuery } from "@tanstack/react-query";
-import { ReceiptTextIcon } from "lucide-react";
+import { ChartColumnIcon, LayoutListIcon } from "lucide-react";
 
 import Bill from "@/components/Bill";
 import routes from "@/constants/routes";
@@ -31,15 +31,32 @@ export default function Bills() {
 
   return (
     <div className="flex flex-col gap-3">
-      <span className="text-text-300 text-sm font-medium leading-5">
-        <FormattedMessage
-          id="Recent bills"
-          defaultMessage="Recent bills"
-          description="Recent bills section title for home page"
-        />
-      </span>
+      <div className="flex items-center justify-between">
+        <span className="flex-1 text-text-300 text-sm font-medium leading-5">
+          <FormattedMessage
+            id="Recent bills"
+            defaultMessage="Recent bills"
+            description="Recent bills section title for home page"
+          />
+        </span>
 
-      <div className="flex flex-col gap-3">
+        <button
+          className="flex items-center gap-1 bg-transparent text-brand-200 text-sm font-medium leading-5 mx-auto"
+          onClick={() => {
+            navigate(routes.BILLS);
+          }}
+        >
+          <FormattedMessage
+            id="Bill list"
+            defaultMessage="Bill list"
+            description="Button to view all bills"
+          />
+
+          <LayoutListIcon className="h-4 w-4 text-brand-200" strokeWidth={1} />
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
         {isPending || !data ? (
           <Loader />
         ) : (
@@ -57,16 +74,16 @@ export default function Bills() {
         <button
           className="flex items-center gap-1 bg-transparent text-brand-200 text-sm font-medium leading-5 mx-auto"
           onClick={() => {
-            navigate(routes.BILLS);
+            console.log("/cashflow");
           }}
         >
           <FormattedMessage
-            id="See all bills"
-            defaultMessage="See all bills"
-            description="Button to view all bills"
+            id="Cashflow"
+            defaultMessage="Cashflow"
+            description="Button to access the cashflow"
           />
 
-          <ReceiptTextIcon className="h-4 w-4 text-brand-200" strokeWidth={1} />
+          <ChartColumnIcon className="h-4 w-4 text-brand-200" strokeWidth={1} />
         </button>
       </div>
     </div>
