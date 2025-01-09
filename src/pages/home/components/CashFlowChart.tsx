@@ -6,7 +6,12 @@ import { FormattedMessage } from "react-intl";
 import CurrencySelector from "./CurrencySelector";
 import { RotateCwSquareIcon } from "lucide-react";
 
-const toChartData = (values: Bill[]) => {
+type ChartPoint = {
+  date: string
+  value: number
+}
+
+const toChartData = (values: Bill[]) : ChartPoint[] => {
   return values.map((it) => ({
     date: it.issue_date,
     value: parseFloat(it.sum.amount),
@@ -70,9 +75,8 @@ export default function ChashFlowChart({ values }: ChashFlowChartProps) {
           }}
         >
           <XAxis dataKey="date" />
-          <YAxis orientation="right" tick={({ x, y, payload }) => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            return (<text x={x as number + 20} y={y as number + 10 } fill="#666" textAnchor="middle" dy={-6}>{payload.value as number / 1000}k</text>)
+          <YAxis orientation="right" tick={({ x, y, payload } : {x :number, y:number, payload: ChartPoint}) => {
+            return (<text x={x + 20} y={y + 5} fill="#8D8579" textAnchor="middle" >{payload.value / 1000}k</text>)
           }} />
           <Tooltip cursor={true} isAnimationActive={true} />
           <Line type="step" dataKey="value" stroke="#5FCE5F" />
