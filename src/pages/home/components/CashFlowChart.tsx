@@ -3,6 +3,8 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 
 import type { Bill } from "@/types/bill";
 import { FormattedMessage } from "react-intl";
+import CurrencySelector from "./CurrencySelector";
+import { RotateCwSquareIcon } from "lucide-react";
 
 const toChartData = (values: Bill[]) => {
   return values.map((it) => ({
@@ -20,8 +22,8 @@ export default function ChashFlowChart({ values }: ChashFlowChartProps) {
 
   return (
     <div className="flex flex-col gap-2 w-full bg-elevation-200 border-[1px] border-divider-50 rounded-lg">
-      <div className="flex flex-col px-4 py-2 border-b-[1px] border-divider-75">
-        <div>
+      <div className="flex flex-col gap-1 mt-4 px-4 pb-2 border-b-[1px] border-divider-75">
+        <div className="flex items-center justify-between">
           <span className="text-xs text-[#1B0F0080]">
             <FormattedMessage
               id="page.chartflow.chart.title"
@@ -29,23 +31,32 @@ export default function ChashFlowChart({ values }: ChashFlowChartProps) {
               description="Chart title for Cash flow chart"
             />
           </span>
+          <RotateCwSquareIcon size={16} strokeWidth={1} color="#1B0F00" />
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">
-            <FormattedMessage
-              id="page.chartflow.chart.projection.label"
-              defaultMessage="Projection"
-              description="Projection label for Cash flow chart"
-            />
-          </span>
-          <div className="flex items-center gap-1">
-            <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 6H0L4 0L8 6Z" fill="#5FCE5F"/>
-            </svg>
-            <span className="text-xs text-[#5FCE5F] font-mono">
-              + 2.31%
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">
+              <FormattedMessage
+                id="page.chartflow.chart.projection.label"
+                defaultMessage="Projection"
+                description="Projection label for Cash flow chart"
+              />
             </span>
+            <div className="flex items-center gap-1">
+              <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 6H0L4 0L8 6Z" fill="#5FCE5F"/>
+              </svg>
+              <span className="text-xs text-[#5FCE5F] font-mono">
+                + 2.31%
+              </span>
+            </div>
           </div>
+          <CurrencySelector
+            value="BTC"
+            onChange={(currency) => {
+              console.log(currency);
+            }}
+          />
         </div>
       </div>
       <ResponsiveContainer width="100%" height={300}>

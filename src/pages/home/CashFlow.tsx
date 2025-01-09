@@ -33,11 +33,11 @@ export default function CashFlow() {
       <div className="flex flex-col gap-3">
         <div className="flex gap-1 justify-between items-center">
           <h2 className="text-xl font-medium text-text-300">
-              <FormattedMessage
-                id="page.cashflow.title"
-                defaultMessage="Cash flow"
-                description="Page title for Cash flow page"
-              />
+            <FormattedMessage
+              id="page.cashflow.title"
+              defaultMessage="Cash flow"
+              description="Page title for Cash flow page"
+            />
           </h2>
 
           <Button variant="link" className="gap-1 text-xs text-text-300 px-0">

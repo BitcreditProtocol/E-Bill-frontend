@@ -1,30 +1,11 @@
 import { FormattedMessage } from "react-intl";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronDownIcon } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getBalances } from "@/services/balances";
-
-type CurrencySelectorProps = {
-  currency: string;
-  changeCurrency: (currency: string) => void;
-};
-
-function CurrencySelector({ currency, changeCurrency }: CurrencySelectorProps) {
-  return (
-    <button
-      className="flex items-center text-text-300"
-      onChange={() => {
-        changeCurrency(currency);
-      }}
-    >
-      <span className="text-xs font-medium leading-[18px]">{currency}</span>
-      <ChevronDownIcon className="h-4 w-4" strokeWidth={1} />
-    </button>
-  );
-}
+import CurrencySelector from "./CurrencySelector";
 
 export default function Balances() {
   const { isPending, data } = useQuery({
@@ -44,8 +25,8 @@ export default function Balances() {
         </span>
 
         <CurrencySelector
-          currency="BTC"
-          changeCurrency={(currency) => {
+          value="BTC"
+          onChange={(currency) => {
             console.log(currency);
           }}
         />
