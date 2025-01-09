@@ -21,6 +21,18 @@ export const Default: Story = {
   ),
 };
 
+
+export const Downtrend: Story = {
+  render: () => (
+    <div className="max-w-[375px] w-screen">
+      <CashFlowChart values={data.map((it) => ({
+        ...it,
+        sum: {...it.sum, amount: String(-1* Math.abs(parseFloat(it.sum.amount))) }
+      }))} />
+    </div>
+  ),
+};
+
 export const Empty: Story = {
   render: () => (
     <div className="max-w-[375px] w-screen">
