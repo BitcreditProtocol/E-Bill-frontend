@@ -1,0 +1,12 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 10% # required coverage value
+        threshold: 1% # leniency in hitting the target
+
+comment:
+  require_changes: true
+
+github_checks:
+  annotations: false # disable github code annotations (can be enabled on demand if needed)

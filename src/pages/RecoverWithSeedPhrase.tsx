@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, CircleXIcon, CopyIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import routes from "@/constants/routes";
 
 type WordFieldProps = {
   id: number;
@@ -31,7 +30,7 @@ function WordField({ id, value, onChange, onPaste }: WordFieldProps) {
 export default function RecoverWithSeedPhrase() {
   const navigate = useNavigate();
 
-  const goBack = () => { navigate(routes.LOGIN); };
+  const goBack = () => { navigate(-1); };
 
   const [seedWords, setSeedWords] = useState(Array<string>(12).fill(""));
 
@@ -79,14 +78,14 @@ export default function RecoverWithSeedPhrase() {
         <div className="flex flex-col gap-2">
           <h1 className="font-sans font-medium text-[24px] mx-3">
             <FormattedMessage
-              id="pages.recoverWithSeedPhrase.title"
+              id="Recover with seed phrase"
               defaultMessage="Recover with seed phrase"
               description="Heading copy for the recover with seed phrase page"
             />
           </h1>
           <span className="font-normal text-text-200 text-[16px]">
             <FormattedMessage
-              id="pages.recoverWithSeedPhrase.description"
+              id="Please paste in your seed phrase to recover your identity"
               defaultMessage="Please paste in your seed phrase to recover your identity"
               description="Description copy for the recover with seed phrase page"
             />
@@ -115,7 +114,7 @@ export default function RecoverWithSeedPhrase() {
           >
             <CircleXIcon width={20} color="#1B0F0080" strokeWidth={1} />
             <FormattedMessage
-              id="pages.recoverWithSeedPhrase.clear"
+              id="Clear all"
               defaultMessage="Clear all"
               description="Button to clear all fields in the recover with seed phrase page"
             />
@@ -132,7 +131,7 @@ export default function RecoverWithSeedPhrase() {
           >
             <CopyIcon width={20} color="#1B0F0080" strokeWidth={1} />
             <FormattedMessage
-              id="pages.recoverWithSeedPhrase.paste"
+              id="Paste from clipboard"
               defaultMessage="Paste from clipboard"
               description="Button to paste seed phrase from clipboard in the recover with seed phrase page"
             />
@@ -143,7 +142,7 @@ export default function RecoverWithSeedPhrase() {
       <div className="flex flex-col gap-3">
         <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]">
           <FormattedMessage
-            id="pages.recoverWithSeedPhrase.restoreIdentity"
+            id="Restore identity"
             defaultMessage="Restore identity"
             description="Button to restore identity in the recover with seed phrase page"
           />

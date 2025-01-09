@@ -10,10 +10,14 @@ import logo from "@/assets/logo.svg";
 export default function Login() {
   const navigate = useNavigate();
 
-  const goToUnlockWithPin = () => { navigate(routes.UNLOCK); };
+  const goToUnlockWithPin = () => { navigate(`/${routes.UNLOCK}`); };
 
-  const goToIdentityRestoration = () =>
-    { navigate(routes.RESTORE_WITH_SEED_PHRASE); };
+  const goToIdentityRestoration = () => {
+    navigate(`/${routes.RESTORE_WITH_SEED_PHRASE}`);
+  };
+  const goToIdentityCreation = () => {
+    navigate(`/${routes.CREATE_IDENTITY}`);
+  };
 
   return (
     <div className="flex flex-col justify-between min-h-fit h-screen py-12 px-[30px]">
@@ -22,14 +26,14 @@ export default function Login() {
         <div className="flex flex-col items-center gap-2 text-center">
           <h1 className="font-sans font-medium text-[24px] tracking-tight mb-0">
             <FormattedMessage
-              id="pages.login.title"
+              id="Bitcoin for the real economy"
               defaultMessage="Bitcoin for the real economy"
               description="Heading copy for Login page"
             />
           </h1>
           <span className="font-normal text-text-200 text-[16px]">
             <FormattedMessage
-              id="pages.login.subtitle"
+              id="A strong trade credit solution, directly between businesses"
               defaultMessage="A strong trade credit solution, directly between businesses"
               description="Subheading copy for Login page"
             />
@@ -50,15 +54,16 @@ export default function Login() {
             onClick={goToUnlockWithPin}
           >
             <FormattedMessage
-              id="pages.login.unlockWithPin"
+              id="Unlock with PIN"
               defaultMessage="Unlock with PIN"
               description="Go to Unlock page"
             />
           </Button>
 
-          <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]">
+          <Button className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
+            onClick={goToIdentityCreation}>
             <FormattedMessage
-              id="pages.login.newIdentity"
+              id="New identity"
               defaultMessage="New identity"
               description="Start Identity creation flow"
             />
@@ -71,7 +76,7 @@ export default function Login() {
           onClick={goToIdentityRestoration}
         >
           <FormattedMessage
-            id="pages.login.restoreWithSeedPhrase"
+            id="Restore with seed phrase"
             defaultMessage="Restore with seed phrase"
             description="Start restoration process with seed phrase"
           />

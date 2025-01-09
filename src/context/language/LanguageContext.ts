@@ -1,15 +1,25 @@
 import { createContext, useContext } from "react";
 
-const DEFAULT_LOCALE = "en-US";
+/**
+ * Crowdin "pseudo-language" for In-Context tooling
+ * See: https://support.crowdin.com/developer/in-context-localization/
+ */
+const CROWDIN_PSEUDO_LOCALE = "ach-UG";
+
+const DEFAULT_LOCALE_PROD = "en-US";
+const DEFAULT_LOCALE_DEV = import.meta.env.VITE_BITCR_DEV_INCLUDE_CROWDIN_IN_CONTEXT_TOOLING !== 'true' ? DEFAULT_LOCALE_PROD : CROWDIN_PSEUDO_LOCALE;
+const DEFAULT_LOCALE = import.meta.env.DEV ? DEFAULT_LOCALE_DEV : DEFAULT_LOCALE_PROD;
 
 export type LanguageContextType = {
   locale: string;
   setLocale: (locale: string) => void;
+  availableLocales: () => string[];
 };
 
 const LanguageContext = createContext<LanguageContextType>({
   locale: DEFAULT_LOCALE,
   setLocale: () => {},
+  availableLocales: () =>[DEFAULT_LOCALE],
 });
 
 const useLanguage = () => useContext(LanguageContext);
