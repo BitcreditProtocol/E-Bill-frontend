@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
-import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 import { XIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -33,21 +33,21 @@ const inputVariants = cva(
 );
 
 const Input = ({
-    className,
-    value,
-    type,
-    label,
-    required,
-    id,
-    icon,
-    clearable,
-    hint,
-    inputSize,
-    disabled,
-    success,
-    error,
-    ...props
-  }: InputProps) => {
+  className,
+  value,
+  type,
+  label,
+  required,
+  id,
+  icon,
+  clearable,
+  hint,
+  inputSize,
+  disabled,
+  success,
+  error,
+  ...props
+}: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [hasValue, setHasValue] = useState(!!value);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,7 +76,8 @@ const Input = ({
             inputVariants({ size: inputSize }),
             "border-divider-50 bg-elevation-200 hover:border-divider-50 hover:bg-elevation-250 focus-within:border-divider-300 focus-within:bg-elevation-200",
             {
-              "border-none text-[#F1EDE4] bg-divider-100 cursor-not-allowed": disabled,
+              "border-none text-[#F1EDE4] bg-divider-100 cursor-not-allowed":
+                disabled,
               "border-green-500 bg-elevation-200": success,
               "border-red-500 bg-elevation-200": error,
             },
@@ -94,8 +95,9 @@ const Input = ({
             value={value}
             className={cn(
               "font-medium bg-transparent outline-none",
-              icon ? "ps-[42px]" : "ps-4", {
-                "pt-3" : isFocused || hasValue
+              icon ? "ps-[42px]" : "ps-4",
+              {
+                "pt-3": isFocused || hasValue,
               }
             )}
             ref={inputRef}
@@ -112,9 +114,9 @@ const Input = ({
               type="button"
               onClick={clearField}
               className="absolute right-4"
-              >
-                <XIcon className="h-5 w-5 text-text-300" />
-              </button>
+            >
+              <XIcon className="h-5 w-5 text-text-300" />
+            </button>
           )}
         </div>
         <label
@@ -124,16 +126,16 @@ const Input = ({
             inputSize === "sm" ? "text-xs" : "text-sm",
             isFocused || hasValue
               ? cn(
-                inputSize === "sm" ? "top-1" : "top-2",
-                "text-xs text-text-200 font-normal"
-              )
+                  inputSize === "sm" ? "top-1" : "top-2",
+                  "text-xs text-text-200 font-normal"
+                )
               : "top-1/2 -translate-y-1/2",
             icon ? "left-[43px]" : "left-4",
             {
               "text-signal-success": (isFocused || hasValue) && success,
               "text-signal-error": (isFocused || hasValue) && error,
               "text-[#F1EDE4]": disabled,
-            },
+            }
           )}
         >
           {label}
@@ -141,11 +143,13 @@ const Input = ({
             <span
               className={cn(
                 "text-[12px] ml-1",
-                !isFocused && !hasValue ? "text-[#8D0002]" : {
-                  "text-[#1B0F0080]": !success && !error,
-                  "text-signal-success": success,
-                  "text-signal-error": error,
-                }
+                !isFocused && !hasValue
+                  ? "text-[#8D0002]"
+                  : {
+                      "text-[#1B0F0080]": !success && !error,
+                      "text-signal-success": success,
+                      "text-signal-error": error,
+                    }
               )}
             >
               *

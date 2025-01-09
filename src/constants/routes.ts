@@ -3,7 +3,6 @@ const LOGIN = "login";
 const UNLOCK = "unlock";
 const RESTORE_WITH_PRIVATE_KEY = "private-key";
 const RESTORE_WITH_SEED_PHRASE = "seed-phrase";
-const CREATE_IDENTITY = "create-identity";
 const HOME = "home";
 const REQUIRED_INFORMATION = "required-information";
 const EMAIL_VERIFICATION = "email-verification";
@@ -11,6 +10,8 @@ const OPTIONAL_INFORMATION = "optional-information";
 const NOTIFICATIONS = "notifications";
 const BILLS = "/bills";
 // todo: replace by /bills/:id once we integrate the api
+
+const SIGNUP = "signup";
 const VIEW_BILL = "bill";
 const ISSUE_BILL = "issue-bill";
 const CREATE_BILL = "create-bill";
@@ -24,6 +25,12 @@ const EDIT_CONTACT = ":node_id/edit";
 const SETTINGS = "settings";
 const ONBOARDING = "get-started";
 
+const CREATE_IDENTITY = "/create-identity";
+const IDENTITY_CATEGORY = "category";
+const BILL_ISSUER = "bill-issuer";
+const AUTHORIZED_SIGNER = "authorized-signer";
+const SUCCESS = "success";
+
 export default {
   ROOT,
   LOGIN,
@@ -31,7 +38,6 @@ export default {
   HOME,
   RESTORE_WITH_PRIVATE_KEY,
   RESTORE_WITH_SEED_PHRASE,
-  CREATE_IDENTITY,
   REQUIRED_INFORMATION,
   EMAIL_VERIFICATION,
   OPTIONAL_INFORMATION,
@@ -45,6 +51,13 @@ export default {
   SELL_BILL,
   CONTACTS,
   CREATE_CONTACT,
+  SIGNUP,
+  SETTINGS,
+  CREATE_IDENTITY,
+  IDENTITY_CATEGORY,
+  BILL_ISSUER,
+  AUTHORIZED_SIGNER,
+  SUCCESS,
   VIEW_CONTACT,
   EDIT_CONTACT,
   SETTINGS,
