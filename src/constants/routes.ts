@@ -60,6 +60,5 @@ export default {
   SUCCESS,
   VIEW_CONTACT,
   EDIT_CONTACT,
-  SETTINGS,
   ONBOARDING,
 };
