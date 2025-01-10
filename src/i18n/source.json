@@ -151,5 +151,7 @@
   "dropdown.option.6months": "6 Months",
   "dropdown.option.90days": "90 Days",
   "endorsement.payee": "Pay to the order of",
-  "endorsement.signer": "Signed"
+  "endorsement.signer": "Signed",
+  "endorsements.sort": "Newest",
+  "endorsements.title": "Endorsements ({count})"
 }

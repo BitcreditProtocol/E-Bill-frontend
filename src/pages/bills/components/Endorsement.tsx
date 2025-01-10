@@ -17,7 +17,7 @@ export default function Endorsement({
 }: EndorsementProps) {
   return (
     <div className="flex flex-col border border-divider-75 rounded-xl select-none">
-      <div className="flex flex-col gap-3 p-3 bg-elevation-200 rounded-t-xl">
+      <div className="flex flex-col gap-3 p-3 bg-elevation-200 border-b border-b-divider-75 rounded-t-xl">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <div className="flex items-center justify-center w-8 h-8 bg-brand-100 text-brand-200 text-sm font-medium text-center rounded-md">
