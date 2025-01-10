@@ -40,6 +40,7 @@ import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
 
 import Endorsements from "./pages/bills/Endorsements";
+import Endorse from "./pages/bills/Endorse";
 
 const queryClient = new QueryClient();
 
@@ -148,6 +149,10 @@ const router = createBrowserRouter(
         {
           path: routes.ENDORSEMENTS,
           element: <Endorsements />,
+        },
+        {
+          path: routes.ENDORSE,
+          element: <Endorse />,
         },
         {
           path: "get-started",
