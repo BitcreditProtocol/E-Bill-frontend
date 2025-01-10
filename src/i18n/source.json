@@ -161,5 +161,9 @@
   "endorsement.payee": "Pay to the order of",
   "endorsement.signer": "Signed",
   "endorsements.sort": "Newest",
-  "endorsements.title": "Endorsements ({count})"
+  "endorsements.title": "Endorsements ({count})",
+  "pay.title": "Payment instructions",
+  "payment.info.address": "Address to pay",
+  "payment.info.from": "Payment from",
+  "payment.info.link": "Link to pay"
 }

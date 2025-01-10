@@ -17,7 +17,7 @@ function Actions() {
   return (
     <Drawer>
       <DrawerTrigger>
-        <Button className="w-full" variant="outline">
+        <Button className="w-full" variant="outline" size="sm">
           <FormattedMessage
             id="bill.actions.actionsList"
             defaultMessage="Endorse"
@@ -29,7 +29,7 @@ function Actions() {
       </DrawerTrigger>
       <DrawerContent className="bg-elevation-50">
         <div className="p-5">
-          <Button className="w-full" variant="outline">
+          <Button className="w-full" variant="outline" size="sm">
             <FormattedMessage
               id="bill.actions.actionsList"
               defaultMessage="Endorse"
@@ -93,7 +93,7 @@ export default function Bill() {
       />
 
       <div className="flex-1 flex flex-col justify-end gap-3">
-        <Button className="w-full">
+        <Button className="w-full" size="sm">
           <FormattedMessage
             id="bill.actions.requestToAccept"
             defaultMessage="Request to accept"

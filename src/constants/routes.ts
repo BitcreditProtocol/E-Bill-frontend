@@ -25,6 +25,8 @@ const EDIT_CONTACT = "/edit-contact";
 
 const ENDORSEMENTS = "/endorsements";
 const ENDORSE = "/endorse";
+const PAYMENT = "/payment";
+const PAY = "/pay";
 
 export default {
   ROOT,
@@ -52,4 +54,6 @@ export default {
   EDIT_CONTACT,
   ENDORSEMENTS,
   ENDORSE,
+  PAYMENT,
+  PAY,
 };

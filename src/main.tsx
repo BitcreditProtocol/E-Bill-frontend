@@ -41,6 +41,8 @@ import Bills from "./pages/bills";
 
 import Endorsements from "./pages/bills/Endorsements";
 import Endorse from "./pages/bills/Endorse";
+import Payment from "./pages/bills/Payment";
+import Pay from "./pages/bills/Pay";
 
 const queryClient = new QueryClient();
 
@@ -153,6 +155,14 @@ const router = createBrowserRouter(
         {
           path: routes.ENDORSE,
           element: <Endorse />,
+        },
+        {
+          path: routes.PAYMENT,
+          element: <Payment />,
+        },
+        {
+          path: routes.PAY,
+          element: <Pay />,
         },
         {
           path: "get-started",
