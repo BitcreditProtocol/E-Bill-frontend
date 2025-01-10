@@ -23,6 +23,8 @@ const SETTINGS = "settings";
 const VIEW_CONTACT = "/view-contact";
 const EDIT_CONTACT = "/edit-contact";
 
+const ENDORSEMENTS = "/endorsements";
+
 export default {
   ROOT,
   LOGIN,
@@ -47,4 +49,5 @@ export default {
   SETTINGS,
   VIEW_CONTACT,
   EDIT_CONTACT,
+  ENDORSEMENTS,
 };

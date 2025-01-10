@@ -53,8 +53,8 @@ export default function Card({
   const placeOfPayment = `${city_of_payment}, ${country_of_payment}`;
 
   return (
-    <div className="flex flex-col border border-divider-50 rounded-xl">
-      <div className="flex flex-col p-5 bg-elevation-200 rounded-t-xl">
+    <div className="flex flex-col border border-divider-50 rounded-xl select-none">
+      <div className="flex flex-col gap-3 p-5 bg-elevation-200 rounded-t-xl">
         <div className="flex justify-between">
           <div className="flex flex-col gap-1">
             <span className="text-text-200 text-sm font-medium">
@@ -70,12 +70,14 @@ export default function Card({
             </h2>
           </div>
 
-          <PaperclipIcon className="text-text-300 w-5 h-5 stroke-1" />
+          <button className="h-fit p-0">
+            <PaperclipIcon className="text-text-300 w-5 h-5 stroke-1" />
+          </button>
         </div>
 
-        <div className="flex flex-col gap-3 bg-elevation-200 rounded-b-[16px]">
-          <Separators />
+        <Separators />
 
+        <div className="flex flex-col gap-3 bg-elevation-200 rounded-b-[16px]">
           <div className="flex flex-col gap-3 py-3 bg-elevation-50 border-[1px] border-divider-75 rounded-t-[12px] rounded-b-[16px]">
             <Property
               label={intl.formatMessage({
@@ -129,18 +131,18 @@ export default function Card({
               value={placeOfPayment}
             />
           </div>
+        </div>
 
-          <div className="flex flex-col gap-3">
-            <Separators />
+        <Separators />
 
-            <span className="text-text-300 text-sm font-medium">
-              <FormattedMessage
-                id="bill.card.noProtest"
-                defaultMessage="No protest. Value received."
-                description="No protest copy for bill card"
-              />
-            </span>
-          </div>
+        <div className="flex flex-col gap-3">
+          <span className="text-text-300 text-sm font-medium">
+            <FormattedMessage
+              id="bill.card.noProtest"
+              defaultMessage="No protest. Value received."
+              description="No protest copy for bill card"
+            />
+          </span>
         </div>
       </div>
 
