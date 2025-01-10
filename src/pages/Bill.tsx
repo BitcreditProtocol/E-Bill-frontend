@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import {
   BanknoteIcon,
@@ -12,8 +13,11 @@ import { Button } from "@/components/ui/button";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import routes from "@/constants/routes";
 
 function Actions() {
+  const navigate = useNavigate();
+
   return (
     <Drawer>
       <DrawerTrigger>
@@ -40,7 +44,12 @@ function Actions() {
           </Button>
         </div>
         <div className="flex flex-col gap-6 p-5 border-t border-divider-75">
-          <button className="flex items-center gap-2 p-0 text-text-300 text-base font-medium">
+          <button
+            className="flex items-center gap-2 p-0 text-text-300 text-base font-medium"
+            onClick={() => {
+              navigate(routes.ENDORSE);
+            }}
+          >
             <SendHorizonalIcon className="text-text-300 w-5 h-5 stroke-1" />
 
             <FormattedMessage

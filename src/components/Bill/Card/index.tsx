@@ -181,7 +181,7 @@ export default function Card({
               />
             </span>
 
-            <span className="text-text-300 text-xs font-medium">(12)</span>
+            <span className="text-text-300 text-xs font-medium">(3)</span>
 
             <ChevronRightIcon className="text-text-300 w-5 h-5 ml-0.5 stroke-1" />
           </button>

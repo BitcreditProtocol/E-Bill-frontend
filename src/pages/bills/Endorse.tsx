@@ -5,8 +5,65 @@ import { ChevronRightIcon, UserIcon } from "lucide-react";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+
+function ConfirmSign({ hasAgreedToTerms }: { hasAgreedToTerms: boolean }) {
+  return (
+    <Drawer>
+      <DrawerTrigger>
+        <Button className="w-full" size="md" disabled={!hasAgreedToTerms}>
+          <FormattedMessage
+            id="endorse.sign"
+            defaultMessage="Sign"
+            description="Sign button"
+          />
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent className="bg-elevation-50">
+        <div className="flex flex-col gap-6 py-8 px-5">
+          <div className="flex flex-col gap-1.5">
+            <span className="text-text-300 text-lg font-medium">
+              Are you sure?
+            </span>
+            <span className="text-text-200 text-xs">
+              The signing of the endorsement is legally binding
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <Link to="/bill">
+              <Button className="w-full" size="md">
+                <FormattedMessage
+                  id="endorse.confirm"
+                  defaultMessage="Confirm"
+                  description="Confirm button"
+                />
+              </Button>
+            </Link>
+
+            <DrawerClose>
+              <Button className="w-full" variant="outline" size="md">
+                <FormattedMessage
+                  id="endorse.cancel"
+                  defaultMessage="Cancel"
+                  description="Cancel button"
+                />
+              </Button>
+            </DrawerClose>
+          </div>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
+}
 
 export default function Endorse() {
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false);
@@ -70,7 +127,7 @@ export default function Endorse() {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col justify-end gap-3 select-none">
+      <div className="flex-1 flex flex-col gap-3 justify-end">
         <div
           className="flex items-center gap-2"
           onClick={() => {
@@ -87,14 +144,7 @@ export default function Endorse() {
             />
           </span>
         </div>
-
-        <Button disabled={!hasAgreedToTerms}>
-          <FormattedMessage
-            id="endorse.sign"
-            defaultMessage="Sign"
-            description="Sign button"
-          />
-        </Button>
+        <ConfirmSign hasAgreedToTerms={hasAgreedToTerms} />
       </div>
     </div>
   );

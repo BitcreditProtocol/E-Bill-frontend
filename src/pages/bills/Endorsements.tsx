@@ -16,7 +16,7 @@ export default function Endorsements() {
               id="endorsements.title"
               defaultMessage="Endorsements ({count})"
               description="Endorsements title"
-              values={{ count: 1 }}
+              values={{ count: 3 }}
             />
           </h1>
 
@@ -32,6 +32,20 @@ export default function Endorsements() {
         </div>
 
         <div className="flex flex-col gap-3">
+          <Endorsement
+            payee="Nvidia Inc"
+            payeeAddress="One Apple Park Way, Cupertino, California"
+            signer="Apple Inc."
+            localAndDate="San Francisco, 5 Nov 2024"
+          />
+
+          <Endorsement
+            payee="Nvidia Inc"
+            payeeAddress="One Apple Park Way, Cupertino, California"
+            signer="Apple Inc."
+            localAndDate="San Francisco, 5 Nov 2024"
+          />
+
           <Endorsement
             payee="Nvidia Inc"
             payeeAddress="One Apple Park Way, Cupertino, California"
