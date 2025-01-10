@@ -6,7 +6,7 @@ import Endorsement from "./components/Endorsement";
 
 export default function Endorsements() {
   return (
-    <div className="flex flex-col gap-6 w-full min-h-fit h-screen py-4 px-5">
+    <div className="flex flex-col gap-6 max-w-[375px] bg-elevation-50 w-full min-h-fit h-screen py-4 px-5 absolute z-10">
       <Topbar lead={<NavigateBack />} />
 
       <div className="flex flex-col gap-4">

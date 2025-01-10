@@ -1,5 +1,7 @@
 import { FormattedMessage, useIntl } from "react-intl";
+import { Link } from "react-router-dom";
 import { CheckIcon, ChevronRightIcon, PaperclipIcon } from "lucide-react";
+import routes from "@/constants/routes";
 import { Separator } from "@/components/ui/separator";
 
 function Separators() {
@@ -169,19 +171,21 @@ export default function Card({
           </div>
         </div>
 
-        <button className="flex items-center gap-1">
-          <span className="text-text-200 text-xs font-normal">
-            <FormattedMessage
-              id="bill.card.endorsements"
-              defaultMessage="Endorsements"
-              description="Endorsements button for bill card"
-            />
-          </span>
+        <Link to={routes.ENDORSEMENTS}>
+          <button className="flex items-center gap-1">
+            <span className="text-text-200 text-xs font-normal">
+              <FormattedMessage
+                id="bill.card.endorsements"
+                defaultMessage="Endorsements"
+                description="Endorsements button for bill card"
+              />
+            </span>
 
-          <span className="text-text-300 text-xs font-medium">(12)</span>
+            <span className="text-text-300 text-xs font-medium">(12)</span>
 
-          <ChevronRightIcon className="text-text-300 w-5 h-5 ml-0.5 stroke-1" />
-        </button>
+            <ChevronRightIcon className="text-text-300 w-5 h-5 ml-0.5 stroke-1" />
+          </button>
+        </Link>
       </div>
     </div>
   );
