@@ -80,11 +80,11 @@ const ProjectedValue = ({ value }: {value : number }) => {
   </span>);
 };
 
-type ChashFlowChartProps = {
+type CashFlowChartProps = {
   values: Pick<Bill, 'sum' | 'issue_date'>[]
 }
 
-export default function ChashFlowChart({ values }: ChashFlowChartProps) {
+export default function ChashFlowChart({ values }: CashFlowChartProps) {
   const intl = useIntl();
   const data = useMemo(() => toChartData(values), [values]);
 

@@ -10,16 +10,7 @@ import ChashFlowChart from "./components/CashFlowChart";
 
 function Loader() {
   return (
-    <>
-      {Array.from({ length: 1 }, (_, i) => (
-        <Skeleton
-          id={`bill-skeleton-${i.toString()}`}
-          key={`bill-skeleton-${i.toString()}`}
-          className="w-full h-64 bg-elevation-200 rounded-lg"
-        />
-      ))}
-      
-    </>
+    <Skeleton className="w-full h-64 bg-elevation-200 rounded-lg" />
   );
 }
 
