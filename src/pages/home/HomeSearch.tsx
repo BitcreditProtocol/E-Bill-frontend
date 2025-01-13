@@ -5,6 +5,8 @@ import { type Contact, ContactTypes } from "@/types/contact";
 import { randomAvatar } from "@/utils/dev";
 import { SearchIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SearchResponse } from "@/services/search";
+import { useMemo } from "react";
 
 
 type RecentContactItemProps = Pick<Contact, "name" | "type" | "avatar">;
@@ -73,9 +75,72 @@ function SearchSuggestions() {
   );
 }
 
-function SearchResults() {
+function CompanyPreview({ value }: { value: SearchResponse['companies'][0]}) {
+  return (<div className="flex items-center gap-3">
+    <Icon type={ContactTypes.Company} name={value.name} />
+
+    <div className="flex flex-col">
+      <span className="text-text-300 text-base font-medium">
+        {value.name}
+      </span>
+      <span className="text-text-200 text-xs">
+        {value.postal_address}
+      </span>
+    </div>
+  </div>);
+}
+
+function ContactPreview({ value }: { value: SearchResponse['contacts'][0]}) {
+  return (<div className="flex items-center gap-3">
+    <Icon type={value.type} name={value.name} />
+
+    <div className="flex flex-col">
+      <div className="text-text-300 text-base font-medium">
+        {value.name}
+      </div>
+      <div className="flex items-center gap-1 text-text-200 text-xs">
+        <span>
+          {value.type === ContactTypes.Company ? "Company" : "Contact"}
+        </span>
+        <span>
+          ·
+        </span>
+        <span>
+          In contacts
+        </span>
+      </div>
+    </div>
+  </div>);
+}
+
+function BillPreview({ value }: { value: SearchResponse['bills'][0]}) {
+  return (<div className="flex items-center gap-3">
+    <Icon type={ContactTypes.Company} name={value.bill_name} />
+
+    <div className="flex flex-col">
+      <div className="text-text-300 text-base font-medium">
+        {value.bill_name}
+      </div>
+      <div className="flex items-center gap-1 text-text-200 text-xs">
+        <span>
+          Bill
+        </span>
+        <span>
+          ·
+        </span>
+        <span>
+          Accepted
+        </span>
+      </div>
+    </div>
+  </div>);
+}
+
+function SearchResults({ data } : { data: SearchResponse }) {
+  const isEmpty = useMemo(() => data.bills.length === 0 && data.companies.length === 0 && data.contacts.length === 0, [data]);
+
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-4">
       <div className="text-text-200 text-xs font-medium">
         <FormattedMessage
           id="Search results"
@@ -83,8 +148,23 @@ function SearchResults() {
           description="Title for search results on home page"
         />
       </div>
-      <div className="flex items-center gap-2 text-text-300 text-sm font-medium">
-      </div>
+      {isEmpty ? (<div className="text-text-300 text-sm font-medium">
+        <FormattedMessage
+          id="No results"
+          defaultMessage="No results"
+          description="Title for no search results on Home page"
+        />
+      </div>) : (<div className="flex flex-col gap-4">
+        {data.companies.map((it) => {
+          return <CompanyPreview value={it} />
+        })}
+        {data.contacts.map((it) => {
+          return <ContactPreview value={it} />
+        })}
+        {data.bills.map((it) => {
+          return <BillPreview value={it} />
+        })}
+      </div>)}
     </div>
   );
 }
@@ -106,14 +186,20 @@ const __dev__RECENT_CONTACTS = [
   { name: "Mia Flores", type: ContactTypes.Person, avatar: randomAvatar("women") },
 ];
 
-export default function HomeSearch({ isPending }: { isPending: boolean }) {
+interface HomeSearchProps {
+  searchTerm: string
+  isPending: boolean
+  data: SearchResponse | undefined
+}
+
+export default function HomeSearch({ searchTerm, isPending, data }: HomeSearchProps) {
 
   return (
     <div className="flex flex-col gap-6 mt-2 w-full">
       <RecentContacts values={__dev__RECENT_CONTACTS} />
-      <SearchSuggestions />
-      <SearchResults />
+      { (!searchTerm || !data) && (<SearchSuggestions />) }
       {isPending && <Loader />}
+      { searchTerm && data && <SearchResults data={data} /> }
     </div>
   );
 }

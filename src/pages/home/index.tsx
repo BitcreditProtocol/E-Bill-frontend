@@ -25,7 +25,7 @@ export default function Home() {
 
   const [searchModeEnabled, setSearchModeEnabled] = useState(searchTerm.length > 0);
 
-  const { isPending, isSuccess, data } = useQuery({
+  const { isPending, data } = useQuery({
     queryKey: ["search", searchTerm, typeFilters],
     queryFn: () => search({
       filter: {
@@ -34,8 +34,6 @@ export default function Home() {
       }
     }),
   });
-
-  console.log(isPending, isSuccess, data);
 
   return (
     <div className="flex flex-col gap-3 w-full min-h-fit h-screen py-6 px-5 bg-background-ellipse bg-no-repeat select-none">
@@ -83,15 +81,15 @@ export default function Home() {
         <Bills />
       </div>
 
-      <div className={cn("flex flex-col gap-2", "transition-opacity duration-200 ease-in-out", {
-        "opacity-0 pointer-events-none": !searchModeEnabled,
+      <div className={cn("flex flex-col gap-2", {
+        "hidden": !searchModeEnabled,
       })}>
 
       <div className="flex flex-col gap-2">
         <SearchTypeFilter multiple values={typeFilters} onChange={setTypeFilters} />
         <Separator className="bg-divider-75" />
 
-        <HomeSearch isPending={isPending} />
+        <HomeSearch searchTerm={searchTerm} isPending={isPending} data={data} />
       </div>
 
     </div>
