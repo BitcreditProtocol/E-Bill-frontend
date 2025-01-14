@@ -1,7 +1,7 @@
 import { http, delay, HttpResponse } from "msw";
 import { Bill } from "@/types/bill";
 
-const data = [
+export const data: BillsResponse = [
   {
     bill_name: "xxs1",
     role: "payee",
@@ -69,7 +69,7 @@ const data = [
 
 type BillsResponse = Pick<
   Bill,
-  "bill_name" | "payer" | "holder" | "payee" | "drawer" | "sum" | "issue_date"
+  "bill_name" | "role" | "payer" | "holder" | "payee" | "drawer" | "sum" | "issue_date"
 >[];
 
 export const billsList = http.get<never, never, BillsResponse, "/bills">(

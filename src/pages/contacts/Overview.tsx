@@ -13,7 +13,7 @@ import EmptyList from "./components/EmptyList";
 import type { Contact } from "@/types/contact";
 import TypeFilter from "./components/TypeFilter";
 import { getContacts, searchContacts } from "@/services/contact";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function NoResults() {
@@ -52,11 +52,11 @@ function Loader() {
 export default function Overview() {
   const intl = useIntl();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  
   const { isPending, isSuccess, data } = useQuery({
     queryKey: ["contacts"],
     queryFn: getContacts,
-  }, queryClient);
+  });
 
   const {
     data: searchData,
@@ -70,7 +70,7 @@ export default function Overview() {
         types: typeFilters.length === 0 ? undefined : typeFilters,
       }
     })
-  }, queryClient);
+  });
 
   const [values, setValues] = useState<Contact[]>(data?.contacts || []);
   const [typeFilters, setTypeFilters] = useState<Contact['type'][]>([]);
@@ -117,11 +117,13 @@ export default function Overview() {
           />
         </h1>
 
-        <Search placeholder={intl.formatMessage({
+        <Search
+          placeholder={intl.formatMessage({
             id: "Name, address, email",
             defaultMessage: "Name, address, email...",
             description: "Placeholder text for contacts search input",
           })}
+          value={searchTerm}
           onChange={setSearchTerm}
           onSearch={() => { 
             mutate();

@@ -4,10 +4,13 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 interface SearchProps {
+  value?: string;
   placeholder: string;
   size?: "xs" | "sm" | "md" | "lg";
   className?: string;
   onChange?: (value: string) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   onSearch: () => void;
 }
 
@@ -29,10 +32,13 @@ const searchVariants = cva(
 );
 
 function Search({
+  value,
   placeholder,
   size,
   className,
   onChange,
+  onFocus,
+  onBlur,
   onSearch,
 }: SearchProps) {
   const searchFieldRef = useRef<HTMLInputElement>(null);
@@ -42,7 +48,7 @@ function Search({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && searchFieldRef.current?.value) {
+    if (event.key === "Enter") {
       onSearch();
     }
   };
@@ -59,10 +65,13 @@ function Search({
 
       <input
         ref={searchFieldRef}
+        value={value}
         onChange={(e) => onChange?.(e.target.value)}
         type="text"
         placeholder={placeholder}
         className="w-full text-text-300 bg-transparent font-medium placeholder-text-300 focus:outline-none"
+        onFocus={onFocus}
+        onBlur={onBlur}
         onKeyDown={handleKeyDown}
       />
     </div>
