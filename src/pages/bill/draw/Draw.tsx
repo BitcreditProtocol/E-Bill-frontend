@@ -49,7 +49,11 @@ export default function Draw() {
               navigate("/edit-issue");
             }}
           >
-            Edit
+            <FormattedMessage
+              id="bill.draw.edit"
+              defaultMessage="Edit"
+              description="Edit button"
+            />
             <PencilIcon className="w-3 h-3 text-brand-200" />
           </button>
         </div>
@@ -64,7 +68,13 @@ export default function Draw() {
           </h1>
 
           <div className="flex flex-col gap-2">
-            <span className="text-text-300 text-sm font-normal">pay on</span>
+            <span className="text-text-300 text-sm font-normal">
+              <FormattedMessage
+                id="bill.draw.payOn"
+                defaultMessage="pay on"
+                description="Payment date label"
+              />
+            </span>
 
             <div className="flex items-center justify-between w-full bg-elevation-200 py-5 px-4 border-[1px] border-divider-50 rounded-lg cursor-pointer">
               <div className="flex items-center gap-2">
@@ -73,21 +83,37 @@ export default function Draw() {
                   strokeWidth={1}
                 />
 
-                <span className="text-text-300 text-sm font-medium">Date</span>
+                <span className="text-text-300 text-sm font-medium">
+                  <FormattedMessage
+                    id="bill.draw.date"
+                    defaultMessage="Date"
+                    description="Date label"
+                  />
+                </span>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
             <span className="text-text-300 text-sm font-normal">
-              to the order of
+              <FormattedMessage
+                id="bill.draw.toTheOrderOf"
+                defaultMessage="to the sum of"
+                description="Order of property label"
+              />
             </span>
 
             <div className="flex items-center justify-between w-full bg-elevation-200 py-5 px-4 border-[1px] border-divider-50 rounded-lg cursor-pointer">
               <div className="flex items-center gap-2">
                 <UserIcon className="w-5 h-5 text-text-300" strokeWidth={1} />
 
-                <span className="text-text-300 text-sm font-medium">Payee</span>
+                <span className="text-text-300 text-sm font-medium">
+                  <FormattedMessage
+                    id="bill.draw.payee"
+                    defaultMessage="Payee"
+                    description="Payee label"
+                  />
+                </span>
               </div>
 
               <ChevronRightIcon
@@ -100,7 +126,11 @@ export default function Draw() {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <span className="text-text-300 text-sm font-normal">
-                the sum of
+                <FormattedMessage
+                  id="bill.draw.sum"
+                  defaultMessage="the sum of"
+                  description="Value property label"
+                />
               </span>
 
               <Button
@@ -129,13 +159,25 @@ export default function Draw() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className="text-text-300 text-sm font-normal">Payer</span>
+            <span className="text-text-300 text-sm font-normal">
+              <FormattedMessage
+                id="bill.draw.payer"
+                defaultMessage="Payer"
+                description="Payer label"
+              />
+            </span>
 
             <div className="flex items-center justify-between w-full bg-elevation-200 py-5 px-4 border-[1px] border-divider-50 rounded-lg cursor-pointer">
               <div className="flex items-center gap-2">
                 <UserIcon className="w-5 h-5 text-text-300" strokeWidth={1} />
 
-                <span className="text-text-300 text-sm font-medium">Payer</span>
+                <span className="text-text-300 text-sm font-medium">
+                  <FormattedMessage
+                    id="bill.draw.payer"
+                    defaultMessage="Payer"
+                    description="Payer label"
+                  />
+                </span>
               </div>
 
               <ChevronRightIcon
@@ -147,7 +189,11 @@ export default function Draw() {
 
           <div className="flex items-center justify-between w-full">
             <span className="text-text-200 text-xs font-normal leading-5">
-              Place of payment
+              <FormattedMessage
+                id="bill.draw.placeOfPayment"
+                defaultMessage="Place of payment"
+                description="Place of payment"
+              />
             </span>
 
             <button
@@ -156,14 +202,22 @@ export default function Draw() {
                 navigate("/place-of-payment");
               }}
             >
-              Edit
+              <FormattedMessage
+                id="bill.draw.edit"
+                defaultMessage="Edit"
+                description="Edit button"
+              />
               <PencilIcon className="w-3 h-3 text-brand-200" />
             </button>
           </div>
 
           <div className="flex flex-col gap-2">
             <span className="text-text-300 text-sm font-normal">
-              No protest.
+              <FormattedMessage
+                id="bill.draw.noProtest"
+                defaultMessage="No protest."
+                description="No protest."
+              />
             </span>
             <Upload />
           </div>
