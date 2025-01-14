@@ -1,6 +1,11 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, Outlet, RouteObject, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Outlet,
+  RouteObject,
+  RouterProvider,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import LanguageProvider from "./context/language/LanguageProvider";
@@ -27,6 +32,11 @@ import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
+import Draw from "./pages/bill/draw/Draw";
+import DrawFilled from "./pages/bill/draw/DrawFilled";
+import EditIssue from "./pages/bill/draw/EditIssue";
+import PlaceOfPayment from "./pages/bill/draw/Place";
+import BillSuccess from "./pages/bill/draw/Success";
 import Settings from "./pages/settings";
 
 import Create from "./pages/contacts/Create";
@@ -143,7 +153,7 @@ const router = createBrowserRouter(
               element: <Edit />,
               loader: View.loader,
             },
-          ]
+          ],
         },
       ],
     },
@@ -173,6 +183,26 @@ const router = createBrowserRouter(
         },
       ],
     },
+    {
+      path: "/draw-bill",
+      element: <Draw />,
+    },
+    {
+      path: "/draw-bill-filled",
+      element: <DrawFilled />,
+    },
+    {
+      path: "/edit-issue",
+      element: <EditIssue />,
+    },
+    {
+      path: "/place-of-payment",
+      element: <PlaceOfPayment />,
+    },
+    {
+      path: "/bill-success",
+      element: <BillSuccess />,
+    },
   ],
   {
     future: {
@@ -187,9 +217,16 @@ const router = createBrowserRouter(
 
 const prepare = async () => {
   if (import.meta.env.DEV) {
-    const flatten = (it: RouteObject) => it.children === undefined ? it : it.children.flatMap(c => ({
-      ...c, path: `${(it.path ?? '')}/${(c.path ?? '')}`.replace('//', '/')
-    } as RouteObject));
+    const flatten = (it: RouteObject) =>
+      it.children === undefined
+        ? it
+        : it.children.flatMap(
+            (c) =>
+              ({
+                ...c,
+                path: `${it.path ?? ""}/${c.path ?? ""}`.replace("//", "/"),
+              } as RouteObject)
+          );
 
     console.info("[dev] quickly navigate through all routes while developing:");
     console.table(
@@ -197,7 +234,7 @@ const prepare = async () => {
         .filter((it) => it.path !== undefined)
         .flatMap((it) => flatten(it))
         .flatMap((it) => flatten(it))
-        .map((it) => [it.path, location.origin + (it.path || '')])
+        .map((it) => [it.path, location.origin + (it.path || "")])
     );
 
     const { worker } = await import("./mocks/browser");
