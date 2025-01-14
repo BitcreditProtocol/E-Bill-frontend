@@ -1,0 +1,49 @@
+name: Build and Deploy Storybook
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+env:
+  DEST_BUCKET: 'gs://bitcr-storybook-site-01'
+
+jobs:
+  storybook:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    - name: Build storybook
+      run: |
+        npm install  
+        npm run storybook:build
+
+    - name: Authenticate to Google Cloud
+      id: auth
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+    
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.6.0
+
+    - name: Cleanup GCP bucket
+      run: |
+        FILES_COUNT=$(gcloud storage ls --recursive ${{ env.DEST_BUCKET }} | wc -l)
+        if [ $FILES_COUNT -gt 1 ]; then
+          gcloud storage rm --recursive '${{ env.DEST_BUCKET }}/**'
+        fi
+
+    - name: Upload Storybook static sources
+      run: gcloud storage cp --recursive storybook-static/* ${{ env.DEST_BUCKET }}
