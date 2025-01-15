@@ -29,6 +29,7 @@ const PAYMENT = "/payment";
 const PAY = "/pay";
 
 const REQUEST_MINT = "/request-mint";
+const SELECT_QUOTE = "/select-quote";
 
 export default {
   ROOT,
@@ -59,4 +60,5 @@ export default {
   PAYMENT,
   PAY,
   REQUEST_MINT,
+  SELECT_QUOTE,
 };
