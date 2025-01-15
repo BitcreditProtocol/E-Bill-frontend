@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 type PageTitleProps = {
   children: React.ReactNode;
-} & React.HTMLAttributes<HTMLSpanElement>;
+} & React.HTMLAttributes<HTMLHeadingElement>;
 
 export default function PageTitle({
   children,
