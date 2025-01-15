@@ -143,6 +143,8 @@
   "bill.card.placeOfPayment": "Place of payment",
   "bill.card.status": "Status:",
   "bill.mint.cancel": "Cancel mint request",
+  "bill.mint.quote.status.declined": "Declined",
+  "bill.mint.quote.status.pending": "Waiting for quote",
   "bill.mint.request.action": "Request mint quote",
   "bill.mint.request.selectMint": "Select a mint",
   "bill.mint.request.title": "Request to mint",

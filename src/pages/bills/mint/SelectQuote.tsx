@@ -38,9 +38,9 @@ export default function SelectQuote() {
           </SectionTitle>
 
           <div className="flex flex-col gap-3">
-            <Quote mintName="Wildcat One" rate={0.0001} />
-            <Quote mintName="Whalers Mint" rate={0.0001} />
-            <Quote mintName="Fishermans Mint" rate={0.0001} />
+            <Quote mintName="Wildcat One" rate={0.0001} status="pending" />
+            <Quote mintName="Whalers Mint" rate={0.0001} status="accepted" />
+            <Quote mintName="Fishermans Mint" rate={0.0001} status="declined" />
           </div>
         </div>
 
