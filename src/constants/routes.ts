@@ -28,6 +28,8 @@ const ENDORSE = "/endorse";
 const PAYMENT = "/payment";
 const PAY = "/pay";
 
+const REQUEST_MINT = "/request-mint";
+
 export default {
   ROOT,
   LOGIN,
@@ -56,4 +58,5 @@ export default {
   ENDORSE,
   PAYMENT,
   PAY,
+  REQUEST_MINT,
 };

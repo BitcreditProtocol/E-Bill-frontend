@@ -44,6 +44,8 @@ import Endorse from "./pages/bills/Endorse";
 import Payment from "./pages/bills/Payment";
 import Pay from "./pages/bills/Pay";
 
+import RequestMint from "./pages/bills/RequestMint";
+
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter(
@@ -163,6 +165,10 @@ const router = createBrowserRouter(
         {
           path: routes.PAY,
           element: <Pay />,
+        },
+        {
+          path: routes.REQUEST_MINT,
+          element: <RequestMint />,
         },
         {
           path: "get-started",
