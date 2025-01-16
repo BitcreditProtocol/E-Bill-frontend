@@ -1,7 +1,7 @@
 import { http, delay, HttpResponse } from "msw";
 import { Bill } from "@/types/bill";
 
-const data = [
+export const data = [
   {
     bill_name: "xxs1",
     role: "payee",

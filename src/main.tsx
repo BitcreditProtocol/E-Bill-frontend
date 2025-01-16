@@ -44,6 +44,7 @@ import Overview from "./pages/contacts/Overview";
 import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
+import CashFlow from "./pages/home/CashFlow";
 
 import Warning from "./pages/create-identity/Warning";
 import Category from "./pages/create-identity/Category";
@@ -86,6 +87,10 @@ const router = createBrowserRouter(
         {
           path: "notifications-empty",
           element: <NotificationsEmpty />,
+        },
+        {
+          path: routes.CASHFLOW,
+          element: <CashFlow />,
         },
         {
           path: routes.BILLS,
