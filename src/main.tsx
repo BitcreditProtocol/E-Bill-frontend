@@ -37,7 +37,9 @@ import DrawFilled from "./pages/bill/draw/DrawFilled";
 import EditIssue from "./pages/bill/draw/EditIssue";
 import PlaceOfPayment from "./pages/bill/draw/Place";
 import BillSuccess from "./pages/bill/draw/Success";
+
 import Settings from "./pages/settings";
+import NotificationsSettings from "./pages/settings/Notifications";
 
 import Create from "./pages/contacts/Create";
 import Overview from "./pages/contacts/Overview";
@@ -84,6 +86,10 @@ const router = createBrowserRouter(
         {
           path: routes.SETTINGS,
           element: <Settings />,
+        },
+        {
+          path: routes.NOTIFICATIONS_SETTINGS,
+          element: <NotificationsSettings />,
         },
         {
           path: routes.RESTORE_WITH_SEED_PHRASE,
