@@ -32,6 +32,7 @@ const REQUEST_MINT = "/request-mint";
 const SELECT_QUOTE = "/select-quote";
 const PREVIEW_MINT = "/preview-mint";
 const MINT_RECEIVED = "/mint-received";
+const MINT_REQUEST = "/mint-request";
 
 export default {
   ROOT,
@@ -65,4 +66,5 @@ export default {
   SELECT_QUOTE,
   PREVIEW_MINT,
   MINT_RECEIVED,
+  MINT_REQUEST,
 };
