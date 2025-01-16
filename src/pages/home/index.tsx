@@ -5,12 +5,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import Balances from "./components/Balances";
 import Bills from "./components/Bills";
+import Page from "@/components/wrappers/Page";
 
 export default function Home() {
   const intl = useIntl();
 
   return (
-    <div className="flex flex-col gap-6 w-full min-h-fit h-screen py-6 px-5 bg-background-ellipse bg-no-repeat select-none">
+    <Page className="gap-6" displayBackgroundEllipse displayBottomNavigation>
       <Topbar
         lead={
           <Avatar className="h-8 w-8">
@@ -40,6 +41,6 @@ export default function Home() {
         <Balances />
         <Bills />
       </div>
-    </div>
+    </Page>
   );
 }

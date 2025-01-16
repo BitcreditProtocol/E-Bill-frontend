@@ -1,10 +1,16 @@
-import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { FormattedMessage, useIntl } from "react-intl";
+import { useRef, useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { motion } from "motion/react";
+import { useFormContext } from "react-hook-form";
 import { ChevronRightIcon } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 
-function CodeInputs() {
+type CodeInputsProps = {
+  onChange: (value: string) => void;
+};
+
+function CodeInputs({ onChange }: CodeInputsProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleInput = (
@@ -21,6 +27,8 @@ function CodeInputs() {
     if (value.length === 1 && index < inputRefs.current.length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
+
+    updateState();
   };
 
   const handleKeyDown = (
@@ -30,6 +38,13 @@ function CodeInputs() {
     if (e.key === "Backspace" && e.currentTarget.value === "" && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
+
+    updateState();
+  };
+
+  const updateState = () => {
+    const code = inputRefs.current.map((ref) => ref?.value || "").join("");
+    onChange(code);
   };
 
   return (
@@ -44,40 +59,49 @@ function CodeInputs() {
           ref={(el) => (inputRefs.current[index] = el)}
           className="w-12 h-12 border border-[#1B0F0014] rounded-[8px] bg-elevation-200 text-text-300 text-3xl font-light text-center focus:outline-none"
           style={{ fontSize: "28px" }}
-          onChange={(e) => { handleInput(e, index); }}
-          onKeyDown={(e) => { handleKeyDown(e, index); }}
+          onChange={(e) => {
+            handleInput(e, index);
+          }}
+          onKeyDown={(e) => {
+            handleKeyDown(e, index);
+          }}
         />
       ))}
     </div>
   );
 }
 
-export default function EmailVerification() {
-  const intl = useIntl();
-  const navigate = useNavigate();
+type EmailVerificationProps = {
+  continueToNextStep: () => void;
+};
 
-  const goToOptionalInformation = () => { navigate("/optional-information"); };
+export default function EmailVerification({
+  continueToNextStep,
+}: EmailVerificationProps) {
+  const { getValues } = useFormContext();
+  const [code, setCode] = useState("");
 
   return (
-    <div className="flex flex-col justify-between min-h-fit h-screen py-5 px-10">
-      <div className="flex flex-col gap-12">
+    <motion.div
+      initial={{ x: 10, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: -10, opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="flex-1 flex flex-col justify-between items-center"
+    >
+      <div className="flex flex-col items-center gap-3">
         <div className="flex flex-col gap-2 items-center">
           <h1 className="font-sans font-medium text-[24px] tracking-tight mb-0">
             <FormattedMessage
-              id="Verify your email address"
+              id="pages.onboarding.emailVerification.title"
               defaultMessage="Verify your email address"
               description="Header copy for Email verification page"
             />
           </h1>
 
           <span className="font-normal text-text-200 text-base text-center">
-            {intl.formatMessage({
-              id: "We've sent a one-time passcode to {email}",
-              defaultMessage: "We've sent a one-time passcode to {email}",
-              description: "Subheader copy for Email verification page",
-            }, {
-              email: "example@bit.cr"
-            })}
+            We've sent an one-time passcode to{" "}
+            <span className="text-text-300">{getValues("email")}</span>
           </span>
         </div>
 
@@ -87,40 +111,39 @@ export default function EmailVerification() {
             className="text-text-300 text-xs font-medium p-0 h-fit"
           >
             <FormattedMessage
-              id="Open email inbox"
+              id="pages.onboarding.emailVerification.openEmailInbox"
               defaultMessage="Open email inbox"
               description="Open email inbox button copy for Email verification page"
             />
             <ChevronRightIcon width={16} strokeWidth={1} color="#1B0F00" />
           </Button>
 
-          <CodeInputs />
+          <CodeInputs onChange={setCode} />
 
           <Button
             variant="link"
             className="text-signal-alert text-xs font-medium p-0 h-fit"
           >
-            {intl.formatMessage({
-              id: "Resend ({delay})",
-              defaultMessage: "Resend ({delay})",
-              description: "Resend code button copy for Email verification page",
-            }, {
-              delay: "30s"
-            })}
+            <FormattedMessage
+              id="pages.onboarding.emailVerification.resendCode"
+              defaultMessage="Resend (30s)"
+              description="Resend code button copy for Email verification page"
+            />
           </Button>
         </div>
       </div>
 
       <Button
-        onClick={goToOptionalInformation}
-        className="w-full bg-text-300 text-white font-medium rounded-[8px] py-[24px] px-[32px]"
+        onClick={continueToNextStep}
+        className="w-full"
+        disabled={code !== "12345"}
       >
         <FormattedMessage
-          id="Continue"
+          id="pages.onboarding.emailVerification.continue"
           defaultMessage="Continue"
           description="Continue button copy for Email verification page"
         />
       </Button>
-    </div>
+    </motion.div>
   );
 }

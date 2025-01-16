@@ -1,3 +1,4 @@
 {
+  "buildCommand": "sh vercel.sh",
   "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }
