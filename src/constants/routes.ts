@@ -31,6 +31,11 @@ const BILL_ISSUER = "bill-issuer";
 const AUTHORIZED_SIGNER = "authorized-signer";
 const SUCCESS = "success";
 
+const ABOUT = "/about";
+const NOTIFICATIONS_SETTINGS = "/notifications-settings";
+const SECURITY_SETTINGS = "/security-settings";
+const MINT_SETTINGS = "/mint-settings";
+
 export default {
   ROOT,
   LOGIN,
@@ -61,4 +66,8 @@ export default {
   VIEW_CONTACT,
   EDIT_CONTACT,
   ONBOARDING,
+  ABOUT,
+  NOTIFICATIONS_SETTINGS,
+  SECURITY_SETTINGS,
+  MINT_SETTINGS,
 };
