@@ -47,6 +47,7 @@ import Pay from "./pages/bills/Pay";
 import RequestMint from "./pages/bills/RequestMint";
 import SelectQuote from "./pages/bills/mint/SelectQuote";
 import Preview from "./pages/bills/mint/Preview";
+import Received from "./pages/bills/mint/Received";
 
 const queryClient = new QueryClient();
 
@@ -179,6 +180,10 @@ const router = createBrowserRouter(
         {
           path: routes.PREVIEW_MINT,
           element: <Preview />,
+        },
+        {
+          path: routes.MINT_RECEIVED,
+          element: <Received />,
         },
         {
           path: "get-started",
