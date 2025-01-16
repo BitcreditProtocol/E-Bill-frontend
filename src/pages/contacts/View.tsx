@@ -8,11 +8,11 @@ import * as contacts from "@/mocks/handlers/contacts/list";
 function TopBar() {
   const navigate = useNavigate();
   const goBack = () => {
-    navigate("/contacts");
+    navigate(-1);
   };
 
   const goToEdit = () => {
-    navigate("/edit-contact");
+    navigate("edit");
   };
 
   return (

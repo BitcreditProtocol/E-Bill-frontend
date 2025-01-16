@@ -14,7 +14,7 @@ const meta = {
   parameters: {
     reactRouter: reactRouterParameters({
       routing: {
-        loader: () => contacts.data,
+        loader: () => contacts.data[0],
       },
     }),
   },
