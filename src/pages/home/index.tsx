@@ -1,15 +1,17 @@
-import { ReceiptTextIcon } from "lucide-react";
-
+import { useIntl } from "react-intl";
 import Topbar from "@/components/Topbar";
 import Search from "@/components/ui/search";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import Balances from "./components/Balances";
 import Bills from "./components/Bills";
+import Page from "@/components/wrappers/Page";
 
 export default function Home() {
+  const intl = useIntl();
+
   return (
-    <div className="flex flex-col gap-6 w-full min-h-fit h-screen py-6 px-5 bg-background-ellipse bg-no-repeat select-none">
+    <Page className="gap-6" displayBackgroundEllipse displayBottomNavigation>
       <Topbar
         lead={
           <Avatar className="h-8 w-8">
@@ -23,19 +25,15 @@ export default function Home() {
           <Search
             className="w-full"
             size="xs"
-            placeholder="Search..."
+            placeholder={intl.formatMessage({
+              id: "Search field for home page",
+              defaultMessage: "Search...",
+              description: "Search placeholder for home page",
+            })}
             onSearch={() => {
               console.log("search");
             }}
           />
-        }
-        trail={
-          <button className="flex items-center justify-center w-8 h-8 p-1.5 bg-elevation-200 border-[1px] border-divider-50 rounded-md">
-            <ReceiptTextIcon
-              className="h-5 w-5 text-text-300"
-              strokeWidth={1}
-            />
-          </button>
         }
       />
 
@@ -43,6 +41,6 @@ export default function Home() {
         <Balances />
         <Bills />
       </div>
-    </div>
+    </Page>
   );
 }

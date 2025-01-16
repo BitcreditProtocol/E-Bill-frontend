@@ -47,7 +47,7 @@ export default function AuthorizedSigner() {
         navigate(`${routes.CREATE_IDENTITY}/${routes.SUCCESS}`);
       }}
       editRequiredInformation={() => {
-        setCurrentStep((current) => current - 1);
+        setCurrentStep(0);
       }}
     />,
   ];

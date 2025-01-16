@@ -1,9 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Outlet,
+  RouteObject,
+  RouterProvider,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { Toaster } from "./components/ui/toaster";
 import LanguageProvider from "./context/language/LanguageProvider";
 
 import DefaultLayout from "./layouts/Default";
@@ -28,7 +32,17 @@ import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
+import Draw from "./pages/bill/draw/Draw";
+import DrawFilled from "./pages/bill/draw/DrawFilled";
+import EditIssue from "./pages/bill/draw/EditIssue";
+import PlaceOfPayment from "./pages/bill/draw/Place";
+import BillSuccess from "./pages/bill/draw/Success";
+import Settings from "./pages/settings";
 
+import Create from "./pages/contacts/Create";
+import Overview from "./pages/contacts/Overview";
+import View from "./pages/contacts/View";
+import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
 
 import Warning from "./pages/create-identity/Warning";
@@ -57,12 +71,12 @@ const router = createBrowserRouter(
           element: <Login />,
         },
         {
-          path: routes.LOGIN,
-          element: <Login />,
-        },
-        {
           path: routes.HOME,
           element: <Home />,
+        },
+        {
+          path: routes.SETTINGS,
+          element: <Settings />,
         },
         {
           path: routes.RESTORE_WITH_SEED_PHRASE,
@@ -117,8 +131,32 @@ const router = createBrowserRouter(
           element: <PreviewBill />,
         },
         {
-          path: "get-started",
+          path: routes.ONBOARDING,
           element: <Onboarding />,
+        },
+        {
+          path: routes.CONTACTS,
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <Overview />,
+            },
+            {
+              path: routes.CREATE_CONTACT,
+              element: <Create />,
+            },
+            {
+              path: routes.VIEW_CONTACT,
+              element: <View />,
+              loader: View.loader,
+            },
+            {
+              path: routes.EDIT_CONTACT,
+              element: <Edit />,
+              loader: View.loader,
+            },
+          ],
         },
       ],
     },
@@ -162,6 +200,26 @@ const router = createBrowserRouter(
         },
       ],
     },
+    {
+      path: "/draw-bill",
+      element: <Draw />,
+    },
+    {
+      path: "/draw-bill-filled",
+      element: <DrawFilled />,
+    },
+    {
+      path: "/edit-issue",
+      element: <EditIssue />,
+    },
+    {
+      path: "/place-of-payment",
+      element: <PlaceOfPayment />,
+    },
+    {
+      path: "/bill-success",
+      element: <BillSuccess />,
+    },
   ],
   {
     future: {
@@ -173,17 +231,30 @@ const router = createBrowserRouter(
     },
   }
 );
+
 const prepare = async () => {
   if (import.meta.env.DEV) {
-    const { worker } = await import("./mocks/browser");
+    const flatten = (it: RouteObject) =>
+      it.children === undefined
+        ? it
+        : it.children.flatMap(
+            (c) =>
+              ({
+                ...c,
+                path: `${it.path ?? ""}/${c.path ?? ""}`.replace("//", "/"),
+              } as RouteObject)
+          );
 
     console.info("[dev] quickly navigate through all routes while developing:");
     console.table(
       router.routes
         .filter((it) => it.path !== undefined)
+        .flatMap((it) => flatten(it))
+        .flatMap((it) => flatten(it))
         .map((it) => [it.path, location.origin + (it.path || "")])
     );
 
+    const { worker } = await import("./mocks/browser");
     await worker.start();
   }
 };
@@ -200,7 +271,6 @@ void prepare().then(() => {
               v7_startTransition: true,
             }}
           />
-          <Toaster />
         </LanguageProvider>
       </QueryClientProvider>
     </StrictMode>

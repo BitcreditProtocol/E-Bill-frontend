@@ -2,7 +2,6 @@ import type { Meta,  StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import Big from 'big.js';
 import { addDays } from 'date-fns';
-import LanguageProvider from '@/context/language/LanguageProvider';
 import { DiscountForm, GrossToNetDiscountForm } from './DiscountForm';
 
 const now = Date.now();
@@ -19,13 +18,6 @@ const meta = {
       currency: "BTC"
     }
   },
-  decorators: [
-    (Story) => (
-      <LanguageProvider>
-        <Story />
-      </LanguageProvider>
-    ),
-  ],
 } satisfies Meta<typeof GrossToNetDiscountForm>;
 
 export default meta;

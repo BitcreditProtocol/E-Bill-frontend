@@ -37,28 +37,28 @@ describe("LanguageProvider", () => {
       mockNavigation({ language: "en-US" });
 
       const { container } = render({});
-      expect(container.textContent).toBe("en-US");
+      expect(container).toHaveTextContent("en-US");
     });
 
     it("es", () => {
       mockNavigation({ language: "es-ES" });
 
       const { container } = render({});
-      expect(container.textContent).toBe("es-ES");
+      expect(container).toHaveTextContent("es-ES");
     });
 
     it("fr", () => {
       mockNavigation({ language: "fr-FR" });
 
       const { container } = render({});
-      expect(container.textContent).toBe("fr-FR");
+      expect(container).toHaveTextContent("fr-FR");
     });
 
     it("zh", () => {
       mockNavigation({ language: "zh-CN" });
 
       const { container } = render({});
-      expect(container.textContent).toBe("zh-CN");
+      expect(container).toHaveTextContent("zh-CN");
     });
   });
 
@@ -76,11 +76,31 @@ describe("LanguageProvider", () => {
         }
       });
 
-      expect(container.textContent).toBe("en-US");
+      expect(container).toHaveTextContent("en-US");
 
       await vi.runAllTimersAsync();
 
-      expect(container.textContent).toBe("it-IT");
+      expect(container).toHaveTextContent("it-IT");
+    });
+  });
+
+  describe("available locales", () => {
+    beforeEach(() => vi.useFakeTimers());
+
+    it("should return available locales", async () => {
+      let availableLocales: string[] = [];
+      render({
+        onLocaleChange: (ctx) => {
+          availableLocales = ctx.availableLocales();
+        }
+      });
+
+      await vi.runAllTimersAsync();
+
+      expect(availableLocales).toContain('ach-UG');
+      expect(availableLocales).toContain('en-US');
+      expect(availableLocales).toContain('es-AR');
+      expect(availableLocales).toContain('tr-TR');
     });
   });
 

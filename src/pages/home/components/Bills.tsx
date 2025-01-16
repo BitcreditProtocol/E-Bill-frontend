@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { useQuery } from "@tanstack/react-query";
-import { ReceiptTextIcon } from "lucide-react";
+import { ChartColumnIcon, LayoutListIcon } from "lucide-react";
 
 import Bill from "@/components/Bill";
 import routes from "@/constants/routes";
@@ -61,12 +61,43 @@ export default function Bills() {
           }}
         >
           <FormattedMessage
-            id="See all bills"
-            defaultMessage="See all bills"
+            id="Bill list"
+            defaultMessage="Bill list"
             description="Button to view all bills"
           />
 
-          <ReceiptTextIcon className="h-4 w-4 text-brand-200" strokeWidth={1} />
+          <LayoutListIcon className="h-4 w-4 text-brand-200" strokeWidth={1} />
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        {isPending || !data ? (
+          <Loader />
+        ) : (
+          data.map((bill) => (
+            <Bill
+              key={bill.bill_name}
+              title={bill.drawer.name}
+              amount={bill.sum.amount}
+              currency={bill.sum.currency}
+              date={bill.issue_date}
+            />
+          ))
+        )}
+
+        <button
+          className="flex items-center gap-1 bg-transparent text-brand-200 text-sm font-medium leading-5 mx-auto"
+          onClick={() => {
+            console.log("/cashflow");
+          }}
+        >
+          <FormattedMessage
+            id="Cashflow"
+            defaultMessage="Cashflow"
+            description="Button to access the cashflow"
+          />
+
+          <ChartColumnIcon className="h-4 w-4 text-brand-200" strokeWidth={1} />
         </button>
       </div>
     </div>

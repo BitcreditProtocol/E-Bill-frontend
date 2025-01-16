@@ -59,7 +59,7 @@ export default function BottomNavigation() {
   };
 
   return (
-    <div className="fixed bottom-0 flex items-center justify-between w-full max-w-[375px] h-16 py-3 px-5 bg-[#FEFBF133] border-t-[0.5px] border-divider-100 backdrop-blur-[10px]">
+    <div className="fixed bottom-0 z-10 flex items-center justify-between w-full max-w-[375px] h-16 py-3 px-5 bg-[#FEFBF133] border-t-[0.5px] border-divider-100 backdrop-blur-[10px]">
       <Item
         icon={<HouseIcon className="h-6 w-6" strokeWidth={1} />}
         label={intl.formatMessage({

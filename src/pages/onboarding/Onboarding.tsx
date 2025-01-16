@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router-dom";
-import { First, Second, Third, Fourth } from "./Screens";
 import { Button } from "@/components/ui/button";
 import DotIndicator from "@/components/DotIndicator";
 import layoutLogo from "@/assets/images/layout-logo.svg";
+import routes from "@/constants/routes";
+
+import { First, Second, Third, Fourth } from "./Screens";
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ export default function Onboarding() {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      navigate("/signup");
+      navigate(routes.CREATE_IDENTITY);
     }
   };
 

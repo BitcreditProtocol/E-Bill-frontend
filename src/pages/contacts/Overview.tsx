@@ -1,46 +1,114 @@
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useIntl, FormattedMessage } from "react-intl";
-import { EllipsisIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { FormattedMessage, useIntl } from "react-intl";
+import { ChevronRightIcon, PlusIcon, SearchIcon } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+import Search from "@/components/ui/search";
+import { Separator } from "@/components/ui/separator";
 import routes from "@/constants/routes";
-import contactsIllustration from "@/assets/contacts-illustration.svg";
 
-function Search() {
-  const intl = useIntl();
-  const searchFieldRef = useRef<HTMLInputElement>(null);
+import List from "./components/List";
+import EmptyList from "./components/EmptyList";
+import type { Contact } from "@/types/contact";
+import TypeFilter from "./components/TypeFilter";
+import { getContacts, searchContacts } from "@/services/contact";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
-  const focusSearchField = () => {
-    searchFieldRef.current?.focus();
-  };
-
+function NoResults() {
   return (
-    <div
-      onClick={focusSearchField}
-      className="flex items-center gap-2 h-[46px] py-[14px] px-4 border-[1px] border-divider-75 rounded-[8px]"
-    >
-      <SearchIcon className="w-4 h-4 text-text-300" />
-
-      <input
-        ref={searchFieldRef}
-        type="text"
-        placeholder={intl.formatMessage({
-          id: "Search for contacts...",
-          defaultMessage: "Search for contacts...",
-          description: "Placeholder text for search input",
-        })}
-        className="w-full bg-transparent text-text-300 text-sm font-medium placeholder-text-300 focus:outline-none"
-      />
+    <div className="flex flex-col gap-4 w-full">
+      <div className="text-text-200 text-xs font-medium">
+        <FormattedMessage
+          id="No results"
+          defaultMessage="No results"
+          description="Title for no search results on contacts page"
+        />
+      </div>
+      <div className="flex items-center gap-2 text-text-300 text-sm font-medium">
+        <SearchIcon className="h-4 w-4" strokeWidth={1} />
+        <FormattedMessage
+          id="Try searching another contact"
+          defaultMessage="Try searching another contact"
+          description="Text for no search results on contacts page"
+        />
+      </div>
     </div>
   );
 }
 
-function Header() {
-  const navigate = useNavigate();
-
+function Loader() {
   return (
     <div className="flex flex-col gap-3 w-full">
-      <div className="flex justify-between items-center">
+      <Skeleton className="w-full h-4 bg-elevation-200 rounded-lg" />
+      {Array.from({ length: 3 }, (_, index) => (
+        <Skeleton key={index} className="w-full h-16 bg-elevation-200 rounded-lg" />
+      ))}
+    </div>
+  );
+}
+
+export default function Overview() {
+  const intl = useIntl();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { isPending, isSuccess, data } = useQuery({
+    queryKey: ["contacts"],
+    queryFn: getContacts,
+  }, queryClient);
+
+  const {
+    data: searchData,
+    isPending: isSearchPending,
+    isSuccess: isSearchSuccess,
+    mutate
+  } = useMutation({
+    mutationFn: () => searchContacts({ 
+      filter: {
+        search_term: searchTerm,
+        types: typeFilters.length === 0 ? undefined : typeFilters,
+      }
+    })
+  }, queryClient);
+
+  const [values, setValues] = useState<Contact[]>(data?.contacts || []);
+  const [typeFilters, setTypeFilters] = useState<Contact['type'][]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const goToCreate = () => {
+    navigate(routes.CREATE_CONTACT);
+  };
+
+  const __dev_toggleEmptyScenario = () => {
+    navigate({
+      pathname: ".",
+      search: window.location.search.includes("scenario=empty") ? "" : "scenario=empty",
+    });
+    navigate(0); // triggers reload
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setValues(data.contacts);
+    }
+  }, [isSuccess, data]);
+
+  useEffect(() => {
+    if (isSearchSuccess) {
+      setValues(searchData.contacts);
+    }
+  }, [isSearchSuccess, searchData]);
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
+      {import.meta.env.DEV && (<>
+        <Button size="xxs" variant="destructive" className="absolute top-1 right-1" onClick={__dev_toggleEmptyScenario} >
+          [dev] Toggle empty scenario
+        </Button>
+      </>)}
+
+      <div className="flex flex-col gap-3 w-full">
         <h1 className="text-text-300 text-xl font-medium">
           <FormattedMessage
             id="Contacts"
@@ -49,105 +117,59 @@ function Header() {
           />
         </h1>
 
-        <Button
-          className="gap-1 p-0 h-fit text-text-300 text-xs font-medium no-underline hover:no-underline leading-[18px]"
-          variant="link"
-          onClick={() => { navigate(routes.CREATE_CONTACT); }}
-        >
-          <PlusIcon className="w-4 h-4 text-text-300" />
-          <FormattedMessage
-            id="New contact"
-            defaultMessage="New contact"
-            description="Create contact button"
-          />
-        </Button>
-      </div>
-
-      <Search />
-    </div>
-  );
-}
-
-function Contact() {
-  return (
-    <div className="flex justify-between items-center bg-elevation-200 py-4 px-5 rounded-[12px] select-none">
-      <div className="flex gap-3">
-        <div className="flex justify-center items-center bg-brand-100 h-9 w-9 rounded-full">
-          <span className="text-brand-200 text-xs font-medium">PH</span>
-        </div>
-
-        <div className="flex flex-col">
-          <span className="text-text-300 text-base font-medium leading-6">
-            Phoenix Baker
-          </span>
-          <span className="text-text-200 text-xs leading-[18px]">Catelog</span>
-        </div>
-      </div>
-
-      <Button
-        className="gap-1 p-0 h-fit text-text-300 text-xs font-medium no-underline hover:no-underline leading-[18px]"
-        variant="link"
-      >
-        <EllipsisIcon className="w-6 h-6 text-text-300" />
-      </Button>
-    </div>
-  );
-}
-
-function ContactsList() {
-  return (
-    <div className="flex-1 flex flex-col gap-2 w-full">
-      <Contact />
-      <Contact />
-      <Contact />
-      <Contact />
-    </div>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function EmptyList() {
-  return (
-    <div className="flex-1 flex flex-col items-center justify-center w-52">
-      <img src={contactsIllustration} className="w-18 h-18 mx-auto mb-5" />
-
-      <div className="flex flex-col items-center gap-2 text-center mb-4">
-        <h2 className="text-text-300 text-xl font-medium leading-[30px]">
-          <FormattedMessage
-            id="No contacts yet"
-            defaultMessage="No contacts yet"
-            description="Title for empty contacts list"
-          />
-        </h2>
-
-        <span className="text-text-200 text-md leading-6">
-          <FormattedMessage
-            id="Create your first contact to start a relation"
-            defaultMessage="Create your first contact to start a relation"
-            description="Description for empty contacts list"
-          />
-        </span>
-      </div>
-
-      <Button
-        className="w-fit text-text-300 bg-transparent text-sm font-medium border-text-300 rounded-[8px] py-3 px-6 hover:bg-transparent"
-        variant="outline"
-      >
-        <FormattedMessage
-          id="Create contact"
-          defaultMessage="Create contact"
-          description="Create contact button"
+        <Search placeholder={intl.formatMessage({
+            id: "Name, address, email",
+            defaultMessage: "Name, address, email...",
+            description: "Placeholder text for contacts search input",
+          })}
+          onChange={setSearchTerm}
+          onSearch={() => { 
+            mutate();
+          }}
         />
-      </Button>
-    </div>
-  );
-}
+        <TypeFilter multiple values={typeFilters} onChange={(types) => {
+          setTypeFilters(types);
+          mutate();
+        }} />
+      </div>
 
-export default function Overview() {
-  return (
-    <div className="flex flex-col justify-between items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
-      <Header />
-      <ContactsList />
+      <div className="flex flex-col gap-4 w-full">
+        <button
+          className="flex items-center justify-between w-full"
+          onClick={goToCreate}
+        >
+          <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center w-8 h-8 bg-brand-200 p-2 rounded-full">
+              <PlusIcon className="w-4 h-4 text-brand-50" />
+            </div>
+
+            <span className="text-text-300 text-base font-medium">
+              <FormattedMessage
+                id="New Contact"
+                defaultMessage="New contact"
+                description="New contact button"
+              />
+            </span>
+          </div>
+          <ChevronRightIcon className="w-6 h-6 text-text-300" />
+        </button>
+
+        <Separator className="bg-divider-75" />
+      </div>
+
+      {isPending || isSearchPending ? (<>
+        <Loader />
+      </>) : (<>
+        {values.length === 0 && data?.contacts.length === 0 ? (<>
+          <EmptyList />
+        </>) : (<>
+        {values.length === 0 ? (<>
+          <NoResults />
+        </>) : (<>
+            <List values={values} />
+          </>)}
+        </>)}
+      </>)}
     </div>
   );
 }
