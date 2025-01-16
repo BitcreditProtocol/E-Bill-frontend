@@ -1,7 +1,7 @@
 import type { Meta,  StoryObj } from '@storybook/react';
 import { withRouter, reactRouterParameters } from 'storybook-addon-remix-react-router';
 import View from './View';
-import __DATA from './__data';
+import * as contacts from "@/mocks/handlers/contacts/list";
 
 const meta = {
   title: 'Element/Contacts/View',
@@ -14,9 +14,7 @@ const meta = {
   parameters: {
     reactRouter: reactRouterParameters({
       routing: {
-        loader: () => {
-          return __DATA[0];
-        },
+        loader: () => contacts.data[0],
       },
     }),
   },

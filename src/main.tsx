@@ -1,29 +1,30 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Outlet,
+  RouteObject,
+  RouterProvider,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { Toaster } from "./components/ui/toaster";
 import LanguageProvider from "./context/language/LanguageProvider";
 import IdentityProvider from "./context/identity/IdentityProvider";
 
 import DefaultLayout from "./layouts/Default";
-import RequiredInformation from "./pages/signup/RequiredInformation";
+import CreateIdentityLayout from "./layouts/CreateIdentity";
+
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/home";
-import CreateNewIdentity from "./pages/signup/CreateNewIdentity";
-import Success from "./pages/signup/Success";
 import { Notifications, NotificationsEmpty } from "./pages/Notifications";
 import routes from "./constants/routes";
 
 import "./index.css";
 import "./styles/fonts.css";
 import { BillsEmpty } from "./pages/Bills";
-import EmailVerification from "./pages/signup/EmailVerification";
-import OptionalInformation from "./pages/signup/OptionalInformation";
-import ConfirmIdentity from "./pages/signup/ConfirmIdentity";
+
 import Bill from "./pages/Bill";
 import IssueBill from "./pages/IssueBill";
 import CreateBill from "./pages/CreateBill";
@@ -32,6 +33,11 @@ import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
 import Onboarding from "./pages/onboarding/Onboarding";
+import Draw from "./pages/bill/draw/Draw";
+import DrawFilled from "./pages/bill/draw/DrawFilled";
+import EditIssue from "./pages/bill/draw/EditIssue";
+import PlaceOfPayment from "./pages/bill/draw/Place";
+import BillSuccess from "./pages/bill/draw/Success";
 import Settings from "./pages/settings";
 
 import Create from "./pages/contacts/Create";
@@ -43,6 +49,13 @@ import Bills from "./pages/bills";
 import Identity from "./pages/identity";
 import ViewIdentity from "./pages/identity/View";
 import AuthorizedSigners from "./pages/identity/AuthorizedSigners";
+import Warning from "./pages/create-identity/Warning";
+import Category from "./pages/create-identity/Category";
+import AuthorizedSigner from "./pages/create-identity/AuthorizedSigner";
+import BillIssuer from "./pages/create-identity/BillIssuer";
+import Success from "./pages/create-identity/Success";
+
+import { Toaster } from "./components/ui/toaster";
 
 const queryClient = new QueryClient();
 
@@ -61,10 +74,6 @@ const router = createBrowserRouter(
           element: <Login />,
         },
         {
-          path: routes.LOGIN,
-          element: <Login />,
-        },
-        {
           path: routes.HOME,
           element: <Home />,
         },
@@ -75,30 +84,6 @@ const router = createBrowserRouter(
         {
           path: routes.RESTORE_WITH_SEED_PHRASE,
           element: <RecoverWithSeedPhrase />,
-        },
-        {
-          path: routes.CREATE_IDENTITY,
-          element: <CreateNewIdentity />,
-        },
-        {
-          path: routes.REQUIRED_INFORMATION,
-          element: <RequiredInformation />,
-        },
-        {
-          path: routes.EMAIL_VERIFICATION,
-          element: <EmailVerification />,
-        },
-        {
-          path: routes.OPTIONAL_INFORMATION,
-          element: <OptionalInformation />,
-        },
-        {
-          path: "success",
-          element: <Success />,
-        },
-        {
-          path: "confirm-identity",
-          element: <ConfirmIdentity />,
         },
         {
           path: routes.NOTIFICATIONS,
@@ -149,26 +134,32 @@ const router = createBrowserRouter(
           element: <PreviewBill />,
         },
         {
-          path: "get-started",
+          path: routes.ONBOARDING,
           element: <Onboarding />,
         },
         {
           path: routes.CONTACTS,
-          element: <Overview />,
-          loader: Overview.loader,
-        },
-        {
-          path: routes.CREATE_CONTACT,
-          element: <Create />,
-        },
-        {
-          path: `${routes.VIEW_CONTACT}/:public_key`,
-          element: <View />,
-          loader: View.loader,
-        },
-        {
-          path: routes.EDIT_CONTACT,
-          element: <Edit />,
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <Overview />,
+            },
+            {
+              path: routes.CREATE_CONTACT,
+              element: <Create />,
+            },
+            {
+              path: routes.VIEW_CONTACT,
+              element: <View />,
+              loader: View.loader,
+            },
+            {
+              path: routes.EDIT_CONTACT,
+              element: <Edit />,
+              loader: View.loader,
+            },
+          ],
         },
         {
           path: routes.IDENTITY,
@@ -184,6 +175,52 @@ const router = createBrowserRouter(
         },
       ],
     },
+    {
+      path: routes.CREATE_IDENTITY,
+      element: <CreateIdentityLayout />,
+      children: [
+        {
+          path: routes.CREATE_IDENTITY,
+          element: <Warning />,
+        },
+        {
+          path: routes.IDENTITY_CATEGORY,
+          element: <Category />,
+        },
+        {
+          path: routes.AUTHORIZED_SIGNER,
+          element: <AuthorizedSigner />,
+        },
+        {
+          path: routes.BILL_ISSUER,
+          element: <BillIssuer />,
+        },
+        {
+          path: routes.SUCCESS,
+          element: <Success />,
+        },
+      ],
+    },
+    {
+      path: "/draw-bill",
+      element: <Draw />,
+    },
+    {
+      path: "/draw-bill-filled",
+      element: <DrawFilled />,
+    },
+    {
+      path: "/edit-issue",
+      element: <EditIssue />,
+    },
+    {
+      path: "/place-of-payment",
+      element: <PlaceOfPayment />,
+    },
+    {
+      path: "/bill-success",
+      element: <BillSuccess />,
+    },
   ],
   {
     future: {
@@ -195,17 +232,30 @@ const router = createBrowserRouter(
     },
   }
 );
+
 const prepare = async () => {
   if (import.meta.env.DEV) {
-    const { worker } = await import("./mocks/browser");
+    const flatten = (it: RouteObject) =>
+      it.children === undefined
+        ? it
+        : it.children.flatMap(
+            (c) =>
+              ({
+                ...c,
+                path: `${it.path ?? ""}/${c.path ?? ""}`.replace("//", "/"),
+              } as RouteObject)
+          );
 
     console.info("[dev] quickly navigate through all routes while developing:");
     console.table(
       router.routes
         .filter((it) => it.path !== undefined)
+        .flatMap((it) => flatten(it))
+        .flatMap((it) => flatten(it))
         .map((it) => [it.path, location.origin + (it.path || "")])
     );
 
+    const { worker } = await import("./mocks/browser");
     await worker.start();
   }
 };

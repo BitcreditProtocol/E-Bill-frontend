@@ -1,13 +1,13 @@
 import type { Meta,  StoryObj } from '@storybook/react';
 import { withRouter } from 'storybook-addon-remix-react-router';
 import List from './List';
-import __DATA from '../__data';
+import * as contacts from "@/mocks/handlers/contacts/list";
 
 const meta = {
   title: 'Element/Contacts/List',
   component: List,
   args: {
-    values: __DATA
+    values: contacts.data,
   },
   decorators: [
     withRouter,

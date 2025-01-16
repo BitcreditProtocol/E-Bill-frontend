@@ -4,18 +4,17 @@ import { FormattedMessage } from "react-intl";
 import { ChevronLeftIcon, PencilIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import routes from "@/constants/routes";
 
 import type { Contact } from "@/types/contact";
 import { ContactTypes } from "@/types/contact";
 import Form from "./components/Form";
 import Icon from "./components/Icon";
-import TypeFilter from "./components/TypeFilter";
+import TypeSwitch from "./components/TypeSwitch";
 
 function TopBar() {
   const navigate = useNavigate();
   const goBack = () => {
-    navigate(routes.CONTACTS);
+    navigate("../");
   };
 
   return (
@@ -44,7 +43,7 @@ export default function Create() {
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5 select-none">
       <TopBar />
-      <TypeFilter value={type} onChange={setType} />
+      <TypeSwitch value={type} onChange={setType} />
 
       <div className="flex flex-col gap-3 w-16">
         <div className="relative cursor-pointer">
