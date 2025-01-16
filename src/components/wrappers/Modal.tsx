@@ -10,7 +10,7 @@ export default function Modal({ isOpen, children }: ModalProps) {
   if (!isOpen) return <></>;
 
   return createPortal(
-    <Page className="fixed inset-0 z-50 w-full max-w-[375px] mx-auto bg-red-200">
+    <Page className="fixed inset-0 z-50 w-full max-w-[375px] mx-auto">
       {children}
     </Page>,
     document.body
