@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { ChevronRightIcon, UserIcon } from "lucide-react";
 
@@ -13,7 +14,6 @@ import {
 } from "@/components/ui/drawer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 
 function ConfirmSign({ hasAgreedToTerms }: { hasAgreedToTerms: boolean }) {
   return (
