@@ -47,6 +47,16 @@ import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
 
+import Endorsements from "./pages/bills/Endorsements";
+import Endorse from "./pages/bills/Endorse";
+import Payment from "./pages/bills/Payment";
+import Pay from "./pages/bills/Pay";
+
+import RequestMint from "./pages/bills/RequestMint";
+import SelectQuote from "./pages/bills/mint/SelectQuote";
+import Preview from "./pages/bills/mint/Preview";
+import Received from "./pages/bills/mint/Received";
+import Request from "./pages/bills/mint/Request";
 import Warning from "./pages/create-identity/Warning";
 import Category from "./pages/create-identity/Category";
 import AuthorizedSigner from "./pages/create-identity/AuthorizedSigner";
@@ -132,6 +142,42 @@ const router = createBrowserRouter(
         {
           path: routes.PREVIEW_BILL,
           element: <PreviewBill />,
+        },
+        {
+          path: routes.ENDORSEMENTS,
+          element: <Endorsements />,
+        },
+        {
+          path: routes.ENDORSE,
+          element: <Endorse />,
+        },
+        {
+          path: routes.PAYMENT,
+          element: <Payment />,
+        },
+        {
+          path: routes.PAY,
+          element: <Pay />,
+        },
+        {
+          path: routes.REQUEST_MINT,
+          element: <RequestMint />,
+        },
+        {
+          path: routes.SELECT_QUOTE,
+          element: <SelectQuote />,
+        },
+        {
+          path: routes.PREVIEW_MINT,
+          element: <Preview />,
+        },
+        {
+          path: routes.MINT_RECEIVED,
+          element: <Received />,
+        },
+        {
+          path: routes.MINT_REQUEST,
+          element: <Request />,
         },
         {
           path: routes.ONBOARDING,
