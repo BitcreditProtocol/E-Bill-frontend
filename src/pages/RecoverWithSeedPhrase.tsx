@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
-import { ChevronLeftIcon, CircleXIcon, CopyIcon } from "lucide-react";
+import { CircleXIcon, CopyIcon } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import Page from "@/components/wrappers/Page";
+import Topbar from "@/components/Topbar";
+import NavigateBack from "@/components/NavigateBack";
 
 type WordFieldProps = {
   id: number;
@@ -31,12 +33,6 @@ function WordField({ id, value, onChange, onPaste }: WordFieldProps) {
 }
 
 export default function RecoverWithSeedPhrase() {
-  const navigate = useNavigate();
-
-  const goBack = () => {
-    navigate(-1);
-  };
-
   const [seedWords, setSeedWords] = useState(Array<string>(12).fill(""));
 
   const handleInputChange = (index: number, newValue: string) => {
@@ -69,33 +65,24 @@ export default function RecoverWithSeedPhrase() {
   const hasAnyFieldFilled = seedWords.some((word) => word !== "");
 
   return (
-    <Page>
-      <div className="flex flex-col items-center gap-10 text-center">
-        <div className="flex w-full">
-          <button
-            className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6"
-            onClick={goBack}
-          >
-            <ChevronLeftIcon width={16} strokeWidth={1} color="#1B0F00" />
-          </button>
-        </div>
+    <Page className="gap-6">
+      <Topbar className="mb-6" lead={<NavigateBack />} />
 
-        <div className="flex flex-col gap-2">
-          <h1 className="font-sans font-medium text-[24px] mx-3">
-            <FormattedMessage
-              id="seedPhrase.recover.heading"
-              defaultMessage="Recover with seed phrase"
-              description="Heading copy for the recover with seed phrase page"
-            />
-          </h1>
-          <span className="font-normal text-text-200 text-[16px]">
-            <FormattedMessage
-              id="seedPhrase.recover.description"
-              defaultMessage="Please enter your seed phrase to restore your identity"
-              description="Description copy for the recover with seed phrase page"
-            />
-          </span>
-        </div>
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h1 className="text-text-300 text-2xl font-medium leading-8">
+          <FormattedMessage
+            id="seedPhrase.recover.heading"
+            defaultMessage="Recover with seed phrase"
+            description="Heading copy for the recover with seed phrase page"
+          />
+        </h1>
+        <span className="text-text-200 text-base font-normal leading-6 mx-10">
+          <FormattedMessage
+            id="seedPhrase.recover.description"
+            defaultMessage="Please enter your seed phrase to restore your identity"
+            description="Description copy for the recover with seed phrase page"
+          />
+        </span>
       </div>
 
       <div className="flex flex-col gap-11">
