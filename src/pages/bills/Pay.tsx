@@ -1,14 +1,15 @@
 import { FormattedMessage } from "react-intl";
+import { QRCodeSVG } from "qrcode.react";
 import { CopyIcon, SquareArrowOutUpRightIcon } from "lucide-react";
 
+import Page from "@/components/wrappers/Page";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
-import SampleQrCode from "@/assets/sample-qr-code.svg";
 
 export default function Pay() {
   return (
-    <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full">
+    <Page className="gap-6" displayBottomNavigation>
       <Topbar
         lead={<NavigateBack />}
         middle={
@@ -24,7 +25,9 @@ export default function Pay() {
       />
 
       <div className="flex-1 flex flex-col items-center gap-12">
-        <img src={SampleQrCode} className="w-32 h-32 mt-12" />
+        <div className="flex items-center justify-center h-40 w-40 bg-elevation-250 rounded-xl">
+          <QRCodeSVG bgColor="#F2EDDF" value="https://www.bit.cr/" />
+        </div>
 
         <div className="flex flex-col items-center gap-6 text-center">
           <div className="flex flex-col gap-2">
@@ -88,6 +91,6 @@ export default function Pay() {
           <span className="text-text-200 text-[10px]">BTC</span>
         </div>
       </div>
-    </div>
+    </Page>
   );
 }
