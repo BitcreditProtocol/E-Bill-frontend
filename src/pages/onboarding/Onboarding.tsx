@@ -2,9 +2,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router-dom";
 
+import Page from "@/components/wrappers/Page";
 import { Button } from "@/components/ui/button";
 import DotIndicator from "@/components/DotIndicator";
-import layoutLogo from "@/assets/images/layout-logo.svg";
+import OnboardingLogo from "@/assets/images/onboarding-logo.svg";
 import routes from "@/constants/routes";
 
 import { First, Second, Third, Fourth } from "./Screens";
@@ -28,8 +29,8 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full min-h-fit h-screen py-6 px-5 bg-background-ellipse bg-no-repeat select-none">
-      <img src={layoutLogo} className="w-[30px] h-5" />
+    <Page displayBackgroundEllipse>
+      <img src={OnboardingLogo} className="h-3 mt-10 mb-3 self-start" />
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -55,6 +56,6 @@ export default function Onboarding() {
           {currentStep === steps.length - 1 ? "Get started" : "Next"}
         </Button>
       </div>
-    </div>
+    </Page>
   );
 }
