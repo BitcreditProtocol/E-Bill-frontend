@@ -11,7 +11,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import LanguageProvider from "./context/language/LanguageProvider";
 
 import DefaultLayout from "./layouts/Default";
-import CreateIdentityLayout from "./layouts/CreateIdentity";
 
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
@@ -31,7 +30,6 @@ import PreviewBill from "./pages/PreviewBill";
 import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
 
-import Onboarding from "./pages/onboarding/Onboarding";
 import Draw from "./pages/bill/draw/Draw";
 import DrawFilled from "./pages/bill/draw/DrawFilled";
 import EditIssue from "./pages/bill/draw/EditIssue";
@@ -57,11 +55,9 @@ import SelectQuote from "./pages/bills/mint/SelectQuote";
 import Preview from "./pages/bills/mint/Preview";
 import Received from "./pages/bills/mint/Received";
 import Request from "./pages/bills/mint/Request";
-import Warning from "./pages/create-identity/Warning";
-import Category from "./pages/create-identity/Category";
-import AuthorizedSigner from "./pages/create-identity/AuthorizedSigner";
-import BillIssuer from "./pages/create-identity/BillIssuer";
-import Success from "./pages/create-identity/Success";
+
+import GetStarted from "./pages/GetStarted";
+import IdentityCreation from "./pages/identity/create";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +67,10 @@ const router = createBrowserRouter(
       path: routes.ROOT,
       element: <DefaultLayout />,
       children: [
+        {
+          path: routes.CREATE_IDENTITY,
+          element: <IdentityCreation />,
+        },
         {
           path: routes.UNLOCK,
           element: <Unlock />,
@@ -181,7 +181,7 @@ const router = createBrowserRouter(
         },
         {
           path: routes.ONBOARDING,
-          element: <Onboarding />,
+          element: <GetStarted />,
         },
         {
           path: routes.CONTACTS,
@@ -206,32 +206,6 @@ const router = createBrowserRouter(
               loader: View.loader,
             },
           ],
-        },
-      ],
-    },
-    {
-      path: routes.CREATE_IDENTITY,
-      element: <CreateIdentityLayout />,
-      children: [
-        {
-          path: routes.CREATE_IDENTITY,
-          element: <Warning />,
-        },
-        {
-          path: routes.IDENTITY_CATEGORY,
-          element: <Category />,
-        },
-        {
-          path: routes.AUTHORIZED_SIGNER,
-          element: <AuthorizedSigner />,
-        },
-        {
-          path: routes.BILL_ISSUER,
-          element: <BillIssuer />,
-        },
-        {
-          path: routes.SUCCESS,
-          element: <Success />,
         },
       ],
     },
