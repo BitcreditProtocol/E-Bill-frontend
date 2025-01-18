@@ -5,15 +5,7 @@ import { MapIcon, MapPinIcon, MapPinnedIcon } from "lucide-react";
 import { Title, Description } from "@/components/typography/Step";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectGroup,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import CountrySelector from "@/components/CountrySelector";
 
 export default function PostalAddress({
   continueToNextStep,
@@ -64,41 +56,12 @@ export default function PostalAddress({
       </div>
 
       <div className="flex flex-col gap-3">
-        <Select
-          onValueChange={(e) => {
-            setValue("country_of_birth", e);
+        <CountrySelector
+          label={countryLabel}
+          callback={(e) => {
+            setValue("postal_address.country", e);
           }}
-        >
-          <SelectTrigger label={countryLabel} id="postal_address_country">
-            <SelectValue placeholder="Select an option" />
-          </SelectTrigger>
-          <SelectContent>
-            <ScrollArea className="h-[10rem]">
-              <SelectGroup>
-                <SelectItem value="AF">Afghanistan</SelectItem>
-                <SelectItem value="AL">Albania</SelectItem>
-                <SelectItem value="DZ">Algeria</SelectItem>
-                <SelectItem value="AD">Andorra</SelectItem>
-                <SelectItem value="AO">Angola</SelectItem>
-                <SelectItem value="AG">Antigua and Barbuda</SelectItem>
-                <SelectItem value="AR">Argentina</SelectItem>
-                <SelectItem value="AM">Armenia</SelectItem>
-                <SelectItem value="AU">Australia</SelectItem>
-                <SelectItem value="AT">Austria</SelectItem>
-                <SelectItem value="AZ">Azerbaijan</SelectItem>
-                <SelectItem value="BS">Bahamas</SelectItem>
-                <SelectItem value="BH">Bahrain</SelectItem>
-                <SelectItem value="BD">Bangladesh</SelectItem>
-                <SelectItem value="BB">Barbados</SelectItem>
-                <SelectItem value="BY">Belarus</SelectItem>
-                <SelectItem value="BE">Belgium</SelectItem>
-                <SelectItem value="BZ">Belize</SelectItem>
-                <SelectItem value="BJ">Benin</SelectItem>
-                <SelectItem value="BT">Bhutan</SelectItem>
-              </SelectGroup>
-            </ScrollArea>
-          </SelectContent>
-        </Select>
+        />
 
         <Input
           {...register("postal_address.city")}
