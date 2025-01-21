@@ -31,6 +31,9 @@ const BILL_ISSUER = "bill-issuer";
 const AUTHORIZED_SIGNER = "authorized-signer";
 const SUCCESS = "success";
 
+const IDENTITY = "/identity";
+const VIEW_IDENTITY = "/view-identity";
+const AUTHORIZED_SIGNERS = "/authorized-signers";
 const ENDORSEMENTS = "/endorsements";
 const ENDORSE = "/endorse";
 const PAYMENT = "/payment";
@@ -75,6 +78,9 @@ export default {
   SUCCESS,
   VIEW_CONTACT,
   EDIT_CONTACT,
+  IDENTITY,
+  VIEW_IDENTITY,
+  AUTHORIZED_SIGNERS,
   ENDORSEMENTS,
   ENDORSE,
   PAYMENT,

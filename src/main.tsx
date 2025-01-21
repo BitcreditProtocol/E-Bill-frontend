@@ -9,6 +9,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import LanguageProvider from "./context/language/LanguageProvider";
+import IdentityProvider from "./context/identity/IdentityProvider";
 
 import DefaultLayout from "./layouts/Default";
 import CreateIdentityLayout from "./layouts/CreateIdentity";
@@ -47,6 +48,9 @@ import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
 import {Bills} from "./pages/Bills";
 
+import Identity from "./pages/identity";
+import ViewIdentity from "./pages/identity/View";
+import AuthorizedSigners from "./pages/identity/AuthorizedSigners";
 import Endorsements from "./pages/bills/Endorsements";
 import Endorse from "./pages/bills/Endorse";
 import Payment from "./pages/bills/Payment";
@@ -62,6 +66,8 @@ import Category from "./pages/create-identity/Category";
 import AuthorizedSigner from "./pages/create-identity/AuthorizedSigner";
 import BillIssuer from "./pages/create-identity/BillIssuer";
 import Success from "./pages/create-identity/Success";
+
+import { Toaster } from "./components/ui/toaster";
 
 const queryClient = new QueryClient();
 
@@ -207,6 +213,18 @@ const router = createBrowserRouter(
             },
           ],
         },
+        {
+          path: routes.IDENTITY,
+          element: <Identity />,
+        },
+        {
+          path: routes.VIEW_IDENTITY,
+          element: <ViewIdentity />,
+        },
+        {
+          path: routes.AUTHORIZED_SIGNERS,
+          element: <AuthorizedSigners />,
+        },
       ],
     },
     {
@@ -299,14 +317,17 @@ void prepare().then(() => {
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <LanguageProvider>
-          <RouterProvider
-            router={router}
-            future={{
-              v7_startTransition: true,
-            }}
-          />
-        </LanguageProvider>
+        <IdentityProvider>
+          <LanguageProvider>
+            <RouterProvider
+              router={router}
+              future={{
+                v7_startTransition: true,
+              }}
+            />
+            <Toaster />
+          </LanguageProvider>
+        </IdentityProvider>
       </QueryClientProvider>
     </StrictMode>
   );
