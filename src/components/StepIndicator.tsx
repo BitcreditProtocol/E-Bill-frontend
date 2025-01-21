@@ -12,8 +12,8 @@ export default function StepIndicator({
       {Array.from({ length: totalSteps }).map((_, index) => (
         <div
           key={index}
-          className={`h-[2px] w-[22px] rounded-[1px] ${
-            index <= currentStep ? "bg-text-300" : "bg-[#1B0F0033]"
+          className={`h-[2px] w-[22px] rounded-full ${
+            index <= currentStep ? "bg-text-300" : "bg-elevation-350"
           }`}
         />
       ))}
