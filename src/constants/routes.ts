@@ -34,6 +34,20 @@ const SUCCESS = "success";
 const IDENTITY = "/identity";
 const VIEW_IDENTITY = "/view-identity";
 const AUTHORIZED_SIGNERS = "/authorized-signers";
+const ENDORSEMENTS = "/endorsements";
+const ENDORSE = "/endorse";
+const PAYMENT = "/payment";
+const PAY = "/pay";
+
+const REQUEST_MINT = "/request-mint";
+const SELECT_QUOTE = "/select-quote";
+const PREVIEW_MINT = "/preview-mint";
+const MINT_RECEIVED = "/mint-received";
+const MINT_REQUEST = "/mint-request";
+const ABOUT = "/about";
+const NOTIFICATIONS_SETTINGS = "/notifications-settings";
+const SECURITY_SETTINGS = "/security-settings";
+const MINT_SETTINGS = "/mint-settings";
 
 export default {
   ROOT,
@@ -67,5 +81,18 @@ export default {
   IDENTITY,
   VIEW_IDENTITY,
   AUTHORIZED_SIGNERS,
+  ENDORSEMENTS,
+  ENDORSE,
+  PAYMENT,
+  PAY,
+  REQUEST_MINT,
+  SELECT_QUOTE,
+  PREVIEW_MINT,
+  MINT_RECEIVED,
+  MINT_REQUEST,
   ONBOARDING,
+  ABOUT,
+  NOTIFICATIONS_SETTINGS,
+  SECURITY_SETTINGS,
+  MINT_SETTINGS,
 };
