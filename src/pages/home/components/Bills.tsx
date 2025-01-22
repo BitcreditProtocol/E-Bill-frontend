@@ -31,14 +31,28 @@ export default function Bills() {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <span className="flex-1 text-text-300 text-sm font-medium leading-5">
-          <FormattedMessage
-            id="Recent bills"
-            defaultMessage="Recent bills"
-            description="Recent bills section title for home page"
-          />
-        </span>
+      <span className="text-text-300 text-sm font-medium leading-5">
+        <FormattedMessage
+          id="Recent bills"
+          defaultMessage="Recent bills"
+          description="Recent bills section title for home page"
+        />
+      </span>
+
+      <div className="flex flex-col gap-3">
+        {isPending || !data ? (
+          <Loader />
+        ) : (
+          data.map((bill) => (
+            <Bill
+              key={bill.bill_name}
+              title={bill.drawer.name}
+              amount={bill.sum.amount}
+              currency={bill.sum.currency}
+              date={bill.issue_date}
+            />
+          ))
+        )}
 
         <button
           className="flex items-center gap-1 bg-transparent text-brand-200 text-sm font-medium leading-5 mx-auto"

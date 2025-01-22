@@ -31,6 +31,8 @@ const BILL_ISSUER = "bill-issuer";
 const AUTHORIZED_SIGNER = "authorized-signer";
 const SUCCESS = "success";
 
+const CREATE_COMPANY = "/create-company";
+const CREATE_COMPANY_SUCCESS = "success";
 const IDENTITY = "/identity";
 const VIEW_IDENTITY = "/view-identity";
 const AUTHORIZED_SIGNERS = "/authorized-signers";
@@ -71,6 +73,8 @@ export default {
   CREATE_CONTACT,
   SIGNUP,
   SETTINGS,
+  CREATE_COMPANY,
+  CREATE_COMPANY_SUCCESS,
   CREATE_IDENTITY,
   IDENTITY_CATEGORY,
   BILL_ISSUER,
