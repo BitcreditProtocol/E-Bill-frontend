@@ -1,11 +1,6 @@
-import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
-import {
-  BuildingIcon,
-  ChevronRightIcon,
-  EyeIcon,
-  LogOutIcon,
-} from "lucide-react";
+import { BuildingIcon, ChevronRightIcon, LogOutIcon } from "lucide-react";
+
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import { useIdentity } from "@/context/identity/IdentityContext";
@@ -62,20 +57,13 @@ function CreateNewCompanyIdentity() {
   );
 }
 
-function ViewIdentity() {
-  return (
-    <Link to="/view-identity">
-      <button className="flex items-center justify-center h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md">
-        <EyeIcon className="h-5 w-5 text-text-300 stroke-1" />
-      </button>
-    </Link>
-  );
-}
-
 function Logout() {
   return (
     <button className="flex items-center gap-1 text-brand-200 text-xs font-medium">
-      <FormattedMessage id="identity.logout" defaultMessage="Log out account" />
+      <FormattedMessage
+        id="identity.logout"
+        defaultMessage="Remove identity from device"
+      />
 
       <LogOutIcon className="h-3 w-3 stroke-1" />
     </button>
@@ -95,10 +83,13 @@ export default function Identity() {
         lead={<NavigateBack />}
         middle={
           <span className="text-text-300 font-medium leading-6">
-            <FormattedMessage id="identity.title" defaultMessage="Identity" />
+            <FormattedMessage
+              id="identity.title"
+              defaultMessage="Switch identity"
+            />
           </span>
         }
-        trail={<ViewIdentity />}
+        trail={<></>}
       />
 
       <Details
@@ -109,18 +100,27 @@ export default function Identity() {
 
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
-          <IdentityOption
-            type={personalIdentity.type}
-            name={personalIdentity.name}
-            postal_address={personalIdentity.postal_address}
-            node_id={personalIdentity.node_id}
-          />
+          <div className="flex flex-col gap-3">
+            <span className="text-text-200 text-sm font-medium">
+              <FormattedMessage
+                id="identity.personalIdentity.title"
+                defaultMessage="Personal identity"
+              />
+            </span>
+
+            <IdentityOption
+              type={personalIdentity.type}
+              name={personalIdentity.name}
+              postal_address={personalIdentity.postal_address}
+              node_id={personalIdentity.node_id}
+            />
+          </div>
 
           <CompanyIdentitiesList companyIdentities={companyIdentities} />
         </div>
 
         <div className="flex flex-col items-center gap-6">
-          {type === "personal" && <CreateNewCompanyIdentity />}
+          <CreateNewCompanyIdentity />
           <Logout />
         </div>
       </div>
