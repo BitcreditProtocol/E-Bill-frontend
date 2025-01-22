@@ -192,10 +192,6 @@
   "dropdown.option.60days": "60 Days",
   "dropdown.option.6months": "6 Months",
   "dropdown.option.90days": "90 Days",
-  "identity.companyIdentities.title": "Company identities",
-  "identity.createNewCompanyIdentity": "Create new company",
-  "identity.logout": "Log out account",
-  "identity.title": "Identity",
   "endorse.cancel": "Cancel",
   "endorse.confirm": "Confirm",
   "endorse.endorsee": "Endorsee",
@@ -207,6 +203,10 @@
   "endorsement.signer": "Signed",
   "endorsements.sort": "Newest",
   "endorsements.title": "Endorsements ({count})",
+  "identity.companyIdentities.title": "Company identities",
+  "identity.createNewCompanyIdentity": "Create new company",
+  "identity.logout": "Log out account",
+  "identity.title": "Identity",
   "onboarding.screens.first": "The simple trade finance solution. Capital to grow your business.",
   "onboarding.screens.fourth": "Open software, always on, 24x7. Free to download and use for all.",
   "onboarding.screens.second": "B2B direct credit. no middlemen. Easier financing, better terms.",
@@ -251,5 +251,9 @@
   "settings.theme.system": "System",
   "settings.theme.title": "Theme",
   "settings.title": "Settings",
-  "settings.versionNumber": "Version: {version}"
+  "settings.versionNumber": "Version: {version}",
+  "viewIdentity.addAuthorizedSigner": "Add authorized signer",
+  "viewIdentity.editAuthorizedSigners": "Edit authorized signers",
+  "viewIdentity.titleForCompanyIdentity": "Company information",
+  "viewIdentity.titleForPersonalIdentity": "Personal identity"
 }
