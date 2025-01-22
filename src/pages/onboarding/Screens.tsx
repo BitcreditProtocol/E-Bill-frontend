@@ -9,8 +9,8 @@ export function First() {
     <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
-          id="A strong trade credit solution. Directly between businesses"
-          defaultMessage="A strong trade credit solution. Directly between businesses"
+          id="onboarding.screens.first"
+          defaultMessage="The simple trade finance solution. Capital to grow your business."
           description="First onboarding screen title"
         />
       </h1>
@@ -27,8 +27,8 @@ export function Second() {
     <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
-          id="No banks involved. Works even in a banking crisis"
-          defaultMessage="No banks involved. Works even in a banking crisis"
+          id="onboarding.screens.second"
+          defaultMessage="B2B direct credit. no middlemen. Easier financing, better terms."
           description="Second onboarding screen title"
         />
       </h1>
@@ -45,8 +45,8 @@ export function Third() {
     <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
-          id="Reduces the risk of default and the loss in case of default."
-          defaultMessage="Reduces the risk of default and the loss in case of default."
+          id="onboarding.screens.third"
+          defaultMessage="Practical, clear,  and organised. Your finances at your fingertips."
           description="Third onboarding screen title"
         />
       </h1>
@@ -63,8 +63,8 @@ export function Fourth() {
     <div className="h-full flex flex-col justify-between">
       <h1 className="text-text-300 text-[40px] font-normal leading-[50px] tracking-[-0.8px]">
         <FormattedMessage
-          id="Based on proven Bitcoin tech, free to download and use for everyone."
-          defaultMessage="Based on proven Bitcoin tech, free to download and use for everyone."
+          id="onboarding.screens.fourth"
+          defaultMessage="Open software, always on, 24x7. Free to download and use for all."
           description="Fourth onboarding screen title"
         />
       </h1>
