@@ -15,6 +15,7 @@ import TypeFilter from "./components/TypeFilter";
 import { getContacts, searchContacts } from "@/services/contact";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import Page from "@/components/wrappers/Page";
 
 function NoResults() {
   return (
@@ -133,7 +134,7 @@ export default function Overview() {
   }, [isSearchSuccess, searchData]);
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5">
+    <Page className="gap-6" displayBottomNavigation>
       {import.meta.env.DEV && (
         <>
           <Button
@@ -208,6 +209,6 @@ export default function Overview() {
           )}
         </>
       )}
-    </div>
+    </Page>
   );
 }
