@@ -42,7 +42,7 @@ import BillSuccess from "./pages/bill/draw/Success";
 import Settings from "./pages/settings";
 import NotificationsSettings from "./pages/settings/Notifications";
 
-import Create from "./pages/contacts/Create";
+import Create from "./pages/contacts/create";
 import Overview from "./pages/contacts/Overview";
 import View from "./pages/contacts/view";
 // import Edit from "./pages/contacts/Edit";

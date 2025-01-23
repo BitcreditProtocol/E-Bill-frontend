@@ -1,5 +1,5 @@
 import { FormattedMessage } from "react-intl";
-import { Label, Value } from "../components/Typography";
+import { Label, Value } from "../../components/Typography";
 import { Separator } from "@/components/ui/separator";
 
 function Property({
