@@ -1,8 +1,8 @@
 import { FormattedMessage, useIntl } from "react-intl";
-import { BanknoteIcon } from "lucide-react";
-
+import { BanknoteIcon, DollarSignIcon, EuroIcon } from "lucide-react";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
+import BitcoinCurrencyIcon from "@/assets/icons/bitcoin-currency.svg";
 
 import MenuOption from "./MenuOption";
 import { Description, Label } from "./Typography";
@@ -34,7 +34,11 @@ export default function DisplayCurrency() {
           </span>
 
           <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-8 w-8 p-2 bg-[#118200] rounded-full">
+                <DollarSignIcon className="text-white h-4 w-4 stroke-1" />
+              </div>
+
               <div className="flex flex-col gap-0.5">
                 <Label>US Dollar</Label>
                 <Description>USD</Description>
@@ -42,7 +46,11 @@ export default function DisplayCurrency() {
             </div>
             <Separator className="bg-divider-75" />
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-8 w-8 p-2 bg-[#003398] rounded-full">
+                <EuroIcon className="text-white h-4 w-4 stroke-1" />
+              </div>
+
               <div className="flex flex-col gap-0.5">
                 <Label>Euro</Label>
                 <Description>EUR</Description>
@@ -50,7 +58,15 @@ export default function DisplayCurrency() {
             </div>
             <Separator className="bg-divider-75" />
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center  rounded-full">
+                <img
+                  src={BitcoinCurrencyIcon}
+                  alt="Bitcoin"
+                  className="h-8 w-8"
+                />
+              </div>
+
               <div className="flex flex-col gap-0.5">
                 <Label>Bitcoin</Label>
                 <Description>BTC</Description>
@@ -58,7 +74,15 @@ export default function DisplayCurrency() {
             </div>
             <Separator className="bg-divider-75" />
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center  rounded-full">
+                <img
+                  src={BitcoinCurrencyIcon}
+                  alt="Bitcoin"
+                  className="h-8 w-8"
+                />
+              </div>
+
               <div className="flex flex-col gap-0.5">
                 <Label>Bitcoin</Label>
                 <Description>sat</Description>

@@ -41,6 +41,8 @@ import BillSuccess from "./pages/bill/draw/Success";
 
 import Settings from "./pages/settings";
 import NotificationsSettings from "./pages/settings/Notifications";
+import Security from "./pages/settings/Security";
+import Mints from "./pages/settings/Mints";
 
 import Create from "./pages/contacts/Create";
 import Overview from "./pages/contacts/Overview";
@@ -98,6 +100,14 @@ const router = createBrowserRouter(
         {
           path: routes.NOTIFICATIONS_SETTINGS,
           element: <NotificationsSettings />,
+        },
+        {
+          path: routes.MINT_SETTINGS,
+          element: <Mints />,
+        },
+        {
+          path: routes.SECURITY_SETTINGS,
+          element: <Security />,
         },
         {
           path: routes.RESTORE_WITH_SEED_PHRASE,
