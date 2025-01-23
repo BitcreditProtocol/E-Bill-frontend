@@ -1,8 +1,10 @@
 import { useIntl, FormattedMessage } from "react-intl";
 import { EarthIcon } from "lucide-react";
-
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
+import UsFlag from "@/assets/icons/flags/US.svg";
+import EsFlag from "@/assets/icons/flags/ES.svg";
+import UkFlag from "@/assets/icons/flags/UK.svg";
 
 import MenuOption from "./MenuOption";
 import { Description, Label } from "./Typography";
@@ -34,7 +36,9 @@ export default function LanguagePreference() {
           </span>
 
           <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <img src={UsFlag} alt="UK Flag" className="h-8 w-8" />
+
               <div className="flex flex-col gap-0.5">
                 <Label>American English</Label>
                 <Description>US</Description>
@@ -42,7 +46,9 @@ export default function LanguagePreference() {
             </div>
             <Separator className="bg-divider-75" />
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <img src={EsFlag} alt="UK Flag" className="h-8 w-8" />
+
               <div className="flex flex-col gap-0.5">
                 <Label>Spanish</Label>
                 <Description>ES</Description>
@@ -50,7 +56,9 @@ export default function LanguagePreference() {
             </div>
             <Separator className="bg-divider-75" />
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <img src={UkFlag} alt="UK Flag" className="h-8 w-8" />
+
               <div className="flex flex-col gap-0.5">
                 <Label>British English</Label>
                 <Description>UK</Description>

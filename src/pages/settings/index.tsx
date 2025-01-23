@@ -12,6 +12,8 @@ import {
 
 import Page from "@/components/wrappers/Page";
 import { Separator } from "@/components/ui/separator";
+import ViewDetails from "@/components/Identity/ViewDetails";
+import { useIdentity } from "@/context/identity/IdentityContext";
 import routes from "@/constants/routes";
 
 import DisplayCurrency from "./components/DisplayCurrency";
@@ -41,6 +43,8 @@ function MenuLink({ icon, label, link }: MenuLinkProps) {
 }
 
 export default function Settings() {
+  const { identity } = useIdentity();
+
   return (
     <Page className="gap-6" displayBottomNavigation>
       <div className="flex items-center justify-between">
@@ -54,6 +58,12 @@ export default function Settings() {
 
         <PowerIcon className="text-text-300 h-6 w-6 stroke-1" />
       </div>
+
+      <ViewDetails
+        type={identity.type}
+        name={identity.name}
+        bitcoin_public_key={identity.bitcoin_public_key}
+      />
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-4 py-6 px-4 border border-divider-75 rounded-xl">
