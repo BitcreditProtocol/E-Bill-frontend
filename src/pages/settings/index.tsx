@@ -1,9 +1,8 @@
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { Link } from "react-router-dom";
 import {
   AlignVerticalJustifyCenterIcon,
   BellDotIcon,
-  ChevronRightIcon,
   InfoIcon,
   LandmarkIcon,
   LockIcon,
@@ -20,29 +19,10 @@ import DisplayCurrency from "./components/DisplayCurrency";
 import LanguagePreference from "./components/LanguagePreference";
 import Agreements from "./components/Agreements";
 import Theme from "./components/Theme";
-
-type MenuLinkProps = {
-  icon: React.ReactNode;
-  label: string;
-  link: string;
-};
-
-function MenuLink({ icon, label, link }: MenuLinkProps) {
-  return (
-    <Link className="flex items-center justify-between" to={link}>
-      <div className="flex items-center gap-3">
-        {icon}
-        <span className="text-text-300 text-base font-medium leading-6">
-          {label}
-        </span>
-      </div>
-
-      <ChevronRightIcon className="text-text-300 h-6 w-6 stroke-1" />
-    </Link>
-  );
-}
+import MenuOption from "./components/MenuOption";
 
 export default function Settings() {
+  const intl = useIntl();
   const { identity } = useIdentity();
 
   return (
@@ -75,10 +55,13 @@ export default function Settings() {
             />
           </span>
 
-          <MenuLink
+          <MenuOption
             icon={<InfoIcon className="text-text-300 h-6 w-6 stroke-1" />}
-            label="About"
-            link={routes.ABOUT}
+            label={intl.formatMessage({
+              id: "settings.menu.about",
+              defaultMessage: "About",
+              description: "About menu item",
+            })}
           />
           <Separator className="bg-divider-75" />
 
@@ -88,37 +71,59 @@ export default function Settings() {
           <LanguagePreference />
           <Separator className="bg-divider-75" />
 
-          <MenuLink
+          <MenuOption
             icon={
               <AlignVerticalJustifyCenterIcon className="text-text-300 h-6 w-6 stroke-1" />
             }
-            label="Decimals"
-            link={routes.ABOUT}
+            label={intl.formatMessage({
+              id: "settings.menu.decimals",
+              defaultMessage: "Decimals",
+              description: "Decimals menu item",
+            })}
+            defaultValue="Point"
           />
           <Separator className="bg-divider-75" />
 
           <Theme />
           <Separator className="bg-divider-75" />
 
-          <MenuLink
-            icon={<BellDotIcon className="text-text-300 h-6 w-6 stroke-1" />}
-            label="Notifications"
-            link={routes.NOTIFICATIONS_SETTINGS}
-          />
+          <Link to={routes.NOTIFICATIONS_SETTINGS}>
+            <MenuOption
+              icon={<BellDotIcon className="text-text-300 h-6 w-6 stroke-1" />}
+              label={intl.formatMessage({
+                id: "settings.menu.notifications",
+                defaultMessage: "Notifications",
+                description: "Notifications menu item",
+              })}
+              defaultValue="Push & email"
+            />
+          </Link>
           <Separator className="bg-divider-75" />
 
-          <MenuLink
-            icon={<LandmarkIcon className="text-text-300 h-6 w-6 stroke-1" />}
-            label="Mints"
-            link={routes.ABOUT}
-          />
+          <Link to={routes.MINT_SETTINGS}>
+            <MenuOption
+              icon={<LandmarkIcon className="text-text-300 h-6 w-6 stroke-1" />}
+              label={intl.formatMessage({
+                id: "settings.menu.mints",
+                defaultMessage: "Mints",
+                description: "Mints menu item",
+              })}
+              defaultValue="Wildcat One"
+            />
+          </Link>
           <Separator className="bg-divider-75" />
 
-          <MenuLink
-            icon={<LockIcon className="text-text-300 h-6 w-6 stroke-1" />}
-            label="Security"
-            link={routes.ABOUT}
-          />
+          <Link to={routes.SECURITY_SETTINGS}>
+            <MenuOption
+              icon={<LockIcon className="text-text-300 h-6 w-6 stroke-1" />}
+              label={intl.formatMessage({
+                id: "settings.menu.security",
+                defaultMessage: "Security",
+                description: "Security menu item",
+              })}
+              defaultValue="PIN & reset"
+            />
+          </Link>
           <Separator className="bg-divider-75" />
 
           <Agreements />

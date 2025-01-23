@@ -18,12 +18,12 @@ export default function ViewDetails({
     <div className="flex items-center gap-3">
       <IdentityAvatar name={name} picture="" identityType={type} size="lg" />
 
-      <div className="flex flex-col gap-1.5">
-        <span className="text-text-300 text-center text-xl font-medium leading-[1.875rem]">
+      <div className="flex flex-col items-start gap-1.5">
+        <span className="text-text-300 text-center text-base font-medium leading-6">
           {name}
         </span>
 
-        <button className="flex items-center gap-1 text-text-200 text-xs leading-[1.125rem]">
+        <button className="flex items-center gap-1 text-text-200 text-xs leading-3">
           {truncatedBitcoinPublicKey}
 
           <CopyIcon className="h-4 w-4 stroke-1" />

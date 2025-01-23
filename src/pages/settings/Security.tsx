@@ -2,14 +2,20 @@ import { FormattedMessage, useIntl } from "react-intl";
 import {
   ChevronRightIcon,
   KeyRoundIcon,
+  LockIcon,
   OctagonAlertIcon,
   RefreshCwIcon,
 } from "lucide-react";
+
 import NavigateBack from "@/components/NavigateBack";
 import Topbar from "@/components/Topbar";
 import Page from "@/components/wrappers/Page";
-import { Label } from "./components/Typography";
 import PageTitle from "@/components/typography/PageTitle";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+
+import { Label } from "./components/Typography";
+import ResetConfirmation from "./components/ResetConfirmation";
 
 function Option({
   icon,
@@ -57,6 +63,36 @@ export default function Security() {
       />
 
       <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 py-6 px-4 border border-divider-75 rounded-xl">
+          <div className="flex flex-col gap-2">
+            <span className="text-text-300 text-sm font-medium leading-5">
+              <FormattedMessage
+                id="settings.security.loginWithPin"
+                defaultMessage="Login with PIN code"
+                description="Login with PIN code option"
+              />
+            </span>
+            <span className="text-text-200 text-base font-normal leading-6">
+              <FormattedMessage
+                id="settings.security.loginWithPin.description"
+                defaultMessage="Use your PIN code to unlock the app"
+                description="Login with PIN code option description"
+              />
+            </span>
+          </div>
+
+          <Separator className="bg-divider-75" />
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <LockIcon className="text-text-300 h-6 w-6 stroke-1" />
+              <Label>On</Label>
+            </div>
+
+            <Switch />
+          </div>
+        </div>
+
         <Option
           icon={<RefreshCwIcon className="text-text-300 h-6 w-6 stroke-1" />}
           label={intl.formatMessage({
@@ -81,17 +117,21 @@ export default function Security() {
           })}
         />
 
-        <Option
-          icon={<OctagonAlertIcon className="text-text-300 h-6 w-6 stroke-1" />}
-          label={intl.formatMessage({
-            id: "settings.security.resetApp",
-            defaultMessage: "Reset app",
-          })}
-          description={intl.formatMessage({
-            id: "settings.security.resetAppDescription",
-            defaultMessage: "Remove identity",
-          })}
-        />
+        <ResetConfirmation>
+          <Option
+            icon={
+              <OctagonAlertIcon className="text-text-300 h-6 w-6 stroke-1" />
+            }
+            label={intl.formatMessage({
+              id: "settings.security.resetApp",
+              defaultMessage: "Reset app",
+            })}
+            description={intl.formatMessage({
+              id: "settings.security.resetAppDescription",
+              defaultMessage: "Remove identity",
+            })}
+          />
+        </ResetConfirmation>
       </div>
     </Page>
   );
