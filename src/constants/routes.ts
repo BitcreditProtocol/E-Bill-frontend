@@ -51,6 +51,9 @@ const NOTIFICATIONS_SETTINGS = "/notifications-settings";
 const SECURITY_SETTINGS = "/security-settings";
 const MINT_SETTINGS = "/mint-settings";
 
+const NON_ACCEPTANCE = "/non-acceptance";
+const NON_PAYMENT = "/non-payment";
+
 export default {
   ROOT,
   LOGIN,
@@ -99,4 +102,6 @@ export default {
   NOTIFICATIONS_SETTINGS,
   SECURITY_SETTINGS,
   MINT_SETTINGS,
+  NON_ACCEPTANCE,
+  NON_PAYMENT,
 };
