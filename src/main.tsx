@@ -17,7 +17,7 @@ import CreateIdentityLayout from "./layouts/CreateIdentity";
 import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import { Notifications, NotificationsEmpty } from "./pages/Notifications";
 import routes from "./constants/routes";
 
@@ -48,7 +48,7 @@ import Create from "./pages/contacts/Create";
 import Overview from "./pages/contacts/Overview";
 import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
-import Bills from "./pages/bills";
+import {Bills} from "./pages/Bills";
 
 import Identity from "./pages/identity";
 import ViewIdentity from "./pages/identity/View";
