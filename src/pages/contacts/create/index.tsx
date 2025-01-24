@@ -12,6 +12,7 @@ import {
   MapPinIcon,
   MapPinnedIcon,
   ShieldCheckIcon,
+  MailIcon,
 } from "lucide-react";
 
 import Page from "@/components/wrappers/Page";
@@ -19,18 +20,22 @@ import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import StepIndicator from "@/components/StepIndicator";
 import { Description, Title } from "@/components/typography/Step";
+import UploadAvatar from "@/components/UploadAvatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/DatePicker/datePicker";
 import CountrySelector from "@/components/CountrySelector";
+import { getInitials } from "@/utils";
 
 import SwitchContactType from "./components/SwitchContactType";
 import Preview from "./Preview";
+import PageTitle from "@/components/typography/PageTitle";
 
 const formSchema = z.object({
   type: z.enum(["person", "company", "mint"]),
   node_id: z.string().min(1),
   name: z.string().min(1),
+  email: z.string().email().min(1),
 
   country: z.string().min(1),
   city: z.string().min(1),
@@ -56,11 +61,11 @@ function RequiredInformation({
   const [isDataValid, setIsDataValid] = useState(false);
 
   const { register, watch, trigger } = useFormContext();
-  const watchRequiredValues = watch(["node_id", "name"]);
+  const watchRequiredValues = watch(["node_id", "name", "email"]);
 
   useEffect(() => {
     const validateData = async () => {
-      const isValid = await trigger(["node_id", "name"]);
+      const isValid = await trigger(["node_id", "name", "email"]);
 
       setIsDataValid(isValid);
     };
@@ -77,6 +82,17 @@ function RequiredInformation({
     id: "contacts.create.requiredInformation.personalName",
     defaultMessage: "Legal full name",
     description: "Label for personal name input",
+  });
+
+  const companyEmailLabel = intl.formatMessage({
+    id: "contacts.create.requiredInformation.companyEmail",
+    defaultMessage: "Company email",
+    description: "Label for company email input",
+  });
+  const personEmailLabel = intl.formatMessage({
+    id: "contacts.create.requiredInformation.personalEmail",
+    defaultMessage: "Email address",
+    description: "Label for personal email input",
   });
 
   return (
@@ -109,6 +125,14 @@ function RequiredInformation({
             defaultMessage: "Node ID",
             description: "Label for node ID input",
           })}
+          required
+        />
+        <Input
+          {...register("email")}
+          icon={<MailIcon className="text-text-300 h-5 w-5 stroke-1" />}
+          label={
+            contactType === "person" ? personEmailLabel : companyEmailLabel
+          }
           required
         />
         <Input
@@ -240,23 +264,30 @@ function PostalAddress({
 function OptionalInformation({
   contactType,
   switchContact,
+  setProfilePicturePreview,
   moveToNextStep,
 }: {
   contactType: "person" | "company" | "mint";
   switchContact: React.ReactNode;
+  setProfilePicturePreview: (file: string) => void;
   moveToNextStep: () => void;
 }) {
   const intl = useIntl();
   const [isDataValid, setIsDataValid] = useState(false);
   const [currentDate, setCurrentDate] = useState();
 
-  const { register, watch, trigger, setValue } = useFormContext();
+  const { register, watch, trigger, getValues, setValue } = useFormContext();
   const watchRequiredValues = watch([
     "date_of_registration",
     "country_of_registration",
     "city_of_registration",
     "registration_number",
   ]);
+
+  const handleSavePreview = (previewUrl: string) => {
+    setProfilePicturePreview(previewUrl); // Save the preview URL for later use
+  };
+  const avatarFallback = getInitials(getValues("name") as string);
 
   useEffect(() => {
     const validateData = async () => {
@@ -350,6 +381,18 @@ function OptionalInformation({
       <div className="mx-auto">{switchContact}</div>
 
       <div className="flex flex-col gap-3">
+        <div className="mb-5 mx-auto">
+          <UploadAvatar
+            name={avatarFallback}
+            onSavePreview={handleSavePreview}
+            label={intl.formatMessage({
+              id: "Add photo",
+              defaultMessage: "Add photo",
+              description: "Label for avatar upload",
+            })}
+          />
+        </div>
+
         <DatePicker
           label={
             contactType === "person"
@@ -418,6 +461,7 @@ export default function Create() {
   const [contactType, setContactType] = useState<"person" | "company" | "mint">(
     "person"
   );
+  const [profilePicturePreview, setProfilePicturePreview] = useState("");
   const [isPreview, setIsPreview] = useState(false);
 
   const methods = useForm({
@@ -469,6 +513,7 @@ export default function Create() {
     <OptionalInformation
       contactType={contactType}
       switchContact={contactTypeSwitch}
+      setProfilePicturePreview={setProfilePicturePreview}
       moveToNextStep={() => {
         setIsPreview(true);
       }}
@@ -492,11 +537,31 @@ export default function Create() {
           />
         }
         middle={
-          <StepIndicator totalSteps={steps.length} currentStep={currentStep} />
+          isPreview ? (
+            <PageTitle>
+              <FormattedMessage
+                id="contacts.create.preview.title"
+                defaultMessage="Preview"
+                description="Title for contact creation preview"
+              />
+            </PageTitle>
+          ) : (
+            <StepIndicator
+              totalSteps={steps.length}
+              currentStep={currentStep}
+            />
+          )
         }
       />
       <FormProvider {...methods}>
-        {isPreview ? <Preview contactType={contactType} /> : steps[currentStep]}
+        {isPreview ? (
+          <Preview
+            profilePicturePreview={profilePicturePreview}
+            contactType={contactType}
+          />
+        ) : (
+          steps[currentStep]
+        )}
       </FormProvider>
     </Page>
   );

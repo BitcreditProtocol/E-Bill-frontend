@@ -10,23 +10,25 @@ import IdentityAvatar from "@/components/IdentityAvatar";
 
 function Details({
   contactType,
-  avatar,
   name,
   nodeId,
+  profilePicturePreview,
 }: {
   contactType: "person" | "company" | "mint";
   avatar: string;
   name: string;
   nodeId: string;
+  profilePicturePreview: string;
 }) {
   return (
     <div className="flex flex-col items-center gap-4">
       <IdentityAvatar
-        picture={avatar}
+        picture={profilePicturePreview}
         name={name}
         size="lg"
         identityType={contactType === "person" ? "personal" : "company"}
       />
+
       <div className="flex flex-col gap-2">
         <span className="text-text-300 text-xl font-medium leading-normal">
           {name}
@@ -75,12 +77,19 @@ function Property({
 
 export default function Preview({
   contactType,
+  profilePicturePreview,
 }: {
   contactType: "person" | "company" | "mint";
+  profilePicturePreview: string;
 }) {
   const intl = useIntl();
   const { getValues } = useFormContext();
 
+  const personEmailAddressLabel = intl.formatMessage({
+    id: "contacts.create.preview.email",
+    defaultMessage: "Email address",
+    description: "Label for email",
+  });
   const personPostalAddressLabel = intl.formatMessage({
     id: "contacts.create.preview.postalAddress",
     defaultMessage: "Postal address",
@@ -107,8 +116,13 @@ export default function Preview({
     description: "Label for social security number",
   });
 
+  const companyEmailAddressLabel = intl.formatMessage({
+    id: "contacts.create.preview.companyEmail",
+    defaultMessage: "Company email",
+    description: "Label for company email",
+  });
   const companyPostalAddressLabel = intl.formatMessage({
-    id: "contacts.create.preview.postalAddress",
+    id: "contacts.create.preview.companyAddress",
     defaultMessage: "Postal address",
     description: "Label for postal address",
   });
@@ -145,9 +159,20 @@ export default function Preview({
         avatar=""
         name={getValues("name") as string}
         nodeId={getValues("node_id") as string}
+        profilePicturePreview={profilePicturePreview}
       />
 
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
+        <Property
+          label={
+            contactType === "person"
+              ? personEmailAddressLabel
+              : companyEmailAddressLabel
+          }
+          value={getValues("email") as string}
+        />
+        <Separator className="bg-divider-75" />
+
         <Property
           label={
             contactType === "person"
