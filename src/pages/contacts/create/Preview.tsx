@@ -1,8 +1,54 @@
 import { useFormContext } from "react-hook-form";
 import { useIntl } from "react-intl";
+import { CopyIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { Label, Value } from "../components/Typography";
 import { COUNTRIES } from "@/constants/countries";
+import { truncateString } from "@/utils/strings";
+import { copyToClipboard } from "@/utils";
+import { Label, Value } from "../components/Typography";
+import IdentityAvatar from "@/components/IdentityAvatar";
+
+function Details({
+  contactType,
+  avatar,
+  name,
+  nodeId,
+}: {
+  contactType: "person" | "company" | "mint";
+  avatar: string;
+  name: string;
+  nodeId: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <IdentityAvatar
+        picture={avatar}
+        name={name}
+        size="lg"
+        identityType={contactType === "person" ? "personal" : "company"}
+      />
+      <div className="flex flex-col gap-2">
+        <span className="text-text-300 text-xl font-medium leading-normal">
+          {name}
+        </span>
+
+        <div className="flex items-center justify-center gap-1">
+          <span className="text-text-200 text-xs font-normal leading-normal">
+            {truncateString(nodeId, 10)}
+          </span>
+          <button
+            className="p-0"
+            onClick={() => {
+              void copyToClipboard(nodeId);
+            }}
+          >
+            <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Property({
   label,
@@ -94,6 +140,13 @@ export default function Preview({
 
   return (
     <div className="flex flex-col gap-6">
+      <Details
+        contactType={contactType}
+        avatar=""
+        name={getValues("name") as string}
+        nodeId={getValues("node_id") as string}
+      />
+
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
         <Property
           label={
