@@ -30,6 +30,7 @@ import { getInitials } from "@/utils";
 import SwitchContactType from "./components/SwitchContactType";
 import Preview from "./Preview";
 import PageTitle from "@/components/typography/PageTitle";
+import Upload from "@/components/Upload";
 
 const formSchema = z.object({
   type: z.enum(["person", "company", "mint"]),
@@ -46,6 +47,9 @@ const formSchema = z.object({
   country_of_registration: z.string().min(1),
   city_of_registration: z.string().min(1),
   registration_number: z.string().min(1),
+
+  document_name: z.string().min(1),
+  document_size: z.string().min(1),
 });
 
 function RequiredInformation({
@@ -282,6 +286,8 @@ function OptionalInformation({
     "country_of_registration",
     "city_of_registration",
     "registration_number",
+    "document_name",
+    "document_size",
   ]);
 
   const handleSavePreview = (previewUrl: string) => {
@@ -296,6 +302,8 @@ function OptionalInformation({
         "country_of_registration",
         "city_of_registration",
         "registration_number",
+        "document_name",
+        "document_size",
       ]);
 
       setIsDataValid(isValid);
@@ -310,6 +318,8 @@ function OptionalInformation({
       "country_of_registration",
       "city_of_registration",
       "registration_number",
+      "document_name",
+      "document_size",
     ].forEach((field) => {
       setValue(field, "");
     });
@@ -357,6 +367,17 @@ function OptionalInformation({
     id: "contacts.create.optionalInformation.socialSecurityNumber",
     defaultMessage: "Social security number",
     description: "Label for social security number input",
+  });
+
+  const companyRegistrationDocumentLabel = intl.formatMessage({
+    id: "contacts.create.optionalInformation.registrationDocument",
+    defaultMessage: "Registration document",
+    description: "Label for registration document input",
+  });
+  const personRegistrationDocumentLabel = intl.formatMessage({
+    id: "contacts.create.optionalInformation.registrationDocument",
+    defaultMessage: "Identity document",
+    description: "Label for registration document input",
   });
 
   return (
@@ -432,6 +453,26 @@ function OptionalInformation({
               : companyRegistrationNumberLabel
           }
         />
+        <Upload
+          label={
+            contactType === "person"
+              ? personRegistrationDocumentLabel
+              : companyRegistrationDocumentLabel
+          }
+          description="PDF, PNG or JPG (max. 5mb)"
+          onAddFile={(file) => {
+            setValue("document_name", file.name);
+            setValue("document_size", Math.round(file.size / 1024).toString());
+            console.log(file);
+
+            console.log(getValues("document_name"));
+            console.log(getValues("document_size"));
+          }}
+          onRemoveFile={() => {
+            setValue("document_name", "");
+            setValue("document_size", "");
+          }}
+        />
       </div>
 
       <div className="flex flex-col gap-2 mt-auto">
@@ -470,6 +511,7 @@ export default function Create() {
       type: "person",
       node_id: "",
       name: "",
+      email: "",
       country: "",
       city: "",
       zip: "",
@@ -478,6 +520,9 @@ export default function Create() {
       country_of_registration: "",
       city_of_registration: "",
       registration_number: "",
+
+      document_name: "",
+      document_size: "",
     },
   });
 

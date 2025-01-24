@@ -1,9 +1,7 @@
-import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeftIcon, PencilIcon } from "lucide-react";
-import Details from "./components/Details";
 import Delete from "./components/Delete";
-import type { Contact } from "@/types/contact";
-import * as contacts from "@/mocks/handlers/contacts/list";
+import ViewContact from "./view";
 
 function TopBar() {
   const navigate = useNavigate();
@@ -39,21 +37,26 @@ function TopBar() {
 }
 
 export default function View() {
-  const value = useLoaderData() as Contact | null | undefined;
-
   return (
     <div className="flex flex-col items-center gap-6 w-full min-h-fit h-screen py-4 px-5 select-none">
       <TopBar />
-      {value && (<>
-        <Details {...value} />
+      <>
+        <ViewContact
+          contactType="person"
+          name="John Doe"
+          email="john@doe.com"
+          country="AT"
+          city="Vienna"
+          zip="1010"
+          street="Stephansplatz 1"
+          dateOfRegistration="16-Jan-2025"
+          countryOfRegistration="AT"
+          cityOfRegistration="Vienna"
+          registrationNumber="FN 123456"
+          nodeId="node-123456"
+        />
         <Delete />
-      </>)}
+      </>
     </div>
   );
 }
-
-const loader: LoaderFunction<Contact['node_id']> = async ({ params }): Promise<Contact | null> => {
-  return await Promise.resolve(contacts.data.find((it) => it.node_id === params.node_id) || null);
-}
-
-View.loader = loader;

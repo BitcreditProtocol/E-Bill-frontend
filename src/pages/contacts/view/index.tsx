@@ -1,5 +1,5 @@
 import { useIntl, FormattedMessage } from "react-intl";
-import { PencilIcon, CopyIcon } from "lucide-react";
+import { PencilIcon, CopyIcon, CircleCheckIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
@@ -10,6 +10,25 @@ import { truncateString } from "@/utils/strings";
 import type { Contact } from "@/types/contact";
 import { Label, Value } from "../components/Typography";
 import Delete from "../components/Delete";
+
+function UploadedFile({ name, size }: { name: string; size: string }) {
+  return (
+    <div className="flex items-center justify-between p-4 bg-elevation-200 border border-divider-50 rounded-lg">
+      <div className="flex gap-1 items-center">
+        <span className="text-text-300 text-sm font-medium leading-5">
+          {name}
+        </span>
+        <span className="text-text-200 text-xs font-normal leading-[18px]">
+          {size} KB
+        </span>
+        <CircleCheckIcon
+          className="h-4 w-4 text-signal-success"
+          strokeWidth={1}
+        />
+      </div>
+    </div>
+  );
+}
 
 function Property({
   label,
@@ -196,14 +215,14 @@ export default function View({
 
       <Details
         type={contactType === "person" ? "personal" : "company"}
-        name={name}
-        nodeId={nodeId}
+        name={"John Doe"}
+        nodeId={nodeId || "bitcrFF09210aabb111"}
       />
 
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
         <Property
           label={contactType === "person" ? personNameLabel : companyNameLabel}
-          value={name}
+          value={name || "John Doe"}
         />
         <Separator className="bg-divider-75" />
 
@@ -211,7 +230,7 @@ export default function View({
           label={
             contactType === "person" ? personEmailLabel : companyEmailLabel
           }
-          value={email}
+          value={email || "john@doe.com"}
         />
         <Separator className="bg-divider-75" />
 
@@ -219,7 +238,9 @@ export default function View({
           label={
             contactType === "person" ? personAddressLabel : companyAddressLabel
           }
-          value={`${street}, ${zip} ${city}, ${country}`}
+          value={`${street || "Street 1"}, ${zip || "09181"} ${
+            city || "Vienna"
+          }, ${country || "AT"}`}
         />
         <Separator className="bg-divider-75" />
 
@@ -229,7 +250,7 @@ export default function View({
               ? personBirthDateLabel
               : companyRegistrationDateLabel
           }
-          value={dateOfRegistration}
+          value={dateOfRegistration || "16-Jan-2025"}
         />
         <Separator className="bg-divider-75" />
 
@@ -239,7 +260,7 @@ export default function View({
               ? personCountryOfBirthLabel
               : companyCountryOfRegistrationLabel
           }
-          value={countryOfRegistration}
+          value={countryOfRegistration || "AT"}
         />
         <Separator className="bg-divider-75" />
 
@@ -249,7 +270,7 @@ export default function View({
               ? personCityOfBirthLabel
               : companyCityOfRegistrationLabel
           }
-          value={cityOfRegistration}
+          value={cityOfRegistration || "Vienna"}
         />
         <Separator className="bg-divider-75" />
 
@@ -259,7 +280,7 @@ export default function View({
               ? personRegistrationNumberLabel
               : companyRegistrationNumberLabel
           }
-          value={registrationNumber}
+          value={registrationNumber || "FN 123456"}
         />
         <Separator className="bg-divider-75" />
 
@@ -269,7 +290,7 @@ export default function View({
               ? personRegistrationDocumentLabel
               : companyRegistrationDocumentLabel
           }
-          value="Registration document"
+          value={<UploadedFile name="registration.pdf" size="165" />}
         />
       </div>
 

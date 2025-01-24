@@ -1,12 +1,32 @@
 import { useFormContext } from "react-hook-form";
-import { useIntl } from "react-intl";
-import { CopyIcon } from "lucide-react";
+import { FormattedMessage, useIntl } from "react-intl";
+import { CircleCheckIcon, CopyIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { COUNTRIES } from "@/constants/countries";
 import { truncateString } from "@/utils/strings";
 import { copyToClipboard } from "@/utils";
 import { Label, Value } from "../components/Typography";
 import IdentityAvatar from "@/components/IdentityAvatar";
+import { Button } from "@/components/ui/button";
+
+function UploadedFile({ name, size }: { name: string; size: string }) {
+  return (
+    <div className="flex items-center justify-between p-4 bg-elevation-200 border border-divider-50 rounded-lg">
+      <div className="flex gap-1 items-center">
+        <span className="text-text-300 text-sm font-medium leading-5">
+          {name}
+        </span>
+        <span className="text-text-200 text-xs font-normal leading-[18px]">
+          {size} KB
+        </span>
+        <CircleCheckIcon
+          className="h-4 w-4 text-signal-success"
+          strokeWidth={1}
+        />
+      </div>
+    </div>
+  );
+}
 
 function Details({
   contactType,
@@ -115,6 +135,11 @@ export default function Preview({
     defaultMessage: "Social security number",
     description: "Label for social security number",
   });
+  const personRegistrationDocumentLabel = intl.formatMessage({
+    id: "contacts.create.preview.registrationDocument",
+    defaultMessage: "Identity document",
+    description: "Label for registration document",
+  });
 
   const companyEmailAddressLabel = intl.formatMessage({
     id: "contacts.create.preview.companyEmail",
@@ -145,6 +170,11 @@ export default function Preview({
     id: "contacts.create.preview.registrationNumber",
     defaultMessage: "Registration number",
     description: "Label for registration number",
+  });
+  const companyRegistrationDocumentLabel = intl.formatMessage({
+    id: "contacts.create.preview.registrationDocument",
+    defaultMessage: "Registration document",
+    description: "Label for registration document",
   });
 
   const address = `${getValues("street") as string},
@@ -216,6 +246,38 @@ export default function Preview({
           value={getValues("registration_number") as string}
         />
         <Separator className="bg-divider-75" />
+
+        <Property
+          label={
+            contactType === "person"
+              ? personRegistrationDocumentLabel
+              : companyRegistrationDocumentLabel
+          }
+          value={
+            <UploadedFile
+              name={getValues("document_name") as string}
+              size={getValues("document_size") as string}
+            />
+          }
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Button size="md">
+          <FormattedMessage
+            id="contacts.create.preview.save"
+            defaultMessage="Save"
+            description="Save contact button"
+          />
+        </Button>
+
+        <Button size="md" variant="outline">
+          <FormattedMessage
+            id="contacts.create.preview.cancel"
+            defaultMessage="Cancel"
+            description="Cancel contact creation button"
+          />
+        </Button>
       </div>
     </div>
   );
