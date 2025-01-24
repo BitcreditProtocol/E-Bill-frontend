@@ -73,6 +73,7 @@ import CreateCompany from "./pages/create-company";
 import CreateCompanySuccess from "./pages/create-company/Success";
 
 import NonAcceptance from "./pages/recourse/NonAcceptance";
+import NonPayment from "./pages/recourse/NonPayment";
 
 import { Toaster } from "./components/ui/toaster";
 
@@ -207,6 +208,10 @@ const router = createBrowserRouter(
         {
           path: routes.NON_ACCEPTANCE,
           element: <NonAcceptance />,
+        },
+        {
+          path: routes.NON_PAYMENT,
+          element: <NonPayment />,
         },
         {
           path: routes.CONTACTS,

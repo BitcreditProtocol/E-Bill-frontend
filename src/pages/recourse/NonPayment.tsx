@@ -14,6 +14,7 @@ import IdentityAvatar from "@/components/IdentityAvatar";
 import BitcoinCurrencyIcon from "@/assets/icons/bitcoin-currency.svg";
 import Holder from "./components/Holder";
 import Sign from "./components/Sign";
+import CalculateDiscount from "./components/CalculateDiscount";
 
 function RequestRecourse({
   holders,
@@ -89,13 +90,17 @@ function Review({
       </div>
 
       <div className="flex flex-col gap-2">
-        <span className="text-text-300 text-sm font-medium leading-5">
-          <FormattedMessage
-            id="bill.recourse.nonAcceptance.sum"
-            defaultMessage="Request the sum of"
-            description="Request the sum of label"
-          />
-        </span>
+        <div className="flex items-center justify-between">
+          <span className="text-text-300 text-sm font-medium leading-5">
+            <FormattedMessage
+              id="bill.recourse.nonAcceptance.sum"
+              defaultMessage="Request the sum of"
+              description="Request the sum of label"
+            />
+          </span>
+
+          <CalculateDiscount />
+        </div>
 
         <div className="flex items-center gap-2 py-5 px-4 bg-elevation-200 border border-divider-50 rounded-lg">
           <img
@@ -148,7 +153,7 @@ const holders = [
   },
 ];
 
-export default function NonAcceptance() {
+export default function NonPayment() {
   const [selectedHolder, setSelectedHolder] = useState<null | number>(null);
   const [currentStep, setCurrentStep] = useState<"select_holder" | "review">(
     "select_holder"
