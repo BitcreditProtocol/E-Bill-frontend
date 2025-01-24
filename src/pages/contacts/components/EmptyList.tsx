@@ -5,7 +5,7 @@ import contactsIllustration from "@/assets/contacts-illustration.svg";
 
 export default function EmptyList() {
   return (
-    <div className="flex-1 flex flex-col items-center pt-10 w-52">
+    <div className="flex-1 flex flex-col items-center pt-10 w-52 mx-auto">
       <img src={contactsIllustration} className="w-18 h-18 mx-auto mb-5" />
 
       <div className="flex flex-col items-center gap-2 text-center mb-4">

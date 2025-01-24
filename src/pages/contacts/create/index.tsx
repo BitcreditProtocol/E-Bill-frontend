@@ -40,7 +40,7 @@ const formSchema = z.object({
 
   country: z.string().min(1),
   city: z.string().min(1),
-  zip: z.string().min(1),
+  zip: z.string().optional(),
   street: z.string().min(1),
 
   date_of_registration: z.string().min(1),
@@ -235,7 +235,6 @@ function PostalAddress({
             defaultMessage: "Zip code",
             description: "Label for zip code input",
           })}
-          required
         />
         <Input
           {...register("street")}
