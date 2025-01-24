@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   Select,
   SelectGroup,
@@ -16,13 +17,15 @@ export default function CountrySelector({
   label: string;
   callback: (value: string) => void;
 }) {
-  const renderCountriesList = () => {
-    return Object.entries(COUNTRIES).map(([code, country]) => (
-      <SelectItem key={code} value={code}>
-        {country}
-      </SelectItem>
-    ));
-  };
+  const renderCountriesList = useMemo(
+    () =>
+      Object.entries(COUNTRIES).map(([code, country]) => (
+        <SelectItem key={code} value={code}>
+          {country}
+        </SelectItem>
+      )),
+    []
+  );
 
   return (
     <Select
@@ -35,7 +38,7 @@ export default function CountrySelector({
       </SelectTrigger>
       <SelectContent>
         <ScrollArea className="h-[10rem]">
-          <SelectGroup>{renderCountriesList()}</SelectGroup>
+          <SelectGroup>{renderCountriesList}</SelectGroup>
         </ScrollArea>
       </SelectContent>
     </Select>
