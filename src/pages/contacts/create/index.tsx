@@ -17,6 +17,7 @@ import {
 
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
+import PageTitle from "@/components/typography/PageTitle";
 import NavigateBack from "@/components/NavigateBack";
 import StepIndicator from "@/components/StepIndicator";
 import { Description, Title } from "@/components/typography/Step";
@@ -25,12 +26,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/DatePicker/datePicker";
 import CountrySelector from "@/components/CountrySelector";
+import Upload from "@/components/Upload";
 import { getInitials } from "@/utils";
 
 import SwitchContactType from "./components/SwitchContactType";
 import Preview from "./Preview";
-import PageTitle from "@/components/typography/PageTitle";
-import Upload from "@/components/Upload";
+import { messages } from "../components/messages";
 
 const formSchema = z.object({
   type: z.enum(["person", "company", "mint"]),
@@ -61,7 +62,7 @@ function RequiredInformation({
   switchContact: React.ReactNode;
   moveToNextStep: () => void;
 }) {
-  const intl = useIntl();
+  const { formatMessage: f } = useIntl();
   const [isDataValid, setIsDataValid] = useState(false);
 
   const { register, watch, trigger } = useFormContext();
@@ -77,28 +78,6 @@ function RequiredInformation({
     void validateData();
   }, [watchRequiredValues, trigger]);
 
-  const companyNameLabel = intl.formatMessage({
-    id: "contacts.create.requiredInformation.companyName",
-    defaultMessage: "Legal company name",
-    description: "Label for company name input",
-  });
-  const personNameLabel = intl.formatMessage({
-    id: "contacts.create.requiredInformation.personalName",
-    defaultMessage: "Legal full name",
-    description: "Label for personal name input",
-  });
-
-  const companyEmailLabel = intl.formatMessage({
-    id: "contacts.create.requiredInformation.companyEmail",
-    defaultMessage: "Company email",
-    description: "Label for company email input",
-  });
-  const personEmailLabel = intl.formatMessage({
-    id: "contacts.create.requiredInformation.personalEmail",
-    defaultMessage: "Email address",
-    description: "Label for personal email input",
-  });
-
   return (
     <div className="flex-1 flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2 mb-2">
@@ -109,6 +88,7 @@ function RequiredInformation({
             description="Title for create contact page"
           />
         </Title>
+        {f(messages["contacts.company.cityOfRegistration"])}
         <Description className="text-center mx-16">
           <FormattedMessage
             id="contacts.create.requiredInformation.description"
@@ -124,25 +104,27 @@ function RequiredInformation({
         <Input
           {...register("node_id")}
           icon={<GitForkIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={intl.formatMessage({
-            id: "contacts.create.requiredInformation.nodeId",
-            defaultMessage: "Node ID",
-            description: "Label for node ID input",
-          })}
+          label={f(messages["contacts.nodeId"])}
           required
         />
         <Input
           {...register("email")}
           icon={<MailIcon className="text-text-300 h-5 w-5 stroke-1" />}
           label={
-            contactType === "person" ? personEmailLabel : companyEmailLabel
+            contactType === "person"
+              ? f(messages["contacts.person.email"])
+              : f(messages["contacts.company.email"])
           }
           required
         />
         <Input
           {...register("name")}
           icon={<UserPenIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={contactType === "person" ? personNameLabel : companyNameLabel}
+          label={
+            contactType === "person"
+              ? f(messages["contacts.person.name"])
+              : f(messages["contacts.company.name"])
+          }
           required
         />
       </div>
@@ -169,10 +151,10 @@ function PostalAddress({
   switchContact: React.ReactNode;
   moveToNextStep: () => void;
 }) {
-  const intl = useIntl();
+  const { formatMessage: f } = useIntl();
   const [isDataValid, setIsDataValid] = useState(false);
 
-  const { register, watch, trigger, setValue } = useFormContext();
+  const { register, watch, trigger, getValues, setValue } = useFormContext();
   const watchRequiredValues = watch(["country", "city", "zip", "street"]);
 
   useEffect(() => {
@@ -208,42 +190,27 @@ function PostalAddress({
 
       <div className="flex flex-col gap-3">
         <CountrySelector
-          label={intl.formatMessage({
-            id: "contacts.create.postalAddress.country",
-            defaultMessage: "Country",
-            description: "Label for country input",
-          })}
+          label={f(messages["contacts.country"])}
           callback={(e) => {
             setValue("country", e);
           }}
+          value={getValues("country") as string}
         />
         <Input
           {...register("city")}
           icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={intl.formatMessage({
-            id: "contacts.create.postalAddress.city",
-            defaultMessage: "City",
-            description: "Label for city input",
-          })}
+          label={f(messages["contacts.city"])}
           required
         />
         <Input
           {...register("zip")}
           icon={<MapPinIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={intl.formatMessage({
-            id: "contacts.create.postalAddress.zipCode",
-            defaultMessage: "Zip code",
-            description: "Label for zip code input",
-          })}
+          label={f(messages["contacts.zipCode"])}
         />
         <Input
           {...register("street")}
           icon={<MapPinnedIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={intl.formatMessage({
-            id: "contacts.create.postalAddress.streetAddress",
-            defaultMessage: "Street address",
-            description: "Label for street address input",
-          })}
+          label={f(messages["contacts.address"])}
           required
         />
       </div>
@@ -275,7 +242,8 @@ function OptionalInformation({
   setProfilePicturePreview: (file: string) => void;
   moveToNextStep: () => void;
 }) {
-  const intl = useIntl();
+  const { formatMessage: f } = useIntl();
+
   const [isDataValid, setIsDataValid] = useState(false);
   const [currentDate, setCurrentDate] = useState();
 
@@ -324,61 +292,6 @@ function OptionalInformation({
     });
   };
 
-  const companyRegistrationDateLabel = intl.formatMessage({
-    id: "contacts.create.optionalInformation.dateOfRegistration",
-    defaultMessage: "Date of registration",
-    description: "Label for date of registration input",
-  });
-  const personBirthDateLabel = intl.formatMessage({
-    id: "contacts.create.optionalInformation.dateOfBirth",
-    defaultMessage: "Date of birth",
-    description: "Label for date of birth input",
-  });
-
-  const companyCityLabel = intl.formatMessage({
-    id: "contacts.create.optionalInformation.cityOfRegistration",
-    defaultMessage: "City of registration",
-    description: "Label for city of registration input",
-  });
-  const personCityLabel = intl.formatMessage({
-    id: "contacts.create.optionalInformation.cityOfBirth",
-    defaultMessage: "City of birth",
-    description: "Label for city of birth input",
-  });
-
-  const companyCountryLabel = intl.formatMessage({
-    id: "contacts.create.optionalInformation.countryOfRegistration",
-    defaultMessage: "Country of registration",
-    description: "Label for country of registration input",
-  });
-  const personCountryLabel = intl.formatMessage({
-    id: "contacts.create.optionalInformation.countryOfBirth",
-    defaultMessage: "Country of birth",
-    description: "Label for country of birth input",
-  });
-
-  const companyRegistrationNumberLabel = intl.formatMessage({
-    id: "contacts.create.optionalInformation.registrationNumber",
-    defaultMessage: "Registration number",
-    description: "Label for registration number input",
-  });
-  const personRegistrationNumberLabel = intl.formatMessage({
-    id: "contacts.create.optionalInformation.socialSecurityNumber",
-    defaultMessage: "Social security number",
-    description: "Label for social security number input",
-  });
-
-  const companyRegistrationDocumentLabel = intl.formatMessage({
-    id: "contacts.create.optionalInformation.registrationDocument",
-    defaultMessage: "Registration document",
-    description: "Label for registration document input",
-  });
-  const personRegistrationDocumentLabel = intl.formatMessage({
-    id: "contacts.create.optionalInformation.registrationDocument",
-    defaultMessage: "Identity document",
-    description: "Label for registration document input",
-  });
-
   return (
     <div className="flex-1 flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2 mb-2">
@@ -405,7 +318,7 @@ function OptionalInformation({
           <UploadAvatar
             name={avatarFallback}
             onSavePreview={handleSavePreview}
-            label={intl.formatMessage({
+            label={f({
               id: "Add photo",
               defaultMessage: "Add photo",
               description: "Label for avatar upload",
@@ -416,8 +329,8 @@ function OptionalInformation({
         <DatePicker
           label={
             contactType === "person"
-              ? personBirthDateLabel
-              : companyRegistrationDateLabel
+              ? f(messages["contacts.person.dateOfBirth"])
+              : f(messages["contacts.company.dateOfRegistration"])
           }
           value={{
             from: currentDate,
@@ -432,7 +345,9 @@ function OptionalInformation({
         />
         <CountrySelector
           label={
-            contactType === "person" ? personCountryLabel : companyCountryLabel
+            contactType === "person"
+              ? f(messages["contacts.person.countryOfBirth"])
+              : f(messages["contacts.company.countryOfRegistration"])
           }
           callback={(e) => {
             setValue("country_of_registration", e);
@@ -441,22 +356,26 @@ function OptionalInformation({
         <Input
           {...register("city_of_registration")}
           icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={contactType === "person" ? personCityLabel : companyCityLabel}
+          label={
+            contactType === "person"
+              ? f(messages["contacts.person.cityOfBirth"])
+              : f(messages["contacts.company.cityOfRegistration"])
+          }
         />
         <Input
           {...register("registration_number")}
           icon={<ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />}
           label={
             contactType === "person"
-              ? personRegistrationNumberLabel
-              : companyRegistrationNumberLabel
+              ? f(messages["contacts.person.identityNumber"])
+              : f(messages["contacts.company.registrationNumber"])
           }
         />
         <Upload
           label={
             contactType === "person"
-              ? personRegistrationDocumentLabel
-              : companyRegistrationDocumentLabel
+              ? f(messages["contacts.person.identityDocument"])
+              : f(messages["contacts.company.registrationDocument"])
           }
           description="PDF, PNG or JPG (max. 5mb)"
           onAddFile={(file) => {
@@ -572,10 +491,8 @@ export default function Create() {
             callBack={() => {
               if (currentStep !== 0) {
                 moveToPreviousStep();
-
                 return;
               }
-
               navigate(-1);
             }}
           />

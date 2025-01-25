@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useIntl, FormattedMessage } from "react-intl";
 import { PencilIcon, CopyIcon, CircleCheckIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
@@ -6,6 +7,7 @@ import NavigateBack from "@/components/NavigateBack";
 import PageTitle from "@/components/typography/PageTitle";
 import { Separator } from "@/components/ui/separator";
 import IdentityAvatar from "@/components/IdentityAvatar";
+import routes from "@/constants/routes";
 import { truncateString } from "@/utils/strings";
 import type { Contact } from "@/types/contact";
 import { Label, Value } from "../components/Typography";
@@ -109,6 +111,7 @@ export default function View({
   cityOfRegistration,
   registrationNumber,
 }: ViewContactProps) {
+  const navigate = useNavigate();
   const intl = useIntl();
 
   const companyNameLabel = intl.formatMessage({
@@ -207,7 +210,14 @@ export default function View({
           </PageTitle>
         }
         trail={
-          <button className="flex items-center justify-center p-1.5 h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md">
+          <button
+            className="flex items-center justify-center p-1.5 h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md"
+            onClick={() => {
+              navigate(
+                "/contacts/" + routes.EDIT_CONTACT.replace(":node_id", "1")
+              );
+            }}
+          >
             <PencilIcon className="text-text-300 h-5 w-5 stroke-1" />
           </button>
         }
@@ -216,7 +226,7 @@ export default function View({
       <Details
         type={contactType === "person" ? "personal" : "company"}
         name={"John Doe"}
-        nodeId={nodeId || "bitcrFF09210aabb111"}
+        nodeId={nodeId || "bitcrFF09210aabb111a"}
       />
 
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
