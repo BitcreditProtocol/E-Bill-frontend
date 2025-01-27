@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { FormProvider, useForm, Controller } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -111,7 +111,7 @@ export default function Edit() {
     },
   });
 
-  methods.watch();
+  methods.watch(["country", "country_of_registration"]);
 
   return (
     <Page className="gap-6">
@@ -136,21 +136,6 @@ export default function Edit() {
         />
 
         <div className="flex flex-col gap-3">
-          <Controller
-            name="node_id"
-            control={methods.control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                icon={
-                  <GitForkIcon className="text-text-300 h-5 w-5 stroke-1" />
-                }
-                label={f(messages["contacts.nodeId"])}
-                clearable
-                required
-              />
-            )}
-          />
           <Input
             {...methods.register("node_id")}
             icon={<GitForkIcon className="text-text-300 h-5 w-5 stroke-1" />}

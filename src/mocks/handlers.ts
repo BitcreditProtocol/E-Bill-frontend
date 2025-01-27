@@ -4,6 +4,7 @@ import { billsList } from "./handlers/bills/list";
 import { searchBills } from "./handlers/bills/search";
 import { contactList } from "./handlers/contacts/list";
 import { searchContacts } from "./handlers/contacts/search";
+import { viewContact } from "./handlers/contacts/view";
 
 export const handlers = [
   recentBills,
@@ -12,4 +13,5 @@ export const handlers = [
   searchBills,
   contactList,
   searchContacts,
+  viewContact,
 ];

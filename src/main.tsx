@@ -44,7 +44,7 @@ import NotificationsSettings from "./pages/settings/Notifications";
 
 import Create from "./pages/contacts/create";
 import Overview from "./pages/contacts/Overview";
-// import View from "./pages/contacts/view";
+import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edition";
 import Bills from "./pages/bills";
 
@@ -203,10 +203,10 @@ const router = createBrowserRouter(
               path: routes.CREATE_CONTACT,
               element: <Create />,
             },
-            /*             {
+            {
               path: routes.VIEW_CONTACT,
               element: <View />,
-            }, */
+            },
             {
               path: routes.EDIT_CONTACT,
               element: <Edit />,
