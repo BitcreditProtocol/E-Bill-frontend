@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { FormattedMessage } from "react-intl";
 import { PencilIcon } from "lucide-react";
@@ -38,11 +38,12 @@ function Details({ node_id }: { node_id: string }) {
 
 export default function View() {
   const { node_id } = useParams<{ node_id: string }>();
+  const navigate = useNavigate();
 
   return (
     <Page className="gap-6">
       <Topbar
-        lead={<NavigateBack />}
+        lead={<NavigateBack route="/contacts" />}
         middle={
           <PageTitle>
             <FormattedMessage
@@ -53,7 +54,12 @@ export default function View() {
           </PageTitle>
         }
         trail={
-          <button className="flex flex-col items-center justify-center h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md">
+          <button
+            className="flex flex-col items-center justify-center h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md"
+            onClick={() => {
+              navigate(`/contacts/${node_id as string}/edit`);
+            }}
+          >
             <PencilIcon className="text-text-300 h-5 w-5 stroke-1" />
           </button>
         }
