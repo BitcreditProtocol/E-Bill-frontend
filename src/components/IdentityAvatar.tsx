@@ -6,8 +6,11 @@ import { cva, VariantProps } from "class-variance-authority";
 const avatarVariants = cva("bg-brand-50 flex items-center justify-center", {
   variants: {
     size: {
-      md: "w-10 h-10 px-[9px] py-[8px] text-[16px]",
-      lg: "w-16 h-16 px-[13px] py-[16px] text-[24px]",
+      // todo: only add padding if there is no image
+      // md: "w-10 h-10 px-[9px] py-[8px] text-[16px]",
+      // lg: "w-16 h-16 px-[13px] py-[16px] text-[24px]",
+      md: "w-10 h-10 text-[16px]",
+      lg: "w-16 h-16 text-[24px]",
     },
   },
   defaultVariants: {
