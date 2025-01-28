@@ -31,7 +31,7 @@ import { getInitials } from "@/utils";
 
 import SwitchContactType from "./components/SwitchContactType";
 import Preview from "./Preview";
-import { messages } from "./components/messages";
+import { messages } from "../components/messages";
 
 const formSchema = z.object({
   type: z.enum(["person", "company", "mint"]),
@@ -155,11 +155,11 @@ function PostalAddress({
   const [isDataValid, setIsDataValid] = useState(false);
 
   const { register, watch, trigger, getValues, setValue } = useFormContext();
-  const watchRequiredValues = watch(["country", "city", "street"]);
+  const watchRequiredValues = watch(["country", "city", "zip", "street"]);
 
   useEffect(() => {
     const validateData = async () => {
-      const isValid = await trigger(["country", "city", "street"]);
+      const isValid = await trigger(["country", "city", "zip", "street"]);
 
       setIsDataValid(isValid);
     };

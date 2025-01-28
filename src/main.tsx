@@ -228,12 +228,10 @@ const router = createBrowserRouter(
             {
               path: routes.VIEW_CONTACT,
               element: <View />,
-              loader: View.loader,
             },
             {
               path: routes.EDIT_CONTACT,
               element: <Edit />,
-              loader: View.loader,
             },
           ],
         },

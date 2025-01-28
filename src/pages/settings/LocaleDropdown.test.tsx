@@ -30,7 +30,7 @@ describe("LocaleDropdown", () => {
 
     const localeInput = screen.getByLabelText("Locale");
     expect(localeInput).toBeInTheDocument();
-    expect(localeInput).toHaveTextContent("");
+    expect(localeInput.getElementsByTagName("span")[0]).toHaveTextContent("");
   });
 
   it("should render correctly (value)", () => {

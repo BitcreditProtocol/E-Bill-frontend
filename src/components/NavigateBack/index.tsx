@@ -1,10 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronLeftIcon } from "lucide-react";
 
-export default function NavigateBack({ route }: { route?: string }) {
+export default function NavigateBack({
+  route,
+  callBack,
+}: {
+  route?: string;
+  callBack?: () => void;
+}) {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
+    if (callBack) {
+      callBack();
+
+      return;
+    }
+
     if (route) {
       navigate(route);
     } else {
