@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useRef, useEffect } from "react";
 import { cva } from "class-variance-authority";
 import { XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,7 @@ export interface InputProps
   disabled?: boolean;
   success?: boolean;
   error?: boolean;
+  onClear?: () => void;
 }
 
 const inputVariants = cva(
@@ -36,8 +37,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       className,
-      value,
-      type,
+      type = "text",
       label,
       required,
       id,
@@ -48,27 +48,64 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       disabled,
       success,
       error,
+      onClear,
+      onChange,
+      onBlur,
+      onFocus,
+      defaultValue,
+      value,
       ...props
     },
     ref
   ) => {
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const [isFocused, setIsFocused] = useState(false);
-    const [hasValue, setHasValue] = useState(!!value);
+    const [hasValue, setHasValue] = useState(!!defaultValue || !!value);
+
+    const isControlled = value !== undefined;
+
+    useEffect(() => {
+      if (!isControlled && inputRef.current) {
+        setHasValue(inputRef.current.value !== "");
+      }
+    }, [isControlled]);
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       setIsFocused(false);
-      setHasValue(!!e.target.value);
+
+      if (!isControlled && inputRef.current) {
+        setHasValue(inputRef.current.value !== "");
+      }
+
+      onBlur?.(e);
+    };
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsFocused(true);
+      onFocus?.(e);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setHasValue(!!e.target.value);
+      if (!isControlled) {
+        setHasValue(e.target.value !== "");
+      }
+
+      onChange?.(e);
     };
 
     const clearField = () => {
-      if (ref && typeof ref === "object" && ref.current) {
-        ref.current.value = "";
+      if (inputRef.current) {
+        inputRef.current.value = "";
         setHasValue(false);
       }
+
+      if (isControlled) {
+        onChange?.({
+          target: { value: "" },
+        } as React.ChangeEvent<HTMLInputElement>);
+      }
+
+      if (onClear) onClear();
     };
 
     return (
@@ -95,18 +132,24 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             <input
               type={type}
               id={id}
-              value={value}
+              value={isControlled ? value : undefined}
+              defaultValue={!isControlled ? defaultValue : undefined}
               className={cn(
-                "font-medium bg-transparent outline-none",
+                "font-medium bg-transparent outline-none w-full px-10",
                 icon ? "ps-[42px]" : "ps-4",
                 {
                   "pt-3": isFocused || hasValue,
                 }
               )}
-              ref={ref}
-              onFocus={() => {
-                setIsFocused(true);
+              ref={(node) => {
+                if (typeof ref === "function") {
+                  ref(node);
+                } else if (ref) {
+                  ref.current = node;
+                }
+                inputRef.current = node;
               }}
+              onFocus={handleFocus}
               onBlur={handleBlur}
               onChange={handleChange}
               disabled={disabled}

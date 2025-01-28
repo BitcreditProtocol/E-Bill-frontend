@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { EarthIcon } from "lucide-react";
 import {
   Select,
   SelectGroup,
@@ -16,26 +18,32 @@ export default function CountrySelector({
   label: string;
   callback: (value: string) => void;
 }) {
-  const renderCountriesList = () => {
-    return Object.entries(COUNTRIES).map(([code, country]) => (
-      <SelectItem key={code} value={code}>
-        {country}
-      </SelectItem>
-    ));
-  };
+  const renderCountriesList = useMemo(
+    () =>
+      Object.entries(COUNTRIES).map(([code, country]) => (
+        <SelectItem key={code} value={code}>
+          {country}
+        </SelectItem>
+      )),
+    []
+  );
 
   return (
     <Select
       onValueChange={(value) => {
         callback(value);
       }}
+      required
     >
-      <SelectTrigger label={label}>
-        <SelectValue placeholder={label} />
+      <SelectTrigger
+        icon={<EarthIcon className="text-text-300 h-5 w-5 stroke-1" />}
+        label={label}
+      >
+        <SelectValue className="!text-red-200" placeholder={label} />
       </SelectTrigger>
       <SelectContent>
         <ScrollArea className="h-[10rem]">
-          <SelectGroup>{renderCountriesList()}</SelectGroup>
+          <SelectGroup>{renderCountriesList}</SelectGroup>
         </ScrollArea>
       </SelectContent>
     </Select>

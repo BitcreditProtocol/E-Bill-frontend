@@ -57,7 +57,7 @@ import Received from "./pages/bills/mint/Received";
 import Request from "./pages/bills/mint/Request";
 
 import GetStarted from "./pages/GetStarted";
-import IdentityCreation from "./pages/identity/create";
+import IdentityCreation from "./pages/identity/Create";
 
 const queryClient = new QueryClient();
 
