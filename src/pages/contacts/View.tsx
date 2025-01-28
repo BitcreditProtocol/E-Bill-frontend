@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { getContact } from "@/services/contact";
+import routes from "@/constants/routes";
 import Information, { Loader } from "./components/Information";
 
 function Delete() {
@@ -84,7 +85,7 @@ function Details({ node_id }: { node_id: string }) {
 
   return (
     <Information
-      type={data.type === 0 ? "person" : "company"}
+      type={data.type}
       node_id={data.node_id}
       name={data.name}
       email={data.email}
@@ -107,7 +108,7 @@ export default function View() {
   return (
     <Page className="gap-6">
       <Topbar
-        lead={<NavigateBack route="/contacts" />}
+        lead={<NavigateBack route={routes.CONTACTS} />}
         middle={
           <PageTitle>
             <FormattedMessage

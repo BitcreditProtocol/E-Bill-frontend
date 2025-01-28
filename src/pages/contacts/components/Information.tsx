@@ -5,14 +5,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import IdentityAvatar from "@/components/IdentityAvatar";
 import { copyToClipboard } from "@/utils";
 import { truncateString } from "@/utils/strings";
+import { Contact, ContactTypes } from "@/types/contact";
 import { Label, Value } from "./Typography";
 import { messages } from "./messages";
 
-type SummaryProps = {
-  type: string;
-  name: string;
-  node_id: string;
-};
+type SummaryProps = Pick<Contact, "type" | "name" | "node_id">;
 
 function Summary({ type, name, node_id }: SummaryProps) {
   return (
@@ -21,7 +18,7 @@ function Summary({ type, name, node_id }: SummaryProps) {
         name={name}
         picture=""
         size="lg"
-        identityType={type === "person" ? "personal" : "company"}
+        identityType={type === ContactTypes.Person ? "personal" : "company"}
       />
 
       <div className="flex flex-col items-center gap-2">
@@ -81,20 +78,7 @@ export function Loader() {
   );
 }
 
-type ContactInformationProps = {
-  type: "person" | "company" | "mint";
-  node_id: string;
-  name: string;
-  email: string;
-  country: string;
-  city: string;
-  zip: string;
-  address: string;
-  date_of_birth_or_registration: string;
-  country_of_birth_or_registration: string;
-  city_of_birth_or_registration: string;
-  identification_number: string;
-};
+type ContactInformationProps = Contact;
 
 export default function Information({
   type,
@@ -111,12 +95,12 @@ export default function Information({
 
   return (
     <div className="flex flex-col gap-4">
-      <Summary type="person" name={name} node_id={node_id} />
+      <Summary type={type} name={name} node_id={node_id} />
 
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
         <Property
           label={
-            type === "person"
+            type === ContactTypes.Person
               ? f(messages["contacts.person.name"])
               : f(messages["contacts.company.name"])
           }
@@ -126,7 +110,7 @@ export default function Information({
 
         <Property
           label={
-            type === "person"
+            type === ContactTypes.Person
               ? f(messages["contacts.person.email"])
               : f(messages["contacts.company.email"])
           }
@@ -139,7 +123,7 @@ export default function Information({
 
         <Property
           label={
-            type === "person"
+            type === ContactTypes.Person
               ? f(messages["contacts.person.dateOfBirth"])
               : f(messages["contacts.company.dateOfRegistration"])
           }
@@ -149,7 +133,7 @@ export default function Information({
 
         <Property
           label={
-            type === "person"
+            type === ContactTypes.Person
               ? f(messages["contacts.person.countryOfBirth"])
               : f(messages["contacts.company.countryOfRegistration"])
           }
@@ -159,7 +143,7 @@ export default function Information({
 
         <Property
           label={
-            type === "person"
+            type === ContactTypes.Person
               ? f(messages["contacts.person.cityOfBirth"])
               : f(messages["contacts.company.cityOfRegistration"])
           }
@@ -169,7 +153,7 @@ export default function Information({
 
         <Property
           label={
-            type === "person"
+            type === ContactTypes.Person
               ? f(messages["contacts.person.identityNumber"])
               : f(messages["contacts.company.registrationNumber"])
           }
