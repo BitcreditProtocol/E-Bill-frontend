@@ -41,6 +41,8 @@ import BillSuccess from "./pages/bill/draw/Success";
 
 import Settings from "./pages/settings";
 import NotificationsSettings from "./pages/settings/Notifications";
+import Security from "./pages/settings/Security";
+import Mints from "./pages/settings/Mints";
 
 import Create from "./pages/contacts/Create";
 import Overview from "./pages/contacts/Overview";
@@ -69,6 +71,10 @@ import Success from "./pages/create-identity/Success";
 
 import CreateCompany from "./pages/create-company";
 import CreateCompanySuccess from "./pages/create-company/Success";
+
+import NonAcceptance from "./pages/recourse/NonAcceptance";
+import NonPayment from "./pages/recourse/NonPayment";
+
 import { Toaster } from "./components/ui/toaster";
 
 const queryClient = new QueryClient();
@@ -98,6 +104,14 @@ const router = createBrowserRouter(
         {
           path: routes.NOTIFICATIONS_SETTINGS,
           element: <NotificationsSettings />,
+        },
+        {
+          path: routes.MINT_SETTINGS,
+          element: <Mints />,
+        },
+        {
+          path: routes.SECURITY_SETTINGS,
+          element: <Security />,
         },
         {
           path: routes.RESTORE_WITH_SEED_PHRASE,
@@ -190,6 +204,14 @@ const router = createBrowserRouter(
         {
           path: routes.ONBOARDING,
           element: <Onboarding />,
+        },
+        {
+          path: routes.NON_ACCEPTANCE,
+          element: <NonAcceptance />,
+        },
+        {
+          path: routes.NON_PAYMENT,
+          element: <NonPayment />,
         },
         {
           path: routes.CONTACTS,
