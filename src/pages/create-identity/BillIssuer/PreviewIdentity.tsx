@@ -258,10 +258,19 @@ export default function PreviewIdentity({
 
       <div className="flex flex-col gap-3">
         <div className="flex gap-2">
-          <Checkbox id="terms_and_conditions" checked={hasAgreedToTerms} onClick={() => { setHasAgreedToTerms((current) => !current); }}/>
+          <Checkbox
+            id="terms_and_conditions"
+            checked={hasAgreedToTerms}
+            onClick={() => {
+              setHasAgreedToTerms((current) => !current);
+            }}
+          />
           <span
             className="text-text-300 text-sm cursor-pointer"
-            onClick={() => { setHasAgreedToTerms((current) => !current); }}>
+            onClick={() => {
+              setHasAgreedToTerms((current) => !current);
+            }}
+          >
             <FormattedMessage
               id="I agree to the Terms and conditions"
               defaultMessage="I agree to the Terms and conditions"

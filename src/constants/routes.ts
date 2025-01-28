@@ -31,6 +31,11 @@ const BILL_ISSUER = "bill-issuer";
 const AUTHORIZED_SIGNER = "authorized-signer";
 const SUCCESS = "success";
 
+const CREATE_COMPANY = "/create-company";
+const CREATE_COMPANY_SUCCESS = "success";
+const IDENTITY = "/identity";
+const VIEW_IDENTITY = "/view-identity";
+const AUTHORIZED_SIGNERS = "/authorized-signers";
 const ENDORSEMENTS = "/endorsements";
 const ENDORSE = "/endorse";
 const PAYMENT = "/payment";
@@ -45,6 +50,9 @@ const ABOUT = "/about";
 const NOTIFICATIONS_SETTINGS = "/notifications-settings";
 const SECURITY_SETTINGS = "/security-settings";
 const MINT_SETTINGS = "/mint-settings";
+
+const NON_ACCEPTANCE = "/non-acceptance";
+const NON_PAYMENT = "/non-payment";
 
 export default {
   ROOT,
@@ -68,6 +76,8 @@ export default {
   CREATE_CONTACT,
   SIGNUP,
   SETTINGS,
+  CREATE_COMPANY,
+  CREATE_COMPANY_SUCCESS,
   CREATE_IDENTITY,
   IDENTITY_CATEGORY,
   BILL_ISSUER,
@@ -75,6 +85,9 @@ export default {
   SUCCESS,
   VIEW_CONTACT,
   EDIT_CONTACT,
+  IDENTITY,
+  VIEW_IDENTITY,
+  AUTHORIZED_SIGNERS,
   ENDORSEMENTS,
   ENDORSE,
   PAYMENT,
@@ -89,4 +102,6 @@ export default {
   NOTIFICATIONS_SETTINGS,
   SECURITY_SETTINGS,
   MINT_SETTINGS,
+  NON_ACCEPTANCE,
+  NON_PAYMENT,
 };

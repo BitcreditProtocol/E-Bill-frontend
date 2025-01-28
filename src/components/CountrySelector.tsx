@@ -13,9 +13,11 @@ import { COUNTRIES } from "@/constants/countries";
 
 export default function CountrySelector({
   label,
+  value,
   callback,
 }: {
   label: string;
+  value?: string;
   callback: (value: string) => void;
 }) {
   const renderCountriesList = useMemo(
@@ -33,6 +35,7 @@ export default function CountrySelector({
       onValueChange={(value) => {
         callback(value);
       }}
+      value={value}
       required
     >
       <SelectTrigger
