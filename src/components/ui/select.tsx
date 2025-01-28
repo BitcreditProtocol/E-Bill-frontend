@@ -7,9 +7,15 @@ interface SelectProps {
   children: React.ReactNode;
   value?: string;
   onValueChange?: (value: string) => void;
+  required?: boolean;
 }
 
-const Select: React.FC<SelectProps> = ({ children, value, onValueChange }) => {
+const Select: React.FC<SelectProps> = ({
+  children,
+  value,
+  onValueChange,
+  required,
+}) => {
   const hasValue = React.useMemo(() => !!value, [value]);
   const [triggerWidth, setTriggerWidth] = React.useState<number | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -30,6 +36,7 @@ const Select: React.FC<SelectProps> = ({ children, value, onValueChange }) => {
             hasValue,
             setTriggerWidth,
             isOpen,
+            required,
           });
         }
         if (React.isValidElement(child) && child.type === SelectContent) {
@@ -50,64 +57,97 @@ interface SelectTriggerProps
   setTriggerWidth?: (width: number) => void;
   isOpen?: boolean;
   icon?: React.ReactNode;
+  required?: boolean;
 }
 
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   SelectTriggerProps
->(({ id, className, label, hasValue, setTriggerWidth, isOpen, ...props }, ref) => {
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
+>(
+  (
+    {
+      id,
+      className,
+      label,
+      hasValue,
+      setTriggerWidth,
+      isOpen,
+      icon,
+      required,
+      ...props
+    },
+    ref
+  ) => {
+    const triggerRef = React.useRef<HTMLButtonElement>(null);
 
-  React.useEffect(() => {
-    if (triggerRef.current && setTriggerWidth) {
-      setTriggerWidth(triggerRef.current.offsetWidth);
-    }
-  }, [setTriggerWidth]);
+    React.useEffect(() => {
+      if (triggerRef.current && setTriggerWidth) {
+        setTriggerWidth(triggerRef.current.offsetWidth);
+      }
+    }, [setTriggerWidth]);
 
-  return (
-    <div className="relative">
-      <SelectPrimitive.Trigger
-        id={id}
-        ref={(node) => {
-          // @ts-expect-error This is a valid mutable property
-          triggerRef.current = node;
+    return (
+      <div className="relative">
+        <SelectPrimitive.Trigger
+          id={id}
+          ref={(node) => {
+            // @ts-expect-error This is a valid mutable property
+            triggerRef.current = node;
 
-          if (typeof ref === "function") ref(node);
-          else if (ref) ref.current = node;
-        }}
-        className={cn(
-          "flex h-[58px] w-full items-center justify-between rounded-[8px] border border-[#1B0F0014] bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none",
-          hasValue ? "pt-6 pb-2" : "pt-5 pb-3",
-          className
-        )}
-        {...props}
-      >
-        <div className="flex-1 text-left">
-          <SelectPrimitive.Value className="text-sm font-medium text-text-300" />
-        </div>
-        <div className="flex items-center justify-center h-full">
+            if (typeof ref === "function") ref(node);
+            else if (ref) ref.current = node;
+          }}
+          className={cn(
+            "flex h-[58px] w-full items-center justify-between rounded-lg border border-divider-50 bg-elevation-200 px-4 text-sm transition-all duration-200 ease-in-out outline-none",
+            className
+          )}
+          {...props}
+        >
           <SelectPrimitive.Icon asChild>
-            {isOpen ? (
-              <ChevronUp width={24} color="#1B0F00" strokeWidth={1} />
-            ) : (
-              <ChevronDown width={24} color="#1B0F00" strokeWidth={1} />
-            )}
+            {icon && <div className="mr-2">{icon}</div>}
           </SelectPrimitive.Icon>
-        </div>
-      </SelectPrimitive.Trigger>
-      <label htmlFor={id}
-        className={cn(
-          "absolute left-4 transition-all duration-200 ease-out text-text-300 font-medium text-sm",
-          hasValue
-            ? "top-2 text-[12px] text-[#1B0F0080]"
-            : "top-1/2 -translate-y-1/2"
-        )}
-      >
-        {label}
-      </label>
-    </div>
-  );
-});
+
+          <div className="flex-1 h-full flex flex-col justify-center text-left transition-all duration-200 ease-out">
+            <label
+              htmlFor={id}
+              className={cn(
+                "transition-all duration-200 ease-in-out",
+                hasValue
+                  ? "text-text-200 text-xs font-normal"
+                  : "text-text-300 text-sm font-medium"
+              )}
+            >
+              {label}
+              {required && (
+                <span
+                  className={cn(
+                    "ml-1",
+                    hasValue ? "text-text-200" : "text-signal-error"
+                  )}
+                  aria-hidden="true"
+                >
+                  *
+                </span>
+              )}
+            </label>
+            <div className="text-text-300 font-sm font-medium">
+              <SelectPrimitive.Value />
+            </div>
+          </div>
+          <div className="flex items-center justify-center h-full">
+            <SelectPrimitive.Icon asChild>
+              {isOpen ? (
+                <ChevronUp className="text-text-300 w-6 stroke-1" />
+              ) : (
+                <ChevronDown className="text-text-300 w-6 stroke-1" />
+              )}
+            </SelectPrimitive.Icon>
+          </div>
+        </SelectPrimitive.Trigger>
+      </div>
+    );
+  }
+);
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 interface SelectContentProps
