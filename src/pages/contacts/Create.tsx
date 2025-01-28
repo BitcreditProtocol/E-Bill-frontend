@@ -155,11 +155,11 @@ function PostalAddress({
   const [isDataValid, setIsDataValid] = useState(false);
 
   const { register, watch, trigger, getValues, setValue } = useFormContext();
-  const watchRequiredValues = watch(["country", "city", "zip", "street"]);
+  const watchRequiredValues = watch(["country", "city", "street"]);
 
   useEffect(() => {
     const validateData = async () => {
-      const isValid = await trigger(["country", "city", "zip", "street"]);
+      const isValid = await trigger(["country", "city", "street"]);
 
       setIsDataValid(isValid);
     };

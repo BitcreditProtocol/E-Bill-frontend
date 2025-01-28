@@ -135,7 +135,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               value={isControlled ? value : undefined}
               defaultValue={!isControlled ? defaultValue : undefined}
               className={cn(
-                "font-medium bg-transparent outline-none w-full",
+                "font-medium bg-transparent outline-none w-full px-10",
                 icon ? "ps-[42px]" : "ps-4",
                 {
                   "pt-3": isFocused || hasValue,

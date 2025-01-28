@@ -1,4 +1,8 @@
-import { GET_CONTACTS, SEARCH_CONTACTS } from "@/constants/endpoints";
+import {
+  GET_CONTACTS,
+  SEARCH_CONTACTS,
+  EDIT_CONTACT,
+} from "@/constants/endpoints";
 import type { Contact } from "@/types/contact";
 
 type ContactsResponse = {
@@ -67,4 +71,26 @@ export const searchContacts = async (payload: SearchContactsPayload) => {
   const data = (await response.json()) as Promise<SearchContactsResponse>;
 
   return data;
+};
+
+export type EditContactPayload = Omit<Contact, "type">;
+
+export type EditContactResponse = Contact;
+
+export const editContact = async (
+  payload: EditContactPayload
+): Promise<EditContactResponse> => {
+  const response = await fetch(EDIT_CONTACT, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to edit contact: ${response.statusText}`);
+  }
+
+  return response.json() as Promise<EditContactResponse>;
 };

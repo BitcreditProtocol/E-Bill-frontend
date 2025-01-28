@@ -45,7 +45,7 @@ import NotificationsSettings from "./pages/settings/Notifications";
 import Create from "./pages/contacts/create";
 import Overview from "./pages/contacts/Overview";
 import View from "./pages/contacts/View";
-import Edit from "./pages/contacts/Edition";
+import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
 
 import Identity from "./pages/identity";
