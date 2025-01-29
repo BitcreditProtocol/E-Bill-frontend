@@ -48,7 +48,6 @@ import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
 
-import AuthorizedSigners from "./pages/identity/AuthorizedSigners";
 import Endorsements from "./pages/bills/Endorsements";
 import Endorse from "./pages/bills/Endorse";
 import Payment from "./pages/bills/Payment";
@@ -60,10 +59,16 @@ import Preview from "./pages/bills/mint/Preview";
 import Received from "./pages/bills/mint/Received";
 import Request from "./pages/bills/mint/Request";
 
+// identity flows
 import GetStarted from "./pages/GetStarted";
 import IdentityCreation from "./pages/identity/Create";
+import Identities from "./pages/identity/List";
+import AuthorizedSigners from "./pages/identity/AuthorizedSigners";
 import ViewIdentity from "./pages/identity/View";
 import EditIdentity from "./pages/identity/Edit";
+
+// company flows
+import CreateCompany from "./pages/company/Create";
 
 import NonAcceptance from "./pages/recourse/NonAcceptance";
 import NonPayment from "./pages/recourse/NonPayment";
@@ -241,11 +246,21 @@ const router = createBrowserRouter(
           element: <EditIdentity />,
         },
         {
+          path: routes.IDENTITY_LIST,
+          element: <Identities />,
+        },
+        {
           path: routes.AUTHORIZED_SIGNERS,
           element: <AuthorizedSigners />,
         },
+        // company flows
+        {
+          path: routes.CREATE_COMPANY,
+          element: <CreateCompany />,
+        },
       ],
     },
+
     {
       path: "/draw-bill",
       element: <Draw />,

@@ -33,8 +33,10 @@ const SUCCESS = "success";
 
 const VIEW_IDENTITY = "/identity";
 const EDIT_IDENTITY = "/identity/edit";
+const IDENTITY_LIST = "/identity/list";
 
-const CREATE_COMPANY = "/create-company";
+const CREATE_COMPANY = "/company/create";
+
 const CREATE_COMPANY_SUCCESS = "success";
 const AUTHORIZED_SIGNERS = "/authorized-signers";
 const ENDORSEMENTS = "/endorsements";
@@ -105,4 +107,6 @@ export default {
   MINT_SETTINGS,
   NON_ACCEPTANCE,
   NON_PAYMENT,
+
+  IDENTITY_LIST,
 };

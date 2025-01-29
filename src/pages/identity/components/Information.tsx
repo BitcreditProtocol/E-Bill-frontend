@@ -2,6 +2,7 @@ import { useIntl } from "react-intl";
 import { CopyIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import IdentityAvatar from "@/components/IdentityAvatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { copyToClipboard } from "@/utils";
 import { truncateString } from "@/utils/strings";
 import Property from "./Property";
@@ -9,7 +10,28 @@ import { messages } from "./messages";
 
 export function Loader() {
   return (
-    <div className="flex flex-col gap-6 py-6 px-5 border border-divider-75 rounded-xl"></div>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col items-center gap-4">
+        <Skeleton className="h-12 w-12 bg-elevation-200" />
+        <Skeleton className="h-5 w-1/2 bg-elevation-200" />
+      </div>
+
+      <div className="flex flex-col gap-6 py-6 px-5 border border-divider-75 rounded-xl">
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+      </div>
+    </div>
   );
 }
 
