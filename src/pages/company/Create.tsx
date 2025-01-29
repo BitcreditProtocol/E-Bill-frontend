@@ -16,7 +16,9 @@ import NavigateBack from "@/components/NavigateBack";
 import { Description, Title } from "@/components/typography/Step";
 import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
+import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import Property from "./components/Property";
 import { messages } from "./components/messages";
 
 function RequiredInformation({
@@ -262,7 +264,71 @@ function OptionalInformation({
 }
 
 function Preview() {
-  return <div className="flex-1 flex flex-col gap-6"></div>;
+  const { formatMessage: f } = useIntl();
+  const { getValues } = useFormContext();
+
+  const values = getValues();
+  const address = `${values.address as string}${
+    (values.zip as string) && ","
+  } ${values.zip as string}, ${values.city as string}, ${
+    values.country as string
+  }`;
+
+  return (
+    <div className="flex-1 flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-2">
+        <Title>
+          <FormattedMessage
+            id="company.preview.title"
+            defaultMessage="Preview company"
+            description="Title for the company preview step"
+          />
+        </Title>
+        <Description className="text-center mx-10">
+          <FormattedMessage
+            id="company.preview.description"
+            defaultMessage="Please check your company data before signing"
+            description="Description for the company preview step"
+          />
+        </Description>
+      </div>
+
+      <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
+        <Property
+          label={f(messages["company.email"])}
+          value={values.email as string}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property label={f(messages["company.address"])} value={address} />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["company.registration_date"])}
+          value="12-Nov-1980"
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["company.country_of_registration"])}
+          value={values.country_of_registration as string}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["company.city_of_registration"])}
+          value={values.city_of_registration as string}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["company.registration_number"])}
+          value={values.registration_number as string}
+        />
+        <Separator className="bg-divider-75" />
+      </div>
+    </div>
+  );
 }
 
 const CreationFormSteps = {

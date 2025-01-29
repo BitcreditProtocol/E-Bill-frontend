@@ -198,6 +198,8 @@
   "company.create.requiredInformation.title": "Company identity",
   "company.email": "Company email",
   "company.name": "Legal company name",
+  "company.preview.description": "Please check your company data before signing",
+  "company.preview.title": "Preview company",
   "company.registration_date": "Registration date",
   "company.registration_number": "Registration number",
   "company.zip": "Zip code",
