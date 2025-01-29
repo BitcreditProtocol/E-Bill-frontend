@@ -48,8 +48,6 @@ import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";
 
-import Identity from "./pages/identity";
-import ViewIdentity from "./pages/identity/View";
 import AuthorizedSigners from "./pages/identity/AuthorizedSigners";
 import Endorsements from "./pages/bills/Endorsements";
 import Endorse from "./pages/bills/Endorse";
@@ -64,6 +62,8 @@ import Request from "./pages/bills/mint/Request";
 
 import GetStarted from "./pages/GetStarted";
 import IdentityCreation from "./pages/identity/Create";
+import ViewIdentity from "./pages/identity/View";
+import EditIdentity from "./pages/identity/Edit";
 
 import NonAcceptance from "./pages/recourse/NonAcceptance";
 import NonPayment from "./pages/recourse/NonPayment";
@@ -233,12 +233,12 @@ const router = createBrowserRouter(
           ],
         },
         {
-          path: routes.IDENTITY,
-          element: <Identity />,
-        },
-        {
           path: routes.VIEW_IDENTITY,
           element: <ViewIdentity />,
+        },
+        {
+          path: routes.EDIT_IDENTITY,
+          element: <EditIdentity />,
         },
         {
           path: routes.AUTHORIZED_SIGNERS,

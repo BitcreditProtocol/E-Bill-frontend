@@ -15,10 +15,12 @@ export default function CountrySelector({
   label,
   value,
   callback,
+  required,
 }: {
   label: string;
   value?: string;
   callback: (value: string) => void;
+  required?: boolean;
 }) {
   const renderCountriesList = useMemo(
     () =>
@@ -36,7 +38,7 @@ export default function CountrySelector({
         callback(value);
       }}
       value={value}
-      required
+      required={required}
     >
       <SelectTrigger
         icon={<EarthIcon className="text-text-300 h-5 w-5 stroke-1" />}

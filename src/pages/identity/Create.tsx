@@ -19,14 +19,26 @@ import SectionTitle from "@/components/typography/SectionTitle";
 import CountrySelector from "@/components/CountrySelector";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import Property from "./components/Property";
 import { messages } from "./components/messages";
-import { Checkbox } from "@/components/ui/checkbox";
 
 function RequiredData({ moveToNextStep }: { moveToNextStep: () => void }) {
   const { formatMessage: f } = useIntl();
-  const { register } = useFormContext();
+  const { register, watch, trigger } = useFormContext();
+  const [isDataValid, setIsDataValid] = useState(false);
 
+  const watchRequiredValues = watch(["name", "email"]);
+
+  useEffect(() => {
+    const validateData = async () => {
+      const isValid = await trigger(["name", "email"]);
+
+      setIsDataValid(isValid);
+    };
+
+    void validateData();
+  }, [watchRequiredValues, trigger]);
   return (
     <div className="flex-1 flex flex-col gap-11">
       <div className="flex flex-col items-center gap-2">
@@ -46,7 +58,7 @@ function RequiredData({ moveToNextStep }: { moveToNextStep: () => void }) {
         </Description>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 mb-auto">
         <Input
           {...register("name")}
           label={f(messages["identity.name"])}
@@ -62,7 +74,7 @@ function RequiredData({ moveToNextStep }: { moveToNextStep: () => void }) {
         />
       </div>
 
-      <Button size="md" onClick={moveToNextStep}>
+      <Button size="md" onClick={moveToNextStep} disabled={!isDataValid}>
         <FormattedMessage
           id="identity.create.continue"
           defaultMessage="Continue"
@@ -78,17 +90,17 @@ function PostalAddress({ moveToNextStep }: { moveToNextStep: () => void }) {
   const { register, watch, trigger, setValue } = useFormContext();
   const [isDataValid, setIsDataValid] = useState(false);
 
-  const watchRequiredValues = watch(["country", "city", "address"]);
+  const watchRequiredFields = watch(["country", "city", "address"]);
 
   useEffect(() => {
-    const validateData = async () => {
+    const validate = async () => {
       const isValid = await trigger(["country", "city", "address"]);
 
       setIsDataValid(isValid);
     };
 
-    void validateData();
-  }, [watchRequiredValues, trigger]);
+    void validate();
+  }, [watchRequiredFields, trigger]);
 
   return (
     <div className="flex flex-col gap-11">
@@ -158,7 +170,7 @@ function OptionalInformation({
   const { register, watch, trigger, setValue } = useFormContext();
   const [isDataValid, setIsDataValid] = useState(false);
 
-  const watchRequiredValues = watch([
+  const watchRequiredFields = watch([
     "country_of_birth",
     "city_of_birth",
     "identification_number",
@@ -176,7 +188,7 @@ function OptionalInformation({
     };
 
     void validateData();
-  }, [watchRequiredValues, trigger]);
+  }, [watchRequiredFields, trigger]);
 
   const skipInformation = () => {
     ["country_of_birth", "city_of_birth", "identification_number"].forEach(

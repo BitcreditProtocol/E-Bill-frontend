@@ -31,10 +31,11 @@ const BILL_ISSUER = "bill-issuer";
 const AUTHORIZED_SIGNER = "authorized-signer";
 const SUCCESS = "success";
 
+const VIEW_IDENTITY = "/identity";
+const EDIT_IDENTITY = "/identity/edit";
+
 const CREATE_COMPANY = "/create-company";
 const CREATE_COMPANY_SUCCESS = "success";
-const IDENTITY = "/identity";
-const VIEW_IDENTITY = "/view-identity";
 const AUTHORIZED_SIGNERS = "/authorized-signers";
 const ENDORSEMENTS = "/endorsements";
 const ENDORSE = "/endorse";
@@ -85,8 +86,8 @@ export default {
   SUCCESS,
   VIEW_CONTACT,
   EDIT_CONTACT,
-  IDENTITY,
   VIEW_IDENTITY,
+  EDIT_IDENTITY,
   AUTHORIZED_SIGNERS,
   ENDORSEMENTS,
   ENDORSE,
