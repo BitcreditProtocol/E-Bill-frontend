@@ -8,6 +8,7 @@ import {
   MapIcon,
   MapPinIcon,
   MapPinnedIcon,
+  ShieldCheckIcon,
   UserIcon,
 } from "lucide-react";
 import Page from "@/components/wrappers/Page";
@@ -237,7 +238,7 @@ function OptionalInformation({
         <Input
           {...register("registration_number")}
           label={f(messages["company.registration_number"])}
-          icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
+          icon={<ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />}
           required
         />
       </div>

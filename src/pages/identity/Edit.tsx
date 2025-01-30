@@ -1,3 +1,9 @@
+import { Suspense, useEffect, useState } from "react";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,8 +23,39 @@ import PageTitle from "@/components/typography/PageTitle";
 import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
+import Summary from "@/components/Summary";
+import { editIdentity, getIdentityDetails } from "@/services/identity_v2";
 import { messages } from "./components/messages";
-import { useEffect, useState } from "react";
+
+function Loader() {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col items-center gap-4">
+        <Skeleton className="h-16 w-16 bg-elevation-200 rounded-full" />
+        <Skeleton className="h-5 w-1/2 bg-elevation-200" />
+      </div>
+
+      <div className="flex flex-col gap-6 py-6 px-5 border border-divider-75 rounded-xl">
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+      </div>
+    </div>
+  );
+}
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -34,22 +71,26 @@ const formSchema = z.object({
 });
 
 function Form() {
-  const { formatMessage: f } = useIntl();
   const [isDataValid, setIsDataValid] = useState(false);
+  const { formatMessage: f } = useIntl();
+  const { data } = useSuspenseQuery({
+    queryFn: getIdentityDetails,
+    queryKey: ["identity", "details"],
+  });
 
   const methods = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "my full name",
-      email: "my@email.com",
-      country: "BR",
-      city: "somewhere in brazil",
-      zip: "65476000",
-      address: "Rua das flores, 123",
-      date_of_birth: "",
-      country_of_birth: "BR",
-      city_of_birth: "somewhere again",
-      identification_number: "92101",
+      name: data.name,
+      email: data.email,
+      country: data.country,
+      city: data.city,
+      zip: data.zip,
+      address: data.address,
+      date_of_birth: data.date_of_birth,
+      country_of_birth: data.country_of_birth,
+      city_of_birth: data.city_of_birth,
+      identification_number: data.identification_number,
     },
   });
 
@@ -65,8 +106,40 @@ function Form() {
     void validate();
   }, [watchRequiredFields, methods]);
 
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      return editIdentity({
+        ...methods.getValues(),
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["identity", "details"],
+      });
+
+      toast({
+        description: f({
+          id: "identity.edit.success",
+          defaultMessage: "Personal identity updated successfully",
+          description: "Personal identity updated successfully toast message",
+        }),
+        position: "bottom-center",
+      });
+    },
+  });
+
   return (
     <div className="flex-1 flex flex-col gap-6">
+      <Summary
+        identityType={0}
+        name={data.name}
+        nodeId={data.node_id}
+        picture=""
+      />
+
       <FormProvider {...methods}>
         <div className="flex flex-col gap-3">
           <Input
@@ -128,7 +201,12 @@ function Form() {
       </FormProvider>
 
       <div className="flex items-center gap-3 mt-auto">
-        <Button className="w-full" size="sm" variant="outline">
+        <Button
+          className="w-full"
+          size="sm"
+          variant="outline"
+          disabled={isPending}
+        >
           <FormattedMessage
             id="identity.edit.cancel"
             defaultMessage="Cancel"
@@ -139,9 +217,9 @@ function Form() {
           className="w-full"
           size="sm"
           onClick={() => {
-            console.log("saved");
+            mutate();
           }}
-          disabled={!isDataValid}
+          disabled={!isDataValid || isPending}
         >
           <FormattedMessage
             id="identity.edit.save"
@@ -170,7 +248,9 @@ export default function Edit() {
         }
       />
 
-      <Form />
+      <Suspense fallback={<Loader />}>
+        <Form />
+      </Suspense>
     </Page>
   );
 }

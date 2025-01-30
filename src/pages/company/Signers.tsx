@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { Suspense, useState } from "react";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { FormattedMessage } from "react-intl";
 import {
   ChevronRightIcon,
@@ -11,6 +15,7 @@ import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import PageTitle from "@/components/typography/PageTitle";
+import Summary from "@/components/Summary";
 import {
   Drawer,
   DrawerClose,
@@ -22,7 +27,8 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { removeSignatory } from "@/services/company";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getCompanySigners, removeSignatory } from "@/services/company";
 
 type RemoveSignerProps = {
   id: string;
@@ -32,16 +38,21 @@ type RemoveSignerProps = {
 
 function RemoveSigner({ id, name, companyId }: RemoveSignerProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: () => {
       return removeSignatory({
         id: companyId,
         signatory_node_id: id,
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       setIsDrawerOpen(false);
+
+      await queryClient.invalidateQueries({
+        queryKey: ["company", "signers", companyId],
+      });
     },
   });
 
@@ -79,6 +90,7 @@ function RemoveSigner({ id, name, companyId }: RemoveSignerProps) {
             onClick={() => {
               mutate();
             }}
+            disabled={isPending}
           >
             <FormattedMessage
               id="company.signer.remove.confirm"
@@ -87,7 +99,12 @@ function RemoveSigner({ id, name, companyId }: RemoveSignerProps) {
             />
           </Button>
           <DrawerClose asChild>
-            <Button className="w-full" variant="outline" size="md">
+            <Button
+              className="w-full"
+              variant="outline"
+              size="md"
+              disabled={isPending}
+            >
               <FormattedMessage
                 id="company.signer.remove.cancel"
                 defaultMessage="Cancel"
@@ -102,13 +119,14 @@ function RemoveSigner({ id, name, companyId }: RemoveSignerProps) {
 }
 
 type SignerProps = {
+  companyId: string;
   id: string;
   name: string;
   address: string;
   avatar: string;
 };
 
-function Signer({ id, name, address, avatar }: SignerProps) {
+function Signer({ companyId, id, name, address, avatar }: SignerProps) {
   return (
     <div className="flex items-center gap-3 py-4 px-3 border border-dashed border-divider-75 rounded-lg">
       {avatar}
@@ -120,7 +138,7 @@ function Signer({ id, name, address, avatar }: SignerProps) {
           {address}
         </span>
       </div>
-      <RemoveSigner id={id} name={name} companyId="" />
+      <RemoveSigner id={id} name={name} companyId={companyId} />
     </div>
   );
 }
@@ -141,6 +159,38 @@ function AddSigner() {
   );
 }
 
+function Loader() {
+  return (
+    <div className="flex flex-col gap-2">
+      <Skeleton className="h-12 w-full bg-elevation-200" />
+      <Skeleton className="h-12 w-full bg-elevation-200" />
+      <Skeleton className="h-12 w-full bg-elevation-200" />
+    </div>
+  );
+}
+
+function List({ companyId }: { companyId: string }) {
+  const { data } = useSuspenseQuery({
+    queryKey: ["company", "signers", companyId],
+    queryFn: () => getCompanySigners(companyId),
+  });
+
+  return (
+    <div className="flex flex-col gap-2 mb-1">
+      {data.signatories.map((signer) => (
+        <Signer
+          key={signer.node_id}
+          companyId={companyId}
+          id={signer.node_id}
+          name={signer.name}
+          address={signer.address}
+          avatar=""
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function Signers() {
   return (
     <Page className="gap-5">
@@ -157,10 +207,16 @@ export default function Signers() {
         }
       />
 
-      <div className="flex flex-col gap-2 mb-1">
-        <Signer id="1" name="John Doe" address="123 Main St" avatar="" />
-        <Signer id="1" name="Jane Doe" address="123 Secondary St" avatar="" />
-      </div>
+      <Summary
+        identityType={1}
+        name="Company Name"
+        nodeId="0x1234567890"
+        picture=""
+      />
+
+      <Suspense fallback={<Loader />}>
+        <List companyId="1" />
+      </Suspense>
       <AddSigner />
     </Page>
   );

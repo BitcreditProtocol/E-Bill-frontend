@@ -1,15 +1,114 @@
-import { useNavigate } from "react-router-dom";
-import { FormattedMessage } from "react-intl";
+import { Suspense } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { FormattedMessage, useIntl } from "react-intl";
 import { PencilIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import PageTitle from "@/components/typography/PageTitle";
-import Information from "./components/Information";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
+import Summary from "@/components/Summary";
+import { getIdentityDetails } from "@/services/identity_v2";
+import routes from "@/constants/routes";
+import { COUNTRIES } from "@/constants/countries";
+import Property from "./components/Property";
+import { messages } from "./components/messages";
+
+function Loader() {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col items-center gap-4">
+        <Skeleton className="h-16 w-16 bg-elevation-200 rounded-full" />
+        <Skeleton className="h-5 w-1/2 bg-elevation-200" />
+      </div>
+
+      <div className="flex flex-col gap-6 py-6 px-5 border border-divider-75 rounded-xl">
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+      </div>
+    </div>
+  );
+}
+
+function Information() {
+  const { formatMessage: f } = useIntl();
+  const { data } = useSuspenseQuery({
+    queryFn: () => getIdentityDetails(),
+    queryKey: ["identity", "details"],
+  });
+
+  const {
+    node_id,
+    name,
+    email,
+    address,
+    zip,
+    city,
+    country,
+    date_of_birth,
+    country_of_birth,
+    city_of_birth,
+    identification_number,
+  } = data;
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Summary identityType={0} name={name} nodeId={node_id} picture="" />
+
+      <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
+        <Property label={f(messages["identity.name"])} value={name} />
+        <Separator className="bg-divider-75" />
+
+        <Property label={f(messages["identity.email"])} value={email} />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["identity.address"])}
+          value={`${address}, ${zip}, ${city}, ${country}`}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["identity.date_of_birth"])}
+          value={date_of_birth}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["identity.country_of_birth"])}
+          value={COUNTRIES[country_of_birth as keyof typeof COUNTRIES]}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["identity.city_of_birth"])}
+          value={city_of_birth}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["identity.identification_number"])}
+          value={identification_number}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function View() {
-  const navigate = useNavigate();
-
   return (
     <Page className="gap-5">
       <Topbar
@@ -24,31 +123,18 @@ export default function View() {
           </PageTitle>
         }
         trail={
-          <button
-            className="flex flex-col items-center justify-center h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md"
-            onClick={() => {
-              navigate(`/identity/edit`);
-            }}
-          >
-            <PencilIcon className="text-text-300 h-5 w-5 stroke-1" />
-          </button>
+          <Link to={routes.EDIT_IDENTITY}>
+            <button className="flex flex-col items-center justify-center h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md">
+              <PencilIcon className="text-text-300 h-5 w-5 stroke-1" />
+            </button>
+          </Link>
         }
       />
 
       <div className="flex flex-col gap-6">
-        <Information
-          node_id="11111111111111111aaaaaaaaa000"
-          name="John Doe"
-          email=""
-          country="United States"
-          city="New York"
-          zip="10001"
-          address="123 Main St"
-          date_of_birth="1990-01-01"
-          country_of_birth="United States"
-          city_of_birth="New York"
-          identification_number=""
-        />
+        <Suspense fallback={<Loader />}>
+          <Information />
+        </Suspense>
       </div>
     </Page>
   );

@@ -67,7 +67,7 @@ export async function createCompany(
   return response.json() as Promise<CreateCompanyResponse>;
 }
 
-type EditCompanyPayload = Partial<CreateCompanyPayload> & {
+export type EditCompanyPayload = Partial<CreateCompanyPayload> & {
   id: string;
 };
 
@@ -148,7 +148,7 @@ export async function addSignatory(data: AddSignatoryPayload): Promise<void> {
   }
 }
 
-type RemoveSignatoryPayload = {
+export type RemoveSignatoryPayload = {
   id: string;
   signatory_node_id: string;
 };
@@ -156,6 +156,8 @@ type RemoveSignatoryPayload = {
 export async function removeSignatory(
   data: RemoveSignatoryPayload
 ): Promise<void> {
+  console.log(data);
+
   const response = await fetch(REMOVE_COMPANY_SIGNER, {
     method: "PUT",
     headers: {

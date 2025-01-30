@@ -8,6 +8,7 @@ const EDIT_CONTACT = "/contacts/edit";
 const GET_ACTIVE_IDENTITY = "/identity/active";
 const GET_IDENTITY_DETAILS = "/identity/detail";
 const CREATE_IDENTITY = "/identity/create";
+const UPLOAD_IDENTITY_FILE = "/identity/upload";
 const EDIT_IDENTITY = "/identity/change";
 const SWITCH_IDENTITY = "/identity/switch";
 
@@ -30,6 +31,7 @@ export {
   GET_ACTIVE_IDENTITY,
   GET_IDENTITY_DETAILS,
   CREATE_IDENTITY,
+  UPLOAD_IDENTITY_FILE,
   EDIT_IDENTITY,
   SWITCH_IDENTITY,
   GET_COMPANIES,
