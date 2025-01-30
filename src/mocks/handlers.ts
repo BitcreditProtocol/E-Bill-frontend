@@ -6,7 +6,6 @@ import { searchContacts } from "./handlers/contacts/search";
 import {
   getCompaniesList,
   getSignersList,
-  addSigner,
   removeSigner,
   getCompanyDetails,
   editCompanyInformation,
@@ -32,7 +31,6 @@ export const handlers = [
   editContact,
   getCompaniesList,
   getSignersList,
-  addSigner,
   removeSigner,
   getCompanyDetails,
   editCompanyInformation,
