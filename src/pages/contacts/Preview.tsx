@@ -1,13 +1,18 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { useFormContext } from "react-hook-form";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CircleCheckIcon, CopyIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { COUNTRIES } from "@/constants/countries";
-import { truncateString } from "@/utils/strings";
-import { copyToClipboard } from "@/utils";
-import { Label, Value } from "./components/Typography";
 import IdentityAvatar from "@/components/IdentityAvatar";
 import { Button } from "@/components/ui/button";
+import { copyToClipboard } from "@/utils";
+import { truncateString } from "@/utils/strings";
+import { useToast } from "@/hooks/use-toast";
+import { COUNTRIES } from "@/constants/countries";
+import { createContact } from "@/services/contact_v2";
+import routes from "@/constants/routes";
+import { Label, Value } from "./components/Typography";
 
 function UploadedFile({ name, size }: { name: string; size: string }) {
   return (
@@ -103,7 +108,51 @@ export default function Preview({
   profilePicturePreview: string;
 }) {
   const intl = useIntl();
+  const navigate = useNavigate();
   const { getValues } = useFormContext();
+
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const {
+    type,
+    country_of_registration,
+    city_of_registration,
+    date_of_registration,
+    registration_number,
+    ...values
+  } = getValues();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      // todo: refactor form. this became a mess
+      return createContact({
+        type: (type as string) === "person" ? 0 : 1,
+        country_of_birth_or_registration: country_of_registration as string,
+        city_of_birth_or_registration: city_of_registration as string,
+        date_of_birth_or_registration: date_of_registration as string,
+        identification_number: registration_number as string,
+        ...values,
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["contacts"],
+      });
+
+      toast({
+        description: intl.formatMessage({
+          id: "contact.create.success",
+          defaultMessage: "Contact created successfully",
+          description: "Contact created successfully toast message",
+        }),
+        position: "bottom-center",
+      });
+
+      // todo: fix ugly route concat
+      navigate(`/${routes.CONTACTS}`);
+    },
+  });
 
   const personEmailAddressLabel = intl.formatMessage({
     id: "contacts.create.preview.email",
@@ -263,7 +312,13 @@ export default function Preview({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Button size="md">
+        <Button
+          size="md"
+          onClick={() => {
+            mutate();
+          }}
+          disabled={isPending}
+        >
           <FormattedMessage
             id="contacts.create.preview.save"
             defaultMessage="Save"
@@ -271,7 +326,14 @@ export default function Preview({
           />
         </Button>
 
-        <Button size="md" variant="outline">
+        <Button
+          size="md"
+          variant="outline"
+          onClick={() => {
+            navigate(routes.CONTACTS);
+          }}
+          disabled={isPending}
+        >
           <FormattedMessage
             id="contacts.create.preview.cancel"
             defaultMessage="Cancel"

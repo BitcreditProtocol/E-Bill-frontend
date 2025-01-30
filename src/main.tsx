@@ -43,7 +43,7 @@ import Security from "./pages/settings/Security";
 import Mints from "./pages/settings/Mints";
 
 import Create from "./pages/contacts/Create";
-import Overview from "./pages/contacts/Overview";
+import Overview from "./pages/contacts/List";
 import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
 import Bills from "./pages/bills";

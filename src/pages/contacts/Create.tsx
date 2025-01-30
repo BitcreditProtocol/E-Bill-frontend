@@ -42,7 +42,7 @@ const formSchema = z.object({
   country: z.string().min(1),
   city: z.string().min(1),
   zip: z.string().optional(),
-  street: z.string().min(1),
+  address: z.string().min(1),
 
   date_of_registration: z.string().min(1),
   country_of_registration: z.string().min(1),
@@ -155,11 +155,11 @@ function PostalAddress({
   const [isDataValid, setIsDataValid] = useState(false);
 
   const { register, watch, trigger, getValues, setValue } = useFormContext();
-  const watchRequiredValues = watch(["country", "city", "street"]);
+  const watchRequiredValues = watch(["country", "city", "address"]);
 
   useEffect(() => {
     const validateData = async () => {
-      const isValid = await trigger(["country", "city", "street"]);
+      const isValid = await trigger(["country", "city", "address"]);
 
       setIsDataValid(isValid);
     };
@@ -208,7 +208,7 @@ function PostalAddress({
           label={f(messages["contacts.zipCode"])}
         />
         <Input
-          {...register("street")}
+          {...register("address")}
           icon={<MapPinnedIcon className="text-text-300 h-5 w-5 stroke-1" />}
           label={f(messages["contacts.address"])}
           required
@@ -253,8 +253,6 @@ function OptionalInformation({
     "country_of_registration",
     "city_of_registration",
     "registration_number",
-    "document_name",
-    "document_size",
   ]);
 
   const handleSavePreview = (previewUrl: string) => {
@@ -269,8 +267,6 @@ function OptionalInformation({
         "country_of_registration",
         "city_of_registration",
         "registration_number",
-        "document_name",
-        "document_size",
       ]);
 
       setIsDataValid(isValid);
@@ -285,8 +281,6 @@ function OptionalInformation({
       "country_of_registration",
       "city_of_registration",
       "registration_number",
-      "document_name",
-      "document_size",
     ].forEach((field) => {
       setValue(field, "");
     });
@@ -381,10 +375,6 @@ function OptionalInformation({
           onAddFile={(file) => {
             setValue("document_name", file.name);
             setValue("document_size", Math.round(file.size / 1024).toString());
-            console.log(file);
-
-            console.log(getValues("document_name"));
-            console.log(getValues("document_size"));
           }}
           onRemoveFile={() => {
             setValue("document_name", "");
@@ -433,7 +423,7 @@ export default function Create() {
       country: "",
       city: "",
       zip: "",
-      street: "",
+      address: "",
       date_of_registration: "",
       country_of_registration: "",
       city_of_registration: "",

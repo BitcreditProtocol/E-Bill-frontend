@@ -2,8 +2,8 @@ import { CopyIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { truncateAvatarName, truncateString } from "@/utils/strings";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { copyToClipboard } from "@/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 type SummaryProps = {
   identityType: number;

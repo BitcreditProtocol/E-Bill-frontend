@@ -12,7 +12,15 @@ import type {
 } from "@/services/contact_v2";
 import { db } from "../db";
 
-export const getContactsList = http.get(GET_CONTACTS, async () => {});
+export const getContactsList = http.get(GET_CONTACTS, async () => {
+  await delay(1000);
+
+  const contacts = db.contact.findMany({});
+
+  return HttpResponse.json({
+    contacts,
+  });
+});
 
 export const getContactDetails = http.get(
   `${GET_CONTACT_DETAILS}/:contactId`,
@@ -42,6 +50,7 @@ export const createContact = http.post<never, CreateContactPayload>(
   CREATE_CONTACT,
   async ({ request }) => {
     const data = await request.json();
+    console.log("ctt create > ", data);
 
     await delay(1000);
 

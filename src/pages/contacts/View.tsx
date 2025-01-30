@@ -171,6 +171,8 @@ function Information({ contactId }: { contactId: string }) {
     queryFn: () => getContactDetails(contactId),
   });
 
+  console.log("bilola >", data);
+
   const {
     type,
     node_id,
@@ -280,7 +282,8 @@ export default function View() {
   return (
     <Page className="gap-6">
       <Topbar
-        lead={<NavigateBack route={routes.CONTACTS} />}
+        // todo: fix this route too lol
+        lead={<NavigateBack route={"/" + routes.CONTACTS} />}
         middle={
           <PageTitle>
             <FormattedMessage
