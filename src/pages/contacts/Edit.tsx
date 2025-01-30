@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useMutation,
@@ -17,7 +17,6 @@ import {
   MapPinnedIcon,
   ShieldCheckIcon,
   MailIcon,
-  CopyIcon,
 } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
@@ -26,75 +25,38 @@ import NavigateBack from "@/components/NavigateBack";
 import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
 import { DatePicker } from "@/components/DatePicker/datePicker";
+import Summary from "@/components/Summary";
 import Upload from "@/components/Upload";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import IdentityAvatar from "@/components/IdentityAvatar";
-import { editContact, getContact } from "@/services/contact";
-import { truncateString } from "@/utils/strings";
-import type { Contact } from "@/types/contact";
-import type { EditContactPayload } from "@/services/contact";
+import { useToast } from "@/hooks/use-toast";
+import { editContact, getContactDetails } from "@/services/contact_v2";
 import { messages } from "./components/messages";
 
 function Loader() {
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-full flex flex-col items-center gap-4">
-        <Skeleton className="h-12 w-12 bg-elevation-200" />
-        <Skeleton className="h-6 w-1/2 bg-elevation-200" />
-        <Skeleton className="h-4 w-1/2 bg-elevation-200" />
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col items-center gap-4">
+        <Skeleton className="h-16 w-16 bg-elevation-200 rounded-full" />
+        <Skeleton className="h-5 w-1/2 bg-elevation-200" />
+        <Skeleton className="h-3 w-1/3 bg-elevation-200" />
       </div>
 
-      <div className="flex flex-col gap-3 py-6 px-5 w-full border border-divider-75 rounded-xl">
-        <Skeleton className="w-full h-14 bg-elevation-200" />
+      <div className="flex flex-col gap-6 py-6 px-5 border border-divider-75 rounded-xl">
+        <Skeleton className="w-full h-10 bg-elevation-200" />
         <Separator className="bg-divider-75" />
-        <Skeleton className="w-full h-14 bg-elevation-200" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
         <Separator className="bg-divider-75" />
-        <Skeleton className="w-full h-14 bg-elevation-200" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
         <Separator className="bg-divider-75" />
-        <Skeleton className="w-full h-14 bg-elevation-200" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
         <Separator className="bg-divider-75" />
-        <Skeleton className="w-full h-14 bg-elevation-200" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
         <Separator className="bg-divider-75" />
-        <Skeleton className="w-full h-14 bg-elevation-200" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
         <Separator className="bg-divider-75" />
-        <Skeleton className="w-full h-14 bg-elevation-200" />
-      </div>
-    </div>
-  );
-}
-
-type DetailsProps = {
-  type: "personal" | "company";
-  name: Contact["name"];
-  nodeId: Contact["node_id"];
-  avatar?: string;
-};
-
-function Details({ type, name, nodeId, avatar }: DetailsProps) {
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <IdentityAvatar
-        name={name}
-        picture={avatar || ""}
-        identityType={type}
-        size="lg"
-      />
-
-      <div className="flex flex-col items-center gap-2">
-        <span className="text-text-300 text-xl font-medium leading-[30px]">
-          {name}
-        </span>
-        <div className="flex items-center gap-1">
-          <span className="text-text-200 text-xs font-normal leading-[18px]">
-            {truncateString(nodeId, 12)}
-          </span>
-
-          <button className="flex items-center justify-center">
-            <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
-          </button>
-        </div>
+        <Skeleton className="w-full h-10 bg-elevation-200" />
       </div>
     </div>
   );
@@ -119,17 +81,15 @@ const formSchema = z.object({
   document_size: z.string().min(1),
 });
 
-function Form() {
+function Form({ nodeId }: { nodeId: string }) {
+  const [isDataValid, setIsDataValid] = useState(false);
   const navigate = useNavigate();
   const { formatMessage: f } = useIntl();
 
-  const { node_id } = useParams<{ node_id: string }>();
   const { data } = useSuspenseQuery({
-    queryKey: ["contacts", "details", node_id],
-    queryFn: () => getContact(node_id as string),
+    queryKey: ["contacts", "details", nodeId],
+    queryFn: () => getContactDetails(nodeId),
   });
-
-  const contactType = data.type === 0 ? "person" : "company";
 
   const methods = useForm({
     resolver: zodResolver(formSchema),
@@ -151,27 +111,51 @@ function Form() {
     },
   });
 
-  methods.watch(["country", "country_of_birth_or_registration"]);
+  const watchRequiredFields = methods.watch(["node_id", "name", "email"]);
+
+  useEffect(() => {
+    const validate = async () => {
+      const isValid = await methods.trigger(["node_id", "name", "email"]);
+
+      setIsDataValid(isValid);
+    };
+
+    void validate();
+  }, [watchRequiredFields, methods]);
 
   const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: (data: EditContactPayload) => {
-      return editContact(data);
+  const { toast } = useToast();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      return editContact({
+        ...methods.getValues(),
+      });
     },
-    onSuccess: (data, variables) => {
-      queryClient.setQueryData(
-        ["contacts", "details", variables.node_id],
-        data
-      );
+    onSuccess: async () => {
+      // warning: this will break if we change the node_id and save, because the node_id retrieved from the url will no longer exist
+      await queryClient.invalidateQueries({
+        queryKey: ["contacts", data.node_id, "details"],
+      });
+
+      toast({
+        description: f({
+          id: "contact.edit.success",
+          defaultMessage: "Contact updated successfully",
+          description: "Contact updated successfully toast message",
+        }),
+        position: "bottom-center",
+      });
     },
   });
 
   return (
     <FormProvider {...methods}>
-      <Details
-        type={contactType === "person" ? "personal" : "company"}
-        name={methods.getValues("name")}
-        nodeId={methods.getValues("node_id")}
+      <Summary
+        identityType={data.type}
+        name={data.name}
+        nodeId={data.node_id}
+        picture=""
       />
 
       <div className="flex flex-col gap-3">
@@ -186,7 +170,7 @@ function Form() {
           {...methods.register("email")}
           icon={<MailIcon className="text-text-300 h-5 w-5 stroke-1" />}
           label={
-            contactType === "person"
+            data.type === 0
               ? f(messages["contacts.person.email"])
               : f(messages["contacts.company.email"])
           }
@@ -196,7 +180,7 @@ function Form() {
           {...methods.register("name")}
           icon={<UserPenIcon className="text-text-300 h-5 w-5 stroke-1" />}
           label={
-            contactType === "person"
+            data.type === 0
               ? f(messages["contacts.person.name"])
               : f(messages["contacts.company.name"])
           }
@@ -208,7 +192,7 @@ function Form() {
           callback={(country) => {
             methods.setValue("country", country);
           }}
-          value={methods.getValues("country")}
+          value={methods.watch("country")}
         />
         <Input
           {...methods.register("city")}
@@ -229,7 +213,7 @@ function Form() {
         />
         <DatePicker
           label={
-            contactType === "person"
+            data.type === 0
               ? f(messages["contacts.person.dateOfBirth"])
               : f(messages["contacts.company.dateOfRegistration"])
           }
@@ -239,20 +223,20 @@ function Form() {
 
         <CountrySelector
           label={
-            contactType === "person"
+            data.type === 0
               ? f(messages["contacts.person.countryOfBirth"])
               : f(messages["contacts.company.countryOfRegistration"])
           }
           callback={(country) => {
             methods.setValue("country_of_birth_or_registration", country);
           }}
-          value={methods.getValues("country_of_birth_or_registration")}
+          value={methods.watch("country_of_birth_or_registration")}
         />
         <Input
           {...methods.register("city_of_birth_or_registration")}
           icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
           label={
-            contactType === "person"
+            data.type === 0
               ? f(messages["contacts.person.cityOfBirth"])
               : f(messages["contacts.company.cityOfRegistration"])
           }
@@ -261,14 +245,14 @@ function Form() {
           {...methods.register("identification_number")}
           icon={<ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />}
           label={
-            contactType === "person"
+            data.type === 0
               ? f(messages["contacts.person.identityNumber"])
               : f(messages["contacts.company.registrationNumber"])
           }
         />
         <Upload
           label={
-            contactType === "person"
+            data.type === 0
               ? f(messages["contacts.person.identityDocument"])
               : f(messages["contacts.company.registrationDocument"])
           }
@@ -280,8 +264,9 @@ function Form() {
         <Button
           size="md"
           onClick={() => {
-            mutation.mutate(methods.getValues());
+            mutate();
           }}
+          disabled={!isDataValid || isPending}
         >
           <FormattedMessage
             id="contacts.edit.save"
@@ -295,6 +280,7 @@ function Form() {
           onClick={() => {
             navigate(-1);
           }}
+          disabled={isPending}
         >
           <FormattedMessage
             id="contacts.edit.cancel"
@@ -308,6 +294,8 @@ function Form() {
 }
 
 export default function Edit() {
+  const { nodeId } = useParams<{ nodeId: string }>();
+
   return (
     <Page className="gap-6">
       <Topbar
@@ -324,7 +312,7 @@ export default function Edit() {
       />
 
       <Suspense fallback={<Loader />}>
-        <Form />
+        <Form nodeId={nodeId as string} />
       </Suspense>
     </Page>
   );

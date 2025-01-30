@@ -1,8 +1,6 @@
 const GET_BILLS = "/bills";
 const SEARCH_BILLS = "/bill/search";
-const GET_CONTACTS = "/contacts/list";
 const SEARCH_CONTACTS = "/contacts/search";
-const EDIT_CONTACT = "/contacts/edit";
 
 // identity endpoints
 const GET_ACTIVE_IDENTITY = "/identity/active";
@@ -22,12 +20,17 @@ const EDIT_COMPANY = "/company/edit";
 const ADD_COMPANY_SIGNER = "/company/add_signatory";
 const REMOVE_COMPANY_SIGNER = "/company/remove_signatory";
 
+// contacts endpoints
+const GET_CONTACTS = "/contacts/list";
+const GET_CONTACT_DETAILS = "/contacts/detail";
+const CREATE_CONTACT = "/contacts/create";
+const UPLOAD_CONTACT_FILE = "/contacts/upload_file";
+const EDIT_CONTACT = "/contacts/edit";
+const REMOVE_CONTACT = "/contacts/remove";
+
 export {
   GET_BILLS,
   SEARCH_BILLS,
-  GET_CONTACTS,
-  SEARCH_CONTACTS,
-  EDIT_CONTACT,
   GET_ACTIVE_IDENTITY,
   GET_IDENTITY_DETAILS,
   CREATE_IDENTITY,
@@ -42,4 +45,13 @@ export {
   GET_COMPANY_SIGNERS,
   ADD_COMPANY_SIGNER,
   REMOVE_COMPANY_SIGNER,
+
+  // contacts
+  SEARCH_CONTACTS,
+  GET_CONTACTS,
+  GET_CONTACT_DETAILS,
+  CREATE_CONTACT,
+  UPLOAD_CONTACT_FILE,
+  EDIT_CONTACT,
+  REMOVE_CONTACT,
 };

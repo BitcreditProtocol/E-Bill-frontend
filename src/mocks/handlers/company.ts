@@ -40,8 +40,6 @@ export const getCompanyDetails = http.get(
       where: { id: { equals: companyId as string } },
     });
 
-    console.log(company);
-
     return HttpResponse.json({
       ...company,
     });

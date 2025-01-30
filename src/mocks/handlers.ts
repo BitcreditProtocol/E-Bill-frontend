@@ -4,7 +4,6 @@ import { billsList } from "./handlers/bills/list";
 import { searchBills } from "./handlers/bills/search";
 import { searchContacts } from "./handlers/contacts/search";
 import { getContact, getContacts } from "./handlers/contacts/get";
-import { editContact } from "./handlers/contacts/edit";
 import {
   getCompaniesList,
   getSignersList,
@@ -17,6 +16,13 @@ import {
   getIdentityDetails,
   editIdentityInformation,
 } from "./handlers/indentity_v2";
+import {
+  getContactDetails,
+  getContactsList,
+  createContact,
+  editContact,
+  removeContact,
+} from "./handlers/contacts_v2";
 
 export const handlers = [
   recentBills,
@@ -35,4 +41,10 @@ export const handlers = [
   editCompanyInformation,
   getIdentityDetails,
   editIdentityInformation,
+  // contact
+  getContactDetails,
+  getContactsList,
+  createContact,
+  editContact,
+  removeContact,
 ];

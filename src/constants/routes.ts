@@ -20,8 +20,8 @@ const MINT_BILL = "mint-bill";
 const SELL_BILL = "sell-bill";
 const CONTACTS = "contacts";
 const CREATE_CONTACT = "new";
-const VIEW_CONTACT = ":node_id";
-const EDIT_CONTACT = ":node_id/edit";
+const VIEW_CONTACT = ":nodeId";
+const EDIT_CONTACT = ":nodeId/edit";
 const SETTINGS = "settings";
 const ONBOARDING = "get-started";
 

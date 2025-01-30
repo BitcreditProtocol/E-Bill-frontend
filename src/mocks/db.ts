@@ -120,3 +120,33 @@ db.company.create({
   registration_number: "654321",
   signatories: [signer1],
 });
+
+db.contact.create({
+  type: 0,
+  node_id: "1",
+  name: "Alice in Wonderland",
+  email: "alice@wonderland.com",
+  country: "US",
+  city: "Los Angeles",
+  zip: "90001",
+  address: "123 Wonderland St",
+  date_of_birth_or_registration: "2000-01-01",
+  country_of_birth_or_registration: "US",
+  city_of_birth_or_registration: "Los Angeles",
+  identification_number: "654321",
+});
+
+db.contact.create({
+  type: 1,
+  node_id: "2",
+  name: "Bob the Builder",
+  email: "bob@constructions.com",
+  country: "UK",
+  city: "London",
+  zip: "SW1A 1AA",
+  address: "10 Downing Street",
+  date_of_birth_or_registration: "2000-01-01",
+  country_of_birth_or_registration: "UK",
+  city_of_birth_or_registration: "London",
+  identification_number: "123456",
+});
