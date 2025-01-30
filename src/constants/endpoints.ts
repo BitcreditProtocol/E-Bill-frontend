@@ -13,7 +13,13 @@ const SWITCH_IDENTITY = "/identity/switch";
 
 // company endpoints
 const GET_COMPANIES = "/company/list";
-const GET_COMPANY_DETAILS = "/company/:id";
+const GET_COMPANY_DETAILS = "/company";
+const GET_COMPANY_SIGNERS = "/company/signatories";
+const CREATE_COMPANY = "/company/create";
+const UPLOAD_COMPANY_FILE = "/company/upload";
+const EDIT_COMPANY = "/company/edit";
+const ADD_COMPANY_SIGNER = "/company/add_signatory";
+const REMOVE_COMPANY_SIGNER = "/company/remove_signatory";
 
 export {
   GET_BILLS,
@@ -28,4 +34,10 @@ export {
   SWITCH_IDENTITY,
   GET_COMPANIES,
   GET_COMPANY_DETAILS,
+  CREATE_COMPANY,
+  UPLOAD_COMPANY_FILE,
+  EDIT_COMPANY,
+  GET_COMPANY_SIGNERS,
+  ADD_COMPANY_SIGNER,
+  REMOVE_COMPANY_SIGNER,
 };

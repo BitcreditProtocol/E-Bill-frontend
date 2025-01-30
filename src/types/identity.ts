@@ -18,20 +18,6 @@ export type PersonalIdentity = {
   identity_document_file: string;
 };
 
-export type CompanyIdentity = {
-  id: string;
-  name: string;
-  email: string;
-  country: string;
-  city: string;
-  zip: string;
-  address: string;
-  registration_date: string;
-  country_of_registration: string;
-  registration_number: string;
-  logo_file: string;
-};
-
 export type Identity = {
   node_id: string;
   type: "personal" | "company";

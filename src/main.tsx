@@ -69,6 +69,9 @@ import EditIdentity from "./pages/identity/Edit";
 
 // company flows
 import CreateCompany from "./pages/company/Create";
+import CompanySigners from "./pages/company/Signers";
+import EditCompany from "./pages/company/Edit";
+import ViewCompany from "./pages/company/View";
 
 import NonAcceptance from "./pages/recourse/NonAcceptance";
 import NonPayment from "./pages/recourse/NonPayment";
@@ -257,6 +260,18 @@ const router = createBrowserRouter(
         {
           path: routes.CREATE_COMPANY,
           element: <CreateCompany />,
+        },
+        {
+          path: routes.COMPANY_SIGNERS,
+          element: <CompanySigners />,
+        },
+        {
+          path: routes.EDIT_COMPANY,
+          element: <EditCompany />,
+        },
+        {
+          path: routes.VIEW_COMPANY,
+          element: <ViewCompany />,
         },
       ],
     },
