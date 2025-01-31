@@ -1,183 +1,141 @@
+import { Suspense } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
-import { PencilIcon, CircleCheckIcon, UserIcon } from "lucide-react";
-
+import { PencilIcon } from "lucide-react";
+import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
+import PageTitle from "@/components/typography/PageTitle";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { useIdentity } from "@/context/identity/IdentityContext";
+import Summary from "@/components/Summary";
+import { getIdentityDetails } from "@/services/identity_v2";
+import routes from "@/constants/routes";
+import { COUNTRIES } from "@/constants/countries";
+import Property from "./components/Property";
+import { messages } from "./components/messages";
 
-import Details from "./components/Details";
-
-function Property({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | React.ReactNode;
-}) {
+function Loader() {
   return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-text-200 text-xs leading-[18px]">{label}</span>
-      <span className="text-text-300 text-sm font-medium leading-5">
-        {value}
-      </span>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col items-center gap-4">
+        <Skeleton className="h-16 w-16 bg-elevation-200 rounded-full" />
+        <Skeleton className="h-5 w-1/2 bg-elevation-200" />
+      </div>
+
+      <div className="flex flex-col gap-6 py-6 px-5 border border-divider-75 rounded-xl">
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+        <Separator className="bg-divider-75" />
+        <Skeleton className="w-full h-10 bg-elevation-200" />
+      </div>
     </div>
   );
 }
 
-function ProofOfRegistration({ file, size }: { file: string; size: string }) {
+function Information() {
+  const { formatMessage: f } = useIntl();
+  const { data } = useSuspenseQuery({
+    queryFn: () => getIdentityDetails(),
+    queryKey: ["identity", "details"],
+  });
+
+  const {
+    node_id,
+    name,
+    email,
+    address,
+    zip,
+    city,
+    country,
+    date_of_birth,
+    country_of_birth,
+    city_of_birth,
+    identification_number,
+  } = data;
+
   return (
-    <div className="flex items-center gap-1 bg-elevation-200 p-4 border border-divider-50 rounded-lg">
-      <span className="text-text-300 text-sm font-medium">{file}</span>
+    <div className="flex flex-col gap-4">
+      <Summary identityType={0} name={name} nodeId={node_id} picture="" />
 
-      <span className="text-text-200 text-xs leading-[18px]">{size}</span>
+      <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
+        <Property label={f(messages["identity.name"])} value={name} />
+        <Separator className="bg-divider-75" />
 
-      <CircleCheckIcon
-        className="w-4 h-4 text-signal-success"
-        strokeWidth={1}
-      />
-    </div>
-  );
-}
+        <Property label={f(messages["identity.email"])} value={email} />
+        <Separator className="bg-divider-75" />
 
-function EditIdentity() {
-  return (
-    <button className="flex items-center justify-center h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md">
-      <PencilIcon className="h-5 w-5 text-text-300 stroke-1" />
-    </button>
-  );
-}
-
-function EditAuthorizedSigners() {
-  return (
-    <Link to="/authorized-signers">
-      <button className="flex items-center gap-1 text-brand-200 text-xs font-medium">
-        <FormattedMessage
-          id="viewIdentity.editAuthorizedSigners"
-          defaultMessage="Edit authorized signers"
+        <Property
+          label={f(messages["identity.address"])}
+          value={`${address}, ${zip}, ${city}, ${country}`}
         />
+        <Separator className="bg-divider-75" />
 
-        <UserIcon className="h-3 w-3 stroke-1" />
-      </button>
-    </Link>
+        <Property
+          label={f(messages["identity.date_of_birth"])}
+          value={date_of_birth}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["identity.country_of_birth"])}
+          value={COUNTRIES[country_of_birth as keyof typeof COUNTRIES]}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["identity.city_of_birth"])}
+          value={city_of_birth}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["identity.identification_number"])}
+          value={identification_number}
+        />
+      </div>
+    </div>
   );
 }
 
 export default function View() {
-  const {
-    identity: {
-      type,
-      name,
-      email,
-      postal_address,
-      country_of_birth,
-      city_of_birth,
-      date_of_birth,
-      registration_number,
-      proof_of_registration,
-      bitcoin_public_key,
-    },
-  } = useIdentity();
-  const intl = useIntl();
-
   return (
-    <div className="flex flex-col gap-6 w-full min-h-fit h-screen py-4 px-5 select-none">
+    <Page className="gap-5">
       <Topbar
         lead={<NavigateBack />}
         middle={
-          <span className="text-text-300 font-medium leading-6">
-            {type === "personal" ? (
-              <FormattedMessage
-                id="viewIdentity.titleForPersonalIdentity"
-                defaultMessage="Personal identity"
-              />
-            ) : (
-              <FormattedMessage
-                id="viewIdentity.titleForCompanyIdentity"
-                defaultMessage="Company information"
-              />
-            )}
-          </span>
+          <PageTitle>
+            <FormattedMessage
+              id="identity.view"
+              defaultMessage="Personal identity"
+              description="View personal identity title"
+            />
+          </PageTitle>
         }
-        trail={<EditIdentity />}
+        trail={
+          <Link to={routes.EDIT_IDENTITY}>
+            <button className="flex flex-col items-center justify-center h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md">
+              <PencilIcon className="text-text-300 h-5 w-5 stroke-1" />
+            </button>
+          </Link>
+        }
       />
 
-      <Details
-        type={type}
-        name={name}
-        bitcoin_public_key={bitcoin_public_key}
-      />
-
-      <div className="flex flex-col items-center gap-6 mb-16">
-        <div className="flex flex-col gap-3 w-full py-6 px-5 border-[1px] border-divider-75 rounded-xl">
-          <Property
-            label={intl.formatMessage({
-              id: "Contact email",
-              defaultMessage: "Email address",
-            })}
-            value={email}
-          />
-          <Separator className="bg-divider-75" />
-
-          <Property
-            label={intl.formatMessage({
-              id: "Contact postal address",
-              defaultMessage: "Postal address",
-            })}
-            value={postal_address}
-          />
-          <Separator className="bg-divider-75" />
-
-          <Property
-            label={intl.formatMessage({
-              id: "Contact registration date",
-              defaultMessage: "Registration date",
-            })}
-            value={date_of_birth}
-          />
-          <Separator className="bg-divider-75" />
-
-          <Property
-            label={intl.formatMessage({
-              id: "Contact country of registration",
-              defaultMessage: "Country of regitration",
-            })}
-            value={country_of_birth}
-          />
-          <Separator className="bg-divider-75" />
-
-          <Property
-            label={intl.formatMessage({
-              id: "Contact city of registration",
-              defaultMessage: "City of registration",
-            })}
-            value={city_of_birth}
-          />
-          <Separator className="bg-divider-75" />
-
-          <Property
-            label={intl.formatMessage({
-              id: "Contact registration number",
-              defaultMessage: "Registration number",
-            })}
-            value={registration_number}
-          />
-          <Separator className="bg-divider-75" />
-
-          <Property
-            label={intl.formatMessage({
-              id: "Contact proof of registration",
-              defaultMessage: "Proof of registration",
-            })}
-            value={
-              <ProofOfRegistration file={proof_of_registration} size="120 KB" />
-            }
-          />
-        </div>
-
-        {type === "company" && <EditAuthorizedSigners />}
+      <div className="flex flex-col gap-6">
+        <Suspense fallback={<Loader />}>
+          <Information />
+        </Suspense>
       </div>
-    </div>
+    </Page>
   );
 }

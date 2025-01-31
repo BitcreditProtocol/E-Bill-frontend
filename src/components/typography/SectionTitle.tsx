@@ -11,7 +11,10 @@ export default function SectionTitle({
 }: SectionTitleProps) {
   return (
     <span
-      className={cn("text-text-300 text-base font-medium", className)}
+      className={cn(
+        "text-text-300 text-base font-medium leading-normal",
+        className
+      )}
       {...props}
     >
       {children}

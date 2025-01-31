@@ -66,6 +66,7 @@ export default {
           200: '#F6F2E7',
           250: '#F2EDDF',
           300: '#D1CCC1',
+          350: '#E3D9CA'
         },
         text: {
           50: '#D6D2CA',
