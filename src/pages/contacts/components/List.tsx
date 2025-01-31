@@ -6,7 +6,7 @@ import type { Contact } from "@/types/contact";
 import { useLanguage } from "@/context/language/LanguageContext";
 import Icon from "./Icon";
 
-interface ContactProps {  
+interface ContactProps {
   value: Contact;
 }
 
@@ -28,9 +28,7 @@ function Contact({ value }: ContactProps) {
           <span className="text-text-300 text-base font-medium">
             {value.name}
           </span>
-          <span className="text-text-200 text-xs">
-            {value.postal_address}
-          </span>
+          <span className="text-text-200 text-xs">{value.address}</span>
         </div>
       </div>
       <ChevronRightIcon className="w-6 h-6 text-brand-200" strokeWidth={1} />
@@ -40,7 +38,10 @@ function Contact({ value }: ContactProps) {
 
 type Category = string;
 
-const sortContacts = (values: Contact[], locale: string): Record<Category, Contact[]> => {
+const sortContacts = (
+  values: Contact[],
+  locale: string
+): Record<Category, Contact[]> => {
   return [...values]
     .sort((a, b) => a.name.localeCompare(b.name, locale))
     .map((it) => {
@@ -53,7 +54,7 @@ const sortContacts = (values: Contact[], locale: string): Record<Category, Conta
       acc[item.category].push(item.value);
       return acc;
     }, {});
-}
+};
 
 export interface ListProps {
   values: Contact[];
@@ -61,21 +62,42 @@ export interface ListProps {
 
 export default function List({ values }: ListProps) {
   const lang = useLanguage();
-  const valuesMap = useMemo(() => sortContacts(values, lang.locale), [values, lang.locale]);
+  const valuesMap = useMemo(
+    () => sortContacts(values, lang.locale),
+    [values, lang.locale]
+  );
   const categories = useMemo<Category[]>(() => {
-    return Object.keys(valuesMap).sort((a, b) => a.localeCompare(b, lang.locale));
+    return Object.keys(valuesMap).sort((a, b) =>
+      a.localeCompare(b, lang.locale)
+    );
   }, [valuesMap, lang.locale]);
 
   return (
-    <div className="flex flex-col gap-3 w-full" data-testid="contact-list-container">
-      {categories.map((category) => (<div key={category} data-testid={`contact-category-container-${category}`}>
-        <div className="text-text-300 text-xs ps-5 mb-3 font-medium" data-testid={`contact-category-title-${category}`}>{category}</div>
-        <div className="flex flex-col gap-2" data-testid={`contact-category-items-${category}`}>
-          {valuesMap[category].map((value, valueIndex) => (
-            <Contact key={valueIndex} value={value} />
-          ))}
+    <div
+      className="flex flex-col gap-3 w-full"
+      data-testid="contact-list-container"
+    >
+      {categories.map((category) => (
+        <div
+          key={category}
+          data-testid={`contact-category-container-${category}`}
+        >
+          <div
+            className="text-text-300 text-xs ps-5 mb-3 font-medium"
+            data-testid={`contact-category-title-${category}`}
+          >
+            {category}
+          </div>
+          <div
+            className="flex flex-col gap-2"
+            data-testid={`contact-category-items-${category}`}
+          >
+            {valuesMap[category].map((value, valueIndex) => (
+              <Contact key={valueIndex} value={value} />
+            ))}
+          </div>
         </div>
-      </div>))}
+      ))}
     </div>
   );
 }

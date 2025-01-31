@@ -1,5 +1,5 @@
-export const copyToClipboard = (value: string) =>
-  navigator.clipboard.writeText(value);
+export const copyToClipboard = (value: string, callback?: () => void) =>
+  navigator.clipboard.writeText(value).then(callback);
 
 export const isPWA = () =>
   window.matchMedia("(display-mode: standalone)").matches ||

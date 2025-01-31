@@ -1,0 +1,167 @@
+import { factory, manyOf, primaryKey } from "@mswjs/data";
+
+export const db = factory({
+  identity: {
+    node_id: primaryKey(String),
+    name: String,
+    email: String,
+    bitcoin_public_key: String,
+    npub: String,
+    country: String,
+    city: String,
+    zip: String,
+    address: String,
+    date_of_birth: String,
+    country_of_birth: String,
+    city_of_birth: String,
+    identification_number: String,
+  },
+  contact: {
+    type: Number,
+    node_id: primaryKey(String),
+    name: String,
+    email: String,
+    country: String,
+    city: String,
+    zip: String,
+    address: String,
+    date_of_birth_or_registration: String,
+    country_of_birth_or_registration: String,
+    city_of_birth_or_registration: String,
+    identification_number: String,
+  },
+  company: {
+    id: primaryKey(String),
+    name: String,
+    email: String,
+    country: String,
+    city: String,
+    zip: String,
+    address: String,
+    registration_date: String,
+    country_of_registration: String,
+    city_of_registration: String,
+    registration_number: String,
+    signatories: manyOf("signatory"),
+  },
+  signatory: {
+    type: Number,
+    node_id: primaryKey(String),
+    name: String,
+    country: String,
+    city: String,
+    zip: String,
+    address: String,
+  },
+});
+
+db.identity.create({
+  node_id: "1",
+  name: "Fulano Doe",
+  email: "fulano@doe.com",
+  bitcoin_public_key: "Bitcr1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+  npub: "npub1",
+  country: "BR",
+  city: "São Paulo",
+  zip: "10001",
+  address: "Rua Augusta, 112",
+  date_of_birth: "2000-01-01",
+  country_of_birth: "BR",
+  city_of_birth: "São Paulo",
+  identification_number: "123456",
+});
+
+const signer1 = db.signatory.create({
+  type: 0,
+  node_id: "1",
+  name: "Jane Doe",
+  country: "US",
+  city: "New York",
+  zip: "10001",
+  address: "123 Main St",
+});
+
+const signer2 = db.signatory.create({
+  type: 0,
+  node_id: "2",
+  name: "John Doe",
+  country: "BR",
+  city: "São Paulo",
+  zip: "10001",
+  address: "Rua Augusta, 112",
+});
+
+db.company.create({
+  id: "1",
+  name: "Rothbard Corp.",
+  email: "corp@rothbard.com",
+  country: "US",
+  city: "New York",
+  zip: "10001",
+  address: "123 Wall Street",
+  registration_date: "2021-01-01",
+  country_of_registration: "US",
+  city_of_registration: "New York",
+  registration_number: "123456",
+  signatories: [signer1, signer2],
+});
+
+db.company.create({
+  id: "2",
+  name: "Mises Inc.",
+  email: "management@mises.com",
+  country: "AT",
+  city: "Vienna",
+  zip: "1010",
+  address: "101 Mises Lane",
+  registration_date: "2021-01-01",
+  country_of_registration: "AT",
+  city_of_registration: "Vienna",
+  registration_number: "654321",
+  signatories: [signer1],
+});
+
+db.contact.create({
+  type: 0,
+  node_id: "1",
+  name: "Alice in Wonderland",
+  email: "alice@wonderland.com",
+  country: "US",
+  city: "Los Angeles",
+  zip: "90001",
+  address: "123 Wonderland St",
+  date_of_birth_or_registration: "2000-01-01",
+  country_of_birth_or_registration: "US",
+  city_of_birth_or_registration: "Los Angeles",
+  identification_number: "654321",
+});
+
+db.contact.create({
+  type: 1,
+  node_id: "2",
+  name: "Bob the Builder",
+  email: "bob@constructions.com",
+  country: "BR",
+  city: "Rio de Janeiro",
+  zip: "SW1A1AA",
+  address: "10 Downing Street",
+  date_of_birth_or_registration: "2000-01-01",
+  country_of_birth_or_registration: "BR",
+  city_of_birth_or_registration: "São Paulo",
+  identification_number: "123456",
+});
+
+db.contact.create({
+  type: 1,
+  node_id: "3",
+  name: "Walter White",
+  email: "walter@polloshermanos.com",
+  country: "MX",
+  city: "Juarez",
+  zip: "87101",
+  address: "308 Negra Arroyo Lane",
+  date_of_birth_or_registration: "2000-01-01",
+  country_of_birth_or_registration: "US",
+  city_of_birth_or_registration: "Albuquerque",
+  identification_number: "CRYS74LBLU3",
+});

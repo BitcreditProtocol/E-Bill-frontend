@@ -20,8 +20,8 @@ const MINT_BILL = "mint-bill";
 const SELL_BILL = "sell-bill";
 const CONTACTS = "contacts";
 const CREATE_CONTACT = "new";
-const VIEW_CONTACT = ":node_id";
-const EDIT_CONTACT = ":node_id/edit";
+const VIEW_CONTACT = ":nodeId";
+const EDIT_CONTACT = ":nodeId/edit";
 const SETTINGS = "settings";
 const ONBOARDING = "get-started";
 
@@ -31,10 +31,17 @@ const BILL_ISSUER = "bill-issuer";
 const AUTHORIZED_SIGNER = "authorized-signer";
 const SUCCESS = "success";
 
-const CREATE_COMPANY = "/create-company";
+const VIEW_IDENTITY = "/identity";
+const EDIT_IDENTITY = "/identity/edit";
+const IDENTITY_LIST = "/identity/list";
+
+const CREATE_COMPANY = "/company/create";
+const COMPANY_SIGNERS = "/company/signers";
+const EDIT_COMPANY = "/company/edit";
+// todo: replace by /company/:id once we integrate the api
+const VIEW_COMPANY = "/company";
+
 const CREATE_COMPANY_SUCCESS = "success";
-const IDENTITY = "/identity";
-const VIEW_IDENTITY = "/view-identity";
 const AUTHORIZED_SIGNERS = "/authorized-signers";
 const ENDORSEMENTS = "/endorsements";
 const ENDORSE = "/endorse";
@@ -85,8 +92,8 @@ export default {
   SUCCESS,
   VIEW_CONTACT,
   EDIT_CONTACT,
-  IDENTITY,
   VIEW_IDENTITY,
+  EDIT_IDENTITY,
   AUTHORIZED_SIGNERS,
   ENDORSEMENTS,
   ENDORSE,
@@ -104,4 +111,9 @@ export default {
   MINT_SETTINGS,
   NON_ACCEPTANCE,
   NON_PAYMENT,
+
+  IDENTITY_LIST,
+  COMPANY_SIGNERS,
+  EDIT_COMPANY,
+  VIEW_COMPANY,
 };
