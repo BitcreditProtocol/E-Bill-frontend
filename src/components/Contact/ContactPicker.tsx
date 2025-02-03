@@ -1,13 +1,15 @@
 import { Suspense, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { FormattedMessage, useIntl } from "react-intl";
+import { getContacts } from "@/services/contact_v2";
+import { Contact } from "@/types/contact";
+
 import Topbar from "../Topbar";
 import NavigateBack from "../NavigateBack";
 import PageTitle from "../typography/PageTitle";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Skeleton } from "../ui/skeleton";
 import Search from "../ui/search";
-import { getContacts } from "@/services/contact_v2";
 import { Card } from "./Card";
 import Information from "./Information";
 
@@ -54,26 +56,47 @@ function List({ onSelect }: { onSelect: (e: string) => void }) {
   );
 }
 
+const STEPS = {
+  LIST: "LIST",
+  INFORMATION: "INFORMATION",
+} as const;
+
 type ContactPickerProps = {
   children: React.ReactNode;
-  onSelect: () => void;
+  onSelect: (contact: Pick<Contact, "node_id" | "name" | "address">) => void;
 };
 
-export default function ContactPicker({ children }: ContactPickerProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentStep, setCurrentStep] = useState<"LIST" | "VIEW">("LIST");
-  const [selectedContact, setSelectedContact] = useState<string | null>(null);
+export default function ContactPicker({
+  children,
+  onSelect,
+}: ContactPickerProps) {
   const { formatMessage: f } = useIntl();
+  const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentStep, setCurrentStep] = useState<keyof typeof STEPS>(
+    STEPS.LIST
+  );
+  const [viewingContact, setViewingContact] = useState<string | null>(null);
 
   const navigateBack = () => {
-    if (currentStep === "VIEW") {
-      setSelectedContact(null);
-      setCurrentStep("LIST");
+    if (currentStep === STEPS.LIST) {
+      setOpen(false);
+      return;
     }
+
+    setCurrentStep(STEPS.LIST);
+    setViewingContact(null);
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        setOpen((prev) => !prev);
+        setCurrentStep(STEPS.LIST);
+        setViewingContact(null);
+      }}
+    >
       <DialogTrigger>{children}</DialogTrigger>
       <DialogContent className="flex flex-col gap-5 py-6 px-5 h-full max-w-[375px] bg-elevation-50">
         <Topbar
@@ -104,25 +127,26 @@ export default function ContactPicker({ children }: ContactPickerProps) {
           />
         </div>
 
-        {currentStep === "LIST" && (
-          <Suspense fallback={<Loader />}>
+        <Suspense fallback={<Loader />}>
+          {currentStep === STEPS.LIST && (
             <List
-              onSelect={(e) => {
-                setSelectedContact(e);
-                setCurrentStep("VIEW");
+              onSelect={(contactId) => {
+                setCurrentStep(STEPS.INFORMATION);
+                setViewingContact(contactId);
               }}
             />
-          </Suspense>
-        )}
+          )}
 
-        {currentStep === "VIEW" && selectedContact !== null && (
-          <Information
-            nodeId={selectedContact}
-            selectContact={() => {
-              console.log("selection works");
-            }}
-          />
-        )}
+          {currentStep === STEPS.INFORMATION && viewingContact !== null && (
+            <Information
+              nodeId={viewingContact}
+              onSelect={(contact) => {
+                onSelect(contact);
+                setOpen(false);
+              }}
+            />
+          )}
+        </Suspense>
       </DialogContent>
     </Dialog>
   );

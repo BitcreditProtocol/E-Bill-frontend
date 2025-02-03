@@ -7,9 +7,10 @@ import Summary from "@/components/Summary";
 import { Button } from "@/components/ui/button";
 import { getContactDetails } from "@/services/contact_v2";
 import { COUNTRIES } from "@/constants/countries";
+import type { Contact } from "@/types/contact";
+import { ScrollArea } from "../ui/scroll-area";
 import Property from "./Property";
 import { messages } from "./messages";
-import { ScrollArea } from "../ui/scroll-area";
 
 function Loader() {
   return (
@@ -40,10 +41,10 @@ function Loader() {
 
 function Information({
   contactId,
-  selectContact,
+  onSelect,
 }: {
   contactId: string;
-  selectContact: () => void;
+  onSelect: (contact: Pick<Contact, "node_id" | "name" | "address">) => void;
 }) {
   const { formatMessage: f } = useIntl();
   const { data } = useSuspenseQuery({
@@ -65,6 +66,10 @@ function Information({
     city_of_birth_or_registration,
     identification_number,
   } = data;
+
+  const selectContact = () => {
+    onSelect({ node_id, name, address });
+  };
 
   return (
     <ScrollArea>
@@ -166,14 +171,14 @@ function Information({
 
 export default function ContactInformation({
   nodeId,
-  selectContact,
+  onSelect,
 }: {
   nodeId: string;
-  selectContact: () => void;
+  onSelect: (contact: Pick<Contact, "node_id" | "name" | "address">) => void;
 }) {
   return (
     <Suspense fallback={<Loader />}>
-      <Information contactId={nodeId} selectContact={selectContact} />
+      <Information contactId={nodeId} onSelect={onSelect} />
     </Suspense>
   );
 }

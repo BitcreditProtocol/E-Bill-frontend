@@ -3,7 +3,7 @@ import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Big from "big.js";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
   CalculatorIcon,
@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Upload from "@/components/Upload";
 import BitcoinIcon from "@/assets/bitcoin-icon.svg";
+import { Contact } from "@/types/contact";
 
 const formSchema = z.object({
   type: z.number(),
@@ -56,7 +57,7 @@ function Issuance() {
     <div className="flex items-center justify-between">
       <span className="text-text-300 text-sm font-normal leading-5 mb-1">
         {getValues("city_of_issuing")}, {getValues("country_of_issuing")},{" "}
-        {getValues("issue_date")}
+        {format(parseISO(getValues("issue_date") as string), "dd-MMM-yyyy")}
       </span>
 
       <Dialog
@@ -123,7 +124,7 @@ function Issuance() {
             <DatePicker
               label="Issue date"
               mode="single"
-              value={{ from: new Date() }}
+              value={{ from: parseISO(watch("issue_date") as string) }}
               onChange={(e) => {
                 setValue(
                   "issue_date",
@@ -155,73 +156,61 @@ function Issuance() {
   );
 }
 
-function SelectContact() {
-  //  const [selectedContact, setSelectedContact] = useState("");
-
-  return (
-    <ContactPicker
-      onSelect={() => {
-        console.log("selected");
-      }}
-    >
-      <button className="flex items-center gap-2 py-5 px-4 w-full bg-elevation-200 border border-divider-50 rounded-lg">
-        <UserIcon className="text-text-300 h-5 w-5 stroke-1" />
-        <span className="text-text-300 text-sm font-medium leading-5 mr-auto">
-          <FormattedMessage
-            id="bills.create.payee"
-            defaultMessage="Payee"
-            description="Payee label"
-          />
-        </span>
-        <ChevronRightIcon className="text-text-300 h-5 w-5 stroke-1" />
-      </button>
-    </ContactPicker>
-  );
-}
-
-function SelectPayee() {
-  const [isSelected, setIsSelected] = useState(false);
+function Payee() {
+  const [selectedContact, setSelectedContact] = useState<Pick<
+    Contact,
+    "node_id" | "name" | "address"
+  > | null>(null);
 
   return (
     <>
-      {isSelected ? (
+      {selectedContact ? (
         <div className="flex items-center gap-3 py-4 px-3 bg-elevation-200 border border-divider-50 rounded-lg">
-          <div className="flex flex-col">
+          <div className="flex flex-col mr-auto">
             <span className="text-text-300 text-base font-medium leading-6">
-              Apple, Inc.
+              {selectedContact.name}
             </span>
             <span className="text-text-200 text-xs font-normal leading-normal">
-              One Apple Park Way, Cupertino, CA
+              {selectedContact.address}
             </span>
           </div>
 
-          <button
-            className="ml-auto"
-            onClick={() => {
-              setIsSelected(false);
+          <ContactPicker
+            onSelect={(contact) => {
+              setSelectedContact(contact);
             }}
           >
-            <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
-          </button>
+            <button className="p-0">
+              <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
+            </button>
+          </ContactPicker>
         </div>
       ) : (
-        <button className="flex items-center gap-2 py-5 px-4 w-full bg-elevation-200 border border-divider-50 rounded-lg">
-          <UserIcon className="text-text-300 h-5 w-5 stroke-1" />
-          <span className="text-text-300 text-sm font-medium leading-5 mr-auto">
-            <FormattedMessage
-              id="bills.create.payee"
-              defaultMessage="Payee"
-              description="Payee label"
-            />
-          </span>
-          <ChevronRightIcon className="text-text-300 h-5 w-5 stroke-1" />
-        </button>
+        <ContactPicker
+          onSelect={(contact) => {
+            setSelectedContact(contact);
+          }}
+        >
+          <button className="flex items-center gap-2 py-5 px-4 w-full bg-elevation-200 border border-divider-50 rounded-lg">
+            <UserIcon className="text-text-300 h-5 w-5 stroke-1" />
+            <span className="text-text-300 text-sm font-medium leading-5 mr-auto">
+              <FormattedMessage
+                id="bills.create.payee"
+                defaultMessage="Payee"
+                description="Payee label"
+              />
+            </span>
+            <ChevronRightIcon className="text-text-300 h-5 w-5 stroke-1" />
+          </button>
+        </ContactPicker>
       )}
     </>
   );
 }
 
 function CalculateDiscount() {
+  const { watch, setValue } = useFormContext();
+
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -238,11 +227,13 @@ function CalculateDiscount() {
       </DrawerTrigger>
       <DrawerContent className="flex flex-col items-center gap-6 pb-5 px-5 max-w-[375px] bg-elevation-50 mx-auto">
         <DiscountForm
-          startDate={new Date()}
-          endDate={new Date()}
-          onSubmit={console.log}
+          startDate={parseISO(watch("issue_date") as string)}
+          endDate={parseISO(watch("maturity_date") as string)}
+          onSubmit={(e) => {
+            setValue("sum", e.net.value.toString());
+          }}
           gross={{
-            value: Big(10),
+            value: Big(parseInt(watch("sum") as string)),
             currency: "BTC",
           }}
         />
@@ -251,67 +242,79 @@ function CalculateDiscount() {
   );
 }
 
-function DateSelector({
-  date,
-  setDate,
-}: {
-  date: string;
-  setDate: (e: string) => void;
-}) {
+function DateSelector() {
+  const { setValue, watch } = useFormContext();
+
   return (
     <DatePicker
       mode="single"
       customComponent={
         <button className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg">
           <CalendarIcon className="text-text-300 h-5 w-5 stroke-1" />
-          {date}
+          {(watch("maturity_date") &&
+            format(
+              parseISO(watch("maturity_date") as string),
+              "dd-MMM-yyyy"
+            )) ||
+            "Date"}
         </button>
       }
       onChange={(e) => {
-        setDate(format(e.from as unknown as string, "yyyy-MM-dd"));
-        console.log(e);
+        setValue(
+          "maturity_date",
+          format(e.from as unknown as string, "yyyy-MM-dd")
+        );
       }}
     />
   );
 }
 
-function SelectPayer() {
-  const [isSelected, setIsSelected] = useState(false);
-
+function Payer() {
+  const [selectedContact, setSelectedContact] = useState<Pick<
+    Contact,
+    "node_id" | "name" | "address"
+  > | null>(null);
   return (
     <>
-      {isSelected ? (
+      {selectedContact ? (
         <div className="flex items-center gap-3 py-4 px-3 bg-elevation-200 border border-divider-50 rounded-lg">
-          <div className="flex flex-col">
+          <div className="flex flex-col mr-auto">
             <span className="text-text-300 text-base font-medium leading-6">
-              Apple, Inc.
+              {selectedContact.name}
             </span>
             <span className="text-text-200 text-xs font-normal leading-normal">
-              One Apple Park Way, Cupertino, CA
+              {selectedContact.address}
             </span>
           </div>
 
-          <button className="ml-auto">
-            <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
+          <button className="p-0">
+            <ContactPicker
+              onSelect={(contact) => {
+                setSelectedContact(contact);
+              }}
+            >
+              <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
+            </ContactPicker>
           </button>
         </div>
       ) : (
-        <button
-          className="flex items-center gap-2 py-5 px-4 w-full bg-elevation-200 border border-divider-50 rounded-lg"
-          onClick={() => {
-            setIsSelected(true);
+        <ContactPicker
+          onSelect={(contact) => {
+            setSelectedContact(contact);
           }}
         >
-          <UserIcon className="text-text-300 h-5 w-5 stroke-1" />
-          <span className="text-text-300 text-sm font-medium leading-5 mr-auto">
-            <FormattedMessage
-              id="bills.create.payer"
-              defaultMessage="Payer"
-              description="Payer label"
-            />
-          </span>
-          <ChevronRightIcon className="text-text-300 h-5 w-5 stroke-1" />
-        </button>
+          <button className="flex items-center gap-2 py-5 px-4 w-full bg-elevation-200 border border-divider-50 rounded-lg">
+            <UserIcon className="text-text-300 h-5 w-5 stroke-1" />
+            <span className="text-text-300 text-sm font-medium leading-5 mr-auto">
+              <FormattedMessage
+                id="bills.create.payer"
+                defaultMessage="Payer"
+                description="Payer label"
+              />
+            </span>
+            <ChevronRightIcon className="text-text-300 h-5 w-5 stroke-1" />
+          </button>
+        </ContactPicker>
       )}
     </>
   );
@@ -425,8 +428,7 @@ function Payment() {
 }
 
 function Information() {
-  //  const { watch, setValue } = useFormContext();
-  const [date, setDate] = useState("Date");
+  const { register, watch } = useFormContext();
 
   return (
     <div className="flex flex-col gap-4">
@@ -450,7 +452,7 @@ function Information() {
             />
           </span>
 
-          <DateSelector date={date} setDate={setDate} />
+          <DateSelector />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -462,8 +464,7 @@ function Information() {
             />
           </span>
 
-          <SelectPayee />
-          <SelectContact />
+          <Payee />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -485,8 +486,10 @@ function Information() {
             </span>
 
             <input
+              {...register("sum")}
               className="bg-transparent text-right outline-none"
               type="text"
+              value={watch("sum") as string}
             />
 
             <span className="text-text-200 text-[10px] font-normal leading-snug">
@@ -504,7 +507,7 @@ function Information() {
             />
           </span>
 
-          <SelectPayer />
+          <Payer />
         </div>
 
         <Payment />
@@ -528,15 +531,17 @@ function Information() {
 }
 
 export default function Create() {
+  const defaultIssueDate = format(new Date(), "yyyy-MM-dd");
+
   const methods = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       type: 0,
       payee: "",
       drawee: "",
-      issue_date: "",
+      issue_date: defaultIssueDate,
       maturity_date: "",
-      sum: "",
+      sum: "0",
       currency: "",
       country_of_issuing: "AT",
       city_of_issuing: "Vienna",
