@@ -183,7 +183,7 @@
   "bill.recourse.sign.subtitle": "This recourse request is legally binding",
   "bill.recourse.sign.title": "Are you sure?",
   "bills.create.billOfExchange": "Against this bill of exchange",
-  "bills.create.calculateDiscount": "Calculate discount",
+  "bills.create.discount": "Calculate discount",
   "bills.create.edit": "Edit",
   "bills.create.issuance.cancel": "Cancel",
   "bills.create.issuance.confirm": "Confirm",

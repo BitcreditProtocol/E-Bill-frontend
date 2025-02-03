@@ -210,18 +210,34 @@ function Payee() {
 
 function CalculateDiscount() {
   const { watch, setValue } = useFormContext();
+  const [open, setOpen] = useState(false);
+  const [discount, setDiscount] = useState<{
+    days: number;
+    rate: number;
+  } | null>(null);
 
   return (
-    <Drawer>
+    <Drawer
+      open={open}
+      onOpenChange={() => {
+        setOpen((prev) => !prev);
+      }}
+    >
       <DrawerTrigger asChild>
         <button className="flex items-center gap-1">
           <CalculatorIcon className="text-text-300 h-4 w-4 stroke-1" />
           <span className="text-text-300 text-xs font-medium leading-normal">
-            <FormattedMessage
-              id="bills.create.calculateDiscount"
-              defaultMessage="Calculate discount"
-              description="Calculate discount button"
-            />
+            {discount !== null ? (
+              `${discount.days.toString()} @ ${(
+                discount.rate * 100
+              ).toString()}%`
+            ) : (
+              <FormattedMessage
+                id="bills.create.discount"
+                defaultMessage="Calculate discount"
+                description="Calculate discount button"
+              />
+            )}
           </span>
         </button>
       </DrawerTrigger>
@@ -231,6 +247,11 @@ function CalculateDiscount() {
           endDate={parseISO(watch("maturity_date") as string)}
           onSubmit={(e) => {
             setValue("sum", e.net.value.toString());
+            setDiscount({
+              days: e.days,
+              rate: e.discountRate.toNumber(),
+            });
+            setOpen(false);
           }}
           gross={{
             value: Big(parseInt(watch("sum") as string)),
