@@ -1,4 +1,8 @@
+// bill endpoints
+const UPLOAD_BILL_FILES = "/bill/upload_files";
+const CREATE_BILL = "/bill/issue";
 const GET_BILLS = "/bills";
+const GET_BILLS_LIGHT = "/bills/list/light";
 const SEARCH_BILLS = "/bill/search";
 const SEARCH_CONTACTS = "/contacts/search";
 
@@ -29,8 +33,11 @@ const EDIT_CONTACT = "/contacts/edit";
 const REMOVE_CONTACT = "/contacts/remove";
 
 export {
+  UPLOAD_BILL_FILES,
+  CREATE_BILL,
   GET_BILLS,
   SEARCH_BILLS,
+  GET_BILLS_LIGHT,
   GET_ACTIVE_IDENTITY,
   GET_IDENTITY_DETAILS,
   CREATE_IDENTITY,

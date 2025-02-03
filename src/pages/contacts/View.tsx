@@ -171,8 +171,6 @@ function Information({ contactId }: { contactId: string }) {
     queryFn: () => getContactDetails(contactId),
   });
 
-  console.log("bilola >", data);
-
   const {
     type,
     node_id,

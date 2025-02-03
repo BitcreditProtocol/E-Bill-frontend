@@ -21,6 +21,7 @@ import {
   editContact,
   removeContact,
 } from "./handlers/contacts_v2";
+import { getBillsLight } from "./handlers/bills_v2";
 
 export const handlers = [
   recentBills,
@@ -42,4 +43,6 @@ export const handlers = [
   createContact,
   editContact,
   removeContact,
+  // bills
+  getBillsLight,
 ];

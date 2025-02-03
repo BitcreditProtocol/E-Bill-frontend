@@ -47,3 +47,47 @@ export type SearchBillsFilter = {
   role?: string;
   currency?: string;
 };
+
+export type Peer = {
+  type: number;
+  node_id: string;
+  name: string;
+  country: string;
+  city: string;
+  zip: string;
+  address: string;
+  email: string;
+  nostr_relay: string;
+};
+
+export type BillFull = {
+  id: string;
+  time_of_drawing: number;
+  country_of_issuing: string;
+  city_of_issuing: string;
+  drawee: Peer;
+  drawer: Peer;
+  payee: Peer;
+  currency: string;
+  sum: string;
+  maturity_date: string;
+  issue_date: string;
+  country_of_payment: string;
+  city_of_payment: string;
+  language: string;
+  accepted: boolean;
+  endorsed: boolean;
+  requested_to_pay: boolean;
+  requested_to_accept: boolean;
+  paid: boolean;
+  waiting_for_payment: boolean;
+  buyer: Peer | null;
+  seller: Peer | null;
+  link_for_buy: string;
+  link_to_pay: string;
+  address_to_pay: string;
+  files: {
+    name: string;
+    hash: string;
+  }[];
+};
