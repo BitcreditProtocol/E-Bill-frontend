@@ -75,11 +75,11 @@ function CategoryOption({
         className={cn(
           "flex items-center gap-2 py-4 px-5 bg-elevation-200 border border-divider-50 rounded-xl cursor-pointer",
           {
-            "cursor-not-allowed": enabled,
+            "cursor-not-allowed": !enabled,
           }
         )}
         onClick={() => {
-          if (!enabled) {
+          if (enabled) {
             onClick();
           }
         }}
@@ -98,7 +98,7 @@ function CategoryOption({
         <ChevronRightIcon className="text-text-300 h-6 w-6 stroke-1" />
       </div>
 
-      {enabled && (
+      {!enabled && (
         <div className="absolute inset-0 bg-elevation-200 opacity-50 rounded-xl pointer-events-none cursor-not-allowed"></div>
       )}
     </div>
