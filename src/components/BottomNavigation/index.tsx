@@ -39,23 +39,23 @@ export default function BottomNavigation() {
   const intl = useIntl();
 
   const goToHome = () => {
-    navigate(routes.HOME);
+    navigate("/" + routes.HOME);
   };
 
   const goToContacts = () => {
-    navigate(routes.CONTACTS);
+    navigate("/" + routes.CONTACTS);
   };
 
   const goToNewBill = () => {
-    navigate(routes.CREATE_BILL);
+    navigate("/" + routes.CREATE_BILL);
   };
 
   const goToNotifications = () => {
-    navigate(routes.NOTIFICATIONS);
+    navigate("/" + routes.NOTIFICATIONS);
   };
 
   const goToSettings = () => {
-    navigate(routes.SETTINGS);
+    navigate("/" + routes.SETTINGS);
   };
 
   return (
