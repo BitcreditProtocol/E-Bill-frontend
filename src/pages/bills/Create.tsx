@@ -29,11 +29,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Upload from "@/components/Upload";
 import { useActiveIdentity } from "@/hooks/use-active-identity";
+import { cn } from "@/lib/utils";
 import BitcoinIcon from "@/assets/bitcoin-icon.svg";
 import ThreePartiesIcon from "@/assets/icons/three-parties.svg";
 import SelfDraftedIcon from "@/assets/icons/self-drafted.svg";
 import PromissoryNoteIcon from "@/assets/icons/promissory-note.svg";
-import { cn } from "@/lib/utils";
 
 const BILL_TYPE = {
   DRAFT: 0,
