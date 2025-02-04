@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +11,7 @@ import {
   ChevronRightIcon,
   MapIcon,
   PencilIcon,
+  RefreshCwIcon,
   UserIcon,
 } from "lucide-react";
 import Page from "@/components/wrappers/Page";
@@ -25,9 +26,20 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { DiscountForm } from "@/components/DiscountForm/DiscountForm";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import Upload from "@/components/Upload";
+import { useActiveIdentity } from "@/hooks/use-active-identity";
 import BitcoinIcon from "@/assets/bitcoin-icon.svg";
-import { Contact } from "@/types/contact";
+import ThreePartiesIcon from "@/assets/icons/three-parties.svg";
+import SelfDraftedIcon from "@/assets/icons/self-drafted.svg";
+import PromissoryNoteIcon from "@/assets/icons/promissory-note.svg";
+import { cn } from "@/lib/utils";
+
+const BILL_TYPE = {
+  DRAFT: 0,
+  SELF_DRAFTED: 1,
+  PROMISSORY_NOTE: 2,
+};
 
 const formSchema = z.object({
   type: z.number(),
@@ -43,6 +55,168 @@ const formSchema = z.object({
   city_of_payment: z.string().min(1),
   language: z.string().min(1),
 });
+
+function CategoryOption({
+  icon,
+  label,
+  description,
+  onClick,
+  enabled,
+}: {
+  icon: string;
+  label: string;
+  description: string;
+  onClick: () => void;
+  enabled: boolean;
+}) {
+  return (
+    <div className="relative">
+      <div
+        className={cn(
+          "flex items-center gap-2 py-4 px-5 bg-elevation-200 border border-divider-50 rounded-xl cursor-pointer",
+          {
+            "cursor-not-allowed": enabled,
+          }
+        )}
+        onClick={() => {
+          if (!enabled) {
+            onClick();
+          }
+        }}
+      >
+        <div className="flex items-center justify-center p-1.5 h-9 w-9 bg-elevation-50 border border-divider-50 rounded-full">
+          <img src={icon} />
+        </div>
+        <div className="flex flex-col gap-0.5 mr-auto">
+          <span className="text-text-300 text-base font-medium leading-6">
+            {label}
+          </span>
+          <span className="text-text-200 text-sm font-normal leading-normal">
+            {description}
+          </span>
+        </div>
+        <ChevronRightIcon className="text-text-300 h-6 w-6 stroke-1" />
+      </div>
+
+      {enabled && (
+        <div className="absolute inset-0 bg-elevation-200 opacity-50 rounded-xl pointer-events-none cursor-not-allowed"></div>
+      )}
+    </div>
+  );
+}
+
+function Category() {
+  const { setValue } = useFormContext();
+  const { formatMessage: f } = useIntl();
+  const { identityDetails, isLoading } = useActiveIdentity();
+
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <span className="text-text-300 text-sm font-normal leading-5">
+            <FormattedMessage
+              id="bills.create.issuer"
+              defaultMessage="Issuer"
+              description="Issuer label"
+            />
+          </span>
+
+          <button className="flex items-center gap-1 text-brand-200 text-xs font-medium">
+            <FormattedMessage
+              id="bills.create.switchIdentity"
+              defaultMessage="Switch identity"
+              description="Switch identity button"
+            />
+            <RefreshCwIcon className="text-brand-200 h-3 w-3 stroke-1" />
+          </button>
+        </div>
+        {isLoading ? (
+          <Skeleton className="h-16 w-full bg-elevation-200" />
+        ) : (
+          <div className="flex items-center gap-3 py-4 px-3 bg-elevation-200 border border-divider-50 rounded-lg">
+            <div className="flex flex-col mr-auto">
+              <span className="text-text-300 text-base font-medium leading-6">
+                {identityDetails?.name}
+              </span>
+              <span className="text-text-200 text-xs font-normal leading-normal">
+                {identityDetails?.address}
+              </span>
+            </div>
+
+            <button className="p-0">
+              <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <span className="text-text-300 text-sm font-normal leading-5">
+          <FormattedMessage
+            id="bills.create.type"
+            defaultMessage="Type of bill"
+            description="Type of bill label"
+          />
+        </span>
+
+        <CategoryOption
+          icon={ThreePartiesIcon}
+          label={f({
+            id: "bills.create.type.draft",
+            defaultMessage: "Draft (three parties)",
+            description: "Draft type label",
+          })}
+          description={f({
+            id: "bills.create.type.draft.description",
+            defaultMessage: "Drawee pays to payee",
+            description: "Draft type description",
+          })}
+          onClick={() => {
+            setValue("type", BILL_TYPE.DRAFT);
+          }}
+          enabled={!isLoading}
+        />
+
+        <CategoryOption
+          icon={SelfDraftedIcon}
+          label={f({
+            id: "bills.create.type.selfDrafted",
+            defaultMessage: "Self drafted",
+            description: "Self drafted type label",
+          })}
+          description={f({
+            id: "bills.create.type.selfDrafted.description",
+            defaultMessage: "Drawee pays to me",
+            description: "Self drafted type description",
+          })}
+          onClick={() => {
+            setValue("type", BILL_TYPE.SELF_DRAFTED);
+          }}
+          enabled={!isLoading}
+        />
+
+        <CategoryOption
+          icon={PromissoryNoteIcon}
+          label={f({
+            id: "bills.create.type.promissoryNote",
+            defaultMessage: "Promissory note",
+            description: "Promissory note type label",
+          })}
+          description={f({
+            id: "bills.create.type.promissoryNote.description",
+            defaultMessage: "I pay to payee",
+            description: "Promissory note type description",
+          })}
+          onClick={() => {
+            setValue("type", BILL_TYPE.PROMISSORY_NOTE);
+          }}
+          enabled={!isLoading}
+        />
+      </div>
+    </div>
+  );
+}
 
 function Issuance() {
   const { register, watch, getValues, setValue } = useFormContext();
@@ -157,38 +331,76 @@ function Issuance() {
 }
 
 function Payee() {
-  const [selectedContact, setSelectedContact] = useState<Pick<
-    Contact,
-    "node_id" | "name" | "address"
-  > | null>(null);
+  const { watch, setValue } = useFormContext();
+  const [payee, setPayee] = useState<{
+    node_id: string;
+    name: string;
+    address: string;
+  } | null>(null);
+
+  const billType = watch("type") as number;
+  const {
+    type,
+    identityDetails,
+    personalIdentity,
+    companyIdentity,
+    isLoading,
+  } = useActiveIdentity();
+
+  useEffect(() => {
+    if (billType === BILL_TYPE.SELF_DRAFTED && identityDetails && !isLoading) {
+      const node_id =
+        type === "company"
+          ? (companyIdentity?.id as string)
+          : (personalIdentity?.node_id as string);
+
+      setPayee({
+        node_id,
+        name: identityDetails.name,
+        address: identityDetails.address,
+      });
+
+      setValue("payee", node_id);
+    }
+  }, [
+    billType,
+    type,
+    identityDetails,
+    isLoading,
+    companyIdentity?.id,
+    personalIdentity?.node_id,
+    setValue,
+  ]);
 
   return (
     <>
-      {selectedContact ? (
+      {payee !== null ? (
         <div className="flex items-center gap-3 py-4 px-3 bg-elevation-200 border border-divider-50 rounded-lg">
           <div className="flex flex-col mr-auto">
             <span className="text-text-300 text-base font-medium leading-6">
-              {selectedContact.name}
+              {payee.name}
             </span>
             <span className="text-text-200 text-xs font-normal leading-normal">
-              {selectedContact.address}
+              {payee.address}
             </span>
           </div>
 
-          <ContactPicker
-            onSelect={(contact) => {
-              setSelectedContact(contact);
-            }}
-          >
-            <button className="p-0">
-              <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
-            </button>
-          </ContactPicker>
+          {billType !== BILL_TYPE.SELF_DRAFTED && (
+            <ContactPicker
+              onSelect={(contact) => {
+                setPayee(contact);
+              }}
+            >
+              <button className="p-0">
+                <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
+              </button>
+            </ContactPicker>
+          )}
         </div>
       ) : (
         <ContactPicker
           onSelect={(contact) => {
-            setSelectedContact(contact);
+            setPayee(contact);
           }}
         >
           <button className="flex items-center gap-2 py-5 px-4 w-full bg-elevation-200 border border-divider-50 rounded-lg">
@@ -291,37 +503,80 @@ function DateSelector() {
 }
 
 function Payer() {
-  const [selectedContact, setSelectedContact] = useState<Pick<
-    Contact,
-    "node_id" | "name" | "address"
-  > | null>(null);
+  const { watch, setValue } = useFormContext();
+  const [payer, setPayer] = useState<{
+    node_id: string;
+    name: string;
+    address: string;
+  } | null>(null);
+
+  const billType = watch("type") as number;
+  const {
+    type,
+    identityDetails,
+    personalIdentity,
+    companyIdentity,
+    isLoading,
+  } = useActiveIdentity();
+
+  useEffect(() => {
+    if (
+      billType === BILL_TYPE.PROMISSORY_NOTE &&
+      identityDetails &&
+      !isLoading
+    ) {
+      const node_id =
+        type === "company"
+          ? (companyIdentity?.id as string)
+          : (personalIdentity?.node_id as string);
+
+      setPayer({
+        node_id,
+        name: identityDetails.name,
+        address: identityDetails.address,
+      });
+
+      setValue("payer", node_id);
+    }
+  }, [
+    billType,
+    type,
+    identityDetails,
+    isLoading,
+    companyIdentity?.id,
+    personalIdentity?.node_id,
+    setValue,
+  ]);
+
   return (
     <>
-      {selectedContact ? (
+      {payer !== null ? (
         <div className="flex items-center gap-3 py-4 px-3 bg-elevation-200 border border-divider-50 rounded-lg">
           <div className="flex flex-col mr-auto">
             <span className="text-text-300 text-base font-medium leading-6">
-              {selectedContact.name}
+              {payer.name}
             </span>
             <span className="text-text-200 text-xs font-normal leading-normal">
-              {selectedContact.address}
+              {payer.address}
             </span>
           </div>
 
-          <button className="p-0">
-            <ContactPicker
-              onSelect={(contact) => {
-                setSelectedContact(contact);
-              }}
-            >
-              <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
-            </ContactPicker>
-          </button>
+          {billType !== BILL_TYPE.PROMISSORY_NOTE && (
+            <button className="p-0">
+              <ContactPicker
+                onSelect={(contact) => {
+                  setPayer(contact);
+                }}
+              >
+                <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
+              </ContactPicker>
+            </button>
+          )}
         </div>
       ) : (
         <ContactPicker
           onSelect={(contact) => {
-            setSelectedContact(contact);
+            setPayer(contact);
           }}
         >
           <button className="flex items-center gap-2 py-5 px-4 w-full bg-elevation-200 border border-divider-50 rounded-lg">
@@ -557,7 +812,7 @@ export default function Create() {
   const methods = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: 0,
+      type: -1,
       payee: "",
       drawee: "",
       issue_date: defaultIssueDate,
@@ -571,10 +826,18 @@ export default function Create() {
     },
   });
 
+  const billType = methods.watch("type");
+
   return (
     <Page className="gap-6">
       <Topbar
-        lead={<NavigateBack />}
+        lead={
+          <NavigateBack
+            callBack={() => {
+              methods.reset();
+            }}
+          />
+        }
         middle={
           <PageTitle>
             <FormattedMessage
@@ -586,7 +849,7 @@ export default function Create() {
         }
       />
       <FormProvider {...methods}>
-        <Information />
+        {billType == -1 ? <Category /> : <Information />}
       </FormProvider>
     </Page>
   );

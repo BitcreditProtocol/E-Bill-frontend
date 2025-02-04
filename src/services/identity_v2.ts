@@ -4,8 +4,9 @@ import {
   GET_ACTIVE_IDENTITY,
   GET_IDENTITY_DETAILS,
   UPLOAD_IDENTITY_FILE,
+  SWITCH_IDENTITY,
 } from "@/constants/endpoints";
-import type { PersonalIdentity } from "@/types/identity";
+import type { Identity } from "@/types/identity";
 
 type UploadFileResponse = {
   file_upload_id: string;
@@ -28,7 +29,7 @@ export async function uploadFile(file: File): Promise<UploadFileResponse> {
 }
 
 type CreateIdentityPayload = Pick<
-  PersonalIdentity,
+  Identity,
   | "name"
   | "email"
   | "country"
@@ -44,7 +45,7 @@ type CreateIdentityPayload = Pick<
   identity_document_file_upload_id: string;
 };
 
-type CreateIdentityResponse = PersonalIdentity;
+type CreateIdentityResponse = Identity;
 
 export async function createIdentity(
   data: CreateIdentityPayload
@@ -68,7 +69,7 @@ export type EditIdentityPayload = Partial<CreateIdentityPayload>;
 
 export async function editIdentity(
   data: EditIdentityPayload
-): Promise<PersonalIdentity> {
+): Promise<Identity> {
   const response = await fetch(EDIT_IDENTITY, {
     method: "PUT",
     headers: {
@@ -98,7 +99,7 @@ export async function getActiveIdentity(): Promise<GetActiveIdentityResponse> {
   return response.json() as Promise<GetActiveIdentityResponse>;
 }
 
-type GetIdentityDetailsResponse = PersonalIdentity;
+type GetIdentityDetailsResponse = Identity;
 
 export async function getIdentityDetails(): Promise<GetIdentityDetailsResponse> {
   const response = await fetch(GET_IDENTITY_DETAILS);
@@ -108,4 +109,18 @@ export async function getIdentityDetails(): Promise<GetIdentityDetailsResponse> 
   }
 
   return response.json() as Promise<GetIdentityDetailsResponse>;
+}
+
+export async function switchIdentity(node_id: string): Promise<void> {
+  const response = await fetch(SWITCH_IDENTITY, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ node_id }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.statusText}`);
+  }
 }

@@ -1,7 +1,11 @@
-import { factory, manyOf, nullable, primaryKey } from "@mswjs/data";
+import { factory, oneOf, manyOf, nullable, primaryKey } from "@mswjs/data";
 import { format, addDays } from "date-fns";
 
 export const db = factory({
+  active_identity: {
+    node_id: primaryKey(String),
+    type: String,
+  },
   bill: {
     id: primaryKey(String),
     time_of_drawing: Number,
@@ -107,6 +111,7 @@ export const db = factory({
     country_of_birth: String,
     city_of_birth: String,
     identification_number: String,
+    balances: oneOf("balances"),
   },
   contact: {
     type: Number,
@@ -135,6 +140,7 @@ export const db = factory({
     city_of_registration: String,
     registration_number: String,
     signatories: manyOf("signatory"),
+    balances: oneOf("balances"),
   },
   signatory: {
     type: Number,
@@ -145,12 +151,30 @@ export const db = factory({
     zip: String,
     address: String,
   },
+  balances: {
+    id: primaryKey(String),
+    currency: String,
+    payee: {
+      sum: String,
+    },
+    payer: {
+      sum: String,
+    },
+    contingent: {
+      sum: String,
+    },
+  },
+});
+
+db.active_identity.create({
+  node_id: "2",
+  type: "company",
 });
 
 db.identity.create({
   node_id: "1",
-  name: "Fulano Doe",
-  email: "fulano@doe.com",
+  name: "John Doe",
+  email: "john@bitcredit.com",
   bitcoin_public_key: "Bitcr1eP5QGefi2DMPTfTL5SLmv7DivfNa",
   npub: "npub1",
   country: "BR",
@@ -161,6 +185,19 @@ db.identity.create({
   country_of_birth: "BR",
   city_of_birth: "São Paulo",
   identification_number: "123456",
+  balances: db.balances.create({
+    id: "1",
+    currency: "sat",
+    payee: {
+      sum: "100000",
+    },
+    payer: {
+      sum: "200000",
+    },
+    contingent: {
+      sum: "300000",
+    },
+  }),
 });
 
 const signer1 = db.signatory.create({
@@ -184,7 +221,7 @@ const signer2 = db.signatory.create({
 });
 
 db.company.create({
-  id: "1",
+  id: "2",
   name: "Rothbard Corp.",
   email: "corp@rothbard.com",
   country: "US",
@@ -196,10 +233,23 @@ db.company.create({
   city_of_registration: "New York",
   registration_number: "123456",
   signatories: [signer1, signer2],
+  balances: db.balances.create({
+    id: "2",
+    currency: "sat",
+    payee: {
+      sum: "146000",
+    },
+    payer: {
+      sum: "925000",
+    },
+    contingent: {
+      sum: "1300000",
+    },
+  }),
 });
 
 db.company.create({
-  id: "2",
+  id: "3",
   name: "Mises Inc.",
   email: "management@mises.com",
   country: "AT",
@@ -211,6 +261,19 @@ db.company.create({
   city_of_registration: "Vienna",
   registration_number: "654321",
   signatories: [signer1],
+  balances: db.balances.create({
+    id: "3",
+    currency: "sat",
+    payee: {
+      sum: "871200",
+    },
+    payer: {
+      sum: "190210",
+    },
+    contingent: {
+      sum: "329010",
+    },
+  }),
 });
 
 db.contact.create({

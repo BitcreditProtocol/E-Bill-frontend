@@ -66,7 +66,6 @@ import Request from "./pages/bills/mint/Request";
 import GetStarted from "./pages/GetStarted";
 import IdentityCreation from "./pages/identity/Create";
 import Identities from "./pages/identity/List";
-import AuthorizedSigners from "./pages/identity/AuthorizedSigners";
 import ViewIdentity from "./pages/identity/View";
 import EditIdentity from "./pages/identity/Edit";
 
@@ -254,10 +253,6 @@ const router = createBrowserRouter(
         {
           path: routes.IDENTITY_LIST,
           element: <Identities />,
-        },
-        {
-          path: routes.AUTHORIZED_SIGNERS,
-          element: <AuthorizedSigners />,
         },
         // company flows
         {

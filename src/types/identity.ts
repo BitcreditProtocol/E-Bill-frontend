@@ -1,6 +1,4 @@
-export type IdentityType = "personal" | "company";
-
-export type PersonalIdentity = {
+export type Identity = {
   node_id: string;
   name: string;
   email: string;
@@ -16,19 +14,4 @@ export type PersonalIdentity = {
   identification_number: string;
   profile_picture_file: string;
   identity_document_file: string;
-};
-
-export type Identity = {
-  node_id: string;
-  type: "personal" | "company";
-  name: string;
-  company: string;
-  date_of_birth: string;
-  city_of_birth: string;
-  country_of_birth: string;
-  email: string;
-  postal_address: string;
-  registration_number: string;
-  proof_of_registration: string;
-  bitcoin_public_key: string;
 };

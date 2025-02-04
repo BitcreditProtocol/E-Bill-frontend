@@ -32,6 +32,9 @@ const UPLOAD_CONTACT_FILE = "/contacts/upload_file";
 const EDIT_CONTACT = "/contacts/edit";
 const REMOVE_CONTACT = "/contacts/remove";
 
+// other endpoints
+const BALANCES_OVERVIEW = "/overview?currency=";
+
 export {
   UPLOAD_BILL_FILES,
   CREATE_BILL,
@@ -61,4 +64,7 @@ export {
   UPLOAD_CONTACT_FILE,
   EDIT_CONTACT,
   REMOVE_CONTACT,
+
+  // other
+  BALANCES_OVERVIEW,
 };

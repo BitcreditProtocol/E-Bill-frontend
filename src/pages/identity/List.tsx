@@ -12,36 +12,35 @@ import NavigateBack from "@/components/NavigateBack";
 import Topbar from "@/components/Topbar";
 import PageTitle from "@/components/typography/PageTitle";
 import Page from "@/components/wrappers/Page";
-import IdentityAvatar from "@/components/IdentityAvatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Picture from "@/components/Picture";
 import { truncateString } from "@/utils/strings";
 import routes from "@/constants/routes";
-import type { IdentityType } from "@/types/identity";
 import { getCompanies } from "@/services/company";
+import { getIdentityDetails } from "@/services/identity_v2";
+import { useIdentity } from "@/context/identity/IdentityContext";
 
-type SelectedIdentityProps = {
-  type: IdentityType;
-  node_id: string;
-  name: string;
-  avatar: string;
-};
-
-function SelectedIdentity({
-  type,
-  node_id,
-  name,
-  avatar,
-}: SelectedIdentityProps) {
+function SelectedIdentity() {
   const navigate = useNavigate();
+  const { activeIdentity } = useIdentity();
+
+  if (!activeIdentity.node_id) {
+    return <Skeleton className="h-16 w-full bg-elevation-200" />;
+  }
+
+  const { node_id, type, name, avatar } = activeIdentity;
+
   const truncatedBitcoinPublicKey = truncateString(node_id, 14);
+  const viewIdentityRoute =
+    type === "company" ? routes.VIEW_COMPANY : routes.VIEW_IDENTITY;
 
   return (
     <div className="flex items-center gap-3">
-      <IdentityAvatar
+      <Picture
+        type={type === "company" ? 1 : 0}
         name={name}
-        picture={avatar}
-        identityType={type}
+        image={avatar}
         size="lg"
       />
 
@@ -60,7 +59,7 @@ function SelectedIdentity({
       <button
         className="flex items-center gap-0.5 p-0 text-text-300 text-sm font-normal ml-auto"
         onClick={() => {
-          navigate(routes.VIEW_IDENTITY);
+          navigate(viewIdentityRoute);
         }}
       >
         <FormattedMessage
@@ -76,32 +75,81 @@ function SelectedIdentity({
 }
 
 type IdentityProps = {
-  type: IdentityType;
+  node_id: string;
+  type: "personal" | "company";
   name: string;
   address: string;
   avatar: string;
 };
 
-function Identity({ type, name, address, avatar }: IdentityProps) {
+function Identity({ node_id, type, name, address, avatar }: IdentityProps) {
+  const { switchActiveIdentity } = useIdentity();
+
   return (
-    <div className="flex items-center gap-3 py-4 px-3 border border-divider-75 rounded-lg cursor-pointer">
-      <IdentityAvatar
+    <div
+      className="flex items-center gap-3 py-4 px-3 border border-divider-75 rounded-lg cursor-pointer"
+      onClick={() => void switchActiveIdentity(node_id)}
+    >
+      <Picture
+        type={type === "company" ? 1 : 0}
         name={name}
-        picture={avatar}
-        identityType={type}
+        image={avatar}
         size="md"
       />
-
       <div className="flex flex-col mr-auto">
         <span className="text-text-300 text-base font-medium leading-5">
           {name}
         </span>
         <span className="text-text-200 text-xs leading-normal">{address}</span>
       </div>
-
-      <RadioGroupItem value={name} checked={false} />
+      <RadioGroupItem value={node_id} />
     </div>
   );
+}
+
+function PersonalIdentity() {
+  const { data } = useSuspenseQuery({
+    queryKey: ["identity", "personal"],
+    queryFn: () => getIdentityDetails(),
+  });
+
+  return (
+    <Identity
+      node_id={data.node_id}
+      type="personal"
+      name={data.name}
+      address={data.address}
+      avatar=""
+    />
+  );
+}
+
+function CompaniesLoader() {
+  return (
+    <div className="flex flex-col gap-3">
+      <Skeleton className="h-12 w-full bg-elevation-200" />
+      <Skeleton className="h-12 w-full bg-elevation-200" />
+      <Skeleton className="h-12 w-full bg-elevation-200" />
+    </div>
+  );
+}
+
+function Companies() {
+  const { data } = useSuspenseQuery({
+    queryKey: ["companies"],
+    queryFn: () => getCompanies(),
+  });
+
+  return data.companies.map((company) => (
+    <Identity
+      key={company.id}
+      node_id={company.id}
+      type="company"
+      name={company.name}
+      address={company.address}
+      avatar=""
+    />
+  ));
 }
 
 function CreateCompanyIdentity() {
@@ -138,46 +186,9 @@ function Remove() {
   );
 }
 
-function CompaniesLoader() {
-  return (
-    <div className="flex flex-col gap-3">
-      <Skeleton className="h-6 w-1/2 bg-elevation-200" />
-      <Skeleton className="h-12 w-full bg-elevation-200" />
-      <Skeleton className="h-12 w-full bg-elevation-200" />
-      <Skeleton className="h-12 w-full bg-elevation-200" />
-    </div>
-  );
-}
-
-function Companies() {
-  const { data } = useSuspenseQuery({
-    queryKey: ["companies"],
-    queryFn: () => getCompanies(),
-  });
-
-  return (
-    <div className="flex flex-col gap-3">
-      <span className="text-text-200 text-sm font-medium leading-5">
-        <FormattedMessage
-          id="identity.list.companies"
-          defaultMessage="Company identities"
-        />
-      </span>
-
-      {data.companies.map((company) => (
-        <Identity
-          key={company.id}
-          type="company"
-          name={company.name}
-          address={company.address}
-          avatar=""
-        />
-      ))}
-    </div>
-  );
-}
-
 export default function List() {
+  const { activeIdentity } = useIdentity();
+
   return (
     <Page className="gap-7">
       <Topbar
@@ -194,14 +205,9 @@ export default function List() {
       />
 
       <div className="flex flex-col gap-6">
-        <SelectedIdentity
-          type="personal"
-          name="John Doe"
-          avatar=""
-          node_id="bitcrnode012901290192"
-        />
+        <SelectedIdentity />
 
-        <RadioGroup>
+        <RadioGroup value={activeIdentity.node_id || ""}>
           <div className="flex flex-col gap-3">
             <span className="text-text-200 text-sm font-medium leading-5">
               <FormattedMessage
@@ -209,18 +215,24 @@ export default function List() {
                 defaultMessage="Personal identity"
               />
             </span>
-
-            <Identity
-              type="personal"
-              name="John Doe"
-              address="Langebroekdijk 12, 1920DP, Netherlands"
-              avatar=""
-            />
+            <Suspense
+              fallback={<Skeleton className="h-12 w-full bg-elevation-200" />}
+            >
+              <PersonalIdentity />
+            </Suspense>
           </div>
 
-          <Suspense fallback={<CompaniesLoader />}>
-            <Companies />
-          </Suspense>
+          <div className="flex flex-col gap-3">
+            <span className="text-text-200 text-sm font-medium leading-5">
+              <FormattedMessage
+                id="identity.list.companies"
+                defaultMessage="Company identities"
+              />
+            </span>
+            <Suspense fallback={<CompaniesLoader />}>
+              <Companies />
+            </Suspense>
+          </div>
         </RadioGroup>
 
         <div className="flex flex-col items-center gap-6">
