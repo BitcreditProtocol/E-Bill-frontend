@@ -1,14 +1,13 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CheckIcon, ChevronRightIcon, PaperclipIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import routes from "@/constants/routes";
-import type { BillFull, Peer } from "@/types/bill";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
-import { useQuery } from "@tanstack/react-query";
 import { getEndorsements } from "@/services/bills";
+import type { BillFull, Peer } from "@/types/bill";
 
 function Separators() {
   return (
@@ -288,7 +287,7 @@ export default function BillCard({
           </div>
         </div>
 
-        <Link to={endorsed ? routes.ENDORSEMENTS : "#"}>
+        <Link to={endorsed ? "endorsements" : "#"}>
           <button className="flex items-center gap-1">
             <span className="text-text-200 text-xs font-normal">
               <FormattedMessage
