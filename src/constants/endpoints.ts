@@ -2,9 +2,24 @@
 const UPLOAD_BILL_FILES = "/bill/upload_files";
 const CREATE_BILL = "/bill/issue";
 const GET_BILLS = "/bills";
-const GET_BILLS_LIGHT = "/bills/list/light";
+const GET_BILLS_LIGHT = "/bill/list/light";
+const GET_BILL_DETAILS = "/bill/detail";
 const SEARCH_BILLS = "/bill/search";
-const SEARCH_CONTACTS = "/contacts/search";
+const ENDORSE_BILL = "/bill/endorse";
+const MINT_BILL = "/bill/mint";
+const OFFER_TO_SELL_BILL = "/bill/offer_to_sell";
+const REJECT_TO_BUY_BILL = "/bill/reject_to_buy";
+const REQUEST_TO_MINT_BILL = "/bill/request_to_mint";
+const ACCEPT_MINT_BILL = "/bill/accept_mint";
+const REQUEST_TO_ACCEPT_BILL = "/bill/request_to_accept";
+const REJECT_TO_ACCEPT_BILL = "/bill/reject_to_accept";
+const ACCEPT_BILL = "/bill/accept";
+const REQUEST_TO_PAY_BILL = "/bill/request_to_pay";
+const REJECT_TO_PAY_BILL = "/bill/reject_to_pay";
+const REQUEST_BILL_PAYMENT_RECOURSE = "/bill/request_recourse_for_payment";
+const REQUEST_BILL_ACCEPTANCE_RECOURSE =
+  "/bill/request_recourse_for_acceptance";
+const REJECT_BILL_PAYMENT_RECOURSE = "/bill/reject_recourse_for_payment";
 
 // identity endpoints
 const GET_ACTIVE_IDENTITY = "/identity/active";
@@ -31,22 +46,43 @@ const CREATE_CONTACT = "/contacts/create";
 const UPLOAD_CONTACT_FILE = "/contacts/upload_file";
 const EDIT_CONTACT = "/contacts/edit";
 const REMOVE_CONTACT = "/contacts/remove";
+const SEARCH_CONTACTS = "/contacts/search";
 
 // other endpoints
 const BALANCES_OVERVIEW = "/overview?currency=";
 
 export {
+  // bill
   UPLOAD_BILL_FILES,
   CREATE_BILL,
   GET_BILLS,
   SEARCH_BILLS,
   GET_BILLS_LIGHT,
+  GET_BILL_DETAILS,
+  ENDORSE_BILL,
+  MINT_BILL,
+  OFFER_TO_SELL_BILL,
+  REJECT_TO_BUY_BILL,
+  REQUEST_TO_MINT_BILL,
+  ACCEPT_MINT_BILL,
+  REQUEST_TO_ACCEPT_BILL,
+  REJECT_TO_ACCEPT_BILL,
+  ACCEPT_BILL,
+  REQUEST_TO_PAY_BILL,
+  REJECT_TO_PAY_BILL,
+  REQUEST_BILL_PAYMENT_RECOURSE,
+  REQUEST_BILL_ACCEPTANCE_RECOURSE,
+  REJECT_BILL_PAYMENT_RECOURSE,
+
+  // identity
   GET_ACTIVE_IDENTITY,
   GET_IDENTITY_DETAILS,
   CREATE_IDENTITY,
   UPLOAD_IDENTITY_FILE,
   EDIT_IDENTITY,
   SWITCH_IDENTITY,
+
+  // company
   GET_COMPANIES,
   GET_COMPANY_DETAILS,
   CREATE_COMPANY,

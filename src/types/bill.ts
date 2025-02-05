@@ -68,6 +68,7 @@ export type BillFull = {
   drawee: Peer;
   drawer: Peer;
   payee: Peer;
+  endorsee: Peer | null;
   currency: string;
   sum: string;
   maturity_date: string;

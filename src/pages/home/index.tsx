@@ -19,6 +19,8 @@ function Balances() {
     queryFn: () => getBalances("sat"),
   });
 
+  console.log("balances >>> ", data);
+
   return (
     <div className="flex flex-col gap-3 pt-4 pb-2 bg-elevation-200 border border-divider-50 rounded-2xl">
       <div className="flex-1 flex items-center justify-between px-4">

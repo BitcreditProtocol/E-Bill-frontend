@@ -12,7 +12,7 @@ const BILLS = "/bills";
 // todo: replace by /bills/:id once we integrate the api
 
 const SIGNUP = "signup";
-const VIEW_BILL = "bill";
+const VIEW_BILL = "bill/:id";
 const ISSUE_BILL = "issue-bill";
 const CREATE_BILL = "create-bill";
 const PREVIEW_BILL = "preview-bill";

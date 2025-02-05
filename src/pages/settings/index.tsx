@@ -42,6 +42,7 @@ export default function Settings() {
       <ViewDetails
         type={activeIdentity.type}
         name={activeIdentity.name}
+        // todo: replace by node id
         bitcoin_public_key={"1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"}
       />
 

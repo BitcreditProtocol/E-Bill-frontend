@@ -24,12 +24,6 @@ import "./index.css";
 import "./styles/fonts.css";
 import { BillsEmpty } from "./pages/Bills";
 
-import Bill from "./pages/Bill";
-import IssueBill from "./pages/IssueBill";
-import PreviewBill from "./pages/PreviewBill";
-import MintBill from "./pages/MintBill";
-import SellBill from "./pages/SellBill";
-
 import Draw from "./pages/bill/draw/Draw";
 import DrawFilled from "./pages/bill/draw/DrawFilled";
 import EditIssue from "./pages/bill/draw/EditIssue";
@@ -50,11 +44,16 @@ import Edit from "./pages/contacts/Edit";
 // bill flows
 import Bills from "./pages/bills/Overview";
 import CreateBill from "./pages/bills/Create";
-
 import Endorsements from "./pages/bills/Endorsements";
 import Endorse from "./pages/bills/Endorse";
 import Payment from "./pages/bills/Payment";
 import Pay from "./pages/bills/Pay";
+import ViewBill from "./pages/bills/View";
+
+import IssueBill from "./pages/IssueBill";
+import PreviewBill from "./pages/PreviewBill";
+import MintBill from "./pages/MintBill";
+import SellBill from "./pages/SellBill";
 
 import RequestMint from "./pages/bills/RequestMint";
 import SelectQuote from "./pages/bills/mint/SelectQuote";
@@ -142,7 +141,7 @@ const router = createBrowserRouter(
         },
         {
           path: routes.VIEW_BILL,
-          element: <Bill />,
+          element: <ViewBill />,
         },
         {
           path: routes.ISSUE_BILL,
@@ -167,10 +166,6 @@ const router = createBrowserRouter(
         {
           path: routes.CREATE_BILL,
           element: <CreateBill />,
-        },
-        {
-          path: routes.PREVIEW_BILL,
-          element: <PreviewBill />,
         },
         {
           path: routes.ENDORSEMENTS,
