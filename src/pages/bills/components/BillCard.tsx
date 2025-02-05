@@ -7,6 +7,8 @@ import routes from "@/constants/routes";
 import type { BillFull, Peer } from "@/types/bill";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
+import { useQuery } from "@tanstack/react-query";
+import { getEndorsements } from "@/services/bills";
 
 function Separators() {
   return (
@@ -87,6 +89,7 @@ function Property({
 }
 
 type CardProps = {
+  id: BillFull["id"];
   sum: BillFull["sum"];
   city_of_issuing: string;
   country_of_issuing: string;
@@ -97,9 +100,11 @@ type CardProps = {
   drawer: Pick<Peer, "name" | "address">;
   city_of_payment: BillFull["city_of_payment"];
   country_of_payment: BillFull["country_of_payment"];
+  endorsed: BillFull["endorsed"];
 };
 
 export default function BillCard({
+  id,
   sum,
   city_of_issuing,
   country_of_issuing,
@@ -110,11 +115,20 @@ export default function BillCard({
   drawer,
   city_of_payment,
   country_of_payment,
+  endorsed,
 }: CardProps) {
   const intl = useIntl();
   const formattedIssueDate = format(parseISO(issue_date), "dd-MMM-yyyy");
   const issuingInformation = `${city_of_issuing}, ${country_of_issuing}, ${formattedIssueDate}`;
   const placeOfPayment = `${city_of_payment}, ${country_of_payment}`;
+
+  const { data: endorsements } = useQuery({
+    queryKey: ["bills", id, "endorsements"],
+    queryFn: () => getEndorsements(id),
+    enabled: endorsed,
+  });
+
+  const endorsementsCount = endorsements?.past_endorsees.length || 0;
 
   return (
     <div className="flex flex-col border border-divider-50 rounded-xl select-none">
@@ -274,7 +288,7 @@ export default function BillCard({
           </div>
         </div>
 
-        <Link to={routes.ENDORSEMENTS}>
+        <Link to={endorsed ? routes.ENDORSEMENTS : "#"}>
           <button className="flex items-center gap-1">
             <span className="text-text-200 text-xs font-normal">
               <FormattedMessage
@@ -284,7 +298,9 @@ export default function BillCard({
               />
             </span>
 
-            <span className="text-text-300 text-xs font-medium">(3)</span>
+            <span className="text-text-300 text-xs font-medium">
+              ({endorsementsCount})
+            </span>
 
             <ChevronRightIcon className="text-text-300 w-5 h-5 ml-0.5 stroke-1" />
           </button>

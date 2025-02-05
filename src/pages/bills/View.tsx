@@ -4,7 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { getBillDetails } from "@/services/bills";
 import Card, { Loader } from "./components/BillCard";
 
@@ -16,6 +16,7 @@ function Details({ id }: { id: string }) {
 
   return (
     <Card
+      id={data.id}
       sum={data.sum}
       city_of_issuing={data.city_of_issuing}
       country_of_issuing={data.country_of_issuing}
@@ -26,9 +27,32 @@ function Details({ id }: { id: string }) {
       drawer={{ name: data.drawer.name, address: data.drawer.address }}
       city_of_payment={data.city_of_payment}
       country_of_payment={data.country_of_payment}
+      endorsed={data.endorsed}
     />
   );
 }
+
+/* function HolderActions() {
+  return (
+    <div className="flex flex-col gap-3 mt-auto">
+      <Button size="sm">Request to accept</Button>
+      <Button size="sm" variant="outline">
+        Endorse
+      </Button>
+    </div>
+  );
+}
+
+function PayerActions() {
+  return (
+    <div className="flex flex-col gap-3 mt-auto">
+      <Button size="sm">Request to accept</Button>
+      <Button size="sm" variant="outline">
+        Endorse
+      </Button>
+    </div>
+  );
+} */
 
 export default function View() {
   const { id } = useParams<{ id: string }>();
@@ -41,12 +65,7 @@ export default function View() {
         <Details id={id as string} />
       </Suspense>
 
-      <div className="flex flex-col gap-3 mt-auto">
-        <Button size="sm">Request to accept</Button>
-        <Button size="sm" variant="outline">
-          Endorse
-        </Button>
-      </div>
+      <div className="flex flex-col gap-3 mt-auto"></div>
     </Page>
   );
 }

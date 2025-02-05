@@ -18,6 +18,7 @@ import {
   REQUEST_BILL_PAYMENT_RECOURSE,
   REQUEST_BILL_ACCEPTANCE_RECOURSE,
   REJECT_BILL_PAYMENT_RECOURSE,
+  GET_BILL_ENDORSEMENTS,
 } from "@/constants/endpoints";
 import type { BillFull, Peer } from "@/types/bill";
 
@@ -96,6 +97,30 @@ type EndorsePayload = {
   bill_id: string;
   endorsee: string;
 };
+
+type GetBillEndorsementsResponse = {
+  past_endorsees: {
+    pay_to_the_order_of: {
+      name: string;
+      node_id: string;
+    };
+    signed: {
+      name: string;
+      node_id: string;
+      signatory: {
+        name: string;
+        node_id: string;
+      };
+    };
+    signing_timestamp: number;
+  }[];
+};
+
+export async function getEndorsements(
+  id: string
+): Promise<GetBillEndorsementsResponse> {
+  return apiFetch(`${GET_BILL_ENDORSEMENTS}/${id}`);
+}
 
 export async function endorse(data: EndorsePayload): Promise<void> {
   return apiFetch(ENDORSE_BILL, {

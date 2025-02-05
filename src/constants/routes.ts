@@ -43,7 +43,7 @@ const VIEW_COMPANY = "/company";
 
 const CREATE_COMPANY_SUCCESS = "success";
 const AUTHORIZED_SIGNERS = "/authorized-signers";
-const ENDORSEMENTS = "/endorsements";
+const ENDORSEMENTS = "bill/:id/endorsements";
 const ENDORSE = "/endorse";
 const PAYMENT = "/payment";
 const PAY = "/pay";

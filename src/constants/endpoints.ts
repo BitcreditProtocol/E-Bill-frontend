@@ -4,6 +4,7 @@ const CREATE_BILL = "/bill/issue";
 const GET_BILLS = "/bills";
 const GET_BILLS_LIGHT = "/bill/list/light";
 const GET_BILL_DETAILS = "/bill/detail";
+const GET_BILL_ENDORSEMENTS = "/bill/past_endorsees";
 const SEARCH_BILLS = "/bill/search";
 const ENDORSE_BILL = "/bill/endorse";
 const MINT_BILL = "/bill/mint";
@@ -59,6 +60,7 @@ export {
   SEARCH_BILLS,
   GET_BILLS_LIGHT,
   GET_BILL_DETAILS,
+  GET_BILL_ENDORSEMENTS,
   ENDORSE_BILL,
   MINT_BILL,
   OFFER_TO_SELL_BILL,
