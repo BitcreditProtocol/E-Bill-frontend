@@ -26,7 +26,6 @@ import { BillsEmpty } from "./pages/Bills";
 
 import Bill from "./pages/Bill";
 import IssueBill from "./pages/IssueBill";
-import CreateBill from "./pages/CreateBill";
 import PreviewBill from "./pages/PreviewBill";
 import MintBill from "./pages/MintBill";
 import SellBill from "./pages/SellBill";
@@ -42,11 +41,15 @@ import NotificationsSettings from "./pages/settings/Notifications";
 import Security from "./pages/settings/Security";
 import Mints from "./pages/settings/Mints";
 
+// contact flows
 import Create from "./pages/contacts/Create";
 import Overview from "./pages/contacts/List";
 import View from "./pages/contacts/View";
 import Edit from "./pages/contacts/Edit";
-import Bills from "./pages/bills";
+
+// bill flows
+import Bills from "./pages/bills/Overview";
+import CreateBill from "./pages/bills/Create";
 
 import Endorsements from "./pages/bills/Endorsements";
 import Endorse from "./pages/bills/Endorse";
@@ -63,7 +66,6 @@ import Request from "./pages/bills/mint/Request";
 import GetStarted from "./pages/GetStarted";
 import IdentityCreation from "./pages/identity/Create";
 import Identities from "./pages/identity/List";
-import AuthorizedSigners from "./pages/identity/AuthorizedSigners";
 import ViewIdentity from "./pages/identity/View";
 import EditIdentity from "./pages/identity/Edit";
 
@@ -251,10 +253,6 @@ const router = createBrowserRouter(
         {
           path: routes.IDENTITY_LIST,
           element: <Identities />,
-        },
-        {
-          path: routes.AUTHORIZED_SIGNERS,
-          element: <AuthorizedSigners />,
         },
         // company flows
         {

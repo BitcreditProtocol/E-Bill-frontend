@@ -1,4 +1,3 @@
-import { balances } from "./handlers/home/balances";
 import { recentBills } from "./handlers/home/recent-bills";
 import { billsList } from "./handlers/bills/list";
 import { searchBills } from "./handlers/bills/search";
@@ -11,8 +10,10 @@ import {
   editCompanyInformation,
 } from "./handlers/company";
 import {
+  getActiveIdentity,
   getIdentityDetails,
   editIdentityInformation,
+  switchIdentity,
 } from "./handlers/indentity_v2";
 import {
   getContactDetails,
@@ -21,10 +22,15 @@ import {
   editContact,
   removeContact,
 } from "./handlers/contacts_v2";
+import { getBillsLight } from "./handlers/bills_v2";
+import { getBalances } from "./handlers/home";
 
 export const handlers = [
+  // home
+  getBalances,
   recentBills,
-  balances,
+  // bills
+  getBillsLight,
   billsList,
   searchBills,
   searchContacts,
@@ -34,8 +40,11 @@ export const handlers = [
   removeSigner,
   getCompanyDetails,
   editCompanyInformation,
+  // identity
+  getActiveIdentity,
   getIdentityDetails,
   editIdentityInformation,
+  switchIdentity,
   // contact
   getContactDetails,
   getContactsList,

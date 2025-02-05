@@ -1,88 +1,93 @@
-import { useState, ReactNode } from "react";
-import type { Identity } from "@/types/identity";
+import { useState, ReactNode, useEffect } from "react";
 import { IdentityContext } from "./IdentityContext";
+import {
+  getActiveIdentity,
+  getIdentityDetails,
+  switchIdentity,
+} from "@/services/identity_v2";
+import { getCompanies } from "@/services/company";
 
 export default function IdentityProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-  const personalIdentity: Identity = {
-    node_id: "1",
-    type: "personal",
-    name: "John Doey",
-    company: "Company",
-    date_of_birth: "01/01/2000",
-    city_of_birth: "City",
-    country_of_birth: "Country",
-    email: "ex@ample.com",
-    postal_address: "example 1",
-    registration_number: "842309431",
-    proof_of_registration: "registration.pdf",
-    bitcoin_public_key: "Bitcr1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-  };
+  const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
+  const [activeIdentityType, setActiveIdentityType] = useState<
+    "personal" | "company" | null
+  >(null);
+  const [identityDetails, setIdentityDetails] = useState<{
+    name: string;
+    address: string;
+    avatar: string;
+  } | null>(null);
 
-  const companyIdentitiesData: Identity[] = [
-    {
-      node_id: "2",
-      type: "company",
-      name: "Company A",
-      company: "Company",
-      date_of_birth: "01/01/2000",
-      city_of_birth: "City",
-      country_of_birth: "Country",
-      email: "comp@any.com",
-      postal_address: "example 2",
-      registration_number: "909812111",
-      proof_of_registration: "proof.pdf",
-      bitcoin_public_key: "Bitcr1eP5QGefi2DMPTfTL5SLmv7Daa02b",
-    },
-    {
-      node_id: "3",
-      type: "company",
-      name: "Company B",
-      company: "Company",
-      date_of_birth: "01/01/2000",
-      city_of_birth: "City",
-      country_of_birth: "Country",
-      email: "any@comp.com",
-      postal_address: "example 3",
-      registration_number: "4437810921",
-      proof_of_registration: "certificate.pdf",
-      bitcoin_public_key: "Bitcr1eP5QGefi2DMPTfTL5SLmv7Dib341",
-    },
-  ];
+  useEffect(() => {
+    const initialize = async () => {
+      const { node_id } = await getActiveIdentity();
 
-  const [identity, setIdentity] = useState<Identity>(personalIdentity);
-  const [companyIdentities, setCompanyIdentities] = useState<Identity[]>(
-    companyIdentitiesData
-  );
+      setActiveNodeId(node_id);
+      console.log(node_id);
+    };
 
-  const addCompanyIdentity = (newIdentity: Identity) => {
-    setCompanyIdentities((prev) => [...prev, newIdentity]);
-  };
+    void initialize();
+  }, []);
 
-  const selectIdentity = (node_id: string) => {
-    const availableIdentities = [...companyIdentities, personalIdentity];
+  useEffect(() => {
+    const fetchIdentityDetails = async () => {
+      if (!activeNodeId) return;
 
-    const selectedIdentity = availableIdentities.find(
-      (identity) => identity.node_id === node_id
-    );
+      const companies = await getCompanies();
 
-    if (selectedIdentity) {
-      setIdentity(selectedIdentity);
-    }
+      const isCompany = companies.companies.some(
+        (company) => company.id === activeNodeId
+      );
+      const company = companies.companies.find(
+        (company) => company.id === activeNodeId
+      );
+
+      if (isCompany) {
+        setActiveIdentityType("company");
+        setIdentityDetails({
+          name: company?.name ?? "",
+          address: company?.address ?? "",
+          // avatar: company?.logo_file.name ?? "",
+          avatar: "",
+        });
+
+        return;
+      }
+
+      const personalIdentity = await getIdentityDetails();
+
+      setActiveIdentityType("personal");
+      setIdentityDetails({
+        name: personalIdentity.name,
+        address: personalIdentity.address,
+        avatar: "",
+      });
+    };
+
+    void fetchIdentityDetails();
+  }, [activeNodeId]);
+
+  const switchActiveIdentity = async (node_id: string) => {
+    setActiveNodeId(null);
+    await switchIdentity(node_id);
+    setActiveNodeId(node_id);
   };
 
   return (
     <IdentityContext.Provider
       value={{
-        identity,
-        setIdentity: selectIdentity,
-        personalIdentity,
-        companyIdentities,
-        setCompanyIdentities,
-        addCompanyIdentity,
+        activeIdentity: {
+          type: activeIdentityType,
+          node_id: activeNodeId,
+          name: identityDetails?.name ?? "",
+          avatar: identityDetails?.avatar ?? "",
+          address: identityDetails?.address ?? "",
+        },
+        switchActiveIdentity,
       }}
     >
       {children}

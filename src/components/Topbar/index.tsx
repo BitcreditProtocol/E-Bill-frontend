@@ -24,7 +24,7 @@ export default function Topbar({
 
       <div className="flex-1 flex items-center justify-center">{middle}</div>
 
-      {trail !== null ? <div className="w-8 h-8">{trail}</div> : <></>}
+      {trail != null ? <>{trail}</> : <div className="h-8 w-8" />}
     </div>
   );
 }

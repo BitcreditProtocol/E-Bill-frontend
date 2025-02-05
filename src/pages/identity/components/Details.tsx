@@ -5,7 +5,10 @@ import IdentityAvatar from "@/components/IdentityAvatar";
 import { truncateString } from "@/utils/strings";
 import type { Identity } from "@/types/identity";
 
-type DetailsProps = Pick<Identity, "type" | "name" | "bitcoin_public_key">;
+type DetailsProps = { type: "personal" | "company" | null } & Pick<
+  Identity,
+  "name" | "bitcoin_public_key"
+>;
 
 export default function Details({
   type,

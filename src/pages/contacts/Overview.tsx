@@ -149,7 +149,7 @@ export default function Overview() {
       )}
 
       <div className="flex flex-col gap-3 w-full">
-        <h1 className="text-text-300 text-xl font-medium">
+        <h1 className="text-text-300 text-xl font-medium leading-normal">
           <FormattedMessage
             id="Contacts"
             defaultMessage="Contacts"

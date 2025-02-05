@@ -1,26 +1,16 @@
-type BalancesResponse = {
-  balances: {
-    payee: {
-      amount: string;
-      currency: string;
-    };
-    payer: {
-      amount: string;
-      currency: string;
-    };
-    contingent: {
-      amount: string;
-      currency: string;
-    };
-  };
-};
+import { BALANCES_OVERVIEW } from "@/constants/endpoints";
+import type { Balances } from "@/types/balances";
 
-export const getBalances = async (currency: string) => {
-  const response = await fetch(`/overview?currency=${currency}`);
+type GetBalancesResponse = Balances;
+
+export const getBalances = async (
+  currency: string
+): Promise<GetBalancesResponse> => {
+  const response = await fetch(`${BALANCES_OVERVIEW}${currency}`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch balances");
   }
 
-  return response.json() as Promise<BalancesResponse>;
+  return response.json() as Promise<GetBalancesResponse>;
 };

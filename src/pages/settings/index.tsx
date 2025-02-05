@@ -23,7 +23,7 @@ import MenuOption from "./components/MenuOption";
 
 export default function Settings() {
   const intl = useIntl();
-  const { identity } = useIdentity();
+  const { activeIdentity } = useIdentity();
 
   return (
     <Page className="gap-6" displayBottomNavigation>
@@ -40,9 +40,9 @@ export default function Settings() {
       </div>
 
       <ViewDetails
-        type={identity.type}
-        name={identity.name}
-        bitcoin_public_key={identity.bitcoin_public_key}
+        type={activeIdentity.type}
+        name={activeIdentity.name}
+        bitcoin_public_key={"1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"}
       />
 
       <div className="flex flex-col gap-4">

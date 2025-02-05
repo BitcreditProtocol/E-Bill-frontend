@@ -1,6 +1,102 @@
-import { factory, manyOf, primaryKey } from "@mswjs/data";
+import { factory, oneOf, manyOf, nullable, primaryKey } from "@mswjs/data";
+import { format, addDays } from "date-fns";
 
 export const db = factory({
+  active_identity: {
+    node_id: primaryKey(String),
+    type: String,
+  },
+  bill: {
+    id: primaryKey(String),
+    time_of_drawing: Number,
+    country_of_issuing: String,
+    city_of_issuing: String,
+    drawee: nullable({
+      type: Number,
+      node_id: String,
+      name: String,
+      country: String,
+      city: String,
+      zip: String,
+      address: String,
+      email: String,
+      nostr_relay: String,
+    }),
+    drawer: nullable({
+      type: Number,
+      node_id: String,
+      name: String,
+      country: String,
+      city: String,
+      zip: String,
+      address: String,
+      email: String,
+      nostr_relay: String,
+    }),
+    payee: nullable({
+      type: Number,
+      node_id: String,
+      name: String,
+      country: String,
+      city: String,
+      zip: String,
+      address: String,
+      email: String,
+      nostr_relay: String,
+    }),
+    endorsee: nullable({
+      type: Number,
+      node_id: String,
+      name: String,
+      country: String,
+      city: String,
+      zip: String,
+      address: String,
+      email: String,
+      nostr_relay: String,
+    }),
+    currency: String,
+    sum: String,
+    maturity_date: String,
+    issue_date: String,
+    country_of_payment: String,
+    city_of_payment: String,
+    language: String,
+    accepted: Boolean,
+    endorsed: Boolean,
+    requested_to_pay: Boolean,
+    requested_to_accept: Boolean,
+    paid: Boolean,
+    waiting_for_payment: Boolean,
+    buyer: nullable({
+      type: Number,
+      node_id: String,
+      name: String,
+      country: String,
+      city: String,
+      zip: String,
+      address: String,
+      email: String,
+      nostr_relay: String,
+    }),
+    seller: nullable({
+      type: Number,
+      node_id: String,
+      name: String,
+      country: String,
+      city: String,
+      zip: String,
+      address: String,
+      email: String,
+      nostr_relay: String,
+    }),
+    link_for_buy: String,
+    link_to_pay: String,
+    address_to_pay: String,
+    files: Array,
+    active_notification: nullable({}),
+    bill_participants: Array<string>,
+  },
   identity: {
     node_id: primaryKey(String),
     name: String,
@@ -15,6 +111,7 @@ export const db = factory({
     country_of_birth: String,
     city_of_birth: String,
     identification_number: String,
+    balances: oneOf("balances"),
   },
   contact: {
     type: Number,
@@ -43,6 +140,7 @@ export const db = factory({
     city_of_registration: String,
     registration_number: String,
     signatories: manyOf("signatory"),
+    balances: oneOf("balances"),
   },
   signatory: {
     type: Number,
@@ -53,12 +151,30 @@ export const db = factory({
     zip: String,
     address: String,
   },
+  balances: {
+    id: primaryKey(String),
+    currency: String,
+    payee: {
+      sum: String,
+    },
+    payer: {
+      sum: String,
+    },
+    contingent: {
+      sum: String,
+    },
+  },
+});
+
+db.active_identity.create({
+  node_id: "2",
+  type: "company",
 });
 
 db.identity.create({
   node_id: "1",
-  name: "Fulano Doe",
-  email: "fulano@doe.com",
+  name: "John Doe",
+  email: "john@bitcredit.com",
   bitcoin_public_key: "Bitcr1eP5QGefi2DMPTfTL5SLmv7DivfNa",
   npub: "npub1",
   country: "BR",
@@ -69,6 +185,19 @@ db.identity.create({
   country_of_birth: "BR",
   city_of_birth: "São Paulo",
   identification_number: "123456",
+  balances: db.balances.create({
+    id: "1",
+    currency: "sat",
+    payee: {
+      sum: "100000",
+    },
+    payer: {
+      sum: "200000",
+    },
+    contingent: {
+      sum: "300000",
+    },
+  }),
 });
 
 const signer1 = db.signatory.create({
@@ -92,7 +221,7 @@ const signer2 = db.signatory.create({
 });
 
 db.company.create({
-  id: "1",
+  id: "2",
   name: "Rothbard Corp.",
   email: "corp@rothbard.com",
   country: "US",
@@ -104,10 +233,23 @@ db.company.create({
   city_of_registration: "New York",
   registration_number: "123456",
   signatories: [signer1, signer2],
+  balances: db.balances.create({
+    id: "2",
+    currency: "sat",
+    payee: {
+      sum: "146000",
+    },
+    payer: {
+      sum: "925000",
+    },
+    contingent: {
+      sum: "1300000",
+    },
+  }),
 });
 
 db.company.create({
-  id: "2",
+  id: "3",
   name: "Mises Inc.",
   email: "management@mises.com",
   country: "AT",
@@ -119,6 +261,19 @@ db.company.create({
   city_of_registration: "Vienna",
   registration_number: "654321",
   signatories: [signer1],
+  balances: db.balances.create({
+    id: "3",
+    currency: "sat",
+    payee: {
+      sum: "871200",
+    },
+    payer: {
+      sum: "190210",
+    },
+    contingent: {
+      sum: "329010",
+    },
+  }),
 });
 
 db.contact.create({
@@ -164,4 +319,106 @@ db.contact.create({
   country_of_birth_or_registration: "US",
   city_of_birth_or_registration: "Albuquerque",
   identification_number: "CRYS74LBLU3",
+});
+
+db.bill.create({
+  id: "1",
+  time_of_drawing: new Date().getTime(),
+  country_of_issuing: "BR",
+  city_of_issuing: "São Paulo",
+  drawee: {
+    type: 1,
+    node_id: "1",
+    name: "Alice in Wonderland",
+    country: "US",
+    city: "Los Angeles",
+    zip: "90001",
+    address: "123 Wonderland St",
+    email: "drawee@email.com",
+    nostr_relay: "nostr1",
+  },
+  drawer: null,
+  payee: {
+    type: 1,
+    node_id: "2",
+    name: "Bob the Builder",
+    country: "BR",
+    city: "Rio de Janeiro",
+    zip: "SW1A1AA",
+    address: "10 Downing Street",
+    email: "payer@email.com",
+    nostr_relay: "nostr2",
+  },
+  currency: "sat",
+  sum: "100000",
+  maturity_date: format(addDays(new Date(), 10), "yyyy-MM-dd"),
+  issue_date: format(new Date(), "yyyy-MM-dd"),
+  country_of_payment: "AT",
+  city_of_payment: "Vienna",
+  language: "en-US",
+  accepted: false,
+  endorsed: false,
+  requested_to_pay: false,
+  requested_to_accept: false,
+  paid: false,
+  waiting_for_payment: false,
+  buyer: null,
+  seller: null,
+  link_for_buy: "qrcode_goes_here-buy",
+  link_to_pay: "qrcode_goes_here-pay",
+  address_to_pay: "address_goes_here",
+  files: [],
+  active_notification: null,
+  bill_participants: ["1", "2"],
+});
+
+db.bill.create({
+  id: "2",
+  time_of_drawing: new Date().getTime(),
+  country_of_issuing: "AT",
+  city_of_issuing: "Vienna",
+  drawee: {
+    type: 1,
+    node_id: "1",
+    name: "Alice in Wonderland",
+    country: "US",
+    city: "Los Angeles",
+    zip: "90001",
+    address: "123 Wonderland St",
+    email: "drawee@email.com",
+    nostr_relay: "nostr1",
+  },
+  drawer: null,
+  payee: {
+    type: 1,
+    node_id: "2",
+    name: "Bob the Builder",
+    country: "BR",
+    city: "Rio de Janeiro",
+    zip: "SW1A1AA",
+    address: "10 Downing Street",
+    email: "payer@email.com",
+    nostr_relay: "nostr2",
+  },
+  currency: "sat",
+  sum: "100000",
+  maturity_date: format(addDays(new Date(), 10), "yyyy-MM-dd"),
+  issue_date: format(addDays(new Date(), -3), "yyyy-MM-dd"),
+  country_of_payment: "AT",
+  city_of_payment: "Vienna",
+  language: "en-US",
+  accepted: false,
+  endorsed: false,
+  requested_to_pay: false,
+  requested_to_accept: false,
+  paid: false,
+  waiting_for_payment: false,
+  buyer: null,
+  seller: null,
+  link_for_buy: "qrcode_goes_here-buy",
+  link_to_pay: "qrcode_goes_here-pay",
+  address_to_pay: "address_goes_here",
+  files: [],
+  active_notification: null,
+  bill_participants: ["1", "2"],
 });

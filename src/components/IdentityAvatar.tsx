@@ -21,7 +21,7 @@ const avatarVariants = cva("bg-brand-50 flex items-center justify-center", {
 type IdentityAvatarProps = {
   name: string;
   picture: string;
-  identityType: "personal" | "company";
+  identityType: "personal" | "company" | null;
 } & VariantProps<typeof avatarVariants>;
 
 export default function IdentityAvatar({

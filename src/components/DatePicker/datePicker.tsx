@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { DateRange } from "react-day-picker";
 import { addDays, differenceInCalendarDays } from "date-fns";
@@ -19,9 +19,16 @@ interface DatePickerProps {
   mode: "single" | "range";
   value?: DateRange;
   onChange: (dateRange: DateRange) => void;
+  customComponent?: React.ReactElement;
 }
 
-export function DatePicker({ label, mode, value, onChange }: DatePickerProps) {
+export function DatePicker({
+  label,
+  mode,
+  value,
+  onChange,
+  customComponent,
+}: DatePickerProps) {
   const lang = useLanguage();
   const [showCalendar, setShowCalendar] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
@@ -75,33 +82,39 @@ export function DatePicker({ label, mode, value, onChange }: DatePickerProps) {
 
   return (
     <>
-      <Button
-        variant="outline"
-        className="w-full flex gap-1.5 justify-start items-center bg-elevation-200 text-sm font-medium peer h-[58px] rounded-lg border-divider-50 p-4"
-        onClick={toggleCalendar}
-      >
-        <CalendarIcon className="text-text-300 w-5 h-5" strokeWidth={1} />
+      {customComponent ? (
+        React.cloneElement(customComponent, { onClick: toggleCalendar })
+      ) : (
+        <Button
+          variant="outline"
+          className={
+            "w-full flex gap-1.5 justify-start items-center bg-elevation-200 text-sm font-medium peer h-[58px] rounded-lg border-divider-50 p-4"
+          }
+          onClick={toggleCalendar}
+        >
+          <CalendarIcon className="text-text-300 w-5 h-5" strokeWidth={1} />
 
-        {mode === "single" ? (
-          <>
-            {value && value.from
-              ? formatDateLong(value.from, lang.locale)
-              : label}
-          </>
-        ) : (
-          <>
-            <div className="flex gap-1 justify-start items-center truncate">
-              {value && (
-                <>
-                  {value.from && formatDateShort(value.from, lang.locale)}
-                  <span>-</span>
-                  {value.to && formatDateShort(value.to, lang.locale)}
-                </>
-              )}
-            </div>
-          </>
-        )}
-      </Button>
+          {mode === "single" ? (
+            <>
+              {value && value.from
+                ? formatDateLong(value.from, lang.locale)
+                : label}
+            </>
+          ) : (
+            <>
+              <div className="flex gap-1 justify-start items-center truncate">
+                {value && (
+                  <>
+                    {value.from && formatDateShort(value.from, lang.locale)}
+                    <span>-</span>
+                    {value.to && formatDateShort(value.to, lang.locale)}
+                  </>
+                )}
+              </div>
+            </>
+          )}
+        </Button>
+      )}
 
       <div
         className={cn(
