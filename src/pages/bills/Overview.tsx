@@ -1,4 +1,5 @@
 import { Suspense, useState } from "react";
+import { Link } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { isToday, parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
@@ -13,6 +14,7 @@ import { getBillsLight } from "@/services/bills";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Search from "@/components/ui/search";
+import routes from "@/constants/routes";
 
 function DateRangeFilter({ onChange }: { onChange: (e: unknown) => void }) {
   return (
@@ -159,11 +161,9 @@ function List() {
   });
 
   const todayBills = data.bills.filter((bill) =>
-     
     isToday(parseISO(bill.issue_date))
   );
   const earlierBills = data.bills.filter(
-     
     (bill) => !isToday(parseISO(bill.issue_date))
   );
 
@@ -189,13 +189,18 @@ function List() {
         </div>
 
         {todayBills.map((bill) => (
-          <Card
+          <Link
+            to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
             key={bill.id}
-            name={bill.drawee.name}
-            date={bill.issue_date}
-            amount={Number(bill.sum)}
-            currency={bill.currency}
-          />
+          >
+            <Card
+              key={bill.id}
+              name={bill.drawee.name}
+              date={bill.issue_date}
+              amount={Number(bill.sum)}
+              currency={bill.currency}
+            />
+          </Link>
         ))}
       </div>
 
@@ -219,13 +224,18 @@ function List() {
         </div>
 
         {earlierBills.map((bill) => (
-          <Card
+          <Link
+            to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
             key={bill.id}
-            name={bill.drawee.name}
-            date={bill.issue_date}
-            amount={Number(bill.sum)}
-            currency={bill.currency}
-          />
+          >
+            <Card
+              key={bill.id}
+              name={bill.drawee.name}
+              date={bill.issue_date}
+              amount={Number(bill.sum)}
+              currency={bill.currency}
+            />
+          </Link>
         ))}
       </div>
     </div>
