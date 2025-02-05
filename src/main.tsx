@@ -323,8 +323,10 @@ const prepare = async () => {
         .map((it) => [it.path, location.origin + (it.path || "")])
     );
 
-    const { worker } = await import("./mocks/browser");
-    await worker.start();
+    if (import.meta.env.VITE_API_MOCKING_ENABLED === "true") {
+      const { worker } = await import("./mocks/browser");
+      await worker.start();
+    }
   }
 };
 
