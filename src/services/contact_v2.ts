@@ -7,6 +7,7 @@ import {
   UPLOAD_CONTACT_FILE,
 } from "@/constants/endpoints";
 import type { Contact } from "@/types/contact";
+import { apiFetch } from "@/utils/api";
 
 type UploadFileResponse = {
   file_upload_id: string;
@@ -16,16 +17,10 @@ export async function uploadFile(file: File): Promise<UploadFileResponse> {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch(UPLOAD_CONTACT_FILE, {
+  return await apiFetch<UploadFileResponse>(UPLOAD_CONTACT_FILE, {
     method: "POST",
     body: formData,
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<UploadFileResponse>;
 }
 
 export type CreateContactPayload = Partial<Contact>;
@@ -35,19 +30,10 @@ type CreateContactResponse = Contact;
 export async function createContact(
   data: CreateContactPayload
 ): Promise<CreateContactResponse> {
-  const response = await fetch(CREATE_CONTACT, {
+  return await apiFetch<CreateContactResponse>(CREATE_CONTACT, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<CreateContactResponse>;
 }
 
 export type EditContactPayload = Partial<Contact>;
@@ -57,19 +43,10 @@ type EditContactResponse = Contact;
 export async function editContact(
   data: EditContactPayload
 ): Promise<EditContactResponse> {
-  const response = await fetch(EDIT_CONTACT, {
+  return await apiFetch<EditContactResponse>(EDIT_CONTACT, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<EditContactResponse>;
 }
 
 type GetContactsResponse = {
@@ -77,13 +54,7 @@ type GetContactsResponse = {
 };
 
 export async function getContacts(): Promise<GetContactsResponse> {
-  const response = await fetch(GET_CONTACTS);
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<GetContactsResponse>;
+  return await apiFetch<GetContactsResponse>(GET_CONTACTS);
 }
 
 type GetContactDetailsResponse = Contact;
@@ -91,21 +62,11 @@ type GetContactDetailsResponse = Contact;
 export async function getContactDetails(
   id: string
 ): Promise<GetContactDetailsResponse> {
-  const response = await fetch(`${GET_CONTACT_DETAILS}/${id}`);
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<GetContactDetailsResponse>;
+  return await apiFetch<GetContactDetailsResponse>(`${GET_CONTACT_DETAILS}/${id}`);
 }
 
 export async function removeContact(id: string): Promise<void> {
-  const response = await fetch(`${REMOVE_CONTACT}/${id}`, {
+  await apiFetch(`${REMOVE_CONTACT}/${id}`, {
     method: "DELETE",
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
 }
