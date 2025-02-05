@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Search from "@/components/ui/search";
 import { Separator } from "@/components/ui/separator";
 import routes from "@/constants/routes";
+import meta from "@/constants/meta";
 
 import List from "./components/List";
 import EmptyList from "./components/EmptyList";
@@ -135,7 +136,7 @@ export default function Overview() {
 
   return (
     <Page className="gap-6" displayBottomNavigation>
-      {import.meta.env.DEV && (
+      {meta.devModeEnabled && (
         <>
           <Button
             size="xxs"
