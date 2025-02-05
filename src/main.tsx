@@ -18,7 +18,8 @@ import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/home";
 import { Notifications, NotificationsEmpty } from "./pages/Notifications";
-import routes from "./constants/routes";
+import routes from "@/constants/routes";
+import meta from "@/constants/meta";
 
 import "./index.css";
 import "./styles/fonts.css";
@@ -280,7 +281,7 @@ const router = createBrowserRouter(
 );
 
 const prepare = async () => {
-  if (import.meta.env.DEV) {
+  if (meta.devModeEnabled) {
     const flatten = (it: RouteObject) =>
       it.children === undefined
         ? it
@@ -300,11 +301,11 @@ const prepare = async () => {
         .flatMap((it) => flatten(it))
         .map((it) => [it.path, location.origin + (it.path || "")])
     );
+  }
 
-    if (import.meta.env.VITE_API_MOCKING_ENABLED === "true") {
-      const { worker } = await import("./mocks/browser");
-      await worker.start();
-    }
+  if (meta.apiMocksEnabled) {
+    const { worker } = await import("./mocks/browser");
+    await worker.start();
   }
 };
 
