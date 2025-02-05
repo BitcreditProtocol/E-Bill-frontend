@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FormattedMessage } from "react-intl";
 import {
   BanknoteIcon,
@@ -5,9 +7,20 @@ import {
   ChevronUpIcon,
   LandmarkIcon,
   SendHorizonalIcon,
+  TriangleAlertIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { accept, rejectToAccept } from "@/services/bills";
 import type { BillFull } from "@/types/bill";
 
 function SecondaryActions() {
@@ -73,6 +86,7 @@ function SecondaryActions() {
 }
 
 type BillActionsProps = {
+  id: BillFull["id"];
   role: "holder" | "payer";
   accepted: BillFull["accepted"];
   endorsed: BillFull["endorsed"];
@@ -112,6 +126,116 @@ function Holder({
   );
 }
 
+function Acceptance({ id }: { id: string }) {
+  const [isAcceptance, setIsAcceptance] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      if (isAcceptance) {
+        return accept(id);
+      } else {
+        return rejectToAccept(id);
+      }
+    },
+    onSuccess: async () => {
+      setIsDrawerOpen(false);
+
+      await queryClient.invalidateQueries({
+        queryKey: ["bill", id],
+      });
+    },
+  });
+
+  return (
+    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+      <DrawerTrigger asChild>
+        <>
+          <Button
+            size="sm"
+            onClick={() => {
+              setIsDrawerOpen(true);
+              setIsAcceptance(true);
+            }}
+          >
+            <FormattedMessage
+              id="bill.actions.acceptance.sign"
+              defaultMessage="Sign acceptance"
+              description="Sign acceptance for payer button"
+            />
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              setIsDrawerOpen(true);
+              setIsAcceptance(false);
+            }}
+          >
+            <FormattedMessage
+              id="bill.actions.acceptance.reject"
+              defaultMessage="Reject acceptance"
+              description="Reject acceptance for payer button"
+            />
+          </Button>
+        </>
+      </DrawerTrigger>
+      <DrawerContent className="flex flex-col items-center gap-6 pb-5 px-5 max-w-[375px] bg-elevation-50 mx-auto">
+        <DrawerHeader className="flex gap-2 w-full p-0">
+          <TriangleAlertIcon className="text-signal-error h-5 w-5 stroke-1" />
+          <div className="flex flex-col gap-1.5">
+            <DrawerTitle className="text-text-300 text-lg font-medium leading-normal">
+              <FormattedMessage
+                id="bill.actions.acceptance.title"
+                defaultMessage="The signing of your acceptance is legally binding"
+                description="Bill acceptance update confirmation message"
+              />
+            </DrawerTitle>
+            <DrawerDescription className="text-text-200 text-xs font-normal leading-normal">
+              <FormattedMessage
+                id="bill.actions.acceptance.description"
+                defaultMessage="The signing of your acceptance is legally binding"
+                description="Bill acceptance update confirmation message"
+              />
+            </DrawerDescription>
+          </div>
+        </DrawerHeader>
+        <DrawerFooter className="flex flex-col gap-3 w-full p-0">
+          <Button
+            size="md"
+            onClick={() => {
+              mutate();
+            }}
+            disabled={isPending}
+          >
+            <FormattedMessage
+              id="bill.actions.acceptance.confirm"
+              defaultMessage="Confirm"
+              description="Confirm bill acceptance button"
+            />
+          </Button>
+          <DrawerClose asChild>
+            <Button
+              className="w-full"
+              variant="outline"
+              size="md"
+              disabled={isPending}
+            >
+              {isAcceptance}
+              <FormattedMessage
+                id="bill.actions.acceptance.cancel"
+                defaultMessage="Cancel"
+                description="Cancel bill acceptance button"
+              />
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
 function Payer({
   accepted,
   requested_to_accept,
@@ -120,24 +244,7 @@ function Payer({
 }: Omit<BillActionsProps, "role">) {
   return (
     <div className="flex flex-col gap-3">
-      {!accepted && requested_to_accept && (
-        <>
-          <Button size="sm">
-            <FormattedMessage
-              id="bill.actions.acceptance.sign"
-              defaultMessage="Sign acceptance"
-              description="Sign acceptance for payer button"
-            />
-          </Button>
-          <Button size="sm" variant="outline">
-            <FormattedMessage
-              id="bill.actions.acceptance.reject"
-              defaultMessage="Reject acceptance"
-              description="Reject acceptance for payer button"
-            />
-          </Button>
-        </>
-      )}
+      {(!accepted || requested_to_accept) && <Acceptance id="1" />}
 
       {!paid && requested_to_pay && (
         <Button size="sm">
@@ -153,6 +260,7 @@ function Payer({
 }
 
 export default function Actions({
+  id,
   role,
   accepted,
   endorsed,
@@ -165,6 +273,7 @@ export default function Actions({
     <div className="flex flex-col gap-3">
       {role === "holder" ? (
         <Holder
+          id={id}
           accepted={accepted}
           requested_to_accept={requested_to_accept}
           requested_to_pay={requested_to_pay}
@@ -174,6 +283,7 @@ export default function Actions({
         />
       ) : (
         <Payer
+          id={id}
           accepted={accepted}
           requested_to_accept={requested_to_accept}
           requested_to_pay={requested_to_pay}

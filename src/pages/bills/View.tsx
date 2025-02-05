@@ -30,7 +30,8 @@ function Details({ id }: { id: string }) {
         country_of_payment={data.country_of_payment}
         endorsed={data.endorsed}
       />
-      <Actions role="holder" {...data} />
+
+      <Actions role="payer" {...data} />
     </div>
   );
 }
@@ -45,8 +46,6 @@ export default function View() {
       <Suspense fallback={<Loader />}>
         <Details id={id as string} />
       </Suspense>
-
-      <div className="flex flex-col gap-3 mt-auto"></div>
     </Page>
   );
 }
