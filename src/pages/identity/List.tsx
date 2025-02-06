@@ -15,11 +15,12 @@ import Page from "@/components/wrappers/Page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Picture from "@/components/Picture";
+import { useIdentity } from "@/context/identity/IdentityContext";
 import { truncateString } from "@/utils/strings";
 import routes from "@/constants/routes";
 import { getCompanies } from "@/services/company";
 import { getIdentityDetails } from "@/services/identity_v2";
-import { useIdentity } from "@/context/identity/IdentityContext";
+import { API_URL } from "@/constants/api";
 
 function SelectedIdentity() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ function SelectedIdentity() {
       <Picture
         type={type === "company" ? 1 : 0}
         name={name}
-        image={avatar}
+        image={avatar || ""}
         size="lg"
       />
 
@@ -113,13 +114,19 @@ function PersonalIdentity() {
     queryFn: () => getIdentityDetails(),
   });
 
+  const avatarUrl =
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    data.profile_picture_file !== null
+      ? `${API_URL}/identity/file/${data.profile_picture_file.name}`
+      : "";
+
   return (
     <Identity
       node_id={data.node_id}
       type="personal"
       name={data.name}
       address={data.address}
-      avatar=""
+      avatar={avatarUrl}
     />
   );
 }
@@ -147,7 +154,12 @@ function Companies() {
       type="company"
       name={company.name}
       address={company.address}
-      avatar=""
+      avatar={
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        company.logo_file !== null
+          ? `${API_URL}/company/file/${company.id}/${company.logo_file.name}`
+          : ""
+      }
     />
   ));
 }

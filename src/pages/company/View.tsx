@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import { PencilIcon, UserIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
@@ -65,7 +65,7 @@ function Information({ companyId }: { companyId: string }) {
   }${data.city}, ${data.country}`;
   const registrationDate =
     data.registration_date !== ""
-      ? format(new Date(data.registration_date), "dd-MMM-yyyy")
+      ? format(parseISO(data.registration_date), "dd-MMM-yyyy")
       : "";
 
   return (

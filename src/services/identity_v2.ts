@@ -48,6 +48,9 @@ export async function createIdentity(
   return apiFetch<CreateIdentityResponse>(CREATE_IDENTITY, {
     method: "POST",
     body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }
 
@@ -59,6 +62,9 @@ export async function editIdentity(
   return apiFetch<CreateIdentityResponse>(EDIT_IDENTITY, {
     method: "PUT",
     body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }
 
@@ -68,18 +74,29 @@ type GetActiveIdentityResponse = {
 };
 
 export async function getActiveIdentity(): Promise<GetActiveIdentityResponse> {
-  return apiFetch<GetActiveIdentityResponse>(GET_ACTIVE_IDENTITY);
+  return apiFetch<GetActiveIdentityResponse>(GET_ACTIVE_IDENTITY, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 type GetIdentityDetailsResponse = Identity;
 
 export async function getIdentityDetails(): Promise<GetIdentityDetailsResponse> {
-  return apiFetch<GetIdentityDetailsResponse>(GET_IDENTITY_DETAILS);
+  return apiFetch<GetIdentityDetailsResponse>(GET_IDENTITY_DETAILS, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 export async function switchIdentity(node_id: string) {
   return apiFetch(SWITCH_IDENTITY, {
     method: "PUT",
     body: JSON.stringify({ node_id, type: 0 }),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }

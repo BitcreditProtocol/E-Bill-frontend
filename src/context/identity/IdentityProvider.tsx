@@ -5,6 +5,7 @@ import {
   getIdentityDetails,
   switchIdentity,
 } from "@/services/identity_v2";
+import { API_URL } from "@/constants/api";
 import { getCompanyDetails } from "@/services/company";
 
 export default function IdentityProvider({
@@ -43,22 +44,34 @@ export default function IdentityProvider({
       if (isCompany) {
         const company = await getCompanyDetails(activeNodeId);
 
+        const companyAvatar =
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          company.logo_file !== null
+            ? `${API_URL}/company/file/${company.id}/${company.logo_file.name}`
+            : "";
+
         setIdentityDetails({
           name: company.name,
           address: company.address,
           // todo: fix logo file returned from the API
           // avatar: company.logo_file.name,
-          avatar: "",
+          avatar: companyAvatar,
         });
 
         return;
       } else {
         const personalIdentity = await getIdentityDetails();
 
+        const personalAvatar =
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          personalIdentity.profile_picture_file !== null
+            ? `${API_URL}/identity/file/${personalIdentity.profile_picture_file.name}`
+            : "";
+
         setIdentityDetails({
           name: personalIdentity.name,
           address: personalIdentity.address,
-          avatar: "",
+          avatar: personalAvatar,
         });
 
         return;

@@ -296,7 +296,11 @@ function Issuance() {
             />
 
             <DatePicker
-              label="Issue date"
+              label={f({
+                id: "bills.create.issuance.issueDate",
+                defaultMessage: "Issue date",
+                description: "Issue date label",
+              })}
               mode="single"
               value={{ from: parseISO(watch("issue_date") as string) }}
               onChange={(e) => {

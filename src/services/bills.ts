@@ -62,6 +62,9 @@ export async function createBill(
 ): Promise<CreateBillResponse> {
   return apiFetch<CreateBillResponse>(CREATE_BILL, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -80,7 +83,11 @@ type GetBillsLightResponse = {
 };
 
 export async function getBillsLight(): Promise<GetBillsLightResponse> {
-  return apiFetch<GetBillsLightResponse>(GET_BILLS_LIGHT);
+  return apiFetch<GetBillsLightResponse>(GET_BILLS_LIGHT, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 export async function getBillsWithDetails() {}
@@ -90,7 +97,11 @@ type GetBillDetailsResponse = BillFull;
 export async function getBillDetails(
   id: string
 ): Promise<GetBillDetailsResponse> {
-  return apiFetch<GetBillDetailsResponse>(`${GET_BILL_DETAILS}/${id}`);
+  return apiFetch<GetBillDetailsResponse>(`${GET_BILL_DETAILS}/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 type GetBillEndorsementsResponse = {
@@ -114,7 +125,11 @@ type GetBillEndorsementsResponse = {
 export async function getEndorsements(
   id: string
 ): Promise<GetBillEndorsementsResponse> {
-  return apiFetch(`${GET_BILL_ENDORSEMENTS}/${id}`);
+  return apiFetch(`${GET_BILL_ENDORSEMENTS}/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 type EndorsePayload = {
@@ -125,6 +140,9 @@ type EndorsePayload = {
 export async function endorse(data: EndorsePayload): Promise<void> {
   return apiFetch(ENDORSE_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -139,6 +157,9 @@ type MintPayload = {
 export async function mint(data: MintPayload): Promise<void> {
   return apiFetch(MINT_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -153,6 +174,9 @@ type OfferToSellPayload = {
 export async function offerToSell(data: OfferToSellPayload): Promise<void> {
   return apiFetch(OFFER_TO_SELL_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -160,6 +184,9 @@ export async function offerToSell(data: OfferToSellPayload): Promise<void> {
 export async function rejectToBuy(bill_id: string): Promise<void> {
   return apiFetch(REJECT_TO_BUY_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ bill_id }),
   });
 }
@@ -174,6 +201,9 @@ type RequestToMintPayload = {
 export async function requestToMint(data: RequestToMintPayload): Promise<void> {
   return apiFetch(REQUEST_TO_MINT_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -186,6 +216,9 @@ type AcceptMintPayload = {
 export async function acceptMint(data: AcceptMintPayload): Promise<void> {
   return apiFetch(ACCEPT_MINT_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -193,6 +226,9 @@ export async function acceptMint(data: AcceptMintPayload): Promise<void> {
 export async function requestToAccept(bill_id: string): Promise<void> {
   return apiFetch(REQUEST_TO_ACCEPT_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ bill_id }),
   });
 }
@@ -200,6 +236,9 @@ export async function requestToAccept(bill_id: string): Promise<void> {
 export async function rejectToAccept(bill_id: string): Promise<void> {
   return apiFetch(REJECT_TO_ACCEPT_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ bill_id }),
   });
 }
@@ -207,6 +246,9 @@ export async function rejectToAccept(bill_id: string): Promise<void> {
 export async function accept(bill_id: string): Promise<void> {
   return apiFetch(ACCEPT_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ bill_id }),
   });
 }
@@ -219,6 +261,9 @@ type RequestToPayPayload = {
 export async function requestToPay(data: RequestToPayPayload): Promise<void> {
   return apiFetch(REQUEST_TO_PAY_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -226,6 +271,9 @@ export async function requestToPay(data: RequestToPayPayload): Promise<void> {
 export async function rejectToPay(bill_id: string): Promise<void> {
   return apiFetch(REJECT_TO_PAY_BILL, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ bill_id }),
   });
 }
@@ -242,6 +290,9 @@ export async function requestPaymentRecourse(
 ): Promise<void> {
   return apiFetch(REQUEST_BILL_PAYMENT_RECOURSE, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -256,6 +307,9 @@ export async function requestAcceptanceRecourse(
 ): Promise<void> {
   return apiFetch(REQUEST_BILL_ACCEPTANCE_RECOURSE, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -263,6 +317,9 @@ export async function requestAcceptanceRecourse(
 export async function rejectToPayRecourse(bill_id: string): Promise<void> {
   return apiFetch(REJECT_BILL_PAYMENT_RECOURSE, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ bill_id }),
   });
 }

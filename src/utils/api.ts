@@ -8,8 +8,11 @@ export const apiFetch = async <T = unknown>(
 
   const response = await fetch(url, {
     ...options,
-    headers: {
+    /* headers: {
       "Content-Type": "application/json",
+      ...(options.headers || {}),
+    }, */
+    headers: {
       ...(options.headers || {}),
     },
   });

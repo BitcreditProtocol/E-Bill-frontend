@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
@@ -11,6 +12,7 @@ import {
   MapIcon,
   MapPinIcon,
   MapPinnedIcon,
+  PencilIcon,
   ShieldCheckIcon,
   UserIcon,
 } from "lucide-react";
@@ -24,8 +26,69 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Property from "./components/Property";
 import { DatePicker } from "@/components/DatePicker/datePicker";
-import { createCompany } from "@/services/company";
+import StepIndicator from "@/components/StepIndicator";
+import Picture from "@/components/Picture";
+import { COUNTRIES } from "@/constants/countries";
+import routes from "@/constants/routes";
+import { createCompany, uploadFile } from "@/services/company";
+import { useToast } from "@/hooks/use-toast";
+import SuccessIllustration from "@/assets/images/success-illustration.svg";
 import { messages } from "./components/messages";
+
+function LogoUpload() {
+  const [preview, setPreview] = useState<string | null>(null);
+  const { watch, setValue } = useFormContext();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { mutate } = useMutation({
+    mutationFn: (file: File) => {
+      return uploadFile(file);
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      setValue("logo_file_upload_id", data.file_upload_id);
+    },
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const logoImageObjectUrl = URL.createObjectURL(file);
+      setPreview(logoImageObjectUrl);
+      mutate(file);
+    }
+  };
+
+  const triggerFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <div
+      className="relative mx-auto cursor-pointer"
+      onClick={triggerFileSelect}
+    >
+      <Picture
+        size="lg"
+        name={watch("name") as string}
+        image={preview || ""}
+        type={1}
+      />
+      <button className="relative bottom-6 left-12 flex items-center justify-center p-1.5 h-6 w-6 bg-brand-200 rounded-full">
+        <PencilIcon className="text-white h-3 w-3 stroke-1" />
+      </button>
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        onChange={handleFileChange}
+      />
+    </div>
+  );
+}
 
 function RequiredInformation({
   moveToNextStep,
@@ -226,6 +289,8 @@ function OptionalInformation({
       </div>
 
       <div className="flex flex-col gap-3">
+        <LogoUpload />
+
         <DatePicker
           mode="single"
           customComponent={
@@ -290,9 +355,10 @@ function OptionalInformation({
   );
 }
 
-function Preview() {
+function Preview({ callback }: { callback: () => void }) {
   const { formatMessage: f } = useIntl();
   const { getValues } = useFormContext();
+  const { toast } = useToast();
 
   const values = getValues();
 
@@ -305,10 +371,24 @@ function Preview() {
         city: values.city as string,
         zip: values.zip as string,
         address: values.address as string,
-        registration_date: "",
+        registration_date: values.registration_date as string,
         country_of_registration: values.country_of_registration as string,
         city_of_registration: values.city_of_registration as string,
         registration_number: values.registration_number as string,
+        logo_file_upload_id: values.logo_file_upload_id as string,
+      });
+    },
+    onSuccess: () => {
+      callback();
+    },
+    onError: () => {
+      toast({
+        title: f({ id: "company.create.error", defaultMessage: "Error!" }),
+        description: f({
+          id: "company.create.error",
+          defaultMessage: "Error while creating company. Please try again.",
+        }),
+        position: "bottom-center",
       });
     },
   });
@@ -318,9 +398,12 @@ function Preview() {
   } ${values.zip as string}, ${values.city as string}, ${
     values.country as string
   }`;
+  const countryOfRegistration = values.country_of_registration
+    ? COUNTRIES[values.country_of_registration as keyof typeof COUNTRIES]
+    : "";
 
   return (
-    <div className="flex-1 flex flex-col gap-6">
+    <div className="flex-1 flex flex-col justify-between gap-6">
       <div className="flex flex-col items-center gap-2">
         <Title>
           <FormattedMessage
@@ -336,6 +419,18 @@ function Preview() {
             description="Description for the company preview step"
           />
         </Description>
+      </div>
+
+      <div className="flex flex-col items-center gap-4">
+        <Picture
+          size="lg"
+          name={getValues("name") as string}
+          image={""}
+          type={1}
+        />
+        <span className="text-text-300 text-xl font-medium leading-normal">
+          {values.name}
+        </span>
       </div>
 
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
@@ -356,7 +451,7 @@ function Preview() {
 
         <Property
           label={f(messages["company.country_of_registration"])}
-          value={values.country_of_registration as string}
+          value={countryOfRegistration}
         />
         <Separator className="bg-divider-75" />
 
@@ -390,11 +485,51 @@ function Preview() {
   );
 }
 
+function Success() {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-between pt-20">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h1 className="text-text-300 text-2xl font-medium leading-8">
+          <FormattedMessage
+            id="company.create.success.title"
+            defaultMessage="Success"
+            description="Title for the company created step"
+          />
+        </h1>
+        <span className="text-text-200 text-base font-normal leading-6 mx-6">
+          <FormattedMessage
+            id="company.create.success.description"
+            defaultMessage="We have successfully created your company and can add other signers"
+            description="Description for the company created step"
+          />
+        </span>
+      </div>
+
+      <img
+        className="aspect-square max-w-52 pointer-events-none"
+        src={SuccessIllustration}
+        alt="Success illustration"
+      />
+
+      <Link className="w-full" to={routes.IDENTITY_LIST}>
+        <Button className="w-full" size="md">
+          <FormattedMessage
+            id="company.create.success.finish"
+            defaultMessage="Finish"
+            description="Label for the finish button"
+          />
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
 const CreationFormSteps = {
   REQUIRED_INFORMATION: "REQUIRED_INFORMATION",
   POSTAL_ADDRESS: "POSTAL_ADDRESS",
   OPTIONAL_INFORMATION: "OPTIONAL_INFORMATION",
   PREVIEW: "PREVIEW",
+  SUCCESS: "SUCCESS",
 } as const;
 
 const formSchema = z.object({
@@ -408,6 +543,7 @@ const formSchema = z.object({
   country_of_registration: z.string().min(2).optional(),
   city_of_registration: z.string().min(1).optional(),
   registration_number: z.string().min(1).optional(),
+  logo_file_upload_id: z.string().optional(),
 });
 
 export default function Create() {
@@ -428,6 +564,7 @@ export default function Create() {
       country_of_registration: "",
       city_of_registration: "",
       registration_number: "",
+      logo_file_upload_id: "",
     },
   });
 
@@ -453,12 +590,31 @@ export default function Create() {
         }}
       />
     ),
-    [CreationFormSteps.PREVIEW]: <Preview />,
+    [CreationFormSteps.PREVIEW]: (
+      <Preview
+        callback={() => {
+          setCurrentStep(CreationFormSteps.SUCCESS);
+        }}
+      />
+    ),
+    [CreationFormSteps.SUCCESS]: <Success />,
   };
 
+  const isSuccess = currentStep === CreationFormSteps.SUCCESS;
+
   return (
-    <Page>
-      <Topbar lead={<NavigateBack />} />
+    <Page className="gap-5" displayBackgroundEllipse={isSuccess}>
+      {!isSuccess && (
+        <Topbar
+          lead={<NavigateBack />}
+          middle={
+            <StepIndicator
+              totalSteps={Object.keys(steps).length - 1}
+              currentStep={Object.keys(CreationFormSteps).indexOf(currentStep)}
+            />
+          }
+        />
+      )}
 
       <FormProvider {...methods}>{steps[currentStep]}</FormProvider>
     </Page>
