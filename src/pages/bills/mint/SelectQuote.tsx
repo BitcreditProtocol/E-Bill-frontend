@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getBillDetails } from "@/services/bills";
-import { Suspense } from "react";
+import { acceptMint, getBillDetails } from "@/services/bills";
+import { Suspense, useEffect } from "react";
 import { getQuote } from "@/services/quotes";
 
 
@@ -42,10 +42,29 @@ function Information({ id }: { id: string }) {
 export default function SelectQuote() {
   const { id } = useParams<{ id: string }>();
 
-  const { data, isSuccess } = useSuspenseQuery({
-    queryKey: ["quotes", id as string ],
-    queryFn: () => getQuote(id as string),
+  const { data } = useSuspenseQuery({
+    queryKey: ["quotes", id as string],
+    queryFn: () => getQuote(id as string).catch(() => { return null }),
+    refetchInterval: 3_000,
   });
+
+  // TODO: remove - fake accepting mint request here
+  useEffect(() => {
+    if (data) return;
+
+    const timerId = setTimeout(() => {
+      acceptMint({
+        bill_id: id as string,
+        sum: "1000",
+      }).then(() => {
+        console.log('Successfully accepted mint request..');
+      }).catch(() => {
+        console.log('Error while accepting mint request..');
+      });
+    }, 5_000);
+
+    return () => { clearTimeout(timerId); };
+  }, [id, data]);
 
   console.log(data);
 
@@ -82,10 +101,11 @@ export default function SelectQuote() {
           </SectionTitle>
 
           <div className="flex flex-col gap-3">
-            <Quote mintName="Wildcat One" rate={0.0001} status="pending" />
-            {isSuccess && <>
-              <Quote mintName="Whalers Mint" rate={0.0001} status="accepted" />
-            </>}
+            {data ? (<>
+              <Quote mintName="Wildcat One" rate={0.0001} status="accepted" />
+            </>) : (<>
+              <Quote mintName="Wildcat One" rate={0.0001} status="pending" />
+            </>)}
             <Quote mintName="Fishermans Mint" rate={0.0001} status="declined" />
           </div>
         </div>
