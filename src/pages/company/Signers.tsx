@@ -26,16 +26,16 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import ContactPicker from "@/components/Contact/ContactPicker";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 import {
   addSignatory,
   getCompanySigners,
   removeSignatory,
 } from "@/services/company";
 import { useIdentity } from "@/context/identity/IdentityContext";
-import ContactPicker from "@/components/Contact/ContactPicker";
-import { useToast } from "@/hooks/use-toast";
 
 type RemoveSignerProps = {
   id: string;
@@ -244,6 +244,7 @@ function List({ companyId }: { companyId: string }) {
   );
 }
 
+// todo: refactor the node id retrieval. not looking good.
 export default function Signers() {
   const { activeIdentity } = useIdentity();
 
@@ -262,17 +263,22 @@ export default function Signers() {
         }
       />
 
-      <Summary
-        identityType={1}
-        name={activeIdentity.name}
-        nodeId={activeIdentity.node_id as string}
-        picture={activeIdentity.avatar}
-      />
+      {activeIdentity.node_id && (
+        <Summary
+          identityType={1}
+          name={activeIdentity.name}
+          nodeId={activeIdentity.node_id}
+          picture={activeIdentity.avatar}
+        />
+      )}
 
       <Suspense fallback={<Loader />}>
-        <List companyId={activeIdentity.node_id as string} />
+        <List companyId={activeIdentity.node_id} />
       </Suspense>
-      <AddSigner company_id={activeIdentity.node_id as string} />
+
+      {activeIdentity.node_id && (
+        <AddSigner company_id={activeIdentity.node_id} />
+      )}
     </Page>
   );
 }

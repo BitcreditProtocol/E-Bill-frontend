@@ -3,7 +3,7 @@ import { createContext, useContext } from "react";
 type IdentityContextType = {
   activeIdentity: {
     type: "personal" | "company" | null;
-    node_id: string | null;
+    node_id: string;
     name: string;
     avatar: string;
     address: string;
