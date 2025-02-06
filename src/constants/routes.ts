@@ -38,7 +38,6 @@ const IDENTITY_LIST = "/identity/list";
 const CREATE_COMPANY = "/company/create";
 const COMPANY_SIGNERS = "/company/signers";
 const EDIT_COMPANY = "/company/edit";
-// todo: replace by /company/:id once we integrate the api
 const VIEW_COMPANY = "/company";
 
 const CREATE_COMPANY_SUCCESS = "success";

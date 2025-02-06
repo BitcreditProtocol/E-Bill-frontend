@@ -1,4 +1,5 @@
 import { Suspense, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useMutation,
   useQueryClient,
@@ -25,8 +26,10 @@ import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { useIdentity } from "@/context/identity/IdentityContext";
 import { editCompany, getCompanyDetails } from "@/services/company";
 import { useToast } from "@/hooks/use-toast";
+import routes from "@/constants/routes";
 import { messages } from "./components/messages";
 
 function Loader() {
@@ -57,6 +60,7 @@ const formSchema = z.object({
 });
 
 function Form({ companyId }: { companyId: string }) {
+  const navigate = useNavigate();
   const [isDataValid, setIsDataValid] = useState(false);
   const { formatMessage: f } = useIntl();
   const { data } = useSuspenseQuery({
@@ -119,7 +123,9 @@ function Form({ companyId }: { companyId: string }) {
   });
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-6">
+      <Summary identityType={1} name={data.name} nodeId={data.id} picture="" />
+
       <FormProvider {...methods}>
         <Input
           {...methods.register("name")}
@@ -183,6 +189,9 @@ function Form({ companyId }: { companyId: string }) {
           variant="outline"
           size="sm"
           disabled={isPending}
+          onClick={() => {
+            navigate(routes.VIEW_COMPANY);
+          }}
         >
           <FormattedMessage
             id="company.edit.cancel"
@@ -210,11 +219,10 @@ function Form({ companyId }: { companyId: string }) {
 }
 
 export default function Edit() {
-  // todo: retrieve from context
-  const companyId = "1";
+  const { activeIdentity } = useIdentity();
 
   return (
-    <Page className="gap-5">
+    <Page className="gap-6">
       <Topbar
         lead={<NavigateBack />}
         middle={
@@ -228,18 +236,9 @@ export default function Edit() {
         }
       />
 
-      <div className="flex flex-col gap-6">
-        <Summary
-          identityType={1}
-          name="Company Name"
-          nodeId="0x1234567890"
-          picture=""
-        />
-
-        <Suspense fallback={<Loader />}>
-          <Form companyId={companyId} />
-        </Suspense>
-      </div>
+      <Suspense fallback={<Loader />}>
+        <Form companyId={activeIdentity.node_id as string} />
+      </Suspense>
     </Page>
   );
 }

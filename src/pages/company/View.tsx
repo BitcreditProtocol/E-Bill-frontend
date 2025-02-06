@@ -10,6 +10,7 @@ import PageTitle from "@/components/typography/PageTitle";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import Summary from "@/components/Summary";
+import { useIdentity } from "@/context/identity/IdentityContext";
 import { getCompanyDetails } from "@/services/company";
 import routes from "@/constants/routes";
 import type { Company } from "@/types/company";
@@ -97,6 +98,8 @@ function Information({ companyId }: { companyId: string }) {
 }
 
 export default function View() {
+  const { activeIdentity } = useIdentity();
+
   return (
     <Page className="gap-6">
       <Topbar
@@ -127,7 +130,7 @@ export default function View() {
       />
 
       <Suspense fallback={<Loader />}>
-        <Information companyId="1" />
+        <Information companyId={activeIdentity.node_id as string} />
       </Suspense>
 
       <ViewAuthorizedSigners />
