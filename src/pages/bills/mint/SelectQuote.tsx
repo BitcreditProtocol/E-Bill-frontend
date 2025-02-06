@@ -4,7 +4,7 @@ import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import PageTitle from "@/components/typography/PageTitle";
 import SectionTitle from "@/components/typography/SectionTitle";
-import BillPreview from "../components/BillPreview";
+import Preview from "../components/Preview";
 import Quote from "./components/Quote";
 import { Button } from "@/components/ui/button";
 
@@ -26,7 +26,12 @@ export default function SelectQuote() {
       />
 
       <div className="flex-1 flex flex-col gap-6">
-        <BillPreview company="Pear, Inc" date="31-Jan-2025" amount={1.2311} />
+        <Preview
+          name="Pear, Inc"
+          date="31-Jan-2025"
+          amount={1.2311}
+          currency="BTC"
+        />
 
         <div className="flex flex-col gap-4">
           <SectionTitle>

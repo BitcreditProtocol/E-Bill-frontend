@@ -10,7 +10,7 @@ import BitcoinCurrencyIcon from "@/assets/icons/bitcoin-currency.svg";
 import Mint from "./components/Mint";
 import EcashAddress from "./components/EcashAddress";
 import Sign from "./components/Sign";
-import BillPreview from "../components/BillPreview";
+import BillPreview from "../components/Preview";
 
 export default function Preview() {
   return (
@@ -30,7 +30,12 @@ export default function Preview() {
       />
 
       <div className="flex flex-col gap-6">
-        <BillPreview company="Pear, Inc" date="31-Jan-2025" amount={1.2311} />
+        <BillPreview
+          name="Pear, Inc"
+          date="31-Jan-2025"
+          amount={1.2311}
+          currency="BTC"
+        />
 
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">

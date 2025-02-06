@@ -93,11 +93,6 @@ export async function getBillDetails(
   return apiFetch<GetBillDetailsResponse>(`${GET_BILL_DETAILS}/${id}`);
 }
 
-type EndorsePayload = {
-  bill_id: string;
-  endorsee: string;
-};
-
 type GetBillEndorsementsResponse = {
   past_endorsees: {
     pay_to_the_order_of: {
@@ -121,6 +116,11 @@ export async function getEndorsements(
 ): Promise<GetBillEndorsementsResponse> {
   return apiFetch(`${GET_BILL_ENDORSEMENTS}/${id}`);
 }
+
+type EndorsePayload = {
+  bill_id: string;
+  endorsee: string;
+};
 
 export async function endorse(data: EndorsePayload): Promise<void> {
   return apiFetch(ENDORSE_BILL, {

@@ -44,7 +44,9 @@ function Information({
   onSelect,
 }: {
   contactId: string;
-  onSelect: (contact: Pick<Contact, "node_id" | "name" | "address">) => void;
+  onSelect: (
+    contact: Pick<Contact, "node_id" | "name" | "address" | "type">
+  ) => void;
 }) {
   const { formatMessage: f } = useIntl();
   const { data } = useSuspenseQuery({
@@ -68,7 +70,7 @@ function Information({
   } = data;
 
   const selectContact = () => {
-    onSelect({ node_id, name, address });
+    onSelect({ node_id, name, address, type });
   };
 
   return (
@@ -174,7 +176,9 @@ export default function ContactInformation({
   onSelect,
 }: {
   nodeId: string;
-  onSelect: (contact: Pick<Contact, "node_id" | "name" | "address">) => void;
+  onSelect: (
+    contact: Pick<Contact, "node_id" | "name" | "address" | "type">
+  ) => void;
 }) {
   return (
     <Suspense fallback={<Loader />}>

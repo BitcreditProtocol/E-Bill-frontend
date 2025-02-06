@@ -6,7 +6,7 @@ import NavigateBack from "@/components/NavigateBack";
 import Label from "@/components/typography/Label";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 
-import BillPreview from "../components/BillPreview";
+import Preview from "../components/Preview";
 import Mint from "./components/Mint";
 import EcashAddress from "./components/EcashAddress";
 
@@ -51,7 +51,12 @@ export default function Received() {
             />
           </Label>
 
-          <BillPreview company="Pear, Inc" date="31-Jan-2025" amount={1.2311} />
+          <Preview
+            name="Pear, Inc"
+            date="31-Jan-2025"
+            amount={1.2311}
+            currency="BTC"
+          />
         </div>
 
         <div className="flex flex-col gap-3">

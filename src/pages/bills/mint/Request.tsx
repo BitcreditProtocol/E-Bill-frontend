@@ -12,7 +12,7 @@ import PageTitle from "@/components/typography/PageTitle";
 import Label from "@/components/typography/Label";
 import SectionTitle from "@/components/typography/SectionTitle";
 
-import BillPreview from "../components/BillPreview";
+import Preview from "../components/Preview";
 import { Button } from "@/components/ui/button";
 
 function MintRequest() {
@@ -33,11 +33,12 @@ function MintRequest() {
         <ChevronRightIcon className="text-text-300 h-6 w-6 stroke-1" />
       </div>
 
-      <BillPreview
+      <Preview
         className="bg-elevation-50 border-divider-75"
-        company="Pear, Inc"
+        name="Pear, Inc"
         date="31-Jan-2025"
         amount={1.2311}
+        currency="BTC"
       />
     </div>
   );

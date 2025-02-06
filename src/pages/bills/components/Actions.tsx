@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FormattedMessage } from "react-intl";
 import {
@@ -23,14 +24,15 @@ import {
 import { accept, rejectToAccept, requestToAccept } from "@/services/bills";
 import type { BillFull } from "@/types/bill";
 import { useToast } from "@/hooks/use-toast";
+import routes from "@/constants/routes";
 
-function SecondaryActions() {
+function SecondaryActions({ id }: { id: string }) {
   return (
     <Drawer>
       <DrawerTrigger>
         <Button className="w-full" variant="outline" size="sm">
           <FormattedMessage
-            id="bill.actions.actionsList"
+            id="bill.actions.list"
             defaultMessage="Endorse"
             description="Actions list trigger button"
           />
@@ -42,7 +44,7 @@ function SecondaryActions() {
         <div className="p-5">
           <Button className="w-full" variant="outline" size="sm">
             <FormattedMessage
-              id="bill.actions.actionsList"
+              id="bill.actions.list"
               defaultMessage="Endorse"
               description="Actions list trigger button"
             />
@@ -51,15 +53,17 @@ function SecondaryActions() {
           </Button>
         </div>
         <div className="flex flex-col gap-6 p-5 border-t border-divider-75">
-          <button className="flex items-center gap-2 p-0 text-text-300 text-base font-medium">
-            <SendHorizonalIcon className="text-text-300 w-5 h-5 stroke-1" />
+          <Link to={routes.ENDORSE.replace(":id", id)}>
+            <button className="flex items-center gap-2 p-0 text-text-300 text-base font-medium">
+              <SendHorizonalIcon className="text-text-300 w-5 h-5 stroke-1" />
 
-            <FormattedMessage
-              id="bill.actions.endorse"
-              defaultMessage="Endorse"
-              description="Endorse button"
-            />
-          </button>
+              <FormattedMessage
+                id="bill.actions.endorse"
+                defaultMessage="Endorse"
+                description="Endorse button"
+              />
+            </button>
+          </Link>
 
           <button className="flex items-center gap-2 p-0 text-text-300 text-base font-medium">
             <BanknoteIcon className="text-text-300 w-5 h-5 stroke-1" />
@@ -152,7 +156,7 @@ function Holder({
         </>
       )}
 
-      {!requested_to_pay && !paid && <SecondaryActions />}
+      {!requested_to_pay && !paid && <SecondaryActions id={id} />}
     </div>
   );
 }
