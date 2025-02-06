@@ -49,7 +49,7 @@ const PAY = "/bill/:id/pay";
 
 const REQUEST_MINT = "/bill/:id/request-mint";
 const SELECT_QUOTE = "/bill/:id/select-quote";
-const PREVIEW_MINT = "/preview-mint";
+const PREVIEW_MINT = "/bill/:id/preview-mint";
 const MINT_RECEIVED = "/mint-received";
 const MINT_REQUEST = "/mint-request";
 const ABOUT = "/about";

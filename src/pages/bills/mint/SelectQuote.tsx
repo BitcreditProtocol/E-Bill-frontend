@@ -7,12 +7,13 @@ import SectionTitle from "@/components/typography/SectionTitle";
 import Preview from "../components/Preview";
 import Quote from "./components/Quote";
 import { Button } from "@/components/ui/button";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { acceptMint, getBillDetails } from "@/services/bills";
 import { Suspense, useEffect } from "react";
 import { getQuote } from "@/services/quotes";
+import routes from "@/constants/routes";
 
 
 function Loader() {
@@ -61,7 +62,7 @@ export default function SelectQuote() {
       }).catch(() => {
         console.log('Error while accepting mint request..');
       });
-    }, 5_000);
+    }, 10_000);
 
     return () => { clearTimeout(timerId); };
   }, [id, data]);
@@ -101,8 +102,10 @@ export default function SelectQuote() {
           </SectionTitle>
 
           <div className="flex flex-col gap-3">
-            {data ? (<>
-              <Quote mintName="Wildcat One" rate={0.0001} status="accepted" />
+            {id && data ? (<>
+              <Link to={routes.PREVIEW_MINT.replace(":id", id)}>
+                <Quote mintName="Wildcat One" rate={0.0001} status="accepted" />
+              </Link>
             </>) : (<>
               <Quote mintName="Wildcat One" rate={0.0001} status="pending" />
             </>)}
