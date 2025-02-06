@@ -194,6 +194,7 @@
   "bill.mint.received.mintedBy": "By",
   "bill.mint.received.paymentReceived": "Received",
   "bill.mint.request.action": "Request mint quote",
+  "bill.mint.request.action.success": "Request sent successfully",
   "bill.mint.request.quote": "Quote",
   "bill.mint.request.reject": "Reject",
   "bill.mint.request.selectMint": "Select a mint",

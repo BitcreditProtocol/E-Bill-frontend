@@ -10,10 +10,11 @@ import { Separator } from "@/components/ui/separator";
 import Preview from "./components/Preview";
 import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getBillDetails } from "@/services/bills";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { getBillDetails, requestToMint } from "@/services/bills";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/hooks/use-toast";
 
 function Mint({ name }: { name: string }) {
   return (
@@ -58,6 +59,34 @@ function Information({ id }: { id: string }) {
 
 export default function RequestMint() {
   const { id } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      return requestToMint({
+        bill_id: id as string,
+        mint_node: "039180c169e5f6d7c579cf1cefa37bffd47a2b389c8125601f4068c87bea795943",
+        sum: "1000",
+        currency: "BTC",
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["bills", id],
+      });
+
+      toast({
+        description: (
+          <FormattedMessage
+            id="bill.mint.request.action.success"
+            defaultMessage="Request sent successfully"
+            description="Request mint success toast message"
+          />
+        ),
+        position: "bottom-center",
+      });
+    },
+  });
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -101,7 +130,7 @@ export default function RequestMint() {
           </div>
         </div>
 
-        <Button className="mt-auto">
+        <Button className="mt-auto" disabled={isPending} onClick={() => { mutate(); }}>
           <FormattedMessage
             id="bill.mint.request.action"
             defaultMessage="Request mint quote"
