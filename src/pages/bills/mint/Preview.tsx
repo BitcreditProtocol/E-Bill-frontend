@@ -8,7 +8,6 @@ import Label from "@/components/typography/Label";
 import BitcoinCurrencyIcon from "@/assets/icons/bitcoin-currency.svg";
 
 import Mint from "./components/Mint";
-import EcashAddress from "./components/EcashAddress";
 import Sign from "./components/Sign";
 import BillPreview from "../components/Preview";
 import { useParams } from "react-router-dom";
@@ -16,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getBillDetails } from "@/services/bills";
 import { Suspense } from "react";
+import { getQuote } from "@/services/quotes";
 
 function Loader() {
   return (
@@ -25,24 +25,18 @@ function Loader() {
   );
 }
 
-function Information({ id }: { id: string }) {
-  const { data } = useSuspenseQuery({
-    queryKey: ["bills", id],
-    queryFn: () => getBillDetails(id),
-  });
-
-  return (
-    <BillPreview
-      name={data.drawee.name}
-      date={data.issue_date}
-      amount={Number(data.sum)}
-      currency="BTC"
-    />
-  );
-}
-
 export default function Preview() {
   const { id } = useParams<{ id: string }>();
+
+  const { data: bill } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id as string),
+  });
+
+  const { data: quote } = useSuspenseQuery({
+    queryKey: ["quotes", id as string],
+    queryFn: () => getQuote(id as string),
+  });
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -62,7 +56,12 @@ export default function Preview() {
 
       <div className="flex flex-col gap-6">
         <Suspense fallback={<Loader />}>
-          <Information id={id as string} />
+          <BillPreview
+            name={bill.drawee.name}
+            date={bill.issue_date}
+            amount={Number(bill.sum)}
+            currency="BTC"
+          />
         </Suspense>
       </div>
 
@@ -97,21 +96,23 @@ export default function Preview() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-1 self-end">
-                <FormattedCurrency
-                  className="text-sm font-medium leading-5"
-                  value={1.11092}
-                  type="credit"
-                />
-                <span className="text-text-200 text-[10px]">BTC</span>
-              </div>
+              <Suspense fallback={<Loader />}>
+                <div className="flex items-center gap-1 self-end">
+                  <FormattedCurrency
+                    className="text-sm font-medium leading-5"
+                    value={Number(quote.sum)/ 100_000_000}
+                    type="credit"
+                  />
+                  <span className="text-text-200 text-[10px]">BTC</span>
+                </div>
+              </Suspense>
             </div>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col gap-5 mt-auto">
-        <EcashAddress address="bitcr2df3ee...s43ek1" />
+        {/*<EcashAddress address="bitcr2df3ee...s43ek1" />*/}
         <Sign />
       </div>
     </div>
