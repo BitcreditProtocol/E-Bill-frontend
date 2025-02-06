@@ -8,6 +8,8 @@ import { useIdentity } from "@/context/identity/IdentityContext";
 import { getBillDetails } from "@/services/bills";
 import Card, { Loader } from "./components/BillCard";
 import Actions from "./components/Actions";
+import EcashToken from "./mint/components/EcashToken";
+import { getQuote } from "@/services/quotes";
 
 function Details({ id }: { id: string }) {
   const { activeIdentity } = useIdentity();
@@ -15,6 +17,11 @@ function Details({ id }: { id: string }) {
   const { data } = useSuspenseQuery({
     queryKey: ["bills", id],
     queryFn: () => getBillDetails(id),
+  });
+  
+  const { data: quote} = useSuspenseQuery({
+    queryKey: ["quotes", id],
+    queryFn: () => getQuote(id).catch(() => { return null }),
   });
 
   // if drawee and current identity node ids are the same, then the role is payer
@@ -48,6 +55,10 @@ function Details({ id }: { id: string }) {
         paid={data.paid}
         waiting_for_payment={data.waiting_for_payment}
       />
+
+      {quote && quote.token && <>
+        <EcashToken token={quote.token} />
+      </>}
 
       {role === null ? <></> : <Actions role={role} {...data} />}
     </div>

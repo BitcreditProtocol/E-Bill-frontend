@@ -9,6 +9,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import Preview from "./components/Preview";
 import { Button } from "@/components/ui/button";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { getBillDetails, requestToMint } from "@/services/bills";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/hooks/use-toast";
+import routes from "@/constants/routes";
+import { getQuote } from "@/services/quotes";
 
 function Mint({ name }: { name: string }) {
   return (
@@ -25,7 +33,75 @@ function Mint({ name }: { name: string }) {
   );
 }
 
+function Loader() {
+  return (
+    <div className="flex flex-col gap-6">
+      <Skeleton className="h-20 w-full bg-elevation-200" />
+    </div>
+  );
+}
+
+function Information({ id }: { id: string }) {
+  const { data: bill } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id),
+  });
+
+  return (
+    <Preview
+      name={bill.drawee.name}
+      date={bill.issue_date}
+      amount={Number(bill.sum) / 100_000_000}
+      currency="BTC"
+    />
+  );
+}
+
+
 export default function RequestMint() {
+  const { id } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const { data: bill } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id as string),
+  });
+
+  const { data: quote, isSuccess } = useSuspenseQuery({
+    queryKey: ["quotes", id as string],
+    queryFn: () => getQuote(id as string).catch(() => { return null }),
+  });
+
+  const { mutate: doRequestToMint, isPending } = useMutation({
+    mutationFn: async () => {
+      await requestToMint({
+        bill_id: bill.id,
+        mint_node: "039180c169e5f6d7c579cf1cefa37bffd47a2b389c8125601f4068c87bea795943",
+        sum: bill.sum,
+        currency: "BTC",
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["bills", id],
+      });
+
+      toast({
+        description: (
+          <FormattedMessage
+            id="bill.mint.request.action.success"
+            defaultMessage="Request sent successfully"
+            description="Request mint success toast message"
+          />
+        ),
+        position: "bottom-center",
+      });
+
+      navigate(routes.SELECT_QUOTE.replace(":id", id as string))
+    },
+  });
+
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
       <Topbar
@@ -42,13 +118,13 @@ export default function RequestMint() {
         trail={<></>}
       />
 
+      <div className="flex flex-col gap-6">
+        <Suspense fallback={<Loader />}>
+          <Information id={id as string} />
+        </Suspense>
+      </div>
+
       <div className="flex-1 flex flex-col gap-6">
-        <Preview
-          name="Pear, Inc"
-          date="31-Jan-2025"
-          amount={1.2311}
-          currency="BTC"
-        />
 
         <div className="flex flex-col gap-4">
           <SectionTitle>
@@ -68,7 +144,17 @@ export default function RequestMint() {
           </div>
         </div>
 
-        <Button className="mt-auto">
+        <Button className="mt-auto" disabled={isPending} onClick={() => {
+            if (quote && isSuccess) {
+              if (quote.token === '') {
+                navigate(routes.SELECT_QUOTE.replace(":id", id as string))
+              } else {
+                navigate(routes.MINT_RECEIVED.replace(":id", id as string))
+              }
+            } else {
+              doRequestToMint();
+            } 
+          }}>
           <FormattedMessage
             id="bill.mint.request.action"
             defaultMessage="Request mint quote"

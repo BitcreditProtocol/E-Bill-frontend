@@ -60,6 +60,17 @@ export type Peer = {
   nostr_relay: string;
 };
 
+export type Block = {
+  data: string;
+  hash: string;
+  id: number;
+  label: string;
+  op_code: string;
+  previous_hash: string;
+  signature: string
+  timestamp: number;
+};
+
 export type BillFull = {
   id: string;
   time_of_drawing: number;
@@ -91,4 +102,7 @@ export type BillFull = {
     name: string;
     hash: string;
   }[];
+  chain_of_blocks: {
+    blocks: Block[]
+  }
 };
