@@ -204,7 +204,7 @@ function List() {
               >
                 <Card
                   key={bill.id}
-                  name={bill.drawee.name}
+                  name={bill.drawer.name}
                   date={bill.issue_date}
                   amount={Number(bill.sum)}
                   currency={bill.currency}

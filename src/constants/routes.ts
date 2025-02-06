@@ -44,8 +44,8 @@ const CREATE_COMPANY_SUCCESS = "success";
 const AUTHORIZED_SIGNERS = "/authorized-signers";
 const ENDORSEMENTS = "bill/:id/endorsements";
 const ENDORSE = "/bill/:id/endorse";
-const PAYMENT = "/payment";
-const PAY = "/pay";
+const PAYMENT = "/bill/:id/payment";
+const PAY = "/bill/:id/pay";
 
 const REQUEST_MINT = "/request-mint";
 const SELECT_QUOTE = "/select-quote";

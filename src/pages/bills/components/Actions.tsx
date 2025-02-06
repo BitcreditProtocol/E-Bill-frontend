@@ -156,7 +156,29 @@ function Holder({
         </>
       )}
 
-      {!requested_to_pay && !paid && <SecondaryActions id={id} />}
+      {!requested_to_pay && !paid && (
+        <div className="flex flex-col gap-3">
+          <Button size="sm">
+            <FormattedMessage
+              id="bill.actions.requestPayment"
+              defaultMessage="Request payment"
+              description="Request payment button"
+            />
+          </Button>
+          <SecondaryActions id={id} />
+        </div>
+      )}
+      {requested_to_pay && (
+        <Link to={routes.PAYMENT.replace(":id", id)}>
+          <Button className="w-full" size="sm">
+            <FormattedMessage
+              id="bill.actions.payment.check"
+              defaultMessage="Check payment"
+              description="Action to verify payment status"
+            />
+          </Button>
+        </Link>
+      )}
     </div>
   );
 }

@@ -19,6 +19,7 @@ import {
   REQUEST_BILL_ACCEPTANCE_RECOURSE,
   REJECT_BILL_PAYMENT_RECOURSE,
   GET_BILL_ENDORSEMENTS,
+  GET_BILL_PRIVATE_KEY,
 } from "@/constants/endpoints";
 import type { BillFull, Peer } from "@/types/bill";
 
@@ -99,6 +100,20 @@ export async function getBillDetails(
   id: string
 ): Promise<GetBillDetailsResponse> {
   return apiFetch<GetBillDetailsResponse>(`${GET_BILL_DETAILS}/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+type GetPrivateKeyResponse = {
+  private_key: string;
+};
+
+export async function getPrivateKey(
+  id: string
+): Promise<GetPrivateKeyResponse> {
+  return apiFetch<GetPrivateKeyResponse>(`${GET_BILL_PRIVATE_KEY}/${id}`, {
     headers: {
       "Content-Type": "application/json",
     },

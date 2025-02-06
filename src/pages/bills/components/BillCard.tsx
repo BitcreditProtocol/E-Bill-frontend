@@ -185,7 +185,7 @@ type CardProps = {
   country_of_issuing: string;
   issue_date: BillFull["issue_date"];
   maturity_date: BillFull["maturity_date"];
-  payee: Pick<Peer, "name" | "address">;
+  holder: Pick<Peer, "name" | "address">;
   payer: Pick<Peer, "name" | "address">;
   drawer: Pick<Peer, "name" | "address">;
   city_of_payment: BillFull["city_of_payment"];
@@ -205,7 +205,7 @@ export default function BillCard({
   country_of_issuing,
   issue_date,
   maturity_date,
-  payee,
+  holder,
   payer,
   drawer,
   city_of_payment,
@@ -276,10 +276,10 @@ export default function BillCard({
               value={
                 <div className="flex flex-col items-end gap-1">
                   <span className="text-text-300 text-sm font-medium leading-5">
-                    {payee.name}
+                    {holder.name}
                   </span>
                   <span className="text-text-200 text-xs font-normal leading-normal">
-                    {payee.address}
+                    {holder.address}
                   </span>
                 </div>
               }

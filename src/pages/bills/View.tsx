@@ -20,12 +20,12 @@ function Details({ id }: { id: string }) {
   // if drawee and current identity node ids are the same, then the role is payer
   // if bill is endorsed, and endorsee and current identity node ids are the same, then the role is holder
   const isPayer = data.drawee.node_id === activeIdentity.node_id;
-  const isPayee =
-    data.payee.node_id === activeIdentity.node_id ||
-    (data.endorsee && data.endorsee.node_id === activeIdentity.node_id);
+  const isHolder =
+    (data.endorsee && data.endorsee.node_id === activeIdentity.node_id) ||
+    data.payee.node_id === activeIdentity.node_id;
 
-  const role = isPayer ? "payer" : isPayee ? "holder" : "endorsee";
-  const payee = data.endorsed && data.endorsee ? data.endorsee : data.payee;
+  const role = isPayer ? "payer" : isHolder ? "holder" : null;
+  const holder = data.endorsed && data.endorsee ? data.endorsee : data.payee;
 
   return (
     <div className="flex-1 flex flex-col gap-5 justify-between">
@@ -36,7 +36,7 @@ function Details({ id }: { id: string }) {
         country_of_issuing={data.country_of_issuing}
         issue_date={data.issue_date}
         maturity_date={data.maturity_date}
-        payee={{ name: payee.name, address: payee.address }}
+        holder={{ name: holder.name, address: holder.address }}
         payer={{ name: data.drawee.name, address: data.drawee.address }}
         drawer={{ name: data.drawer.name, address: data.drawer.address }}
         city_of_payment={data.city_of_payment}
@@ -49,7 +49,7 @@ function Details({ id }: { id: string }) {
         waiting_for_payment={data.waiting_for_payment}
       />
 
-      {role === "endorsee" ? <></> : <Actions role={role} {...data} />}
+      {role === null ? <></> : <Actions role={role} {...data} />}
     </div>
   );
 }
