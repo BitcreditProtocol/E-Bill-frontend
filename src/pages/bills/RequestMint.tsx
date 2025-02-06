@@ -11,7 +11,7 @@ import Preview from "./components/Preview";
 import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { getBillDetails, requestToMint } from "@/services/bills";
+import { acceptMint, getBillDetails, requestToMint } from "@/services/bills";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
@@ -62,12 +62,16 @@ export default function RequestMint() {
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: () => {
-      return requestToMint({
+    mutationFn: async () => {
+      await requestToMint({
         bill_id: id as string,
         mint_node: "039180c169e5f6d7c579cf1cefa37bffd47a2b389c8125601f4068c87bea795943",
         sum: "1000",
         currency: "BTC",
+      });
+      await acceptMint({
+        bill_id: id as string,
+        sum: "1000",
       });
     },
     onSuccess: async () => {
