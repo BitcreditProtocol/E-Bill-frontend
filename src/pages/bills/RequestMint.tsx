@@ -42,16 +42,16 @@ function Loader() {
 }
 
 function Information({ id }: { id: string }) {
-  const { data } = useSuspenseQuery({
+  const { data: bill } = useSuspenseQuery({
     queryKey: ["bills", id],
     queryFn: () => getBillDetails(id),
   });
 
   return (
     <Preview
-      name={data.drawee.name}
-      date={data.issue_date}
-      amount={Number(data.sum)}
+      name={bill.drawee.name}
+      date={bill.issue_date}
+      amount={Number(bill.sum) / 100_000_000}
       currency="BTC"
     />
   );
@@ -63,7 +63,12 @@ export default function RequestMint() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data, isSuccess } = useSuspenseQuery({
+  const { data: bill } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id as string),
+  });
+
+  const { data: quote, isSuccess } = useSuspenseQuery({
     queryKey: ["quotes", id as string],
     queryFn: () => getQuote(id as string).catch(() => { return null }),
   });
@@ -71,9 +76,9 @@ export default function RequestMint() {
   const { mutate: doRequestToMint, isPending } = useMutation({
     mutationFn: async () => {
       await requestToMint({
-        bill_id: id as string,
+        bill_id: bill.id,
         mint_node: "039180c169e5f6d7c579cf1cefa37bffd47a2b389c8125601f4068c87bea795943",
-        sum: "1000",
+        sum: bill.sum,
         currency: "BTC",
       });
     },
@@ -140,8 +145,8 @@ export default function RequestMint() {
         </div>
 
         <Button className="mt-auto" disabled={isPending} onClick={() => {
-            if (data && isSuccess) {
-              if (data.token === '') {
+            if (quote && isSuccess) {
+              if (quote.token === '') {
                 navigate(routes.SELECT_QUOTE.replace(":id", id as string))
               } else {
                 navigate(routes.MINT_RECEIVED.replace(":id", id as string))

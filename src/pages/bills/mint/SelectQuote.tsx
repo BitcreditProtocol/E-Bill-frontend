@@ -24,16 +24,16 @@ function Loader() {
 }
 
 function Information({ id }: { id: string }) {
-  const { data } = useSuspenseQuery({
+  const { data: bill } = useSuspenseQuery({
     queryKey: ["bills", id],
     queryFn: () => getBillDetails(id),
   });
 
   return (
     <Preview
-      name={data.drawee.name}
-      date={data.issue_date}
-      amount={Number(data.sum)}
+      name={bill.drawee.name}
+      date={bill.issue_date}
+      amount={Number(bill.sum) / 100_000_000}
       currency="BTC"
     />
   );
@@ -43,7 +43,12 @@ export default function SelectQuote() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
 
-  const { data } = useSuspenseQuery({
+  const { data: bill } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id as string),
+  });
+
+  const { data: quote } = useSuspenseQuery({
     queryKey: ["quotes", id as string],
     queryFn: () => getQuote(id as string).catch(() => { return null }),
     refetchInterval: 5_000,
@@ -53,8 +58,8 @@ export default function SelectQuote() {
   const { mutate: __dev_doAcceptMint, isPending } = useMutation({
     mutationFn: async () => {
       await acceptMint({
-        bill_id: id as string,
-        sum: "1000",
+        bill_id: bill.id,
+        sum: String(Math.floor(Number(bill.sum) * (0.9 + Math.random() / 10))),
       });
     },
     onSuccess: async () => {
@@ -97,11 +102,11 @@ export default function SelectQuote() {
           </SectionTitle>
 
           <div className="flex flex-col gap-3">
-            {id && data ? (<>
+            {id && quote ? (<>
               <Link to={routes.PREVIEW_MINT.replace(":id", id)}>
                 <Quote mintName="Wildcat One" rate={0.0001} status="accepted" />
               </Link>
-            </>) : (<div onClick={() => { 
+            </>) : (<div onClick={() => {
                 if (!isPending) {
                   __dev_doAcceptMint()
                 }

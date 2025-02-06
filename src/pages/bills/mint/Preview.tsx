@@ -151,7 +151,7 @@ export default function Preview() {
           <BillPreview
             name={bill.drawee.name}
             date={bill.issue_date}
-            amount={Number(bill.sum)}
+            amount={Number(bill.sum) / 100_000_000}
             currency="BTC"
           />
         </Suspense>
