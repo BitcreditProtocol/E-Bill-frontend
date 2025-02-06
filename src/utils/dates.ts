@@ -15,6 +15,18 @@ export const formatDate = (date: Date, locale: string): string => {
   return `${day}-${month}-${year}`;
 };
 
+export const formatDateAndTime = (date: Date, locale: string): string => {
+  const datePlaceholder = new Intl.DateTimeFormat(locale, {
+    dateStyle: "full"
+  }).format(date);
+  const time = new Intl.DateTimeFormat(locale, {
+    dateStyle: "full",
+    timeStyle: "short",
+    hourCycle: "h24"
+  }).format(date);
+  return time.replace(datePlaceholder, formatDate(date, locale));
+};
+
 export const formatDateShort = (date: Date, locale: string) => {
   return new Intl.DateTimeFormat(locale, {
     month: "short",

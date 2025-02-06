@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import { PencilIcon, UserIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
@@ -10,6 +11,7 @@ import PageTitle from "@/components/typography/PageTitle";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import Summary from "@/components/Summary";
+import { useIdentity } from "@/context/identity/IdentityContext";
 import { getCompanyDetails } from "@/services/company";
 import routes from "@/constants/routes";
 import type { Company } from "@/types/company";
@@ -61,42 +63,58 @@ function Information({ companyId }: { companyId: string }) {
   const combinedAddress = `${data.address}, ${
     data.zip !== "" ? data.zip + ", " : ""
   }${data.city}, ${data.country}`;
+  const registrationDate =
+    data.registration_date !== ""
+      ? format(parseISO(data.registration_date), "dd-MMM-yyyy")
+      : "";
 
   return (
-    <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
-      <Property label={f(messages["company.name"])} value={data.name} />
-      <Separator className="bg-divider-75" />
+    <div className="flex flex-col gap-6">
+      <Summary identityType={1} name={data.name} nodeId={data.id} picture="" />
 
-      <Property label={f(messages["company.email"])} value={data.email} />
-      <Separator className="bg-divider-75" />
+      <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
+        <Property label={f(messages["company.name"])} value={data.name} />
+        <Separator className="bg-divider-75" />
 
-      <Property
-        label={f(messages["company.address"])}
-        value={combinedAddress}
-      />
-      <Separator className="bg-divider-75" />
+        <Property label={f(messages["company.email"])} value={data.email} />
+        <Separator className="bg-divider-75" />
 
-      <Property
-        label={f(messages["company.country_of_registration"])}
-        value={data.country_of_registration}
-      />
-      <Separator className="bg-divider-75" />
+        <Property
+          label={f(messages["company.address"])}
+          value={combinedAddress}
+        />
+        <Separator className="bg-divider-75" />
 
-      <Property
-        label={f(messages["company.city_of_registration"])}
-        value={data.city_of_registration}
-      />
-      <Separator className="bg-divider-75" />
+        <Property
+          label={f(messages["company.registration_date"])}
+          value={registrationDate}
+        />
+        <Separator className="bg-divider-75" />
 
-      <Property
-        label={f(messages["company.registration_number"])}
-        value={data.registration_number}
-      />
+        <Property
+          label={f(messages["company.country_of_registration"])}
+          value={data.country_of_registration}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["company.city_of_registration"])}
+          value={data.city_of_registration}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["company.registration_number"])}
+          value={data.registration_number}
+        />
+      </div>
     </div>
   );
 }
 
 export default function View() {
+  const { activeIdentity } = useIdentity();
+
   return (
     <Page className="gap-6">
       <Topbar
@@ -119,15 +137,8 @@ export default function View() {
         }
       />
 
-      <Summary
-        identityType={1}
-        name="Company Name"
-        nodeId="0x1234567890"
-        picture=""
-      />
-
       <Suspense fallback={<Loader />}>
-        <Information companyId="1" />
+        <Information companyId={activeIdentity.node_id} />
       </Suspense>
 
       <ViewAuthorizedSigners />

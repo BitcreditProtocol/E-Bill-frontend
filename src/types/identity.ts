@@ -12,6 +12,12 @@ export type Identity = {
   country_of_birth: string;
   city_of_birth: string;
   identification_number: string;
-  profile_picture_file: string;
-  identity_document_file: string;
+  profile_picture_file: {
+    name: string;
+    hash: string;
+  };
+  identity_document_file: {
+    name: string;
+    hash: string;
+  };
 };

@@ -63,7 +63,9 @@ const STEPS = {
 
 type ContactPickerProps = {
   children: React.ReactNode;
-  onSelect: (contact: Pick<Contact, "node_id" | "name" | "address">) => void;
+  onSelect: (
+    contact: Pick<Contact, "node_id" | "name" | "address" | "type">
+  ) => void;
 };
 
 export default function ContactPicker({

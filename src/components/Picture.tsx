@@ -4,7 +4,7 @@ import { truncateAvatarName } from "@/utils/strings";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const pictureVariants = cva(
-  "flex flex-col items-center justify-center bg-brand-50 text-brand-200",
+  "flex flex-col items-center justify-center bg-brand-100 text-brand-200",
   {
     variants: {
       size: {

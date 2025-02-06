@@ -21,7 +21,7 @@ export function Card({ name, date, amount, currency }: CardProps) {
 
       <div className="flex items-center gap-1 self-end">
         <FormattedCurrency className="text-sm" value={amount} type="credit" />
-        <span className="text-text-300 text-xs font-normal leading-normal uppercase">
+        <span className="text-text-200 text-[10px] font-normal leading-normal uppercase">
           {currency}
         </span>
       </div>

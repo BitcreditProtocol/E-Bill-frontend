@@ -5,7 +5,8 @@ import {
   getIdentityDetails,
   switchIdentity,
 } from "@/services/identity_v2";
-import { getCompanies } from "@/services/company";
+import { API_URL } from "@/constants/api";
+import { getCompanyDetails } from "@/services/company";
 
 export default function IdentityProvider({
   children,
@@ -24,10 +25,11 @@ export default function IdentityProvider({
 
   useEffect(() => {
     const initialize = async () => {
-      const { node_id } = await getActiveIdentity();
+      const { type, node_id } = await getActiveIdentity();
+      console.log("initialized", node_id);
 
+      setActiveIdentityType(type === 0 ? "personal" : "company");
       setActiveNodeId(node_id);
-      console.log(node_id);
     };
 
     void initialize();
@@ -35,46 +37,64 @@ export default function IdentityProvider({
 
   useEffect(() => {
     const fetchIdentityDetails = async () => {
-      if (!activeNodeId) return;
+      if (!activeNodeId || !activeIdentityType) return;
 
-      const companies = await getCompanies();
-
-      const isCompany = companies.companies.some(
-        (company) => company.id === activeNodeId
-      );
-      const company = companies.companies.find(
-        (company) => company.id === activeNodeId
-      );
+      const isCompany = activeIdentityType === "company";
 
       if (isCompany) {
-        setActiveIdentityType("company");
+        const company = await getCompanyDetails(activeNodeId);
+
+        const companyAvatar =
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          company.logo_file !== null
+            ? `${API_URL}/company/file/${company.id}/${company.logo_file.name}`
+            : "";
+
         setIdentityDetails({
-          name: company?.name ?? "",
-          address: company?.address ?? "",
-          // avatar: company?.logo_file.name ?? "",
-          avatar: "",
+          name: company.name,
+          address: company.address,
+          // todo: fix logo file returned from the API
+          // avatar: company.logo_file.name,
+          avatar: companyAvatar,
+        });
+
+        return;
+      } else {
+        const personalIdentity = await getIdentityDetails();
+
+        const personalAvatar =
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          personalIdentity.profile_picture_file !== null
+            ? `${API_URL}/identity/file/${personalIdentity.profile_picture_file.name}`
+            : "";
+
+        setIdentityDetails({
+          name: personalIdentity.name,
+          address: personalIdentity.address,
+          avatar: personalAvatar,
         });
 
         return;
       }
-
-      const personalIdentity = await getIdentityDetails();
-
-      setActiveIdentityType("personal");
-      setIdentityDetails({
-        name: personalIdentity.name,
-        address: personalIdentity.address,
-        avatar: "",
-      });
     };
 
     void fetchIdentityDetails();
-  }, [activeNodeId]);
+  }, [activeNodeId, activeIdentityType]);
 
-  const switchActiveIdentity = async (node_id: string) => {
+  const switchActiveIdentity = async ({
+    node_id,
+    type,
+  }: {
+    node_id: string;
+    type: "personal" | "company";
+  }) => {
     setActiveNodeId(null);
+
     await switchIdentity(node_id);
     setActiveNodeId(node_id);
+    setActiveIdentityType(type);
+
+    return;
   };
 
   return (
@@ -82,7 +102,7 @@ export default function IdentityProvider({
       value={{
         activeIdentity: {
           type: activeIdentityType,
-          node_id: activeNodeId,
+          node_id: activeNodeId ?? "",
           name: identityDetails?.name ?? "",
           avatar: identityDetails?.avatar ?? "",
           address: identityDetails?.address ?? "",

@@ -13,7 +13,7 @@ function UploadedFile({
   return (
     <div className="flex items-center justify-between p-4 bg-elevation-200 border border-divider-50 rounded-lg">
       <div className="flex gap-1 items-center">
-        <span className="text-text-300 text-sm font-medium leading-5">
+        <span className="max-w-32 text-text-300 text-sm font-medium leading-5 truncate">
           {name}
         </span>
         <span className="text-text-200 text-xs font-normal leading-[18px]">

@@ -101,7 +101,7 @@ export default function Contacts() {
   const { formatMessage: f } = useIntl();
 
   return (
-    <Page className="gap-6">
+    <Page className="gap-6" displayBottomNavigation>
       <Topbar
         lead={
           <PageTitle className="text-xl font-medium">
