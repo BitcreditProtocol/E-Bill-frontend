@@ -20,8 +20,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { accept, rejectToAccept } from "@/services/bills";
+import { accept, rejectToAccept, requestToAccept } from "@/services/bills";
 import type { BillFull } from "@/types/bill";
+import { useToast } from "@/hooks/use-toast";
 
 function SecondaryActions() {
   return (
@@ -97,21 +98,51 @@ type BillActionsProps = {
 };
 
 function Holder({
+  id,
   accepted,
   requested_to_accept,
   requested_to_pay,
   paid,
   endorsed,
 }: Omit<BillActionsProps, "role">) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => requestToAccept(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["bills", id],
+      });
+
+      toast({
+        description: (
+          <FormattedMessage
+            id="bill.actions.requestAcceptance.success"
+            defaultMessage="Request sent successfully"
+            description="Request acceptance success toast message"
+          />
+        ),
+        position: "bottom-center",
+      });
+    },
+  });
+
   if (endorsed) {
     return <></>;
   }
 
   return (
     <div className="flex flex-col gap-3">
-      {!accepted && !requested_to_accept && (
+      {!accepted && (
         <>
-          <Button size="sm">
+          <Button
+            size="sm"
+            onClick={() => {
+              mutate();
+            }}
+            disabled={isPending || requested_to_accept}
+          >
             <FormattedMessage
               id="bill.actions.requestAcceptance"
               defaultMessage="Request to accept"

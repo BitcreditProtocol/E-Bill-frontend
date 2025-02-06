@@ -1,3 +1,4 @@
+import { apiFetch } from "@/utils/api";
 import {
   ADD_COMPANY_SIGNER,
   CREATE_COMPANY,
@@ -72,17 +73,10 @@ export type EditCompanyPayload = Partial<CreateCompanyPayload> & {
 };
 
 export async function editCompany(data: EditCompanyPayload): Promise<void> {
-  const response = await fetch(EDIT_COMPANY, {
+  return apiFetch(EDIT_COMPANY, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
 }
 
 type GetCompaniesResponse = {
@@ -90,13 +84,7 @@ type GetCompaniesResponse = {
 };
 
 export async function getCompanies(): Promise<GetCompaniesResponse> {
-  const response = await fetch(GET_COMPANIES);
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<GetCompaniesResponse>;
+  return apiFetch<GetCompaniesResponse>(GET_COMPANIES);
 }
 
 type GetCompanyDetailsResponse = Company;
@@ -104,13 +92,7 @@ type GetCompanyDetailsResponse = Company;
 export async function getCompanyDetails(
   id: string
 ): Promise<GetCompanyDetailsResponse> {
-  const response = await fetch(`${GET_COMPANY_DETAILS}/${id}`);
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<GetCompanyDetailsResponse>;
+  return apiFetch<GetCompanyDetailsResponse>(`${GET_COMPANY_DETAILS}/${id}`);
 }
 
 type GetCompanySignersResponse = {
@@ -120,13 +102,7 @@ type GetCompanySignersResponse = {
 export async function getCompanySigners(
   id: string
 ): Promise<GetCompanySignersResponse> {
-  const response = await fetch(`${GET_COMPANY_SIGNERS}/${id}`);
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<GetCompanySignersResponse>;
+  return apiFetch<GetCompanySignersResponse>(`${GET_COMPANY_SIGNERS}/${id}`);
 }
 
 type AddSignatoryPayload = {
@@ -135,17 +111,10 @@ type AddSignatoryPayload = {
 };
 
 export async function addSignatory(data: AddSignatoryPayload): Promise<void> {
-  const response = await fetch(ADD_COMPANY_SIGNER, {
+  return apiFetch(ADD_COMPANY_SIGNER, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
 }
 
 export type RemoveSignatoryPayload = {
@@ -156,17 +125,8 @@ export type RemoveSignatoryPayload = {
 export async function removeSignatory(
   data: RemoveSignatoryPayload
 ): Promise<void> {
-  console.log(data);
-
-  const response = await fetch(REMOVE_COMPANY_SIGNER, {
+  return apiFetch(REMOVE_COMPANY_SIGNER, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
 }

@@ -8,7 +8,13 @@ type IdentityContextType = {
     avatar: string;
     address: string;
   };
-  switchActiveIdentity: (node_id: string) => Promise<void>;
+  switchActiveIdentity: ({
+    node_id,
+    type,
+  }: {
+    node_id: string;
+    type: "personal" | "company";
+  }) => Promise<void>;
 };
 
 export const IdentityContext = createContext<IdentityContextType>(

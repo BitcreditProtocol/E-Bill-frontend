@@ -5,7 +5,7 @@ import {
   getIdentityDetails,
   switchIdentity,
 } from "@/services/identity_v2";
-import { getCompanies } from "@/services/company";
+import { getCompanyDetails } from "@/services/company";
 
 export default function IdentityProvider({
   children,
@@ -24,10 +24,10 @@ export default function IdentityProvider({
 
   useEffect(() => {
     const initialize = async () => {
-      const { node_id } = await getActiveIdentity();
+      const { type, node_id } = await getActiveIdentity();
 
+      setActiveIdentityType(type === 0 ? "personal" : "company");
       setActiveNodeId(node_id);
-      console.log(node_id);
     };
 
     void initialize();
@@ -35,46 +35,52 @@ export default function IdentityProvider({
 
   useEffect(() => {
     const fetchIdentityDetails = async () => {
-      if (!activeNodeId) return;
+      if (!activeNodeId || !activeIdentityType) return;
 
-      const companies = await getCompanies();
-
-      const isCompany = companies.companies.some(
-        (company) => company.id === activeNodeId
-      );
-      const company = companies.companies.find(
-        (company) => company.id === activeNodeId
-      );
+      const isCompany = activeIdentityType === "company";
 
       if (isCompany) {
-        setActiveIdentityType("company");
+        const company = await getCompanyDetails(activeNodeId);
+
         setIdentityDetails({
-          name: company?.name ?? "",
-          address: company?.address ?? "",
-          // avatar: company?.logo_file.name ?? "",
+          name: company.name,
+          address: company.address,
+          // todo: fix logo file returned from the API
+          // avatar: company.logo_file.name,
+          avatar: "",
+        });
+
+        return;
+      } else {
+        const personalIdentity = await getIdentityDetails();
+
+        setIdentityDetails({
+          name: personalIdentity.name,
+          address: personalIdentity.address,
           avatar: "",
         });
 
         return;
       }
-
-      const personalIdentity = await getIdentityDetails();
-
-      setActiveIdentityType("personal");
-      setIdentityDetails({
-        name: personalIdentity.name,
-        address: personalIdentity.address,
-        avatar: "",
-      });
     };
 
     void fetchIdentityDetails();
-  }, [activeNodeId]);
+  }, [activeNodeId, activeIdentityType]);
 
-  const switchActiveIdentity = async (node_id: string) => {
+  const switchActiveIdentity = async ({
+    node_id,
+    type,
+  }: {
+    node_id: string;
+    type: "personal" | "company";
+  }) => {
     setActiveNodeId(null);
+
     await switchIdentity(node_id);
     setActiveNodeId(node_id);
+    setActiveIdentityType(type);
+
+    return;
   };
 
   return (

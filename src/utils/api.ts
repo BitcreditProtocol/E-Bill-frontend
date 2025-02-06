@@ -18,5 +18,14 @@ export const apiFetch = async <T = unknown>(
     throw new Error(`HTTP error! status: ${response.statusText}`);
   }
 
+  const contentLength = response.headers.get("Content-Length");
+
+  if (
+    contentLength === "0" ||
+    response.headers.get("Content-Type")?.includes("application/json") === false
+  ) {
+    return undefined as T;
+  }
+
   return response.json() as Promise<T>;
 };

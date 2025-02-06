@@ -88,7 +88,7 @@ function Identity({ node_id, type, name, address, avatar }: IdentityProps) {
   return (
     <div
       className="flex items-center gap-3 py-4 px-3 border border-divider-75 rounded-lg cursor-pointer"
-      onClick={() => void switchActiveIdentity(node_id)}
+      onClick={() => void switchActiveIdentity({ node_id, type })}
     >
       <Picture
         type={type === "company" ? 1 : 0}

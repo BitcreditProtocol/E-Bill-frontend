@@ -2,12 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
-import { CheckIcon, ChevronRightIcon, PaperclipIcon } from "lucide-react";
+import {
+  CheckIcon,
+  ChevronRightIcon,
+  LoaderIcon,
+  PaperclipIcon,
+  XIcon,
+} from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { getEndorsements } from "@/services/bills";
 import type { BillFull, Peer } from "@/types/bill";
+import { cn } from "@/lib/utils";
+import { messages } from "./messages";
 
 function Separators() {
   return (
@@ -87,6 +95,89 @@ function Property({
   );
 }
 
+type StatusProps = {
+  accepted: BillFull["accepted"];
+  requested_to_accept: BillFull["requested_to_accept"];
+  paid: BillFull["paid"];
+  requested_to_pay: BillFull["requested_to_pay"];
+  waiting_for_payment: BillFull["waiting_for_payment"];
+};
+
+function Status({
+  accepted,
+  requested_to_accept,
+  paid,
+  requested_to_pay,
+  waiting_for_payment,
+}: StatusProps) {
+  const { formatMessage: f } = useIntl();
+
+  // requested_to_accept = true: acceptance pending
+  // requested_to_accept = false: unaccepted
+  // accepted = true: accepted
+  // accepted = false: rejected
+  // requested_to_pay = true: payment pending
+  // requested_to_pay = false: unpaid
+  // paid = true: paid
+  // paid = false: unpaid
+  // waiting_for_payment = true: payment pending
+  // waiting_for_payment = false: unpaid
+
+  const status = {
+    acceptance: accepted
+      ? "accepted"
+      : requested_to_accept
+      ? "pending_acceptance"
+      : "unaccepted",
+    payment: paid
+      ? "paid"
+      : requested_to_pay
+      ? "pending_payment"
+      : waiting_for_payment
+      ? "pending_payment"
+      : "unpaid",
+  };
+
+  const message = {
+    accepted: f(messages["bill.status.accepted"]),
+    pending_acceptance: f(messages["bill.status.pending_acceptance"]),
+    unaccepted: f(messages["bill.status.rejected"]),
+    paid: f(messages["bill.status.paid"]),
+    pending_payment: f(messages["bill.status.pending_payment"]),
+    unpaid: f(messages["bill.status.unpaid"]),
+  }[status.acceptance || status.payment];
+
+  const icon = {
+    accepted: <CheckIcon className="h-4 w-5 stroke-1" />,
+    pending_acceptance: <LoaderIcon className="h-4 w-5 stroke-1" />,
+    unaccepted: <XIcon className="h-4 w-5 stroke-1" />,
+    paid: <CheckIcon className="w-5 h-5" />,
+    pending_payment: <LoaderIcon className="h-4 w-5 stroke-1" />,
+    unpaid: <XIcon className="h-4 w-5 stroke-1" />,
+  }[status.acceptance || status.payment];
+
+  return (
+    <div className="flex items-center gap-1">
+      {icon}
+
+      <span
+        className={cn("text-xs font-normal leading-normal", {
+          "text-signal-success":
+            status.acceptance === "accepted" || status.payment === "paid",
+          "text-text-300":
+            status.acceptance === "pending_acceptance" ||
+            status.payment === "pending_payment",
+          "text-signal-error":
+            status.acceptance === "unaccepted" ||
+            (status.acceptance === "accepted" && status.payment === "unpaid"),
+        })}
+      >
+        {message}
+      </span>
+    </div>
+  );
+}
+
 type CardProps = {
   id: BillFull["id"];
   sum: BillFull["sum"];
@@ -95,11 +186,16 @@ type CardProps = {
   issue_date: BillFull["issue_date"];
   maturity_date: BillFull["maturity_date"];
   payee: Pick<Peer, "name" | "address">;
-  drawee: Pick<Peer, "name" | "address">;
+  payer: Pick<Peer, "name" | "address">;
   drawer: Pick<Peer, "name" | "address">;
   city_of_payment: BillFull["city_of_payment"];
   country_of_payment: BillFull["country_of_payment"];
   endorsed: BillFull["endorsed"];
+  accepted: BillFull["accepted"];
+  requested_to_accept: BillFull["requested_to_accept"];
+  paid: BillFull["paid"];
+  requested_to_pay: BillFull["requested_to_pay"];
+  waiting_for_payment: BillFull["waiting_for_payment"];
 };
 
 export default function BillCard({
@@ -110,11 +206,16 @@ export default function BillCard({
   issue_date,
   maturity_date,
   payee,
-  drawee,
+  payer,
   drawer,
   city_of_payment,
   country_of_payment,
   endorsed,
+  accepted,
+  requested_to_accept,
+  paid,
+  requested_to_pay,
+  waiting_for_payment,
 }: CardProps) {
   const intl = useIntl();
   const formattedIssueDate = format(parseISO(issue_date), "dd-MMM-yyyy");
@@ -210,10 +311,10 @@ export default function BillCard({
               value={
                 <div className="flex flex-col items-end gap-1">
                   <span className="text-text-300 text-sm font-medium leading-5">
-                    {drawee.name}
+                    {payer.name}
                   </span>
                   <span className="text-text-200 text-xs font-normal leading-normal">
-                    {drawee.address}
+                    {payer.address}
                   </span>
                 </div>
               }
@@ -264,8 +365,8 @@ export default function BillCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-3 py-4 px-5">
-        <div className="flex gap-1">
+      <div className="flex items-start justify-between gap-3 py-4 px-5">
+        <div className="flex flex-col items-start gap-1">
           <span className="text-text-200 text-xs font-normal">
             <FormattedMessage
               id="bill.view.details.status"
@@ -274,17 +375,13 @@ export default function BillCard({
             />
           </span>
 
-          <div className="flex items-center gap-1">
-            <CheckIcon className="text-text-300 w-3 h-3 stroke-3" />
-
-            <span className="text-text-300 text-xs font-normal">
-              <FormattedMessage
-                id="bill.view.details.accepted"
-                defaultMessage="Accepted"
-                description="Accepted status for bill card"
-              />
-            </span>
-          </div>
+          <Status
+            accepted={accepted}
+            requested_to_accept={requested_to_accept}
+            paid={paid}
+            requested_to_pay={requested_to_pay}
+            waiting_for_payment={waiting_for_payment}
+          />
         </div>
 
         <Link to={endorsed ? "endorsements" : "#"}>

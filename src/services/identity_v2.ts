@@ -17,16 +17,10 @@ export async function uploadFile(file: File): Promise<UploadFileResponse> {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch(UPLOAD_IDENTITY_FILE, {
+  return apiFetch<UploadFileResponse>(UPLOAD_IDENTITY_FILE, {
     method: "POST",
     body: formData,
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<UploadFileResponse>;
 }
 
 type CreateIdentityPayload = Pick<
@@ -51,24 +45,17 @@ type CreateIdentityResponse = Identity;
 export async function createIdentity(
   data: CreateIdentityPayload
 ): Promise<CreateIdentityResponse> {
-  const response = await fetch(CREATE_IDENTITY, {
+  return apiFetch<CreateIdentityResponse>(CREATE_IDENTITY, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<CreateIdentityResponse>;
 }
 
 export type EditIdentityPayload = Partial<CreateIdentityPayload>;
 
-export async function editIdentity(data: EditIdentityPayload): Promise<Identity> {
+export async function editIdentity(
+  data: EditIdentityPayload
+): Promise<Identity> {
   return apiFetch<CreateIdentityResponse>(EDIT_IDENTITY, {
     method: "PUT",
     body: JSON.stringify(data),
@@ -76,22 +63,23 @@ export async function editIdentity(data: EditIdentityPayload): Promise<Identity>
 }
 
 type GetActiveIdentityResponse = {
+  type: number;
   node_id: string;
 };
 
 export async function getActiveIdentity(): Promise<GetActiveIdentityResponse> {
-  return await apiFetch<GetActiveIdentityResponse>(GET_ACTIVE_IDENTITY);
+  return apiFetch<GetActiveIdentityResponse>(GET_ACTIVE_IDENTITY);
 }
 
 type GetIdentityDetailsResponse = Identity;
 
 export async function getIdentityDetails(): Promise<GetIdentityDetailsResponse> {
-  return await apiFetch<GetIdentityDetailsResponse>(GET_IDENTITY_DETAILS);
+  return apiFetch<GetIdentityDetailsResponse>(GET_IDENTITY_DETAILS);
 }
 
-export async function switchIdentity(node_id: string): Promise<void> {
-  await apiFetch(SWITCH_IDENTITY, {
+export async function switchIdentity(node_id: string) {
+  return apiFetch(SWITCH_IDENTITY, {
     method: "PUT",
-    body: JSON.stringify({ node_id }),
+    body: JSON.stringify({ node_id, type: 0 }),
   });
 }
