@@ -7,14 +7,16 @@ import { CalendarDaysIcon, ChevronsUpDownIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import PageTitle from "@/components/typography/PageTitle";
-import { Card } from "./components/Card";
 import { DatePicker } from "@/components/DatePicker/datePicker";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getBillsLight } from "@/services/bills";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import Search from "@/components/ui/search";
+import { Button } from "@/components/ui/button";
+import { getBillsLight } from "@/services/bills";
+import { cn } from "@/lib/utils";
 import routes from "@/constants/routes";
+import { Card } from "./components/Card";
+import Empty from "./components/Empty";
 
 function DateRangeFilter({ onChange }: { onChange: (e: unknown) => void }) {
   return (
@@ -160,6 +162,7 @@ function List() {
     queryFn: () => getBillsLight(),
   });
 
+  // todo: fix bills being identified as earlier if date is not strictly today
   const todayBills = data.bills.filter((bill) =>
     isToday(parseISO(bill.issue_date))
   );
@@ -168,77 +171,86 @@ function List() {
   );
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-text-300 text-base font-medium leading-normal">
-            <FormattedMessage
-              id="bills.list.today"
-              defaultMessage="Today"
-              description="Today bills section title"
-            />
-          </span>
+    // todo: fix scroll area viewports
+    <ScrollArea>
+      <div className="flex-1 flex flex-col gap-6 mb-24">
+        {data.bills.length === 0 ? (
+          <Empty />
+        ) : (
+          <>
+            <div className="flex flex-col gap-1.5">
+              {todayBills.length > 0 && (
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-text-300 text-base font-medium leading-normal">
+                    <FormattedMessage
+                      id="bills.list.today"
+                      defaultMessage="Today"
+                      description="Today bills section title"
+                    />
+                  </span>
 
-          {todayBills.length > 0 && (
-            <MaturityFilter
-              onClick={() => {
-                console.log("clicked");
-              }}
-            />
-          )}
-        </div>
+                  <MaturityFilter
+                    onClick={() => {
+                      console.log("clicked");
+                    }}
+                  />
+                </div>
+              )}
 
-        {todayBills.map((bill) => (
-          <Link
-            to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
-            key={bill.id}
-          >
-            <Card
-              key={bill.id}
-              name={bill.drawee.name}
-              date={bill.issue_date}
-              amount={Number(bill.sum)}
-              currency={bill.currency}
-            />
-          </Link>
-        ))}
+              {todayBills.map((bill) => (
+                <Link
+                  to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
+                  key={bill.id}
+                >
+                  <Card
+                    key={bill.id}
+                    name={bill.drawee.name}
+                    date={bill.issue_date}
+                    amount={Number(bill.sum)}
+                    currency={bill.currency}
+                  />
+                </Link>
+              ))}
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-text-300 text-base font-medium leading-normal">
+                  <FormattedMessage
+                    id="bills.list.earlier"
+                    defaultMessage="Earlier"
+                    description="Earlier bills section title"
+                  />
+                </span>
+
+                {earlierBills.length > 0 && todayBills.length === 0 && (
+                  <MaturityFilter
+                    onClick={() => {
+                      console.log("clicked");
+                    }}
+                  />
+                )}
+              </div>
+
+              {earlierBills.map((bill) => (
+                <Link
+                  to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
+                  key={bill.id}
+                >
+                  <Card
+                    key={bill.id}
+                    name={bill.drawee.name}
+                    date={bill.issue_date}
+                    amount={Number(bill.sum)}
+                    currency={bill.currency}
+                  />
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
       </div>
-
-      <div className="flex flex-col gap-1.5">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-text-300 text-base font-medium leading-normal">
-            <FormattedMessage
-              id="bills.list.earlier"
-              defaultMessage="Earlier"
-              description="Earlier bills section title"
-            />
-          </span>
-
-          {earlierBills.length > 0 && todayBills.length === 0 && (
-            <MaturityFilter
-              onClick={() => {
-                console.log("clicked");
-              }}
-            />
-          )}
-        </div>
-
-        {earlierBills.map((bill) => (
-          <Link
-            to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
-            key={bill.id}
-          >
-            <Card
-              key={bill.id}
-              name={bill.drawee.name}
-              date={bill.issue_date}
-              amount={Number(bill.sum)}
-              currency={bill.currency}
-            />
-          </Link>
-        ))}
-      </div>
-    </div>
+    </ScrollArea>
   );
 }
 

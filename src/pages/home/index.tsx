@@ -15,6 +15,7 @@ import { getBalances } from "@/services/balances";
 import { getBillsLight } from "@/services/bills";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import routes from "@/constants/routes";
+import Empty from "../bills/components/Empty";
 
 function Balances() {
   const { isPending, data } = useQuery({
@@ -128,7 +129,9 @@ function RecentBills() {
     queryFn: getBillsLight,
   });
 
-  return (
+  return data.bills.length === 0 ? (
+    <Empty />
+  ) : (
     <div className="flex flex-col gap-1.5">
       {data.bills.slice(0, 3).map((bill) => (
         <Link to={`/${routes.VIEW_BILL.replace(":id", bill.id)}`} key={bill.id}>
