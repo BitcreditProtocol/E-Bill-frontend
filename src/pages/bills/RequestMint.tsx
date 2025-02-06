@@ -16,6 +16,7 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
+import { getQuote } from "@/services/quotes";
 
 function Mint({ name }: { name: string }) {
   return (
@@ -61,6 +62,11 @@ export default function RequestMint() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  const { data, isSuccess } = useSuspenseQuery({
+    queryKey: ["quotes", id as string],
+    queryFn: () => getQuote(id as string).catch(() => { return null }),
+  });
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -133,7 +139,12 @@ export default function RequestMint() {
           </div>
         </div>
 
-        <Button className="mt-auto" disabled={isPending} onClick={() => { mutate(); }}>
+        <Button className="mt-auto" disabled={isPending} onClick={() => {
+          if (data && isSuccess) {
+            navigate(routes.SELECT_QUOTE.replace(":id", id as string))
+          } else {
+            mutate();
+          } }}>
           <FormattedMessage
             id="bill.mint.request.action"
             defaultMessage="Request mint quote"
