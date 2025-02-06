@@ -44,8 +44,8 @@ type CreateCompanyPayload = Pick<
   | "city_of_registration"
   | "registration_number"
 > & {
-  proof_of_registration_file_upload_id: string;
-  logo_file_upload_id: string;
+  proof_of_registration_file_upload_id?: string;
+  logo_file_upload_id?: string;
 };
 
 type CreateCompanyResponse = Company;
@@ -53,19 +53,10 @@ type CreateCompanyResponse = Company;
 export async function createCompany(
   data: CreateCompanyPayload
 ): Promise<CreateCompanyResponse> {
-  const response = await fetch(CREATE_COMPANY, {
+  return apiFetch<CreateCompanyResponse>(CREATE_COMPANY, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<CreateCompanyResponse>;
 }
 
 export type EditCompanyPayload = Partial<CreateCompanyPayload> & {

@@ -259,6 +259,7 @@
   "company.create.postalAddress.title": "Company postal address",
   "company.create.requiredInformation.description": "Please enter the required data to create a new company identity",
   "company.create.requiredInformation.title": "Company identity",
+  "company.create.sign": "Sign",
   "company.edit.cancel": "Cancel",
   "company.edit.save": "Save",
   "company.edit.title": "Edit company identity",

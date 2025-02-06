@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormattedMessage, useIntl } from "react-intl";
+import { format, parseISO } from "date-fns";
 import {
+  CalendarIcon,
   MailIcon,
   MapIcon,
   MapPinIcon,
@@ -20,6 +23,8 @@ import CountrySelector from "@/components/CountrySelector";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Property from "./components/Property";
+import { DatePicker } from "@/components/DatePicker/datePicker";
+import { createCompany } from "@/services/company";
 import { messages } from "./components/messages";
 
 function RequiredInformation({
@@ -221,6 +226,27 @@ function OptionalInformation({
       </div>
 
       <div className="flex flex-col gap-3">
+        <DatePicker
+          mode="single"
+          customComponent={
+            <button className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg">
+              <CalendarIcon className="text-text-300 h-5 w-5 stroke-1" />
+              {(watch("registration_date") &&
+                format(
+                  parseISO(watch("registration_date") as string),
+                  "dd-MMM-yyyy"
+                )) ||
+                f(messages["company.registration_date"])}
+            </button>
+          }
+          onChange={(date) => {
+            setValue(
+              "registration_date",
+              format(date.from as unknown as string, "yyyy-MM-dd")
+            );
+          }}
+        />
+
         <CountrySelector
           label={f(messages["company.country_of_registration"])}
           callback={(country) => {
@@ -269,6 +295,24 @@ function Preview() {
   const { getValues } = useFormContext();
 
   const values = getValues();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      return createCompany({
+        name: values.name as string,
+        email: values.email as string,
+        country: values.country as string,
+        city: values.city as string,
+        zip: values.zip as string,
+        address: values.address as string,
+        registration_date: "",
+        country_of_registration: values.country_of_registration as string,
+        city_of_registration: values.city_of_registration as string,
+        registration_number: values.registration_number as string,
+      });
+    },
+  });
+
   const address = `${values.address as string}${
     (values.zip as string) && ","
   } ${values.zip as string}, ${values.city as string}, ${
@@ -306,7 +350,7 @@ function Preview() {
 
         <Property
           label={f(messages["company.registration_date"])}
-          value="12-Nov-1980"
+          value={values.registration_date as string}
         />
         <Separator className="bg-divider-75" />
 
@@ -328,6 +372,20 @@ function Preview() {
         />
         <Separator className="bg-divider-75" />
       </div>
+
+      <Button
+        size="md"
+        onClick={() => {
+          mutate();
+        }}
+        disabled={isPending}
+      >
+        <FormattedMessage
+          id="company.create.sign"
+          defaultMessage="Sign"
+          description="Label for the sign button"
+        />
+      </Button>
     </div>
   );
 }
