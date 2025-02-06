@@ -60,7 +60,7 @@ export default function Quote({ mintName, rate, status }: QuoteProps) {
     accepted: (
       <ChevronRightIcon className="text-signal-success h-6 w-6 stroke-1" />
     ),
-    pending: <LoaderIcon className="text-text-300 h-6 w-6 stroke-1" />,
+    pending: <LoaderIcon className="text-text-300 h-6 w-6 stroke-1 animate-spin" />,
     declined: <XIcon className="text-signal-error h-6 w-6 stroke-1" />,
   };
 

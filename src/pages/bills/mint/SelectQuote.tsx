@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getBillDetails } from "@/services/bills";
 import { Suspense } from "react";
+import { getQuote } from "@/services/quotes";
 
 
 function Loader() {
@@ -40,6 +41,13 @@ function Information({ id }: { id: string }) {
 
 export default function SelectQuote() {
   const { id } = useParams<{ id: string }>();
+
+  const { data, isSuccess } = useSuspenseQuery({
+    queryKey: ["quotes", id as string ],
+    queryFn: () => getQuote(id as string),
+  });
+
+  console.log(data);
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -75,7 +83,9 @@ export default function SelectQuote() {
 
           <div className="flex flex-col gap-3">
             <Quote mintName="Wildcat One" rate={0.0001} status="pending" />
-            <Quote mintName="Whalers Mint" rate={0.0001} status="accepted" />
+            {isSuccess && <>
+              <Quote mintName="Whalers Mint" rate={0.0001} status="accepted" />
+            </>}
             <Quote mintName="Fishermans Mint" rate={0.0001} status="declined" />
           </div>
         </div>
