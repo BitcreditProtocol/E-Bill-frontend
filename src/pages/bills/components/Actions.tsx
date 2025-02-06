@@ -272,6 +272,7 @@ function Acceptance({ id }: { id: string }) {
 }
 
 function Payer({
+  id,
   accepted,
   requested_to_accept,
   paid,
@@ -279,7 +280,7 @@ function Payer({
 }: Omit<BillActionsProps, "role">) {
   return (
     <div className="flex flex-col gap-3">
-      {(!accepted || requested_to_accept) && <Acceptance id="1" />}
+      {(!accepted || requested_to_accept) && <Acceptance id={id} />}
 
       {!paid && requested_to_pay && (
         <Button size="sm">
