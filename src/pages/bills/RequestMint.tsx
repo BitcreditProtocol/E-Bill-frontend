@@ -36,7 +36,6 @@ function Loader() {
   return (
     <div className="flex flex-col gap-6">
       <Skeleton className="h-20 w-full bg-elevation-200" />
-      <Skeleton className="h-16 w-full bg-elevation-200" />
     </div>
   );
 }

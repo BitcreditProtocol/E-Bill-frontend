@@ -7,8 +7,40 @@ import SectionTitle from "@/components/typography/SectionTitle";
 import Preview from "../components/Preview";
 import Quote from "./components/Quote";
 import { Button } from "@/components/ui/button";
+import { useParams } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { getBillDetails } from "@/services/bills";
+import { Suspense } from "react";
+
+
+function Loader() {
+  return (
+    <div className="flex flex-col gap-6">
+      <Skeleton className="h-20 w-full bg-elevation-200" />
+    </div>
+  );
+}
+
+function Information({ id }: { id: string }) {
+  const { data } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id),
+  });
+
+  return (
+    <Preview
+      name={data.drawee.name}
+      date={data.issue_date}
+      amount={Number(data.sum)}
+      currency="BTC"
+    />
+  );
+}
 
 export default function SelectQuote() {
+  const { id } = useParams<{ id: string }>();
+
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
       <Topbar
@@ -25,14 +57,13 @@ export default function SelectQuote() {
         trail={<></>}
       />
 
-      <div className="flex-1 flex flex-col gap-6">
-        <Preview
-          name="Pear, Inc"
-          date="31-Jan-2025"
-          amount={1.2311}
-          currency="BTC"
-        />
+      <div className="flex flex-col gap-6">
+        <Suspense fallback={<Loader />}>
+          <Information id={id as string} />
+        </Suspense>
+      </div>
 
+      <div className="flex-1 flex flex-col gap-6">
         <div className="flex flex-col gap-4">
           <SectionTitle>
             <FormattedMessage
