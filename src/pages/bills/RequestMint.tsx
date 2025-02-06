@@ -140,11 +140,16 @@ export default function RequestMint() {
         </div>
 
         <Button className="mt-auto" disabled={isPending} onClick={() => {
-          if (data && isSuccess) {
-            navigate(routes.SELECT_QUOTE.replace(":id", id as string))
-          } else {
-            doRequestToMint();
-          } }}>
+            if (data && isSuccess) {
+              if (data.token === '') {
+                navigate(routes.SELECT_QUOTE.replace(":id", id as string))
+              } else {
+                navigate(routes.MINT_RECEIVED.replace(":id", id as string))
+              }
+            } else {
+              doRequestToMint();
+            } 
+          }}>
           <FormattedMessage
             id="bill.mint.request.action"
             defaultMessage="Request mint quote"

@@ -1,7 +1,8 @@
 import { FormattedMessage } from "react-intl";
 import { CopyIcon } from "lucide-react";
+import { truncateString } from "@/utils/strings";
 
-export default function EcashAddress({ address }: { address: string }) {
+export default function EcashToken({ token }: { token: string }) {
   return (
     <div className="flex items-center gap-2.5 py-4 px-3 bg-elevation-50 border border-divider-75 rounded-lg">
       <CopyIcon className="text-text-200 h-6 w-6 stroke-1" />
@@ -16,7 +17,7 @@ export default function EcashAddress({ address }: { address: string }) {
         </span>
 
         <span className="text-text-200 text-base font-normal leading-6">
-          {address}
+          {truncateString(token, 24)}
         </span>
       </div>
     </div>
