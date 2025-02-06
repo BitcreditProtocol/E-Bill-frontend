@@ -8,7 +8,6 @@ import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import PageTitle from "@/components/typography/PageTitle";
 import { DatePicker } from "@/components/DatePicker/datePicker";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import Search from "@/components/ui/search";
 import { Button } from "@/components/ui/button";
@@ -172,85 +171,85 @@ function List() {
 
   return (
     // todo: fix scroll area viewports
-    <ScrollArea>
-      <div className="flex-1 flex flex-col gap-6 mb-24">
-        {data.bills.length === 0 ? (
+    <div className="flex-1 flex flex-col gap-6 mb-24">
+      {data.bills.length === 0 ? (
+        <div className="flex-1 flex flex-col items-center">
           <Empty />
-        ) : (
-          <>
-            <div className="flex flex-col gap-1.5">
-              {todayBills.length > 0 && (
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-text-300 text-base font-medium leading-normal">
-                    <FormattedMessage
-                      id="bills.list.today"
-                      defaultMessage="Today"
-                      description="Today bills section title"
-                    />
-                  </span>
-
-                  <MaturityFilter
-                    onClick={() => {
-                      console.log("clicked");
-                    }}
-                  />
-                </div>
-              )}
-
-              {todayBills.map((bill) => (
-                <Link
-                  to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
-                  key={bill.id}
-                >
-                  <Card
-                    key={bill.id}
-                    name={bill.drawee.name}
-                    date={bill.issue_date}
-                    amount={Number(bill.sum)}
-                    currency={bill.currency}
-                  />
-                </Link>
-              ))}
-            </div>
-
-            <div className="flex flex-col gap-1.5">
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-col gap-1.5">
+            {todayBills.length > 0 && (
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-text-300 text-base font-medium leading-normal">
                   <FormattedMessage
-                    id="bills.list.earlier"
-                    defaultMessage="Earlier"
-                    description="Earlier bills section title"
+                    id="bills.list.today"
+                    defaultMessage="Today"
+                    description="Today bills section title"
                   />
                 </span>
 
-                {earlierBills.length > 0 && todayBills.length === 0 && (
-                  <MaturityFilter
-                    onClick={() => {
-                      console.log("clicked");
-                    }}
-                  />
-                )}
+                <MaturityFilter
+                  onClick={() => {
+                    console.log("clicked");
+                  }}
+                />
               </div>
+            )}
 
-              {earlierBills.map((bill) => (
-                <Link
-                  to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
+            {todayBills.map((bill) => (
+              <Link
+                to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
+                key={bill.id}
+              >
+                <Card
                   key={bill.id}
-                >
-                  <Card
-                    key={bill.id}
-                    name={bill.drawee.name}
-                    date={bill.issue_date}
-                    amount={Number(bill.sum)}
-                    currency={bill.currency}
-                  />
-                </Link>
-              ))}
+                  name={bill.drawee.name}
+                  date={bill.issue_date}
+                  amount={Number(bill.sum)}
+                  currency={bill.currency}
+                />
+              </Link>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-text-300 text-base font-medium leading-normal">
+                <FormattedMessage
+                  id="bills.list.earlier"
+                  defaultMessage="Earlier"
+                  description="Earlier bills section title"
+                />
+              </span>
+
+              {earlierBills.length > 0 && todayBills.length === 0 && (
+                <MaturityFilter
+                  onClick={() => {
+                    console.log("clicked");
+                  }}
+                />
+              )}
             </div>
-          </>
-        )}
-      </div>
-    </ScrollArea>
+
+            {earlierBills.map((bill) => (
+              <Link
+                to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
+                key={bill.id}
+              >
+                <Card
+                  key={bill.id}
+                  name={bill.drawee.name}
+                  date={bill.issue_date}
+                  amount={Number(bill.sum)}
+                  currency={bill.currency}
+                />
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 

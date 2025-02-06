@@ -130,7 +130,9 @@ function RecentBills() {
   });
 
   return data.bills.length === 0 ? (
-    <Empty />
+    <div className="flex-1 flex flex-col items-center">
+      <Empty />
+    </div>
   ) : (
     <div className="flex flex-col gap-1.5">
       {data.bills.slice(0, 3).map((bill) => (
@@ -152,7 +154,11 @@ export default function Home() {
   const intl = useIntl();
 
   return (
-    <Page className="gap-6" displayBackgroundEllipse displayBottomNavigation>
+    <Page
+      className="gap-6 pb-20"
+      displayBackgroundEllipse
+      displayBottomNavigation
+    >
       <Topbar
         lead={
           <Link to={routes.IDENTITY_LIST}>
@@ -180,9 +186,10 @@ export default function Home() {
         }
       />
 
-      <div className="flex flex-col gap-8">
+      <div className="flex-1 flex flex-col gap-8">
         <Balances />
-        <div className="flex flex-col gap-3">
+
+        <div className="flex-1 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <span className="text-text-300 text-sm font-medium leading-5">
               <FormattedMessage

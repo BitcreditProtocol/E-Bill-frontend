@@ -32,6 +32,9 @@ export async function createContact(
 ): Promise<CreateContactResponse> {
   return await apiFetch<CreateContactResponse>(CREATE_CONTACT, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -45,6 +48,9 @@ export async function editContact(
 ): Promise<EditContactResponse> {
   return await apiFetch<EditContactResponse>(EDIT_CONTACT, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 }
@@ -54,7 +60,11 @@ type GetContactsResponse = {
 };
 
 export async function getContacts(): Promise<GetContactsResponse> {
-  return await apiFetch<GetContactsResponse>(GET_CONTACTS);
+  return await apiFetch<GetContactsResponse>(GET_CONTACTS, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 type GetContactDetailsResponse = Contact;
@@ -62,11 +72,21 @@ type GetContactDetailsResponse = Contact;
 export async function getContactDetails(
   id: string
 ): Promise<GetContactDetailsResponse> {
-  return await apiFetch<GetContactDetailsResponse>(`${GET_CONTACT_DETAILS}/${id}`);
+  return await apiFetch<GetContactDetailsResponse>(
+    `${GET_CONTACT_DETAILS}/${id}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 }
 
 export async function removeContact(id: string): Promise<void> {
   await apiFetch(`${REMOVE_CONTACT}/${id}`, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }

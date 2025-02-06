@@ -44,14 +44,15 @@ type CreateBillPayload = Pick<
   | "city_of_issuing"
   | "issue_date"
   | "maturity_date"
-  | "payee"
-  | "drawee"
   | "sum"
   | "currency"
   | "country_of_payment"
   | "city_of_payment"
   | "language"
 > & {
+  payee: string;
+  drawee: string;
+  type: number;
   file_upload_id: string | null;
 };
 
