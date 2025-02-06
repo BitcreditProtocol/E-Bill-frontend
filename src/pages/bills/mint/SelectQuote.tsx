@@ -104,7 +104,9 @@ export default function SelectQuote() {
           <div className="flex flex-col gap-3">
             {id && quote ? (<>
               <Link to={routes.PREVIEW_MINT.replace(":id", id)}>
-                <Quote mintName="Wildcat One" rate={0.0001} status="accepted" />
+                <Quote mintName="Wildcat One" rate={
+                  1 - (Number(quote.sum) / Number(bill.sum))
+                } status="accepted" />
               </Link>
             </>) : (<div onClick={() => {
                 if (!isPending) {

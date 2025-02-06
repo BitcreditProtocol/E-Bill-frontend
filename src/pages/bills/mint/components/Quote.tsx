@@ -43,7 +43,7 @@ function StatusText({ status, rate }: Pick<QuoteProps, "status" | "rate">) {
   });
 
   const displayedText = {
-    accepted: `${rate.toString()}%`,
+    accepted: `${(rate * 100).toFixed(6)}%`,
     pending: pendingMessage,
     declined: declinedMessage,
   };
