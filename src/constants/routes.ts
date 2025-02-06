@@ -48,7 +48,7 @@ const PAYMENT = "/bill/:id/payment";
 const PAY = "/bill/:id/pay";
 
 const REQUEST_MINT = "/bill/:id/request-mint";
-const SELECT_QUOTE = "/select-quote";
+const SELECT_QUOTE = "/bill/:id/select-quote";
 const PREVIEW_MINT = "/preview-mint";
 const MINT_RECEIVED = "/mint-received";
 const MINT_REQUEST = "/mint-request";

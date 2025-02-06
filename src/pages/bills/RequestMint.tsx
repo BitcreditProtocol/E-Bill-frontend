@@ -9,12 +9,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import Preview from "./components/Preview";
 import { Button } from "@/components/ui/button";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { acceptMint, getBillDetails, requestToMint } from "@/services/bills";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
+import routes from "@/constants/routes";
 
 function Mint({ name }: { name: string }) {
   return (
@@ -60,6 +61,7 @@ function Information({ id }: { id: string }) {
 export default function RequestMint() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -89,6 +91,8 @@ export default function RequestMint() {
         ),
         position: "bottom-center",
       });
+
+      navigate(routes.SELECT_QUOTE.replace(":id", id as string))
     },
   });
 
