@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
@@ -18,7 +18,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { getBillDetails, getPrivateKey } from "@/services/bills";
 import { getActiveIdentity } from "@/services/identity_v2";
-import routes from "@/constants/routes";
 import { copyToClipboard } from "@/utils";
 import LoaderIcon from "@/assets/icons/loader.svg";
 import Preview from "./components/Preview";
@@ -35,7 +34,6 @@ function Loader() {
 }
 
 function Information({ id }: { id: string }) {
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   const { data: activeIdentity } = useSuspenseQuery({
@@ -87,10 +85,6 @@ function Information({ id }: { id: string }) {
     ),
     failed: <CircleXIcon className="text-signal-error w-12 h-12 stroke-1" />,
   }[status];
-
-  if (role !== "holder" || !data.requested_to_pay) {
-    navigate(routes.VIEW_BILL.replace(":id", id));
-  }
 
   return (
     <>

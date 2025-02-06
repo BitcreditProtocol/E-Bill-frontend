@@ -10,6 +10,7 @@ import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import PageTitle from "@/components/typography/PageTitle";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { getBillDetails } from "@/services/bills";
 import { getActiveIdentity } from "@/services/identity_v2";
@@ -19,7 +20,13 @@ import routes from "@/constants/routes";
 import Preview from "./components/Preview";
 
 function Loader() {
-  return <>Loading</>;
+  return (
+    <div className="flex flex-col items-center gap-6">
+      <Skeleton className="h-40 w-40 bg-elevation-200" />
+      <Skeleton className="h-16 w-full bg-elevation-200" />
+      <Skeleton className="h-16 w-full bg-elevation-200" />
+    </div>
+  );
 }
 
 function Information({ id }: { id: string }) {

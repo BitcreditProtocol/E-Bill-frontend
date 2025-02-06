@@ -153,10 +153,11 @@ function Holder({
               description="Request to accept button"
             />
           </Button>
+          <SecondaryActions id={id} />
         </>
       )}
 
-      {!requested_to_pay && !paid && (
+      {accepted && !requested_to_pay && !paid && (
         <div className="flex flex-col gap-3">
           <Button size="sm">
             <FormattedMessage
@@ -168,6 +169,7 @@ function Holder({
           <SecondaryActions id={id} />
         </div>
       )}
+
       {requested_to_pay && (
         <Link to={routes.PAYMENT.replace(":id", id)}>
           <Button className="w-full" size="sm">
@@ -305,13 +307,15 @@ function Payer({
       {(!accepted || requested_to_accept) && <Acceptance id={id} />}
 
       {!paid && requested_to_pay && (
-        <Button size="sm">
-          <FormattedMessage
-            id="bill.actions.pay"
-            defaultMessage="Pay"
-            description="Pay button"
-          />
-        </Button>
+        <Link to={routes.PAY.replace(":id", id)}>
+          <Button size="sm">
+            <FormattedMessage
+              id="bill.actions.pay"
+              defaultMessage="Pay"
+              description="Pay button"
+            />
+          </Button>
+        </Link>
       )}
     </div>
   );

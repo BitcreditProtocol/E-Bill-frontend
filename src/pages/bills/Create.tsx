@@ -944,6 +944,7 @@ function Preview() {
   const navigate = useNavigate();
   const { getValues } = useFormContext();
   const { toast } = useToast();
+  const { activeIdentity } = useIdentity();
 
   const formattedIssueDate = format(
     parseISO(getValues("issue_date") as string),
@@ -1099,13 +1100,12 @@ function Preview() {
                   description: "Drawer property for bill card",
                 })}
                 value={
-                  // todo: refactor this component
                   <div className="flex flex-col items-end gap-1">
                     <span className="text-text-300 text-sm font-medium leading-5">
-                      {"drawer name"}
+                      {activeIdentity.name}
                     </span>
                     <span className="text-text-200 text-xs font-normal leading-normal">
-                      {"drawer address"}
+                      {activeIdentity.address}
                     </span>
                   </div>
                 }
