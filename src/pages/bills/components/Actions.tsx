@@ -21,7 +21,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { accept, rejectToAccept, requestToAccept } from "@/services/bills";
+import {
+  accept,
+  rejectToAccept,
+  requestToAccept,
+  requestToPay,
+} from "@/services/bills";
 import type { BillFull } from "@/types/bill";
 import { useToast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
@@ -112,8 +117,41 @@ function Holder({
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: () => requestToAccept(id),
+  const { mutate: requestAcceptance, isPending: isAcceptancePending } =
+    useMutation({
+      mutationFn: () => requestToAccept(id),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ["bills", id],
+        });
+
+        toast({
+          description: (
+            <FormattedMessage
+              id="bill.actions.requestAcceptance.success"
+              defaultMessage="Request sent successfully"
+              description="Request acceptance success toast message"
+            />
+          ),
+          position: "bottom-center",
+        });
+      },
+      onError: () => {
+        toast({
+          description: (
+            <FormattedMessage
+              id="bill.actions.requestAcceptance.error"
+              defaultMessage="Request failed"
+              description="Request acceptance error toast message"
+            />
+          ),
+          position: "bottom-center",
+        });
+      },
+    });
+
+  const { mutate: requestPayment, isPending: isPaymentPending } = useMutation({
+    mutationFn: () => requestToPay(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ["bills", id],
@@ -122,9 +160,21 @@ function Holder({
       toast({
         description: (
           <FormattedMessage
-            id="bill.actions.requestAcceptance.success"
+            id="bill.actions.requestPayment.success"
             defaultMessage="Request sent successfully"
-            description="Request acceptance success toast message"
+            description="Request payment success toast message"
+          />
+        ),
+        position: "bottom-center",
+      });
+    },
+    onError: () => {
+      toast({
+        description: (
+          <FormattedMessage
+            id="bill.actions.requestPayment.error"
+            defaultMessage="Request failed"
+            description="Request payment error toast message"
           />
         ),
         position: "bottom-center",
@@ -143,9 +193,9 @@ function Holder({
           <Button
             size="sm"
             onClick={() => {
-              mutate();
+              requestAcceptance();
             }}
-            disabled={isPending || requested_to_accept}
+            disabled={isAcceptancePending || requested_to_accept}
           >
             <FormattedMessage
               id="bill.actions.requestAcceptance"
@@ -159,7 +209,13 @@ function Holder({
 
       {accepted && !requested_to_pay && !paid && (
         <div className="flex flex-col gap-3">
-          <Button size="sm">
+          <Button
+            size="sm"
+            onClick={() => {
+              requestPayment();
+            }}
+            disabled={isPaymentPending}
+          >
             <FormattedMessage
               id="bill.actions.requestPayment"
               defaultMessage="Request payment"
