@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import Preview from "./components/Preview";
 import { Button } from "@/components/ui/button";
+import { useParams } from "react-router-dom";
 
 function Mint({ name }: { name: string }) {
   return (
@@ -26,6 +27,10 @@ function Mint({ name }: { name: string }) {
 }
 
 export default function RequestMint() {
+  const { id } = useParams<{ id: string }>();
+
+  console.log(id);
+
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
       <Topbar

@@ -47,7 +47,7 @@ const ENDORSE = "/bill/:id/endorse";
 const PAYMENT = "/bill/:id/payment";
 const PAY = "/bill/:id/pay";
 
-const REQUEST_MINT = "/request-mint";
+const REQUEST_MINT = "/bill/:id/request-mint";
 const SELECT_QUOTE = "/select-quote";
 const PREVIEW_MINT = "/preview-mint";
 const MINT_RECEIVED = "/mint-received";

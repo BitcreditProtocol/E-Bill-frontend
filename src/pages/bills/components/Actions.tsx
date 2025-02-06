@@ -80,15 +80,17 @@ function SecondaryActions({ id }: { id: string }) {
             />
           </button>
 
-          <button className="flex items-center gap-2 p-0 text-text-300 text-base font-medium">
-            <LandmarkIcon className="text-text-300 w-5 h-5 stroke-1" />
+          <Link to={routes.REQUEST_MINT.replace(":id", id)}>
+            <button className="flex items-center gap-2 p-0 text-text-300 text-base font-medium">
+              <LandmarkIcon className="text-text-300 w-5 h-5 stroke-1" />
 
-            <FormattedMessage
-              id="bill.actions.mint"
-              defaultMessage="Mint"
-              description="Mint button"
-            />
-          </button>
+              <FormattedMessage
+                id="bill.actions.mint"
+                defaultMessage="Mint"
+                description="Mint button"
+              />
+            </button>
+          </Link>
         </div>
       </DrawerContent>
     </Drawer>
