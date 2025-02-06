@@ -10,6 +10,10 @@ import { Separator } from "@/components/ui/separator";
 import Preview from "./components/Preview";
 import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { getBillDetails } from "@/services/bills";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function Mint({ name }: { name: string }) {
   return (
@@ -26,10 +30,34 @@ function Mint({ name }: { name: string }) {
   );
 }
 
+function Loader() {
+  return (
+    <div className="flex flex-col gap-6">
+      <Skeleton className="h-20 w-full bg-elevation-200" />
+      <Skeleton className="h-16 w-full bg-elevation-200" />
+    </div>
+  );
+}
+
+function Information({ id }: { id: string }) {
+  const { data } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id),
+  });
+
+  return (
+    <Preview
+      name={data.drawee.name}
+      date={data.issue_date}
+      amount={Number(data.sum)}
+      currency="BTC"
+    />
+  );
+}
+
+
 export default function RequestMint() {
   const { id } = useParams<{ id: string }>();
-
-  console.log(id);
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -47,13 +75,13 @@ export default function RequestMint() {
         trail={<></>}
       />
 
+      <div className="flex flex-col gap-6">
+        <Suspense fallback={<Loader />}>
+          <Information id={id as string} />
+        </Suspense>
+      </div>
+
       <div className="flex-1 flex flex-col gap-6">
-        <Preview
-          name="Pear, Inc"
-          date="31-Jan-2025"
-          amount={1.2311}
-          currency="BTC"
-        />
 
         <div className="flex flex-col gap-4">
           <SectionTitle>
