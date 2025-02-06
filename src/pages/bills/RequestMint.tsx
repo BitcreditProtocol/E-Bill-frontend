@@ -68,7 +68,7 @@ export default function RequestMint() {
     queryFn: () => getQuote(id as string).catch(() => { return null }),
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate: doRequestToMint, isPending } = useMutation({
     mutationFn: async () => {
       await requestToMint({
         bill_id: id as string,
@@ -143,7 +143,7 @@ export default function RequestMint() {
           if (data && isSuccess) {
             navigate(routes.SELECT_QUOTE.replace(":id", id as string))
           } else {
-            mutate();
+            doRequestToMint();
           } }}>
           <FormattedMessage
             id="bill.mint.request.action"

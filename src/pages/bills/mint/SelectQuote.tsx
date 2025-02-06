@@ -9,12 +9,11 @@ import Quote from "./components/Quote";
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { acceptMint, getBillDetails } from "@/services/bills";
-import { Suspense, useEffect } from "react";
+import { Suspense } from "react";
 import { getQuote } from "@/services/quotes";
 import routes from "@/constants/routes";
-
 
 function Loader() {
   return (
@@ -42,32 +41,28 @@ function Information({ id }: { id: string }) {
 
 export default function SelectQuote() {
   const { id } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
 
   const { data } = useSuspenseQuery({
     queryKey: ["quotes", id as string],
     queryFn: () => getQuote(id as string).catch(() => { return null }),
-    refetchInterval: 3_000,
+    refetchInterval: 5_000,
   });
 
   // TODO: remove - fake accepting mint request here
-  useEffect(() => {
-    if (data) return;
-
-    const timerId = setTimeout(() => {
-      acceptMint({
+  const { mutate: __dev_doAcceptMint, isPending } = useMutation({
+    mutationFn: async () => {
+      await acceptMint({
         bill_id: id as string,
         sum: "1000",
-      }).then(() => {
-        console.log('Successfully accepted mint request..');
-      }).catch(() => {
-        console.log('Error while accepting mint request..');
       });
-    }, 10_000);
-
-    return () => { clearTimeout(timerId); };
-  }, [id, data]);
-
-  console.log(data);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["quotes", id],
+      });
+    },
+  });
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -106,9 +101,13 @@ export default function SelectQuote() {
               <Link to={routes.PREVIEW_MINT.replace(":id", id)}>
                 <Quote mintName="Wildcat One" rate={0.0001} status="accepted" />
               </Link>
-            </>) : (<>
+            </>) : (<div onClick={() => { 
+                if (!isPending) {
+                  __dev_doAcceptMint()
+                }
+              }}>
               <Quote mintName="Wildcat One" rate={0.0001} status="pending" />
-            </>)}
+            </div>)}
             <Quote mintName="Fishermans Mint" rate={0.0001} status="declined" />
           </div>
         </div>
