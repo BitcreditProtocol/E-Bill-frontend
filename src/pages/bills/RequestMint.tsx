@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getBillDetails, requestToMint } from "@/services/bills";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
@@ -93,6 +93,16 @@ export default function RequestMint() {
     queryKey: ["quotes", id],
     queryFn: () => getQuote(id as string).catch(() => { return null }),
   });
+
+  useEffect(() => {
+    if (quote) {
+      if (quote.token === '') {
+        navigate(routes.SELECT_QUOTE.replace(":id", quote.bill_id))
+      } else {
+        navigate(routes.MINT_RECEIVED.replace(":id", quote.bill_id))
+      }
+    }
+  }, [quote, navigate]);
 
   const { mutate: doRequestToMint, isPending } = useMutation({
     mutationFn: async () => {
@@ -175,17 +185,10 @@ export default function RequestMint() {
           </div>
         </div>
 
-        <Button className="mt-auto" disabled={selectedMints.length === 0 || isPending} onClick={() => {
-            if (quote) {
-              if (quote.token === '') {
-                navigate(routes.SELECT_QUOTE.replace(":id", id as string))
-              } else {
-                navigate(routes.MINT_RECEIVED.replace(":id", id as string))
-              }
-            } else {
-              doRequestToMint();
-            } 
-          }}>
+        <Button className="mt-auto" onClick={() => {
+           doRequestToMint();
+          }}
+          disabled={selectedMints.length === 0 || isPending}>
           <FormattedMessage
             id="bill.mint.request.action"
             defaultMessage="Request mint quote"
