@@ -16,6 +16,7 @@ import EcashToken from "./components/EcashToken";
 import { useMemo } from "react";
 import { useLanguage } from "@/context/language/LanguageContext";
 import { formatDateAndTime } from "@/utils/dates";
+import { WILDCAT_ONE } from "@/constants/mints";
 
 export default function Received() {
   const lang = useLanguage();
@@ -61,10 +62,10 @@ export default function Received() {
         <div className="flex items-center gap-1">
           <FormattedCurrency
             className="text-lg font-medium"
-            value={Number(quote.sum) / 100_000_000}
+            value={Number(quote.sum)}
             type="credit"
           />
-          <span className="text-text-200 text-[10px] font-normal">BTC</span>
+          <span className="text-text-200 text-[10px] font-normal">sat</span>
         </div>
       </div>
 
@@ -81,8 +82,8 @@ export default function Received() {
           <Preview
             name={bill.drawee.name}
             date={bill.issue_date}
-            amount={Number(bill.sum) / 100_000_000}
-            currency="BTC"
+            amount={Number(bill.sum)}
+            currency={bill.currency}
           />
         </div>
 
@@ -95,7 +96,7 @@ export default function Received() {
             />
           </Label>
 
-          <Mint name="Wildcat One" pubkey="npub1eajvs...agcd93" />
+          <Mint name={WILDCAT_ONE.name} nodeId={WILDCAT_ONE.node_id} />
         </div>
       </div>
 

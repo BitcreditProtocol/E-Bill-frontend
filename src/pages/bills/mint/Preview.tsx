@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/drawer";
 import { toast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
+import { WILDCAT_ONE } from "@/constants/mints";
 function Loader() {
   return (
     <div className="flex flex-col gap-6">
@@ -95,7 +96,6 @@ function ConfirmSign({ onConfirm } : { onConfirm: () => void }) {
   );
 }
 
-
 export default function Preview() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -151,8 +151,8 @@ export default function Preview() {
           <BillPreview
             name={bill.drawee.name}
             date={bill.issue_date}
-            amount={Number(bill.sum) / 100_000_000}
-            currency="BTC"
+            amount={Number(bill.sum)}
+            currency={bill.currency}
           />
         </Suspense>
       </div>
@@ -168,7 +168,7 @@ export default function Preview() {
               />
             </Label>
 
-            <Mint name="Wildcat One" pubkey="npub1eajvs...agcd93" />
+            <Mint name={WILDCAT_ONE.name} nodeId={WILDCAT_ONE.node_id} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -192,10 +192,10 @@ export default function Preview() {
                 <div className="flex items-center gap-1 self-end">
                   <FormattedCurrency
                     className="text-sm font-medium leading-5"
-                    value={Number(quote.sum)/ 100_000_000}
+                    value={Number(quote.sum)}
                     type="credit"
                   />
-                  <span className="text-text-200 text-[10px]">BTC</span>
+                  <span className="text-text-200 text-[10px]">sat</span>
                 </div>
               </Suspense>
             </div>
