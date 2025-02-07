@@ -10,9 +10,14 @@ import { cn } from "@/lib/utils";
 
 type QuoteProps = {
   mintName: string;
-  rate: number;
-  status: "pending" | "accepted" | "declined";
-};
+} & (
+  { status: "declined" } |
+  { status: "pending" } |
+  {
+    status: "accepted";
+    rate: number;
+  }
+);
 
 const statusTextVariants = cva("text-xs font-normal leading-[18px]", {
   variants: {
@@ -27,7 +32,7 @@ const statusTextVariants = cva("text-xs font-normal leading-[18px]", {
   },
 });
 
-function StatusText({ status, rate }: Pick<QuoteProps, "status" | "rate">) {
+function StatusText({ status, rate }: { status: QuoteProps['status'], rate?: number }) {
   const intl = useIntl();
 
   const pendingMessage = intl.formatMessage({
@@ -43,7 +48,7 @@ function StatusText({ status, rate }: Pick<QuoteProps, "status" | "rate">) {
   });
 
   const displayedText = {
-    accepted: `${(rate * 100).toFixed(6)}%`,
+    accepted: `${((rate || 0) * 100).toFixed(6)}%`,
     pending: pendingMessage,
     declined: declinedMessage,
   };
@@ -55,7 +60,7 @@ function StatusText({ status, rate }: Pick<QuoteProps, "status" | "rate">) {
   );
 }
 
-export default function Quote({ mintName, rate, status }: QuoteProps) {
+export default function Quote(props: QuoteProps) {
   const displayedIcon = {
     accepted: (
       <ChevronRightIcon className="text-signal-success h-6 w-6 stroke-1" />
@@ -69,8 +74,8 @@ export default function Quote({ mintName, rate, status }: QuoteProps) {
       className={cn(
         "flex items-center justify-between p-3 bg-elevation-50 border border-divider-50 rounded-xl cursor-pointer",
         {
-          "bg-elevation-200": status === "accepted",
-          "cursor-auto": status !== "accepted",
+          "bg-elevation-200": props.status === "accepted",
+          "cursor-auto": props.status !== "accepted",
         }
       )}
     >
@@ -80,13 +85,13 @@ export default function Quote({ mintName, rate, status }: QuoteProps) {
         </div>
         <div className="flex flex-col">
           <span className="text-text-300 text-base font-medium">
-            {mintName}
+            {props.mintName}
           </span>
-          <StatusText status={status} rate={rate} />
+          <StatusText status={props.status} rate={props.status === "accepted" ? props.rate : 0} />
         </div>
       </div>
 
-      {displayedIcon[status]}
+      {displayedIcon[props.status]}
     </div>
   );
 }

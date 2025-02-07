@@ -113,13 +113,15 @@ export default function SelectQuote() {
                   __dev_doAcceptMint()
                 }
               }}>
-              <Quote mintName="Wildcat One" rate={0.0001} status="pending" />
+              <Quote mintName="Wildcat One" status="pending" />
             </div>)}
-            <Quote mintName="Fishermans Mint" rate={0.0001} status="declined" />
+            {/*
+              <Quote mintName="Fishermans Mint" rate={0.0001} status="declined" />
+            */}
           </div>
         </div>
 
-        <Button variant="outline" size="md" className="mt-auto">
+        <Button variant="outline" size="md" className="mt-auto" disabled>
           <FormattedMessage
             id="bill.mint.cancel"
             defaultMessage="Cancel mint request"

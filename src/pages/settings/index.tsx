@@ -20,6 +20,7 @@ import LanguagePreference from "./components/LanguagePreference";
 import Agreements from "./components/Agreements";
 import Theme from "./components/Theme";
 import MenuOption from "./components/MenuOption";
+import { WILDCAT_ONE } from "@/constants/mints";
 
 export default function Settings() {
   const intl = useIntl();
@@ -109,7 +110,7 @@ export default function Settings() {
                 defaultMessage: "Mints",
                 description: "Mints menu item",
               })}
-              defaultValue="Wildcat One"
+              defaultValue={WILDCAT_ONE.name}
             />
           </Link>
           <Separator className="bg-divider-75" />
