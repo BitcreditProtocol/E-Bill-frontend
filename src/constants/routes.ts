@@ -17,7 +17,6 @@ const ISSUE_BILL = "issue-bill";
 const CREATE_BILL = "create-bill";
 const PREVIEW_BILL = "preview-bill";
 const MINT_BILL = "mint-bill";
-const SELL_BILL = "sell-bill";
 const CONTACTS = "contacts";
 const CREATE_CONTACT = "new";
 const VIEW_CONTACT = ":nodeId";
@@ -46,6 +45,7 @@ const ENDORSEMENTS = "bill/:id/endorsements";
 const ENDORSE = "/bill/:id/endorse";
 const PAYMENT = "/bill/:id/payment";
 const PAY = "/bill/:id/pay";
+const SELL_BILL = "/bill/:id/sell";
 
 const REQUEST_MINT = "/request-mint";
 const SELECT_QUOTE = "/select-quote";

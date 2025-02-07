@@ -1,22 +1,53 @@
+import { Suspense, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { z } from "zod";
-import { FormattedMessage } from "react-intl";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import Big from "big.js";
+import { parseISO } from "date-fns";
+import { FormattedMessage, useIntl } from "react-intl";
 import { CalculatorIcon, ChevronRightIcon, UserIcon } from "lucide-react";
+
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import PageTitle from "@/components/typography/PageTitle";
 import { Button } from "@/components/ui/button";
 import ContactPicker from "@/components/Contact/ContactPicker";
-import BitcoinCurrencyIcon from "@/assets/icons/bitcoin-currency.svg";
-import Preview from "./components/Preview";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { Contact } from "@/types/contact";
-import Picture from "@/components/Picture";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { DiscountForm } from "@/components/DiscountForm/DiscountForm";
-import { parseISO } from "date-fns";
-import Big from "big.js";
+import Picture from "@/components/Picture";
+import { Skeleton } from "@/components/ui/skeleton";
+import Sign from "@/components/Sign";
+import { useToast } from "@/hooks/use-toast";
+import { getBillDetails, offerToSell } from "@/services/bills";
+import routes from "@/constants/routes";
+import type { Contact } from "@/types/contact";
+import BitcoinCurrencyIcon from "@/assets/icons/bitcoin-currency.svg";
+import Preview from "./components/Preview";
+import { useIdentity } from "@/context/identity/IdentityContext";
+
+function Loader() {
+  return (
+    <div className="flex flex-col gap-6">
+      <Skeleton className="h-16 w-full bg-elevation-200" />
+
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-4 w-1/3 bg-elevation-200" />
+        <Skeleton className="h-16 w-full bg-elevation-200" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-4 w-1/3 bg-elevation-200" />
+        <Skeleton className="h-16 w-full bg-elevation-200" />
+      </div>
+    </div>
+  );
+}
 
 function Buyer() {
   const { watch, setValue } = useFormContext<FormSchema>();
@@ -89,8 +120,6 @@ function DiscountCalculator() {
     sum,
   } = watch();
 
-  console.log({ rate, days, start_date, end_date, sum });
-
   const hasDiscount = rate > 0 && days > 0;
   const discountTerms = `${days.toString()} @ ${rate.toString()}%`;
 
@@ -126,7 +155,6 @@ function DiscountCalculator() {
           startDate={parseISO(start_date)}
           endDate={parseISO(end_date)}
           onSubmit={(values) => {
-            console.log(values.discountRate.toString());
             setDiscount({
               sum: values.net.value.round(0).toString(),
               rate: values.discountRate.mul(100).toNumber(),
@@ -172,9 +200,9 @@ function Amount() {
               return sanitized ? String(parseInt(sanitized, 10)) : "";
             },
           })}
-          className="flex-1 bg-transparent text-right outline-none"
           type="text"
           inputMode="numeric"
+          className="flex-1 bg-transparent text-right outline-none"
           onInput={(e) => {
             e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
           }}
@@ -206,11 +234,21 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-export default function Sell() {
+function Form() {
+  const { id } = useParams() as { id: string };
+  const { formatMessage: f } = useIntl();
+  const { activeIdentity } = useIdentity();
+  const [signOpen, setSignOpen] = useState(false);
+
+  const { data } = useSuspenseQuery({
+    queryFn: () => getBillDetails(id),
+    queryKey: ["bills", id],
+  });
+
   const methods = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      bill_id: "",
+      bill_id: data.id,
       buyer: {
         node_id: "",
         name: "",
@@ -222,11 +260,157 @@ export default function Sell() {
         rate: 0,
         days: 0,
       },
-      sum: "5000",
-      currency: "",
+      sum: data.sum,
+      currency: data.currency,
     },
   });
 
+  const { buyer, sum, discount } = methods.watch();
+  const canOfferToSell =
+    !!buyer.node_id && !!sum && !!discount.rate && !!discount.days;
+
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      const bill = {
+        bill_id: methods.getValues("bill_id"),
+        buyer: methods.getValues("buyer.node_id"),
+        sum: methods.getValues("sum"),
+        currency: methods.getValues("currency"),
+      };
+
+      return offerToSell({
+        ...bill,
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["bills", id],
+      });
+
+      toast({
+        title: f({
+          id: "bill.sell.offer.success",
+          defaultMessage: "Success!",
+          description: "Bill sell success toast",
+        }),
+        description: f({
+          id: "bill.sell.offer.success.description",
+          defaultMessage: "The bill has been offered for sale",
+          description: "Bill sell success toast description",
+        }),
+        position: "bottom-center",
+      });
+    },
+    onError: () => {
+      toast({
+        title: f({
+          id: "bill.sell.offer.error",
+          defaultMessage: "Error!",
+          description: "Bill sell error toast",
+        }),
+        description: f({
+          id: "bill.sell.offer.error.description",
+          defaultMessage: "An error occurred while offering the bill for sale",
+          description: "Bill sell error toast description",
+        }),
+        position: "bottom-center",
+      });
+    },
+    onSettled: () => {
+      setSignOpen(!signOpen);
+    },
+  });
+
+  const isHolder = data.drawer.node_id === activeIdentity.node_id;
+  const isOfferedForSale = data.seller !== null && data.waiting_for_payment;
+
+  const signSale = () => {
+    if (isHolder && !isOfferedForSale) {
+      mutate();
+    }
+  };
+
+  return !isHolder ? (
+    <Navigate to={"/" + routes.VIEW_BILL.replace(":id", id)} />
+  ) : (
+    <>
+      <Preview
+        name={data.drawer.name}
+        amount={parseInt(data.sum)}
+        currency={data.currency}
+        date={data.issue_date}
+      />
+
+      <FormProvider {...methods}>
+        <div className="flex-1 flex flex-col gap-6">
+          <Buyer />
+          <Amount />
+
+          <div className="mt-auto">
+            <Sign
+              open={signOpen}
+              onOpenChange={() => {
+                setSignOpen(!signOpen);
+              }}
+              title={f({
+                id: "bill.sell.sign.title",
+                defaultMessage: "Are you sure?",
+                description: "Sign confirmation title",
+              })}
+              description={f({
+                id: "bill.sell.sign.description",
+                defaultMessage: "The signing of the sale is legally binding",
+                description: "Sign confirmation description",
+              })}
+              confirm={
+                <Button
+                  size="md"
+                  disabled={!canOfferToSell || isPending}
+                  onClick={() => {
+                    signSale();
+                  }}
+                >
+                  <FormattedMessage
+                    id="bill.sell.sign.confirm"
+                    defaultMessage="Confirm"
+                    description="Button to confirm bill sell action"
+                  />
+                </Button>
+              }
+              cancel={
+                <Button
+                  className="w-full"
+                  size="md"
+                  variant="outline"
+                  disabled={isPending}
+                >
+                  <FormattedMessage
+                    id="bill.sell.sign.cancel"
+                    defaultMessage="Cancel"
+                    description="Button to cancel bill sell action"
+                  />
+                </Button>
+              }
+            >
+              <Button className="w-full" size="md" disabled={!canOfferToSell}>
+                <FormattedMessage
+                  id="bill.sell.sign"
+                  defaultMessage="Sign"
+                  description="Button to trigger bill sell signature"
+                />
+              </Button>
+            </Sign>
+          </div>
+        </div>
+      </FormProvider>
+    </>
+  );
+}
+
+export default function Sell() {
   return (
     <Page className="gap-6">
       <Topbar
@@ -236,29 +420,15 @@ export default function Sell() {
             <FormattedMessage
               id="bill.sell.title"
               defaultMessage="Sell bill"
-              description="Sell Bill page title"
+              description="Sell bill page title"
             />
           </PageTitle>
         }
       />
 
-      <Preview name="John Doe" amount={1000} currency="SAT" date="2021-10-10" />
-
-      <FormProvider {...methods}>
-        <div className="flex-1 flex flex-col gap-6">
-          <Buyer />
-
-          <Amount />
-        </div>
-      </FormProvider>
-
-      <Button className="h-[54px] w-full bg-text-300 text-white font-medium rounded-[8px] py-[18px] px-8">
-        <FormattedMessage
-          id="Sell"
-          defaultMessage="Sell"
-          description="Button to trigger bill sell"
-        />
-      </Button>
+      <Suspense fallback={<Loader />}>
+        <Form />
+      </Suspense>
     </Page>
   );
 }
