@@ -46,6 +46,7 @@ const ENDORSE = "/bill/:id/endorse";
 const PAYMENT = "/bill/:id/payment";
 const PAY = "/bill/:id/pay";
 const SELL_BILL = "/bill/:id/sell";
+const OFFER = "/bill/:id/offer";
 
 const REQUEST_MINT = "/bill/:id/request-mint";
 const SELECT_QUOTE = "/bill/:id/select-quote";
@@ -78,6 +79,8 @@ export default {
   PREVIEW_BILL,
   MINT_BILL,
   SELL_BILL,
+  OFFER,
+
   CONTACTS,
   CREATE_CONTACT,
   SIGNUP,

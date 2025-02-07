@@ -49,6 +49,7 @@ import Endorse from "./pages/bills/Endorse";
 import Payment from "./pages/bills/Payment";
 import Pay from "./pages/bills/Pay";
 import ViewBill from "./pages/bills/View";
+import Offer from "./pages/bills/Offer";
 
 import IssueBill from "./pages/IssueBill";
 import PreviewBill from "./pages/PreviewBill";
@@ -162,6 +163,10 @@ const router = createBrowserRouter(
         {
           path: routes.SELL_BILL,
           element: <SellBill />,
+        },
+        {
+          path: routes.OFFER,
+          element: <Offer />,
         },
         {
           path: routes.CREATE_BILL,

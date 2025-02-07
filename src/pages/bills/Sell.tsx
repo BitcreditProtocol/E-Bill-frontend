@@ -24,13 +24,13 @@ import { DiscountForm } from "@/components/DiscountForm/DiscountForm";
 import Picture from "@/components/Picture";
 import { Skeleton } from "@/components/ui/skeleton";
 import Sign from "@/components/Sign";
+import { useIdentity } from "@/context/identity/IdentityContext";
 import { useToast } from "@/hooks/use-toast";
 import { getBillDetails, offerToSell } from "@/services/bills";
 import routes from "@/constants/routes";
 import type { Contact } from "@/types/contact";
 import BitcoinCurrencyIcon from "@/assets/icons/bitcoin-currency.svg";
 import Preview from "./components/Preview";
-import { useIdentity } from "@/context/identity/IdentityContext";
 
 function Loader() {
   return (
