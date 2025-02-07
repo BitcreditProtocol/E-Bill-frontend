@@ -53,7 +53,7 @@ import ViewBill from "./pages/bills/View";
 import IssueBill from "./pages/IssueBill";
 import PreviewBill from "./pages/PreviewBill";
 import MintBill from "./pages/MintBill";
-import SellBill from "./pages/SellBill";
+import SellBill from "./pages/bills/Sell";
 
 import RequestMint from "./pages/bills/RequestMint";
 import SelectQuote from "./pages/bills/mint/SelectQuote";

@@ -424,6 +424,7 @@ export default function Create() {
       city: "",
       zip: "",
       address: "",
+      // todo: fix property names
       date_of_registration: "",
       country_of_registration: "",
       city_of_registration: "",

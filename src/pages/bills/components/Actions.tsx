@@ -151,7 +151,11 @@ function Holder({
     });
 
   const { mutate: requestPayment, isPending: isPaymentPending } = useMutation({
-    mutationFn: () => requestToPay(id),
+    mutationFn: () =>
+      requestToPay({
+        bill_id: id,
+        currency: "sat",
+      }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ["bills", id],

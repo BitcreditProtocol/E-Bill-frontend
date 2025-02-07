@@ -271,7 +271,7 @@ export async function accept(bill_id: string): Promise<void> {
 
 type RequestToPayPayload = {
   bill_id: string;
-  sum: string;
+  currency: string;
 };
 
 export async function requestToPay(data: RequestToPayPayload): Promise<void> {

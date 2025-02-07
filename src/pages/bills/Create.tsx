@@ -1133,9 +1133,16 @@ function Preview() {
             <span className="text-text-300 text-sm font-medium">
               <FormattedMessage
                 id="bill.create.preview.details.noProtest"
-                defaultMessage="No protest. Value received."
+                defaultMessage="No protest."
                 description="No protest copy for bill card"
               />
+              {getValues("file_upload_id") !== "" && (
+                <FormattedMessage
+                  id="bills.create.preview.details.valueReceived"
+                  defaultMessage="Value received."
+                  description="Value received label"
+                />
+              )}
             </span>
           </div>
         </div>
@@ -1173,8 +1180,10 @@ export default function Create() {
       sum: "0",
       currency: "sat",
       language: "en-US",
+      // default to current user identity info
       country_of_issuing: "AT",
       city_of_issuing: "Vienna",
+      // default to selected contact info
       country_of_payment: "AT",
       city_of_payment: "Vienna",
       file_upload_id: "",
