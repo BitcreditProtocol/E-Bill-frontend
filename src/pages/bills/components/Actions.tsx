@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import {
   BanknoteIcon,
   ChevronDownIcon,
@@ -24,12 +24,15 @@ import {
 import {
   accept,
   rejectToAccept,
+  rejectToBuy,
   requestToAccept,
   requestToPay,
 } from "@/services/bills";
-import type { BillFull } from "@/types/bill";
 import { useToast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
+import { useIdentity } from "@/context/identity/IdentityContext";
+import type { BillFull } from "@/types/bill";
+import Sign from "@/components/Sign";
 
 function SecondaryActions({ id }: { id: string }) {
   return (
@@ -70,15 +73,17 @@ function SecondaryActions({ id }: { id: string }) {
             </button>
           </Link>
 
-          <button className="flex items-center gap-2 p-0 text-text-300 text-base font-medium">
-            <BanknoteIcon className="text-text-300 w-5 h-5 stroke-1" />
+          <Link to={routes.SELL_BILL.replace(":id", id)}>
+            <button className="flex items-center gap-2 p-0 text-text-300 text-base font-medium">
+              <BanknoteIcon className="text-text-300 w-5 h-5 stroke-1" />
 
-            <FormattedMessage
-              id="bill.actions.sell"
-              defaultMessage="Sell"
-              description="Sell button"
-            />
-          </button>
+              <FormattedMessage
+                id="bill.actions.sell"
+                defaultMessage="Sell"
+                description="Sell button"
+              />
+            </button>
+          </Link>
 
           <Link to={routes.REQUEST_MINT.replace(":id", id)}>
             <button className="flex items-center gap-2 p-0 text-text-300 text-base font-medium">
@@ -99,13 +104,16 @@ function SecondaryActions({ id }: { id: string }) {
 
 type BillActionsProps = {
   id: BillFull["id"];
-  role: "holder" | "payer";
+  role: "holder" | "payer" | null;
   accepted: BillFull["accepted"];
   endorsed: BillFull["endorsed"];
   requested_to_accept: BillFull["requested_to_accept"];
   requested_to_pay: BillFull["requested_to_pay"];
   paid: BillFull["paid"];
+  // bill sale
   waiting_for_payment: BillFull["waiting_for_payment"];
+  seller: BillFull["seller"];
+  buyer: BillFull["buyer"];
 };
 
 function Holder({
@@ -115,7 +123,7 @@ function Holder({
   requested_to_pay,
   paid,
   endorsed,
-}: Omit<BillActionsProps, "role">) {
+}: Omit<BillActionsProps, "role" | "seller" | "buyer">) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -363,7 +371,7 @@ function Payer({
   requested_to_accept,
   paid,
   requested_to_pay,
-}: Omit<BillActionsProps, "role">) {
+}: Omit<BillActionsProps, "role" | "seller" | "buyer">) {
   return (
     <div className="flex flex-col gap-3">
       {(!accepted || requested_to_accept) && <Acceptance id={id} />}
@@ -383,6 +391,131 @@ function Payer({
   );
 }
 
+type BuyerActionsProps = {
+  id: BillFull["id"];
+  paid: BillFull["paid"];
+  waiting_for_payment: BillFull["waiting_for_payment"];
+};
+
+function Buyer({ id }: BuyerActionsProps) {
+  const { formatMessage: f } = useIntl();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [signOpen, setSignOpen] = useState(false);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      return rejectToBuy(id);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["bills", id],
+      });
+
+      toast({
+        title: f({
+          id: "bill.actions.buy.reject.success",
+          defaultMessage: "Bill rejected",
+          description: "Bill rejected success toast title",
+        }),
+        description: f({
+          id: "bill.actions.buy.reject.success",
+          defaultMessage: "Bill rejected successfully",
+          description: "Bill rejected success toast message",
+        }),
+        position: "bottom-center",
+      });
+    },
+    onError: () => {
+      toast({
+        title: f({
+          id: "bill.actions.buy.reject.error",
+          defaultMessage: "Bill rejection failed",
+          description: "Bill rejection error toast title",
+        }),
+        description: f({
+          id: "bill.actions.buy.reject.error",
+          defaultMessage: "Bill rejection failed",
+          description: "Bill rejection error toast message",
+        }),
+        position: "bottom-center",
+      });
+    },
+  });
+
+  return (
+    <div className="flex flex-col gap-3">
+      <Link to={routes.OFFER.replace(":id", id)}>
+        <Button className="w-full" size="md">
+          <FormattedMessage
+            id="bill.actions.buy.view"
+            defaultMessage="View payment details"
+            description="Buy offered bill button"
+          />
+        </Button>
+      </Link>
+      <Sign
+        open={signOpen}
+        onOpenChange={() => {
+          setSignOpen(!signOpen);
+        }}
+        title={f({
+          id: "bill.reject.sign.title",
+          defaultMessage: "Are you sure?",
+          description: "Sign confirmation title",
+        })}
+        description={f({
+          id: "bill.reject.sign.description",
+          defaultMessage: "The signing of the rejection is legally binding",
+          description: "Sign confirmation description",
+        })}
+        confirm={
+          <Button
+            size="md"
+            disabled={isPending}
+            onClick={() => {
+              mutate();
+            }}
+          >
+            <FormattedMessage
+              id="bill.reject.sign.confirm"
+              defaultMessage="Confirm"
+              description="Button to confirm buy rejection action"
+            />
+          </Button>
+        }
+        cancel={
+          <Button
+            className="w-full"
+            size="md"
+            variant="outline"
+            disabled={isPending}
+          >
+            <FormattedMessage
+              id="bill.reject.sign.cancel"
+              defaultMessage="Cancel"
+              description="Button to cancel bill buy rejection action"
+            />
+          </Button>
+        }
+      >
+        <Button
+          className="w-full"
+          size="md"
+          variant="outline"
+          disabled={isPending}
+        >
+          <FormattedMessage
+            id="bill.actions.buy.reject"
+            defaultMessage="Reject"
+            description="Button to trigger bill buy rejection signature"
+          />
+        </Button>
+      </Sign>
+    </div>
+  );
+}
+
 export default function Actions({
   id,
   role,
@@ -392,7 +525,37 @@ export default function Actions({
   requested_to_pay,
   paid,
   waiting_for_payment,
+  seller,
+  buyer,
 }: BillActionsProps) {
+  const { activeIdentity } = useIdentity();
+  const isOfferedForSale = seller !== null && waiting_for_payment;
+  const isSeller = seller?.node_id === activeIdentity.node_id;
+  const isBuyer =
+    buyer?.node_id === activeIdentity.node_id && waiting_for_payment;
+
+  if (isOfferedForSale) {
+    if (isBuyer) {
+      return (
+        <Buyer id={id} paid={paid} waiting_for_payment={waiting_for_payment} />
+      );
+    }
+
+    if (isSeller) {
+      return (
+        <Link to={routes.OFFER.replace(":id", id)}>
+          <Button className="w-full" size="md">
+            <FormattedMessage
+              id="bill.actions.offer.view"
+              defaultMessage="View payment status"
+              description="View offer payment status button"
+            />
+          </Button>
+        </Link>
+      );
+    }
+  }
+
   return (
     <div className="flex flex-col gap-3">
       {role === "holder" ? (

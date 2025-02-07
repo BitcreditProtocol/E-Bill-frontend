@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
@@ -19,12 +19,9 @@ function Details({ id }: { id: string }) {
     queryFn: () => getBillDetails(id),
   });
 
-  const { data: quote } = useSuspenseQuery({
+  const { data: quote } = useQuery({
     queryKey: ["quotes", id],
-    queryFn: () =>
-      getQuote(id).catch(() => {
-        return null;
-      }),
+    queryFn: () => getQuote(id).catch(() => null),
   });
 
   // if drawee and current identity node ids are the same, then the role is payer
@@ -65,7 +62,7 @@ function Details({ id }: { id: string }) {
         </>
       )}
 
-      {role === null ? <></> : <Actions role={role} {...data} />}
+      {<Actions role={role} {...data} />}
     </div>
   );
 }

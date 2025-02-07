@@ -17,6 +17,7 @@ import NavigateBack from "@/components/NavigateBack";
 import PageTitle from "@/components/typography/PageTitle";
 import Picture from "@/components/Picture";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { getBillDetails } from "@/services/bills";
@@ -26,6 +27,18 @@ import routes from "@/constants/routes";
 import type { BillFull } from "@/types/bill";
 import LoaderIcon from "@/assets/icons/loader.svg";
 import Preview from "./components/Preview";
+
+function Loader() {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center gap-6">
+      <Skeleton className="h-32 w-32 bg-elevation-250 rounded-xl" />
+
+      <Skeleton className="h-16 w-full bg-elevation-250" />
+      <Skeleton className="h-16 w-full bg-elevation-250" />
+      <Skeleton className="h-16 w-full bg-elevation-250" />
+    </div>
+  );
+}
 
 type PaymentProps = Pick<
   BillFull,
@@ -290,7 +303,7 @@ export default function Offer() {
         }
       />
 
-      <Suspense fallback={<>Loading</>}>
+      <Suspense fallback={<Loader />}>
         <Details />
       </Suspense>
     </Page>
