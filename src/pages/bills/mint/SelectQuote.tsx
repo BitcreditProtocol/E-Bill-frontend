@@ -7,8 +7,68 @@ import SectionTitle from "@/components/typography/SectionTitle";
 import Preview from "../components/Preview";
 import Quote from "./components/Quote";
 import { Button } from "@/components/ui/button";
+import { Link, useParams } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { acceptMint, getBillDetails } from "@/services/bills";
+import { Suspense } from "react";
+import { getQuote } from "@/services/quotes";
+import routes from "@/constants/routes";
+
+function Loader() {
+  return (
+    <div className="flex flex-col gap-6">
+      <Skeleton className="h-20 w-full bg-elevation-200" />
+    </div>
+  );
+}
+
+function Information({ id }: { id: string }) {
+  const { data: bill } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id),
+  });
+
+  return (
+    <Preview
+      name={bill.drawee.name}
+      date={bill.issue_date}
+      amount={Number(bill.sum) / 100_000_000}
+      currency="BTC"
+    />
+  );
+}
 
 export default function SelectQuote() {
+  const { id } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
+
+  const { data: bill } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id as string),
+  });
+
+  const { data: quote } = useSuspenseQuery({
+    queryKey: ["quotes", id as string],
+    queryFn: () => getQuote(id as string).catch(() => { return null }),
+    refetchInterval: 5_000,
+  });
+
+  // TODO: remove - fake accepting mint request here
+  const { mutate: __dev_doAcceptMint, isPending } = useMutation({
+    mutationFn: async () => {
+      await acceptMint({
+        bill_id: bill.id,
+        sum: String(Math.floor(Number(bill.sum) * (0.9 + Math.random() / 10))),
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["quotes", id],
+      });
+    },
+  });
+
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
       <Topbar
@@ -25,14 +85,13 @@ export default function SelectQuote() {
         trail={<></>}
       />
 
-      <div className="flex-1 flex flex-col gap-6">
-        <Preview
-          name="Pear, Inc"
-          date="31-Jan-2025"
-          amount={1.2311}
-          currency="BTC"
-        />
+      <div className="flex flex-col gap-6">
+        <Suspense fallback={<Loader />}>
+          <Information id={id as string} />
+        </Suspense>
+      </div>
 
+      <div className="flex-1 flex flex-col gap-6">
         <div className="flex flex-col gap-4">
           <SectionTitle>
             <FormattedMessage
@@ -43,8 +102,19 @@ export default function SelectQuote() {
           </SectionTitle>
 
           <div className="flex flex-col gap-3">
-            <Quote mintName="Wildcat One" rate={0.0001} status="pending" />
-            <Quote mintName="Whalers Mint" rate={0.0001} status="accepted" />
+            {id && quote ? (<>
+              <Link to={routes.PREVIEW_MINT.replace(":id", id)}>
+                <Quote mintName="Wildcat One" rate={
+                  1 - (Number(quote.sum) / Number(bill.sum))
+                } status="accepted" />
+              </Link>
+            </>) : (<div onClick={() => {
+                if (!isPending) {
+                  __dev_doAcceptMint()
+                }
+              }}>
+              <Quote mintName="Wildcat One" rate={0.0001} status="pending" />
+            </div>)}
             <Quote mintName="Fishermans Mint" rate={0.0001} status="declined" />
           </div>
         </div>
