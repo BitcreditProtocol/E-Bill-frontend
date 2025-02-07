@@ -62,10 +62,10 @@ export default function Received() {
         <div className="flex items-center gap-1">
           <FormattedCurrency
             className="text-lg font-medium"
-            value={Number(quote.sum) / 100_000_000}
+            value={Number(quote.sum)}
             type="credit"
           />
-          <span className="text-text-200 text-[10px] font-normal">BTC</span>
+          <span className="text-text-200 text-[10px] font-normal">sat</span>
         </div>
       </div>
 
@@ -82,8 +82,8 @@ export default function Received() {
           <Preview
             name={bill.drawee.name}
             date={bill.issue_date}
-            amount={Number(bill.sum) / 100_000_000}
-            currency="BTC"
+            amount={Number(bill.sum)}
+            currency={bill.currency}
           />
         </div>
 

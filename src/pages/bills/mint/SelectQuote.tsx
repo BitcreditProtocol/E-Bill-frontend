@@ -34,8 +34,8 @@ function Information({ id }: { id: string }) {
     <Preview
       name={bill.drawee.name}
       date={bill.issue_date}
-      amount={Number(bill.sum) / 100_000_000}
-      currency="BTC"
+      amount={Number(bill.sum)}
+      currency={bill.currency}
     />
   );
 }

@@ -151,8 +151,8 @@ export default function Preview() {
           <BillPreview
             name={bill.drawee.name}
             date={bill.issue_date}
-            amount={Number(bill.sum) / 100_000_000}
-            currency="BTC"
+            amount={Number(bill.sum)}
+            currency={bill.currency}
           />
         </Suspense>
       </div>
@@ -192,10 +192,10 @@ export default function Preview() {
                 <div className="flex items-center gap-1 self-end">
                   <FormattedCurrency
                     className="text-sm font-medium leading-5"
-                    value={Number(quote.sum)/ 100_000_000}
+                    value={Number(quote.sum)}
                     type="credit"
                   />
-                  <span className="text-text-200 text-[10px]">BTC</span>
+                  <span className="text-text-200 text-[10px]">sat</span>
                 </div>
               </Suspense>
             </div>
