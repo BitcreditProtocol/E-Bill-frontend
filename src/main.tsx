@@ -24,12 +24,6 @@ import "./index.css";
 import "./styles/fonts.css";
 import { BillsEmpty } from "./pages/Bills";
 
-import Draw from "./pages/bill/draw/Draw";
-import DrawFilled from "./pages/bill/draw/DrawFilled";
-import EditIssue from "./pages/bill/draw/EditIssue";
-import PlaceOfPayment from "./pages/bill/draw/Place";
-import BillSuccess from "./pages/bill/draw/Success";
-
 import Settings from "./pages/settings";
 import NotificationsSettings from "./pages/settings/Notifications";
 import Security from "./pages/settings/Security";
@@ -272,27 +266,6 @@ const router = createBrowserRouter(
           element: <ViewCompany />,
         },
       ],
-    },
-
-    {
-      path: "/draw-bill",
-      element: <Draw />,
-    },
-    {
-      path: "/draw-bill-filled",
-      element: <DrawFilled />,
-    },
-    {
-      path: "/edit-issue",
-      element: <EditIssue />,
-    },
-    {
-      path: "/place-of-payment",
-      element: <PlaceOfPayment />,
-    },
-    {
-      path: "/bill-success",
-      element: <BillSuccess />,
     },
   ],
   {
