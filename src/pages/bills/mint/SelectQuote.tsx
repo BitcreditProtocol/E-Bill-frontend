@@ -14,6 +14,7 @@ import { acceptMint, getBillDetails } from "@/services/bills";
 import { Suspense } from "react";
 import { getQuote } from "@/services/quotes";
 import routes from "@/constants/routes";
+import { MINT_LIST } from "@/constants/mints";
 
 function Loader() {
   return (
@@ -102,19 +103,23 @@ export default function SelectQuote() {
           </SectionTitle>
 
           <div className="flex flex-col gap-3">
-            {id && quote ? (<>
-              <Link to={routes.PREVIEW_MINT.replace(":id", id)}>
-                <Quote mintName="Wildcat One" rate={
-                  1 - (Number(quote.sum) / Number(bill.sum))
-                } status="accepted" />
-              </Link>
-            </>) : (<div onClick={() => {
-                if (!isPending) {
-                  __dev_doAcceptMint()
-                }
-              }}>
-              <Quote mintName="Wildcat One" status="pending" />
-            </div>)}
+            {MINT_LIST.filter((it) => it.enabled)
+              .map((it, index) => {
+                return (<div key={index} onClick={() => {
+                  if (!quote && !isPending) {
+                    __dev_doAcceptMint()
+                  }
+                }}>
+                  {quote ? (<>
+                    <Link to={routes.PREVIEW_MINT.replace(":id", quote.bill_id)}>
+                      <Quote mintName={it.name} rate={
+                        1 - (Number(quote.sum) / Number(bill.sum))
+                      } status="accepted" />
+                    </Link>
+                  </>) : (
+                    <Quote mintName={it.name} status="pending" />)}
+                </div>);
+              })}
             {/*
               <Quote mintName="Fishermans Mint" rate={0.0001} status="declined" />
             */}

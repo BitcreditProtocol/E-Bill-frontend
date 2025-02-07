@@ -16,6 +16,7 @@ import EcashToken from "./components/EcashToken";
 import { useMemo } from "react";
 import { useLanguage } from "@/context/language/LanguageContext";
 import { formatDateAndTime } from "@/utils/dates";
+import { WILDCAT_ONE } from "@/constants/mints";
 
 export default function Received() {
   const lang = useLanguage();
@@ -95,7 +96,7 @@ export default function Received() {
             />
           </Label>
 
-          <Mint name="Wildcat One" pubkey="npub1eajvs...agcd93" />
+          <Mint name={WILDCAT_ONE.name} nodeId={WILDCAT_ONE.node_id} />
         </div>
       </div>
 

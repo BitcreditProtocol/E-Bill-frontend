@@ -19,6 +19,7 @@ import routes from "@/constants/routes";
 import { getQuote } from "@/services/quotes";
 import { cn } from "@/lib/utils";
 import { CheckedState } from "@radix-ui/react-checkbox";
+import { MINT_LIST } from "@/constants/mints";
 
 type MintProps = {
   name: string;
@@ -71,14 +72,6 @@ function Information({ id }: { id: string }) {
   );
 }
 
-
-const MINTS = [
-  { name: "Wildcat One", enabled: true },
-  { name: "Fishermans Mint", enabled: false  },
-  { name: "Whalers Mint",  enabled: false  },
-];
-
-
 export default function RequestMint() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
@@ -105,12 +98,12 @@ export default function RequestMint() {
   }, [quote, navigate]);
 
   const { mutate: doRequestToMint, isPending } = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (mint_node: string) => {
       await requestToMint({
         bill_id: bill.id,
-        mint_node: "039180c169e5f6d7c579cf1cefa37bffd47a2b389c8125601f4068c87bea795943",
+        mint_node: mint_node,
         sum: bill.sum,
-        currency: "BTC",
+        currency: bill.currency,
       });
     },
     onSuccess: async () => {
@@ -133,7 +126,7 @@ export default function RequestMint() {
     },
   });
 
-  const [selectedMints, setSelectedMints] = useState<typeof MINTS>([]);
+  const [selectedMints, setSelectedMints] = useState<typeof MINT_LIST>([]);
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -169,7 +162,7 @@ export default function RequestMint() {
           </SectionTitle>
 
           <div className="flex flex-col gap-3 p-4 border border-divider-75 rounded-xl">
-            {MINTS.map((it, index) => (
+            {MINT_LIST.map((it, index) => (
               <div key={index} className="flex flex-col gap-3">
                 <Mint name={it.name}
                   disabled={!it.enabled}
@@ -177,7 +170,7 @@ export default function RequestMint() {
                   onChange={(checked) => {
                     setSelectedMints((current) => checked ? [...current, it] : current.filter((v) => v !== it));
                   }} />
-                {index < MINTS.length - 1 && (
+                {index < MINT_LIST.length - 1 && (
                   <Separator className="bg-divider-75" />
                 )}
               </div>
@@ -186,7 +179,7 @@ export default function RequestMint() {
         </div>
 
         <Button className="mt-auto" onClick={() => {
-           doRequestToMint();
+            doRequestToMint(selectedMints[0].node_id);
           }}
           disabled={selectedMints.length === 0 || isPending}>
           <FormattedMessage

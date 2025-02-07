@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/drawer";
 import { toast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
+import { WILDCAT_ONE } from "@/constants/mints";
 function Loader() {
   return (
     <div className="flex flex-col gap-6">
@@ -94,7 +95,6 @@ function ConfirmSign({ onConfirm } : { onConfirm: () => void }) {
     </Drawer>
   );
 }
-
 
 export default function Preview() {
   const navigate = useNavigate();
@@ -168,7 +168,7 @@ export default function Preview() {
               />
             </Label>
 
-            <Mint name="Wildcat One" pubkey="npub1eajvs...agcd93" />
+            <Mint name={WILDCAT_ONE.name} nodeId={WILDCAT_ONE.node_id} />
           </div>
 
           <div className="flex flex-col gap-2">
