@@ -989,9 +989,17 @@ function Preview() {
     },
     onError: () => {
       toast({
-        title: "Error",
-        description:
-          "Error while creating bill. Please review the information and try again.",
+        title: intl.formatMessage({
+          id: "bill.create.preview.error",
+          defaultMessage: "Error",
+          description: "Error toast title",
+        }),
+        description: intl.formatMessage({
+          id: "bill.create.preview.error.description",
+          defaultMessage:
+            "Error while creating bill. Please review the information and try again.",
+          description: "Error toast description",
+        }),
         position: "bottom-center",
       });
     },

@@ -109,7 +109,9 @@ function Information({ id }: { id: string }) {
             value={Number(data.sum)}
             type="credit"
           />
-          <span className="text-text-200 text-[10px] font-normal">SAT</span>
+          <span className="text-text-200 text-[10px] font-normal">
+            {data.currency}
+          </span>
         </div>
       </div>
 

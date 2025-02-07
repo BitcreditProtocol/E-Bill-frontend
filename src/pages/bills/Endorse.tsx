@@ -207,7 +207,7 @@ function Information({ id }: { id: string }) {
       name={data.drawee.name}
       date={data.issue_date}
       amount={Number(data.sum)}
-      currency="BTC"
+      currency={data.currency}
     />
   );
 }

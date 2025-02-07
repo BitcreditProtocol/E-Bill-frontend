@@ -558,26 +558,30 @@ export default function Actions({
 
   return (
     <div className="flex flex-col gap-3">
-      {role === "holder" ? (
-        <Holder
-          id={id}
-          accepted={accepted}
-          requested_to_accept={requested_to_accept}
-          requested_to_pay={requested_to_pay}
-          paid={paid}
-          endorsed={endorsed}
-          waiting_for_payment={waiting_for_payment}
-        />
+      {role !== null ? (
+        role === "holder" ? (
+          <Holder
+            id={id}
+            accepted={accepted}
+            requested_to_accept={requested_to_accept}
+            requested_to_pay={requested_to_pay}
+            paid={paid}
+            endorsed={endorsed}
+            waiting_for_payment={waiting_for_payment}
+          />
+        ) : (
+          <Payer
+            id={id}
+            accepted={accepted}
+            requested_to_accept={requested_to_accept}
+            requested_to_pay={requested_to_pay}
+            paid={paid}
+            endorsed={endorsed}
+            waiting_for_payment={waiting_for_payment}
+          />
+        )
       ) : (
-        <Payer
-          id={id}
-          accepted={accepted}
-          requested_to_accept={requested_to_accept}
-          requested_to_pay={requested_to_pay}
-          paid={paid}
-          endorsed={endorsed}
-          waiting_for_payment={waiting_for_payment}
-        />
+        <></>
       )}
     </div>
   );

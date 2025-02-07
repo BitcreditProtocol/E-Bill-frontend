@@ -38,7 +38,7 @@ function MintRequest() {
         name="Pear, Inc"
         date="31-Jan-2025"
         amount={1.2311}
-        currency="BTC"
+        currency="sat"
       />
     </div>
   );

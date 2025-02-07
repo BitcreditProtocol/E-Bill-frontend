@@ -147,6 +147,8 @@
   "bill.create.preview.details.placeOfPayment": "Place of payment",
   "bill.create.preview.details.sum": "The sum of",
   "bill.create.preview.details.toTheOrderOf": "To the order of",
+  "bill.create.preview.error": "Error",
+  "bill.create.preview.error.description": "Error while creating bill. Please review the information and try again.",
   "bill.endorse.endorsee": "Endorsee",
   "bill.endorse.sign": "Are you sure?",
   "bill.endorse.sign.cancel": "Cancel",

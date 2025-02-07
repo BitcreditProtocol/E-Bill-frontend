@@ -140,7 +140,7 @@ function RecentBills() {
           <Bill
             title={bill.drawer.name}
             amount={bill.sum}
-            currency={"BTC"}
+            currency={bill.currency}
             date={bill.issue_date}
           />
         </Link>
