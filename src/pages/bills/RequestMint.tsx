@@ -12,23 +12,37 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getBillDetails, requestToMint } from "@/services/bills";
-import { Suspense } from "react";
+import { Suspense, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
 import { getQuote } from "@/services/quotes";
+import { cn } from "@/lib/utils";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
-function Mint({ name }: { name: string }) {
+type MintProps = {
+  name: string;
+  checked: boolean;
+  onChange?: (c: CheckedState) => void;
+  disabled?: boolean;
+};
+
+function Mint({ name, checked, onChange, disabled = false }: MintProps) {
+  const checkboxRef = useRef<HTMLButtonElement>(null);
   return (
-    <div className="flex items-center justify-between">
+    <div className={cn("flex items-center justify-between", {
+      "cursor-pointer": !disabled,
+      "text-text-300": !disabled,
+      "text-text-200": disabled
+    })} onClick={() => { checkboxRef.current?.click(); }}>
       <div className="flex items-center gap-4">
         <div className="flex items-center justify-center h-10 w-10 bg-elevation-200 p-2.5 border border-divider-50 rounded-full">
-          <LandmarkIcon className="text-text-300 h-5 w-5 stroke-1" />
+          <LandmarkIcon className="h-5 w-5 stroke-1" />
         </div>
-        <span className="text-text-300 text-base font-medium">{name}</span>
+        <span className="text-base font-medium">{name}</span>
       </div>
 
-      <Checkbox />
+      <Checkbox ref={checkboxRef} checked={checked} disabled={disabled} onCheckedChange={onChange}/>
     </div>
   );
 }
@@ -58,6 +72,13 @@ function Information({ id }: { id: string }) {
 }
 
 
+const MINTS = [
+  { name: "Wildcat One", enabled: true },
+  { name: "Fishermans Mint", enabled: false  },
+  { name: "Whalers Mint",  enabled: false  },
+];
+
+
 export default function RequestMint() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
@@ -68,8 +89,8 @@ export default function RequestMint() {
     queryFn: () => getBillDetails(id as string),
   });
 
-  const { data: quote, isSuccess } = useSuspenseQuery({
-    queryKey: ["quotes", id as string],
+  const { data: quote } = useSuspenseQuery({
+    queryKey: ["quotes", id],
     queryFn: () => getQuote(id as string).catch(() => { return null }),
   });
 
@@ -101,6 +122,8 @@ export default function RequestMint() {
       navigate(routes.SELECT_QUOTE.replace(":id", id as string))
     },
   });
+
+  const [selectedMints, setSelectedMints] = useState<typeof MINTS>([]);
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -136,16 +159,24 @@ export default function RequestMint() {
           </SectionTitle>
 
           <div className="flex flex-col gap-3 p-4 border border-divider-75 rounded-xl">
-            <Mint name="Wildcat One" />
-            <Separator className="bg-divider-75" />
-            <Mint name="Fishermans Mint" />
-            <Separator className="bg-divider-75" />
-            <Mint name="Whalers Mint" />
+            {MINTS.map((it, index) => (
+              <div key={index} className="flex flex-col gap-3">
+                <Mint name={it.name}
+                  disabled={!it.enabled}
+                  checked={selectedMints.includes(it)}
+                  onChange={(checked) => {
+                    setSelectedMints((current) => checked ? [...current, it] : current.filter((v) => v !== it));
+                  }} />
+                {index < MINTS.length - 1 && (
+                  <Separator className="bg-divider-75" />
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
-        <Button className="mt-auto" disabled={isPending} onClick={() => {
-            if (quote && isSuccess) {
+        <Button className="mt-auto" disabled={selectedMints.length === 0 || isPending} onClick={() => {
+            if (quote) {
               if (quote.token === '') {
                 navigate(routes.SELECT_QUOTE.replace(":id", id as string))
               } else {
