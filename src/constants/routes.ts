@@ -12,12 +12,11 @@ const BILLS = "/bills";
 // todo: replace by /bills/:id once we integrate the api
 
 const SIGNUP = "signup";
-const VIEW_BILL = "bill";
+const VIEW_BILL = "bill/:id";
 const ISSUE_BILL = "issue-bill";
 const CREATE_BILL = "create-bill";
 const PREVIEW_BILL = "preview-bill";
 const MINT_BILL = "mint-bill";
-const SELL_BILL = "sell-bill";
 const CONTACTS = "contacts";
 const CREATE_CONTACT = "new";
 const VIEW_CONTACT = ":nodeId";
@@ -38,20 +37,21 @@ const IDENTITY_LIST = "/identity/list";
 const CREATE_COMPANY = "/company/create";
 const COMPANY_SIGNERS = "/company/signers";
 const EDIT_COMPANY = "/company/edit";
-// todo: replace by /company/:id once we integrate the api
 const VIEW_COMPANY = "/company";
 
 const CREATE_COMPANY_SUCCESS = "success";
 const AUTHORIZED_SIGNERS = "/authorized-signers";
-const ENDORSEMENTS = "/endorsements";
-const ENDORSE = "/endorse";
-const PAYMENT = "/payment";
-const PAY = "/pay";
+const ENDORSEMENTS = "bill/:id/endorsements";
+const ENDORSE = "/bill/:id/endorse";
+const PAYMENT = "/bill/:id/payment";
+const PAY = "/bill/:id/pay";
+const SELL_BILL = "/bill/:id/sell";
+const OFFER = "/bill/:id/offer";
 
-const REQUEST_MINT = "/request-mint";
-const SELECT_QUOTE = "/select-quote";
-const PREVIEW_MINT = "/preview-mint";
-const MINT_RECEIVED = "/mint-received";
+const REQUEST_MINT = "/bill/:id/request-mint";
+const SELECT_QUOTE = "/bill/:id/select-quote";
+const PREVIEW_MINT = "/bill/:id/preview-mint";
+const MINT_RECEIVED = "/bill/:id/mint-received";
 const MINT_REQUEST = "/mint-request";
 const ABOUT = "/about";
 const NOTIFICATIONS_SETTINGS = "/notifications-settings";
@@ -79,6 +79,8 @@ export default {
   PREVIEW_BILL,
   MINT_BILL,
   SELL_BILL,
+  OFFER,
+
   CONTACTS,
   CREATE_CONTACT,
   SIGNUP,

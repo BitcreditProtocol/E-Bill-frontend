@@ -7,6 +7,7 @@ import {
   SWITCH_IDENTITY,
 } from "@/constants/endpoints";
 import type { Identity } from "@/types/identity";
+import { apiFetch } from "@/utils/api";
 
 type UploadFileResponse = {
   file_upload_id: string;
@@ -16,16 +17,10 @@ export async function uploadFile(file: File): Promise<UploadFileResponse> {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch(UPLOAD_IDENTITY_FILE, {
+  return apiFetch<UploadFileResponse>(UPLOAD_IDENTITY_FILE, {
     method: "POST",
     body: formData,
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<UploadFileResponse>;
 }
 
 type CreateIdentityPayload = Pick<
@@ -50,19 +45,13 @@ type CreateIdentityResponse = Identity;
 export async function createIdentity(
   data: CreateIdentityPayload
 ): Promise<CreateIdentityResponse> {
-  const response = await fetch(CREATE_IDENTITY, {
+  return apiFetch<CreateIdentityResponse>(CREATE_IDENTITY, {
     method: "POST",
+    body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<CreateIdentityResponse>;
 }
 
 export type EditIdentityPayload = Partial<CreateIdentityPayload>;
@@ -70,57 +59,44 @@ export type EditIdentityPayload = Partial<CreateIdentityPayload>;
 export async function editIdentity(
   data: EditIdentityPayload
 ): Promise<Identity> {
-  const response = await fetch(EDIT_IDENTITY, {
+  return apiFetch<CreateIdentityResponse>(EDIT_IDENTITY, {
     method: "PUT",
+    body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<CreateIdentityResponse>;
 }
 
 type GetActiveIdentityResponse = {
+  type: number;
   node_id: string;
 };
 
 export async function getActiveIdentity(): Promise<GetActiveIdentityResponse> {
-  const response = await fetch(GET_ACTIVE_IDENTITY);
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<GetActiveIdentityResponse>;
+  return apiFetch<GetActiveIdentityResponse>(GET_ACTIVE_IDENTITY, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 type GetIdentityDetailsResponse = Identity;
 
 export async function getIdentityDetails(): Promise<GetIdentityDetailsResponse> {
-  const response = await fetch(GET_IDENTITY_DETAILS);
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
-
-  return response.json() as Promise<GetIdentityDetailsResponse>;
-}
-
-export async function switchIdentity(node_id: string): Promise<void> {
-  const response = await fetch(SWITCH_IDENTITY, {
-    method: "PUT",
+  return apiFetch<GetIdentityDetailsResponse>(GET_IDENTITY_DETAILS, {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ node_id }),
   });
+}
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.statusText}`);
-  }
+export async function switchIdentity(node_id: string) {
+  return apiFetch(SWITCH_IDENTITY, {
+    method: "PUT",
+    body: JSON.stringify({ node_id, type: 0 }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }

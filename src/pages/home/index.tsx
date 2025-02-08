@@ -1,17 +1,21 @@
+import { Suspense } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { FormattedMessage, useIntl } from "react-intl";
+import { ChartColumnIcon, LayoutListIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import Search from "@/components/ui/search";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import Picture from "@/components/Picture";
+import Bill from "@/components/Bill";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { getBalances } from "@/services/balances";
-import routes from "@/constants/routes";
+import { getBillsLight } from "@/services/bills";
 import { useIdentity } from "@/context/identity/IdentityContext";
-import Bills from "./components/Bills";
+import routes from "@/constants/routes";
+import Empty from "../bills/components/Empty";
 
 function Balances() {
   const { isPending, data } = useQuery({
@@ -109,12 +113,52 @@ function Balances() {
   );
 }
 
+function RecentBillsLoader() {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <Skeleton className="h-16 bg-elevation-200 rounded-lg" />
+      <Skeleton className="h-16 bg-elevation-200 rounded-lg" />
+      <Skeleton className="h-16 bg-elevation-200 rounded-lg" />
+    </div>
+  );
+}
+
+function RecentBills() {
+  const { data } = useSuspenseQuery({
+    queryKey: ["recent-bills"],
+    queryFn: getBillsLight,
+  });
+
+  return data.bills.length === 0 ? (
+    <div className="flex-1 flex flex-col items-center">
+      <Empty />
+    </div>
+  ) : (
+    <div className="flex flex-col gap-1.5">
+      {data.bills.slice(0, 3).map((bill) => (
+        <Link to={`/${routes.VIEW_BILL.replace(":id", bill.id)}`} key={bill.id}>
+          <Bill
+            title={bill.drawer.name}
+            amount={bill.sum}
+            currency={bill.currency}
+            date={bill.issue_date}
+          />
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 export default function Home() {
   const { activeIdentity } = useIdentity();
   const intl = useIntl();
 
   return (
-    <Page className="gap-6" displayBackgroundEllipse displayBottomNavigation>
+    <Page
+      className="gap-6 pb-20"
+      displayBackgroundEllipse
+      displayBottomNavigation
+    >
       <Topbar
         lead={
           <Link to={routes.IDENTITY_LIST}>
@@ -142,9 +186,43 @@ export default function Home() {
         }
       />
 
-      <div className="flex flex-col gap-8">
+      <div className="flex-1 flex flex-col gap-8">
         <Balances />
-        <Bills />
+
+        <div className="flex-1 flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <span className="text-text-300 text-sm font-medium leading-5">
+              <FormattedMessage
+                id="home.recentBills"
+                defaultMessage="Recent bills"
+                description="Recent bills section title for home page"
+              />
+            </span>
+            <Link to={routes.BILLS}>
+              <button className="flex items-center gap-1 p-0 text-brand-200 text-sm font-medium leading-5">
+                <FormattedMessage
+                  id="home.recentBills.list"
+                  defaultMessage="Bill list"
+                  description="Bill list link for home page"
+                />
+                <LayoutListIcon className="text-brand-200 h-4 w-4 stroke-1" />
+              </button>
+            </Link>
+          </div>
+
+          <Suspense fallback={<RecentBillsLoader />}>
+            <RecentBills />
+          </Suspense>
+
+          <button className="flex items-center gap-1 p-0 text-brand-200 text-sm font-medium leading-5 mx-auto">
+            <FormattedMessage
+              id="home.recentBills.cashflow"
+              defaultMessage="Cashflow"
+              description="Button to access the cashflow page"
+            />
+            <ChartColumnIcon className="text-brand-200 h-4 w-4 stroke-1" />
+          </button>
+        </div>
       </div>
     </Page>
   );

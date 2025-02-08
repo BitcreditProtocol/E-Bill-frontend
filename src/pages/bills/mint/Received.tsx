@@ -6,11 +6,39 @@ import NavigateBack from "@/components/NavigateBack";
 import Label from "@/components/typography/Label";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 
-import BillPreview from "../components/BillPreview";
+import Preview from "../components/Preview";
 import Mint from "./components/Mint";
-import EcashAddress from "./components/EcashAddress";
+import { useParams } from "react-router-dom";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { getBillDetails } from "@/services/bills";
+import { getQuote } from "@/services/quotes";
+import EcashToken from "./components/EcashToken";
+import { useMemo } from "react";
+import { useLanguage } from "@/context/language/LanguageContext";
+import { formatDateAndTime } from "@/utils/dates";
+import { WILDCAT_ONE } from "@/constants/mints";
 
 export default function Received() {
+  const lang = useLanguage();
+  const { id } = useParams<{ id: string }>();
+
+  const { data: bill } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id as string),
+  });
+
+  const { data: quote } = useSuspenseQuery({
+    queryKey: ["quotes", id as string],
+    queryFn: () => getQuote(id as string),
+  });
+
+  console.log(bill);
+
+  const lastEndorseBlocks = useMemo(() => {
+    const endorsements = bill.chain_of_blocks.blocks.filter((it) => it.op_code === 'Endorse');
+    return endorsements.length > 0 ? endorsements[endorsements.length - 1] : undefined;
+  }, [bill]);
+
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
       <Topbar lead={<NavigateBack />} trail={<></>} />
@@ -27,17 +55,17 @@ export default function Received() {
             />
           </h1>
 
-          <span className="text-text-200 text-base font-medium">
-            03-Nov-2024 at 10:55
-          </span>
+          {lastEndorseBlocks && (<span className="text-text-200 text-base font-medium">
+            {formatDateAndTime(new Date(lastEndorseBlocks.timestamp * 1000), lang.locale)}
+          </span>)}
         </div>
         <div className="flex items-center gap-1">
           <FormattedCurrency
             className="text-lg font-medium"
-            value={12.94101}
+            value={Number(quote.sum)}
             type="credit"
           />
-          <span className="text-text-200 text-[10px] font-normal">BTC</span>
+          <span className="text-text-200 text-[10px] font-normal">sat</span>
         </div>
       </div>
 
@@ -51,7 +79,12 @@ export default function Received() {
             />
           </Label>
 
-          <BillPreview company="Pear, Inc" date="31-Jan-2025" amount={1.2311} />
+          <Preview
+            name={bill.drawee.name}
+            date={bill.issue_date}
+            amount={Number(bill.sum)}
+            currency={bill.currency}
+          />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -63,11 +96,11 @@ export default function Received() {
             />
           </Label>
 
-          <Mint name="Wildcat One" pubkey="npub1eajvs...agcd93" />
+          <Mint name={WILDCAT_ONE.name} nodeId={WILDCAT_ONE.node_id} />
         </div>
       </div>
 
-      <EcashAddress address="bitcr2df3ee...s43ek1" />
+      <EcashToken token={quote.token} />
     </div>
   );
 }

@@ -1,58 +1,180 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Suspense, useState } from "react";
+import { useParams } from "react-router-dom";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { FormattedMessage } from "react-intl";
 import { ChevronRightIcon, UserIcon } from "lucide-react";
-
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
-import { FormattedCurrency } from "@/components/FormattedCurrency";
+import PageTitle from "@/components/typography/PageTitle";
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import ContactPicker from "@/components/Contact/ContactPicker";
+import Picture from "@/components/Picture";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+import { endorse, getBillDetails } from "@/services/bills";
+import Preview from "./components/Preview";
 
-function ConfirmSign({ hasAgreedToTerms }: { hasAgreedToTerms: boolean }) {
+function Endorsee({
+  endorsee,
+  setEndorsee,
+}: {
+  endorsee: {
+    type: number;
+    node_id: string;
+    name: string;
+    address: string;
+  } | null;
+  setEndorsee: ({
+    type,
+    node_id,
+    name,
+    address,
+  }: {
+    type: number;
+    node_id: string;
+    name: string;
+    address: string;
+  }) => void;
+}) {
+  return (
+    <ContactPicker
+      onSelect={(contact) => {
+        setEndorsee(contact);
+      }}
+    >
+      {endorsee ? (
+        <div className="flex items-center gap-3 py-4 px-3 border border-divider-75 border-dashed rounded-lg select-none">
+          <Picture
+            type={endorsee.type}
+            name={endorsee.name}
+            image=""
+            size="sm"
+          />
+          <div className="flex flex-col items-start">
+            <span className="text-text-300 text-base font-medium leading-6">
+              {endorsee.name}
+            </span>
+            <span className="text-text-200 text-xs font-normal leading-5">
+              {endorsee.address}
+            </span>
+          </div>
+        </div>
+      ) : (
+        <button className="flex items-center justify-between gap-2 py-5 px-4 w-full bg-elevation-200 border border-divider-50 rounded-lg">
+          <UserIcon className="text-text-300 h-5 w-5" />
+          <span className="w-full text-text-300 text-left text-sm font-medium">
+            <FormattedMessage
+              id="bill.endorse.endorsee"
+              defaultMessage="Endorsee"
+              description="Endorsee"
+            />
+          </span>
+          <ChevronRightIcon className="text-text-300 h-5 w-5" />
+        </button>
+      )}
+    </ContactPicker>
+  );
+}
+
+function ConfirmSign({
+  canSubmit,
+  id,
+  endorsee,
+}: {
+  canSubmit: boolean;
+  id: string;
+  endorsee: string;
+}) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      return endorse({
+        bill_id: id,
+        endorsee,
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["bills", id],
+      });
+
+      toast({
+        description: (
+          <FormattedMessage
+            id="bill.actions.requestAcceptance.success"
+            defaultMessage="Request sent successfully"
+            description="Request acceptance success toast message"
+          />
+        ),
+        position: "bottom-center",
+      });
+    },
+  });
+
   return (
     <Drawer>
       <DrawerTrigger>
-        <Button className="w-full" size="md" disabled={!hasAgreedToTerms}>
+        <Button className="w-full" size="md" disabled={!canSubmit}>
           <FormattedMessage
-            id="endorse.sign"
+            id="bill.endorse.sign"
             defaultMessage="Sign"
             description="Sign button"
           />
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="bg-elevation-50">
+      <DrawerContent className="max-w-[375px] bg-elevation-50 mx-auto">
         <div className="flex flex-col gap-6 py-8 px-5">
           <div className="flex flex-col gap-1.5">
             <span className="text-text-300 text-lg font-medium">
-              Are you sure?
+              <FormattedMessage
+                id="bill.endorse.sign"
+                defaultMessage="Are you sure?"
+                description="Endorsement signing"
+              />
             </span>
+
             <span className="text-text-200 text-xs">
-              The signing of the endorsement is legally binding
+              <FormattedMessage
+                id="bill.endorse.sign.description"
+                defaultMessage="The signing of the endorsement is legally binding"
+                description="Endorsement signing description"
+              />
             </span>
           </div>
 
           <div className="flex flex-col gap-3">
-            <Link to="/bill">
-              <Button className="w-full" size="md">
-                <FormattedMessage
-                  id="endorse.confirm"
-                  defaultMessage="Confirm"
-                  description="Confirm button"
-                />
-              </Button>
-            </Link>
+            <Button
+              className="w-full"
+              size="md"
+              onClick={() => {
+                mutate();
+              }}
+              disabled={!canSubmit || isPending}
+            >
+              <FormattedMessage
+                id="bill.endorse.sign.confirm"
+                defaultMessage="Confirm"
+                description="Confirm button"
+              />
+            </Button>
 
             <DrawerClose>
               <Button className="w-full" variant="outline" size="md">
                 <FormattedMessage
-                  id="endorse.cancel"
+                  id="bill.endorse.sign.cancel"
                   defaultMessage="Cancel"
                   description="Cancel button"
                 />
@@ -65,7 +187,39 @@ function ConfirmSign({ hasAgreedToTerms }: { hasAgreedToTerms: boolean }) {
   );
 }
 
+function Loader() {
+  return (
+    <div className="flex flex-col gap-6">
+      <Skeleton className="h-20 w-full bg-elevation-200" />
+      <Skeleton className="h-16 w-full bg-elevation-200" />
+    </div>
+  );
+}
+
+function Information({ id }: { id: string }) {
+  const { data } = useSuspenseQuery({
+    queryKey: ["bills", id],
+    queryFn: () => getBillDetails(id),
+  });
+
+  return (
+    <Preview
+      name={data.drawee.name}
+      date={data.issue_date}
+      amount={Number(data.sum)}
+      currency={data.currency}
+    />
+  );
+}
+
 export default function Endorse() {
+  const { id } = useParams<{ id: string }>();
+  const [endorsee, setEndorsee] = useState<{
+    type: number;
+    node_id: string;
+    name: string;
+    address: string;
+  } | null>(null);
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false);
 
   return (
@@ -73,61 +227,35 @@ export default function Endorse() {
       <Topbar
         lead={<NavigateBack />}
         middle={
-          <h1 className="text-text-300 text-base font-medium">
+          <PageTitle>
             <FormattedMessage
               id="endorse.title"
               defaultMessage="Endorse bill"
               description="Endorse title"
             />
-          </h1>
+          </PageTitle>
         }
-        trail={<></>}
       />
 
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between p-4 bg-elevation-200 border border-divider-50 rounded-lg">
-          <div className="flex flex-col gap-0.5">
-            <span className="text-text-300 text-base font-medium leading-6">
-              Google Inc
-            </span>
-            <span className="text-text-200 text-xs font-normal leading-[18px]">
-              03-Nov-24
-            </span>
-          </div>
+        <Suspense fallback={<Loader />}>
+          <Information id={id as string} />
 
-          <div className="flex items-center gap-1 self-end">
-            <FormattedCurrency
-              className="text-sm"
-              value={12.94101}
-              type="credit"
-            />
-            <span className="text-text-200 text-[10px]">BTC</span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <span className="text-text-300 text-sm font-normal">
-            <FormattedMessage
-              id="endorse.orderOf"
-              defaultMessage="to the order of"
-              description="Order of endorsement"
-            />
-          </span>
-          <button className="flex items-center justify-between gap-2 py-5 px-4 bg-elevation-200 border border-divider-50 rounded-lg">
-            <UserIcon className="text-text-300 h-5 w-5" />
-            <span className="w-full text-text-300 text-left text-sm font-medium">
+          <div className="flex flex-col gap-1">
+            <span className="text-text-300 text-sm font-normal leading-5">
               <FormattedMessage
-                id="endorse.endorsee"
-                defaultMessage="Endorsee"
-                description="Endorsee"
+                id="endorse.orderOf"
+                defaultMessage="to the order of"
+                description="Order of endorsement"
               />
             </span>
-            <ChevronRightIcon className="text-text-300 h-5 w-5" />
-          </button>
-        </div>
+
+            <Endorsee endorsee={endorsee} setEndorsee={setEndorsee} />
+          </div>
+        </Suspense>
       </div>
 
-      <div className="flex-1 flex flex-col gap-3 justify-end">
+      <div className="flex-1 flex flex-col justify-end gap-3">
         <div
           className="flex items-center gap-2"
           onClick={() => {
@@ -138,13 +266,18 @@ export default function Endorse() {
 
           <span className="text-text-300 text-base font-medium">
             <FormattedMessage
-              id="endorse.termsAndConditions"
+              id="bill.endorse.termsAndConditions"
               defaultMessage="I agree to the Terms and conditions"
               description="Terms and conditions"
             />
           </span>
         </div>
-        <ConfirmSign hasAgreedToTerms={hasAgreedToTerms} />
+
+        <ConfirmSign
+          canSubmit={hasAgreedToTerms && endorsee !== null}
+          id={id as string}
+          endorsee={endorsee?.node_id as string}
+        />
       </div>
     </div>
   );

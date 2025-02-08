@@ -1,4 +1,7 @@
-import { useSearchParams } from "react-router-dom";
+import { Suspense } from "react";
+import { useParams } from "react-router-dom";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { format, parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
 import {
   CircleCheckIcon,
@@ -7,14 +10,61 @@ import {
   LandmarkIcon,
 } from "lucide-react";
 
-import { FormattedCurrency } from "@/components/FormattedCurrency";
+import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
+import { FormattedCurrency } from "@/components/FormattedCurrency";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+import { getBillDetails, getPrivateKey } from "@/services/bills";
+import { getActiveIdentity } from "@/services/identity_v2";
+import { copyToClipboard } from "@/utils";
 import LoaderIcon from "@/assets/icons/loader.svg";
+import Preview from "./components/Preview";
 
-export default function Payment() {
-  const [searchParams] = useSearchParams();
-  const status = searchParams.get("status") || "pending";
+function Loader() {
+  return (
+    <div className="flex flex-col items-center gap-6">
+      <Skeleton className="h-24 w-32 bg-elevation-200" />
+      <Skeleton className="h-20 w-full bg-elevation-200" />
+      <Skeleton className="h-20 w-full bg-elevation-200" />
+      <Skeleton className="h-20 w-full bg-elevation-200" />
+    </div>
+  );
+}
+
+function Information({ id }: { id: string }) {
+  const { toast } = useToast();
+
+  const { data: activeIdentity } = useSuspenseQuery({
+    queryFn: () => getActiveIdentity(),
+    queryKey: ["identity", "active"],
+  });
+
+  const { data } = useSuspenseQuery({
+    queryFn: () => getBillDetails(id),
+    queryKey: ["bill", id],
+  });
+
+  const isPayer = data.drawee.node_id === activeIdentity.node_id;
+  const isHolder =
+    (data.endorsee && data.endorsee.node_id === activeIdentity.node_id) ||
+    data.payee.node_id === activeIdentity.node_id;
+
+  const role = isPayer ? "payer" : isHolder ? "holder" : null;
+
+  const { data: privateKeyData } = useQuery({
+    queryFn: () => getPrivateKey(id),
+    queryKey: ["bill", id, "private_key"],
+    enabled: role === "holder",
+  });
+
+  const status =
+    data.requested_to_pay && !data.paid
+      ? "pending"
+      : data.paid
+      ? "success"
+      : "failed";
 
   const statusMessage = {
     pending: "Pending",
@@ -28,39 +78,40 @@ export default function Payment() {
     failed: "Payment failed",
   }[status];
 
-  return (
-    <div className="flex flex-col min-h-fit h-screen gap-6 py-12 px-6 w-full">
-      <Topbar lead={<NavigateBack />} />
+  const icon = {
+    pending: <img src={LoaderIcon} alt="Loader" className="w-12 h-12" />,
+    success: (
+      <CircleCheckIcon className="text-signal-success w-12 h-12 stroke-1" />
+    ),
+    failed: <CircleXIcon className="text-signal-error w-12 h-12 stroke-1" />,
+  }[status];
 
+  return (
+    <>
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-2 text-center">
-          {status === "pending" && (
-            <img src={LoaderIcon} alt="Loader" className="w-12 h-12" />
-          )}
-
-          {status === "success" && (
-            <CircleCheckIcon className="text-signal-success w-12 h-12 stroke-1" />
-          )}
-
-          {status === "failed" && (
-            <CircleXIcon className="text-signal-error w-12 h-12 stroke-1" />
-          )}
+          {icon}
 
           <h1 className="text-text-300 text-2xl font-medium">
             {statusMessage}
           </h1>
 
           <span className="text-text-200 text-base font-medium">
-            03-Nov-2024 at 10:55
+            {format(
+              new Date(data.time_of_drawing * 1000),
+              "dd-MMM-yyyy 'at' HH:mm"
+            )}
           </span>
         </div>
         <div className="flex items-center gap-1">
           <FormattedCurrency
             className="text-lg font-medium"
-            value={12.94101}
+            value={Number(data.sum)}
             type="credit"
           />
-          <span className="text-text-200 text-[10px] font-normal">BTC</span>
+          <span className="text-text-200 text-[10px] font-normal">
+            {data.currency}
+          </span>
         </div>
       </div>
 
@@ -71,31 +122,21 @@ export default function Payment() {
               {billPaymentMessage}
             </span>
 
-            <div className="flex items-center justify-between p-4 bg-elevation-200 border border-divider-50 rounded-lg">
-              <div className="flex flex-col gap-0.5">
-                <span className="text-text-300 text-base font-medium leading-6">
-                  Google Inc
-                </span>
-                <span className="text-text-200 text-xs font-normal leading-[18px]">
-                  03-Nov-24
-                </span>
-              </div>
-
-              <div className="flex items-center gap-1 self-end">
-                <FormattedCurrency
-                  className="text-sm"
-                  value={12.94101}
-                  type="credit"
-                />
-                <span className="text-text-200 text-[10px]">BTC</span>
-              </div>
-            </div>
+            <Preview
+              name={data.payee.name}
+              date={format(
+                new Date(parseISO(data.issue_date)).toUTCString(),
+                "dd-MMM-yyyy"
+              )}
+              amount={Number(data.sum)}
+              currency="SAT"
+            />
           </div>
 
           <div className="flex flex-col gap-3">
             <span className="text-text-300 text-sm font-medium">
               <FormattedMessage
-                id="payment.info.from"
+                id="bill.payment.info.from"
                 defaultMessage="Payment from"
                 description="Payment from label"
               />
@@ -107,10 +148,10 @@ export default function Payment() {
               </div>
               <div className="flex flex-col">
                 <span className="text-text-300 text-base font-medium leading-6">
-                  Danube Water Shipping
+                  {data.drawer.name}
                 </span>
                 <span className="text-text-200 text-xs font-normal leading-[18px]">
-                  Pinksterhof 20, 2134DP, Vienna
+                  {data.drawer.address}
                 </span>
               </div>
             </div>
@@ -118,30 +159,72 @@ export default function Payment() {
         </div>
 
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <span className="text-text-300 text-sm font-medium">
-              <FormattedMessage
-                id="payment.info.address"
-                defaultMessage="Address to pay"
-                description="Address to pay label"
-              />
-            </span>
-
-            <div className="flex items-center gap-2">
-              <span className="max-w-64 text-text-200 text-base font-normal leading-6 break-all">
-                3Zh5j2xioLjUuNapxBHxgMWXyQVYYPHyUkJcRS7xfTBc
+          {role === "holder" && (
+            <div className="flex flex-col gap-2">
+              <span className="text-text-300 text-sm font-medium">
+                <FormattedMessage
+                  id="bill.payment.info.privateKey"
+                  defaultMessage="Private key spend"
+                  description="Address to private key spend"
+                />
               </span>
 
-              <button className="">
-                <CopyIcon className="text-text-300 w-4 h-4 stroke-1" />
-              </button>
-            </div>
-          </div>
+              <div className="flex items-center gap-2">
+                <span className="max-w-64 text-text-200 text-base font-normal leading-6 break-all">
+                  {privateKeyData?.private_key}
+                </span>
 
-          <div className="flex flex-col gap-2">
+                <button
+                  className="p-0"
+                  onClick={() => {
+                    copyToClipboard(privateKeyData?.private_key || "")
+                      .then(() => {
+                        toast({
+                          description: "Private key copied to clipboard",
+                          position: "bottom-center",
+                        });
+                      })
+                      .catch(() => {
+                        toast({
+                          description:
+                            "Failed to copy private key to clipboard",
+                          position: "bottom-center",
+                        });
+                      });
+                  }}
+                >
+                  <CopyIcon className="text-text-200 w-4 h-4 stroke-1" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {role === "payer" && (
+            <div className="flex flex-col gap-2">
+              <span className="text-text-300 text-sm font-medium">
+                <FormattedMessage
+                  id="bill.payment.info.address"
+                  defaultMessage="Address to pay"
+                  description="Address to pay label"
+                />
+              </span>
+
+              <div className="flex items-center gap-2">
+                <span className="max-w-64 text-text-200 text-base font-normal leading-6 break-all">
+                  {data.address_to_pay}
+                </span>
+
+                <button className="">
+                  <CopyIcon className="text-text-200 w-4 h-4 stroke-1" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* <div className="flex flex-col gap-2">
             <span className="text-text-300 text-sm font-medium">
               <FormattedMessage
-                id="payment.info.link"
+                id="bill.payment.info.link"
                 defaultMessage="Link to pay"
                 description="Link to pay label"
               />
@@ -149,16 +232,30 @@ export default function Payment() {
 
             <div className="flex items-center gap-2">
               <span className="max-w-64 text-text-200 text-base font-normal leading-6 break-all">
-                Bitcoin..352cd
+                {data.link_to_pay}
               </span>
 
               <button className="">
                 <CopyIcon className="text-text-300 w-4 h-4 stroke-1" />
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
-    </div>
+    </>
+  );
+}
+
+export default function Payment() {
+  const { id } = useParams<{ id: string }>();
+
+  return (
+    <Page className="gap-6" displayBottomNavigation>
+      <Topbar lead={<NavigateBack />} />
+
+      <Suspense fallback={<Loader />}>
+        <Information id={id as string} />
+      </Suspense>
+    </Page>
   );
 }

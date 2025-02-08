@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
 import Big from "big.js";
 import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -10,6 +12,7 @@ import {
   CalendarIcon,
   ChevronRightIcon,
   MapIcon,
+  PaperclipIcon,
   PencilIcon,
   RefreshCwIcon,
   UserIcon,
@@ -28,23 +31,38 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Upload from "@/components/Upload";
+import Picture from "@/components/Picture";
+import { Separator } from "@/components/ui/separator";
+import { FormattedCurrency } from "@/components/FormattedCurrency";
+import { useIdentity } from "@/context/identity/IdentityContext";
 import { useActiveIdentity } from "@/hooks/use-active-identity";
+import { createBill, uploadFiles } from "@/services/bills";
 import { cn } from "@/lib/utils";
+import routes from "@/constants/routes";
 import BitcoinIcon from "@/assets/bitcoin-icon.svg";
 import ThreePartiesIcon from "@/assets/icons/three-parties.svg";
 import SelfDraftedIcon from "@/assets/icons/self-drafted.svg";
 import PromissoryNoteIcon from "@/assets/icons/promissory-note.svg";
+import { useToast } from "@/hooks/use-toast";
 
 const BILL_TYPE = {
-  DRAFT: 0,
+  DRAFT: 2,
   SELF_DRAFTED: 1,
-  PROMISSORY_NOTE: 2,
+  PROMISSORY_NOTE: 0,
 };
 
 const formSchema = z.object({
   type: z.number(),
-  payee: z.string().min(1),
-  drawee: z.string().min(1),
+  payee: z.object({
+    node_id: z.string(),
+    name: z.string(),
+    address: z.string(),
+  }),
+  drawee: z.object({
+    node_id: z.string(),
+    name: z.string(),
+    address: z.string(),
+  }),
   issue_date: z.string().min(1),
   maturity_date: z.string().min(1),
   sum: z.string().min(1),
@@ -54,7 +72,59 @@ const formSchema = z.object({
   country_of_payment: z.string().min(1),
   city_of_payment: z.string().min(1),
   language: z.string().min(1),
+  file_upload_id: z.string().min(1).optional(),
 });
+
+function UploadInvoiceFile() {
+  const { formatMessage: f } = useIntl();
+  const { watch, setValue } = useFormContext();
+
+  const { mutate } = useMutation({
+    mutationFn: (file: File) => {
+      return uploadFiles([file]);
+    },
+    onSuccess: (data) => {
+      setValue("file_upload_id", data.file_upload_id);
+    },
+  });
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Upload
+        label={f({
+          id: "bills.create.upload.invoice",
+          defaultMessage: "Upload invoice",
+          description: "Upload invoice label",
+        })}
+        description={f({
+          id: "bills.create.upload.invoice.acceptedFormats",
+          defaultMessage: "PDF, PNG or JPG (max. 5mb)",
+          description: "Accepted file formats",
+        })}
+        onAddFile={(file) => {
+          mutate(file);
+        }}
+        onRemoveFile={() => {
+          setValue("file_upload_id", "");
+        }}
+      />
+      <span className="text-text-300 text-sm font-normal leading-5">
+        <FormattedMessage
+          id="bills.create.noProtest"
+          defaultMessage="No protest."
+          description="No protest label"
+        />{" "}
+        {watch("file_upload_id") && (
+          <FormattedMessage
+            id="bills.create.valueReceived"
+            defaultMessage="Value received."
+            description="Value received label"
+          />
+        )}
+      </span>
+    </div>
+  );
+}
 
 function CategoryOption({
   icon,
@@ -109,6 +179,7 @@ function Category() {
   const { setValue } = useFormContext();
   const { formatMessage: f } = useIntl();
   const { identityDetails, isLoading } = useActiveIdentity();
+  const { activeIdentity } = useIdentity();
 
   return (
     <div className="flex flex-col gap-8">
@@ -135,6 +206,12 @@ function Category() {
           <Skeleton className="h-16 w-full bg-elevation-200" />
         ) : (
           <div className="flex items-center gap-3 py-4 px-3 bg-elevation-200 border border-divider-50 rounded-lg">
+            <Picture
+              name={activeIdentity.name}
+              image={activeIdentity.avatar}
+              type={activeIdentity.type === "personal" ? 0 : 1}
+              size="sm"
+            />
             <div className="flex flex-col mr-auto">
               <span className="text-text-300 text-base font-medium leading-6">
                 {identityDetails?.name}
@@ -143,7 +220,6 @@ function Category() {
                 {identityDetails?.address}
               </span>
             </div>
-
             <button className="p-0">
               <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
             </button>
@@ -296,7 +372,11 @@ function Issuance() {
             />
 
             <DatePicker
-              label="Issue date"
+              label={f({
+                id: "bills.create.issuance.issueDate",
+                defaultMessage: "Issue date",
+                description: "Issue date label",
+              })}
               mode="single"
               value={{ from: parseISO(watch("issue_date") as string) }}
               onChange={(e) => {
@@ -360,7 +440,9 @@ function Payee() {
         address: identityDetails.address,
       });
 
-      setValue("payee", node_id);
+      setValue("payee.node_id", node_id);
+      setValue("payee.name", identityDetails.name);
+      setValue("payee.address", identityDetails.address);
     }
   }, [
     billType,
@@ -389,6 +471,10 @@ function Payee() {
             <ContactPicker
               onSelect={(contact) => {
                 setPayee(contact);
+
+                setValue("payee.node_id", contact.node_id);
+                setValue("payee.name", contact.name);
+                setValue("payee.address", contact.address);
               }}
             >
               <button className="p-0">
@@ -401,6 +487,10 @@ function Payee() {
         <ContactPicker
           onSelect={(contact) => {
             setPayee(contact);
+
+            setValue("payee.node_id", contact.node_id);
+            setValue("payee.name", contact.name);
+            setValue("payee.address", contact.address);
           }}
         >
           <button className="flex items-center gap-2 py-5 px-4 w-full bg-elevation-200 border border-divider-50 rounded-lg">
@@ -428,10 +518,22 @@ function CalculateDiscount() {
     rate: number;
   } | null>(null);
 
+  const { toast } = useToast();
+
   return (
     <Drawer
       open={open}
       onOpenChange={() => {
+        if (watch("issue_date") === "" || watch("maturity_date") === "") {
+          toast({
+            title: "Error",
+            description: "Please select issue and maturity date first",
+            position: "bottom-center",
+          });
+
+          return;
+        }
+
         setOpen((prev) => !prev);
       }}
     >
@@ -536,7 +638,9 @@ function Payer() {
         address: identityDetails.address,
       });
 
-      setValue("payer", node_id);
+      setValue("payer.node_id", node_id);
+      setValue("payer.name", identityDetails.name);
+      setValue("payer.address", identityDetails.address);
     }
   }, [
     billType,
@@ -566,6 +670,10 @@ function Payer() {
               <ContactPicker
                 onSelect={(contact) => {
                   setPayer(contact);
+
+                  setValue("payer.node_id", contact.node_id);
+                  setValue("payer.name", contact.name);
+                  setValue("payer.address", contact.address);
                 }}
               >
                 <PencilIcon className="text-text-300 h-4 w-4 stroke-1" />
@@ -577,6 +685,10 @@ function Payer() {
         <ContactPicker
           onSelect={(contact) => {
             setPayer(contact);
+
+            setValue("payer.node_id", contact.node_id);
+            setValue("payer.name", contact.name);
+            setValue("payer.address", contact.address);
           }}
         >
           <button className="flex items-center gap-2 py-5 px-4 w-full bg-elevation-200 border border-divider-50 rounded-lg">
@@ -703,7 +815,7 @@ function Payment() {
   );
 }
 
-function Information() {
+function Information({ setPreview }: { setPreview: () => void }) {
   const { register, watch } = useFormContext();
 
   return (
@@ -716,7 +828,7 @@ function Information() {
         />
       </span>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mb-auto">
         <Issuance />
 
         <div className="flex flex-col gap-2">
@@ -788,25 +900,281 @@ function Information() {
 
         <Payment />
 
-        <div className="flex flex-col gap-2">
-          <Upload
-            label="Upload invoice"
-            description="PDF, PNG or JPG (max. 5mb)"
-          />
-          <span className="text-text-300 text-sm font-normal leading-5">
-            <FormattedMessage
-              id="bills.create.noProtest"
-              defaultMessage="No protest."
-              description="No protest label"
-            />
-          </span>
+        <UploadInvoiceFile />
+      </div>
+
+      <Button size="md" onClick={setPreview}>
+        <FormattedMessage
+          id="bills.create.preview"
+          defaultMessage="Preview"
+          description="Preview button"
+        />
+      </Button>
+    </div>
+  );
+}
+
+// todo: move this one to bill card and render conditionally if previewing
+
+function Property({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | React.ReactNode;
+}) {
+  return (
+    <div className="flex justify-between items-start px-5">
+      <span className="flex-1 text-text-200 text-xs font-normal pt-0.5">
+        {label}
+      </span>
+      {typeof value === "string" ? (
+        <div className="flex-1 text-text-300 text-sm font-medium text-right">
+          {value}
+        </div>
+      ) : (
+        <>{value}</>
+      )}
+    </div>
+  );
+}
+
+function Preview() {
+  const intl = useIntl();
+  const navigate = useNavigate();
+  const { getValues } = useFormContext();
+  const { toast } = useToast();
+  const { activeIdentity } = useIdentity();
+
+  const formattedIssueDate = format(
+    parseISO(getValues("issue_date") as string),
+    "dd-MMM-yyyy"
+  );
+  const formattedMaturityDate = format(
+    parseISO(getValues("maturity_date") as string),
+    "dd-MMM-yyyy"
+  );
+  const issuingInformation = `${getValues("city_of_issuing") as string}, ${
+    getValues("country_of_issuing") as string
+  }, ${formattedIssueDate}`;
+  const placeOfPayment = `${getValues("city_of_payment") as string}, ${
+    getValues("country_of_payment") as string
+  }`;
+
+  const { mutate } = useMutation({
+    mutationFn: () =>
+      createBill({
+        country_of_issuing: getValues("country_of_issuing") as string,
+        city_of_issuing: getValues("city_of_issuing") as string,
+        issue_date: getValues("issue_date") as string,
+        maturity_date: getValues("maturity_date") as string,
+        sum: getValues("sum") as string,
+        currency: getValues("currency") as string,
+        language: getValues("language") as string,
+        country_of_payment: getValues("country_of_payment") as string,
+        city_of_payment: getValues("city_of_payment") as string,
+        type: getValues("type") as number,
+        payee: getValues("payee.node_id") as string,
+        drawee: getValues("payer.node_id") as string,
+        file_upload_id: getValues("file_upload_id") as string,
+      }),
+    onSuccess: (data) => {
+      toast({
+        title: "Success!",
+        description: "Bill created successfully",
+        position: "bottom-center",
+      });
+
+      navigate("/" + routes.VIEW_BILL.replace(":id", data.id));
+    },
+    onError: () => {
+      toast({
+        title: intl.formatMessage({
+          id: "bill.create.preview.error",
+          defaultMessage: "Error",
+          description: "Error toast title",
+        }),
+        description: intl.formatMessage({
+          id: "bill.create.preview.error.description",
+          defaultMessage:
+            "Error while creating bill. Please review the information and try again.",
+          description: "Error toast description",
+        }),
+        position: "bottom-center",
+      });
+    },
+  });
+
+  return (
+    <div className="flex-1 flex flex-col">
+      <div className="flex flex-col border border-divider-50 rounded-xl select-none mb-auto">
+        <div className="flex flex-col gap-3 p-5 bg-elevation-200 rounded-xl">
+          <div className="flex justify-between">
+            <div className="flex flex-col gap-1">
+              <span className="text-text-200 text-sm font-medium">
+                {issuingInformation}
+              </span>
+
+              <h2 className="text-text-300 text-base font-medium">
+                <FormattedMessage
+                  id="bill.create.preview.details.billOfExchange"
+                  defaultMessage="Against this bill of exchange"
+                  description="Heading for bill preview page"
+                />
+              </h2>
+            </div>
+
+            <button className="h-fit p-0">
+              <PaperclipIcon className="text-text-300 w-5 h-5 stroke-1" />
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-0.5">
+            <Separator className="bg-divider-300" />
+            <Separator className="bg-divider-300" />
+            <Separator className="bg-divider-300" />
+          </div>
+
+          <div className="flex flex-col gap-3 bg-elevation-200 rounded-b-2xl">
+            <div className="flex flex-col gap-3 py-3 bg-elevation-50 border-[1px] border-divider-75 rounded-t-xl rounded-b-2xl">
+              <Property
+                label={intl.formatMessage({
+                  id: "bill.create.preview.details.payOn",
+                  defaultMessage: "Pay on",
+                  description: "Pay on property for bill card",
+                })}
+                value={formattedMaturityDate}
+              />
+              <Separator />
+
+              <Property
+                label={intl.formatMessage({
+                  id: "bill.create.preview.details.toTheOrderOf",
+                  defaultMessage: "To the order of",
+                  description: "To the order of property for bill card",
+                })}
+                value={
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-text-300 text-sm font-medium leading-5">
+                      {getValues("payee.name")}
+                    </span>
+                    <span className="text-text-200 text-xs font-normal leading-normal">
+                      {getValues("payee.address")}
+                    </span>
+                  </div>
+                }
+              />
+              <Separator />
+
+              <Property
+                label={intl.formatMessage({
+                  id: "bill.create.preview.details.sum",
+                  defaultMessage: "The sum of",
+                  description: "Sum property for bill card",
+                })}
+                value={
+                  <FormattedCurrency
+                    value={Number(getValues("sum") as string)}
+                    color="none"
+                    signDisplay="never"
+                  />
+                }
+              />
+              <Separator />
+
+              <Property
+                label={intl.formatMessage({
+                  id: "bill.create.preview.details.payer",
+                  defaultMessage: "Payer",
+                  description: "Payer property for bill card",
+                })}
+                value={
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-text-300 text-sm font-medium leading-5">
+                      {getValues("payer.name")}
+                    </span>
+                    <span className="text-text-200 text-xs font-normal leading-normal">
+                      {getValues("payer.address")}
+                    </span>
+                  </div>
+                }
+              />
+              <Separator />
+
+              <Property
+                label={intl.formatMessage({
+                  id: "bill.create.preview.details.drawer",
+                  defaultMessage: "Drawer",
+                  description: "Drawer property for bill card",
+                })}
+                value={
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-text-300 text-sm font-medium leading-5">
+                      {activeIdentity.name}
+                    </span>
+                    <span className="text-text-200 text-xs font-normal leading-normal">
+                      {activeIdentity.address}
+                    </span>
+                  </div>
+                }
+              />
+              <Separator />
+
+              <Property
+                label={intl.formatMessage({
+                  id: "bill.create.preview.details.placeOfPayment",
+                  defaultMessage: "Place of payment",
+                  description: "Place of payment property for bill card",
+                })}
+                value={placeOfPayment}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-0.5">
+            <Separator className="bg-divider-300" />
+            <Separator className="bg-divider-300" />
+            <Separator className="bg-divider-300" />
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <span className="text-text-300 text-sm font-medium">
+              <FormattedMessage
+                id="bill.create.preview.details.noProtest"
+                defaultMessage="No protest."
+                description="No protest copy for bill card"
+              />
+              {getValues("file_upload_id") !== "" && (
+                <FormattedMessage
+                  id="bills.create.preview.details.valueReceived"
+                  defaultMessage="Value received."
+                  description="Value received label"
+                />
+              )}
+            </span>
+          </div>
         </div>
       </div>
+
+      <Button
+        className="w-full"
+        size="md"
+        onClick={() => {
+          mutate();
+        }}
+      >
+        <FormattedMessage
+          id="bills.create.sign"
+          defaultMessage="Sign"
+          description="Sign bill creation button"
+        />
+      </Button>
     </div>
   );
 }
 
 export default function Create() {
+  const [isPreview, setIsPreview] = useState(false);
   const defaultIssueDate = format(new Date(), "yyyy-MM-dd");
 
   const methods = useForm({
@@ -818,11 +1186,15 @@ export default function Create() {
       issue_date: defaultIssueDate,
       maturity_date: "",
       sum: "0",
-      currency: "",
+      currency: "sat",
+      language: "en-US",
+      // default to current user identity info
       country_of_issuing: "AT",
       city_of_issuing: "Vienna",
+      // default to selected contact info
       country_of_payment: "AT",
       city_of_payment: "Vienna",
+      file_upload_id: "",
     },
   });
 
@@ -849,7 +1221,17 @@ export default function Create() {
         }
       />
       <FormProvider {...methods}>
-        {billType == -1 ? <Category /> : <Information />}
+        {isPreview ? (
+          <Preview />
+        ) : billType == -1 ? (
+          <Category />
+        ) : (
+          <Information
+            setPreview={() => {
+              setIsPreview(true);
+            }}
+          />
+        )}
       </FormProvider>
     </Page>
   );

@@ -1,4 +1,5 @@
 import { Suspense, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useMutation,
   useQueryClient,
@@ -7,8 +8,10 @@ import {
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
+  CalendarIcon,
   MailIcon,
   MapIcon,
   MapPinIcon,
@@ -25,8 +28,11 @@ import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/DatePicker/datePicker";
+import { useIdentity } from "@/context/identity/IdentityContext";
 import { editCompany, getCompanyDetails } from "@/services/company";
 import { useToast } from "@/hooks/use-toast";
+import routes from "@/constants/routes";
 import { messages } from "./components/messages";
 
 function Loader() {
@@ -57,6 +63,7 @@ const formSchema = z.object({
 });
 
 function Form({ companyId }: { companyId: string }) {
+  const navigate = useNavigate();
   const [isDataValid, setIsDataValid] = useState(false);
   const { formatMessage: f } = useIntl();
   const { data } = useSuspenseQuery({
@@ -119,62 +126,90 @@ function Form({ companyId }: { companyId: string }) {
   });
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-6">
+      <Summary identityType={1} name={data.name} nodeId={data.id} picture="" />
+
       <FormProvider {...methods}>
-        <Input
-          {...methods.register("name")}
-          label={f(messages["company.name"])}
-          icon={<UserIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          required
-        />
-        <Input
-          {...methods.register("email")}
-          label={f(messages["company.email"])}
-          icon={<MailIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          required
-        />
-        <CountrySelector
-          label={f(messages["company.country"])}
-          callback={(country) => {
-            methods.setValue("country", country);
-          }}
-          value={methods.watch("country")}
-        />
-        <Input
-          {...methods.register("city")}
-          label={f(messages["company.city"])}
-          icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
-        />
-        <Input
-          {...methods.register("zip")}
-          label={f(messages["company.zip"])}
-          icon={<MapPinIcon className="text-text-300 h-5 w-5 stroke-1" />}
-        />
+        <div className="flex flex-col gap-3">
+          <Input
+            {...methods.register("name")}
+            label={f(messages["company.name"])}
+            icon={<UserIcon className="text-text-300 h-5 w-5 stroke-1" />}
+            required
+          />
+          <Input
+            {...methods.register("email")}
+            label={f(messages["company.email"])}
+            icon={<MailIcon className="text-text-300 h-5 w-5 stroke-1" />}
+            required
+          />
+          <CountrySelector
+            label={f(messages["company.country"])}
+            callback={(country) => {
+              methods.setValue("country", country);
+            }}
+            value={methods.watch("country")}
+          />
+          <Input
+            {...methods.register("city")}
+            label={f(messages["company.city"])}
+            icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
+          />
+          <Input
+            {...methods.register("zip")}
+            label={f(messages["company.zip"])}
+            icon={<MapPinIcon className="text-text-300 h-5 w-5 stroke-1" />}
+          />
 
-        <Input
-          {...methods.register("address")}
-          label={f(messages["company.address"])}
-          icon={<MapPinnedIcon className="text-text-300 h-5 w-5 stroke-1" />}
-        />
+          <Input
+            {...methods.register("address")}
+            label={f(messages["company.address"])}
+            icon={<MapPinnedIcon className="text-text-300 h-5 w-5 stroke-1" />}
+          />
 
-        <CountrySelector
-          label={f(messages["company.country_of_registration"])}
-          callback={(country) => {
-            methods.setValue("country_of_registration", country);
-          }}
-          value={methods.watch("country_of_registration")}
-        />
-        <Input
-          {...methods.register("city_of_registration")}
-          label={f(messages["company.city_of_registration"])}
-          icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
-        />
+          <DatePicker
+            mode="single"
+            value={{ from: parseISO(methods.watch("registration_date")) }}
+            customComponent={
+              <button className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg">
+                <CalendarIcon className="text-text-300 h-5 w-5 stroke-1" />
+                {(methods.watch("registration_date") &&
+                  format(
+                    parseISO(methods.watch("registration_date")),
+                    "dd-MMM-yyyy"
+                  )) ||
+                  f(messages["company.registration_date"])}
+              </button>
+            }
+            onChange={(date) => {
+              methods.setValue(
+                "registration_date",
+                format(date.from as unknown as string, "yyyy-MM-dd")
+              );
+            }}
+          />
 
-        <Input
-          {...methods.register("registration_number")}
-          label={f(messages["company.registration_number"])}
-          icon={<ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />}
-        />
+          <CountrySelector
+            label={f(messages["company.country_of_registration"])}
+            callback={(country) => {
+              methods.setValue("country_of_registration", country);
+            }}
+            value={methods.watch("country_of_registration")}
+          />
+          <Input
+            {...methods.register("city_of_registration")}
+            label={f(messages["company.city_of_registration"])}
+            icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
+          />
+
+          <Input
+            {...methods.register("registration_number")}
+            label={f(messages["company.registration_number"])}
+            icon={
+              <ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />
+            }
+          />
+        </div>
       </FormProvider>
 
       <div className="flex items-center gap-3 py-4 mt-2">
@@ -183,6 +218,9 @@ function Form({ companyId }: { companyId: string }) {
           variant="outline"
           size="sm"
           disabled={isPending}
+          onClick={() => {
+            navigate(routes.VIEW_COMPANY);
+          }}
         >
           <FormattedMessage
             id="company.edit.cancel"
@@ -210,11 +248,10 @@ function Form({ companyId }: { companyId: string }) {
 }
 
 export default function Edit() {
-  // todo: retrieve from context
-  const companyId = "1";
+  const { activeIdentity } = useIdentity();
 
   return (
-    <Page className="gap-5">
+    <Page className="gap-6">
       <Topbar
         lead={<NavigateBack />}
         middle={
@@ -228,18 +265,9 @@ export default function Edit() {
         }
       />
 
-      <div className="flex flex-col gap-6">
-        <Summary
-          identityType={1}
-          name="Company Name"
-          nodeId="0x1234567890"
-          picture=""
-        />
-
-        <Suspense fallback={<Loader />}>
-          <Form companyId={companyId} />
-        </Suspense>
-      </div>
+      <Suspense fallback={<Loader />}>
+        <Form companyId={activeIdentity.node_id} />
+      </Suspense>
     </Page>
   );
 }

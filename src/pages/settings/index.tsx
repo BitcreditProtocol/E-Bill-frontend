@@ -20,6 +20,7 @@ import LanguagePreference from "./components/LanguagePreference";
 import Agreements from "./components/Agreements";
 import Theme from "./components/Theme";
 import MenuOption from "./components/MenuOption";
+import { WILDCAT_ONE } from "@/constants/mints";
 
 export default function Settings() {
   const intl = useIntl();
@@ -42,6 +43,7 @@ export default function Settings() {
       <ViewDetails
         type={activeIdentity.type}
         name={activeIdentity.name}
+        // todo: replace by node id
         bitcoin_public_key={"1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"}
       />
 
@@ -108,7 +110,7 @@ export default function Settings() {
                 defaultMessage: "Mints",
                 description: "Mints menu item",
               })}
-              defaultValue="Wildcat One"
+              defaultValue={WILDCAT_ONE.name}
             />
           </Link>
           <Separator className="bg-divider-75" />

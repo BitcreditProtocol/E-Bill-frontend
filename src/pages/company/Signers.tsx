@@ -26,9 +26,16 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import ContactPicker from "@/components/Contact/ContactPicker";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getCompanySigners, removeSignatory } from "@/services/company";
+import { useToast } from "@/hooks/use-toast";
+import {
+  addSignatory,
+  getCompanySigners,
+  removeSignatory,
+} from "@/services/company";
+import { useIdentity } from "@/context/identity/IdentityContext";
 
 type RemoveSignerProps = {
   id: string;
@@ -39,6 +46,7 @@ type RemoveSignerProps = {
 function RemoveSigner({ id, name, companyId }: RemoveSignerProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => {
@@ -52,6 +60,17 @@ function RemoveSigner({ id, name, companyId }: RemoveSignerProps) {
 
       await queryClient.invalidateQueries({
         queryKey: ["company", "signers", companyId],
+      });
+
+      toast({
+        description: (
+          <FormattedMessage
+            id="company.signer.remove.success"
+            defaultMessage="Authorized signer removed successfully"
+            description="Delete company authorized signer success message"
+          />
+        ),
+        position: "bottom-center",
       });
     },
   });
@@ -143,19 +162,53 @@ function Signer({ companyId, id, name, address, avatar }: SignerProps) {
   );
 }
 
-function AddSigner() {
+function AddSigner({ company_id }: { company_id: string }) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const { mutate } = useMutation({
+    mutationFn: ({ node_id }: { node_id: string }) => {
+      return addSignatory({
+        id: company_id,
+        signatory_node_id: node_id,
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["company", "signers", company_id],
+      });
+
+      toast({
+        description: (
+          <FormattedMessage
+            id="company.signer.add.success"
+            defaultMessage="Authorized signer added successfully"
+            description="Add company authorized signer success message"
+          />
+        ),
+        position: "bottom-center",
+      });
+    },
+  });
+
   return (
-    <button className="flex items-center gap-2 py-6 px-3 border border-divider-75 bg-elevation-200 rounded-xl">
-      <UserIcon className="text-text-300 h-6 w-6 stroke-1" />
-      <span className="text-text-300 text-sm font-medium leading-5 mr-auto">
-        <FormattedMessage
-          id="company.signer.add"
-          defaultMessage="Add authorized signer"
-          description="Add company authorized signer button"
-        />
-      </span>
-      <ChevronRightIcon className="text-text-300 h-4 w-4 stroke-1" />
-    </button>
+    <ContactPicker
+      onSelect={(contact) => {
+        mutate({ node_id: contact.node_id });
+      }}
+    >
+      <button className="flex items-center gap-2 py-6 px-3 w-full border border-divider-75 bg-elevation-200 rounded-xl">
+        <UserIcon className="text-text-300 h-6 w-6 stroke-1" />
+        <span className="text-text-300 text-sm font-medium leading-5 mr-auto">
+          <FormattedMessage
+            id="company.signer.add"
+            defaultMessage="Add authorized signer"
+            description="Add company authorized signer button"
+          />
+        </span>
+        <ChevronRightIcon className="text-text-300 h-4 w-4 stroke-1" />
+      </button>
+    </ContactPicker>
   );
 }
 
@@ -191,7 +244,10 @@ function List({ companyId }: { companyId: string }) {
   );
 }
 
+// todo: refactor the node id retrieval. not looking good.
 export default function Signers() {
+  const { activeIdentity } = useIdentity();
+
   return (
     <Page className="gap-5">
       <Topbar
@@ -207,17 +263,22 @@ export default function Signers() {
         }
       />
 
-      <Summary
-        identityType={1}
-        name="Company Name"
-        nodeId="0x1234567890"
-        picture=""
-      />
+      {activeIdentity.node_id && (
+        <Summary
+          identityType={1}
+          name={activeIdentity.name}
+          nodeId={activeIdentity.node_id}
+          picture={activeIdentity.avatar}
+        />
+      )}
 
       <Suspense fallback={<Loader />}>
-        <List companyId="1" />
+        <List companyId={activeIdentity.node_id} />
       </Suspense>
-      <AddSigner />
+
+      {activeIdentity.node_id && (
+        <AddSigner company_id={activeIdentity.node_id} />
+      )}
     </Page>
   );
 }

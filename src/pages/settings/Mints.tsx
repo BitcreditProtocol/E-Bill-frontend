@@ -5,6 +5,19 @@ import NavigateBack from "@/components/NavigateBack";
 import ViewDetails from "@/components/Identity/ViewDetails";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { Label } from "./components/Typography";
+import { useEffect, useState } from "react";
+import { WILDCAT_ONE } from "@/constants/mints";
+
+const formatUptime = (uptime: number) => {
+  let secondsLeft = Math.floor(uptime / 1_000);
+  const days = Math.floor(secondsLeft / (60 * 60 * 24));
+  secondsLeft = secondsLeft - (days * 60 * 60 * 24);
+  const hours = Math.floor(secondsLeft / (60 * 60));
+  secondsLeft = secondsLeft - (hours * 60 * 60);
+  const minutes = Math.floor(secondsLeft / (60));
+  secondsLeft = secondsLeft - (minutes * 60);
+  return `${days ? String(days) + 'd' : ''} ${String(hours)}h ${String(minutes)}m ${String(secondsLeft)}s`;
+};
 
 function Property({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -18,6 +31,15 @@ function Property({ label, value }: { label: string; value: React.ReactNode }) {
 export default function Mints() {
   const intl = useIntl();
 
+  const [uptime, setUptime] = useState(Date.now() - WILDCAT_ONE.restart_timestamp);
+
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      setUptime(Date.now() - WILDCAT_ONE.restart_timestamp)
+    }, 1_000);
+    return () => { clearInterval(timerId); };
+  }, []);
+
   return (
     <Page className="gap-4">
       <Topbar lead={<NavigateBack />} />
@@ -25,8 +47,8 @@ export default function Mints() {
       <div className="flex flex-col gap-4 mt-2">
         <ViewDetails
           type="company"
-          name="Wildcat One"
-          bitcoin_public_key="1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"
+          name={WILDCAT_ONE.name}
+          bitcoin_public_key={WILDCAT_ONE.node_id}
         />
 
         <div className="flex flex-col gap-4 py-6 px-4 border border-divider-75 rounded-xl">
@@ -109,7 +131,7 @@ export default function Mints() {
               })}
               value={
                 <span className="text-signal-success text-sm font-mono font-medium leading-5">
-                  97d 5h 10s
+                  {formatUptime(uptime)}
                 </span>
               }
             />
