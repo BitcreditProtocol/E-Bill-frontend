@@ -81,7 +81,7 @@ function Payment({
             <button
               className="p-0"
               onClick={() => {
-                copyToClipboard("data.address_to_pay")
+                copyToClipboard(address_to_pay)
                   .then(() => {
                     toast({
                       description: f({
