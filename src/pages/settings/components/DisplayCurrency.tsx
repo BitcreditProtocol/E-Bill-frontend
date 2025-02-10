@@ -6,7 +6,7 @@ import CurrencySelector from "@/components/CurrencySelector";
 
 export default function DisplayCurrency() {
   const intl = useIntl();
-  const [currency, setCurrency] = useState("SAT");
+  const [currency, setCurrency] = useState("sat");
 
   return (
     <CurrencySelector

@@ -91,7 +91,7 @@ export default function CurrencySelector({ children, onChange }: CurrencySelecto
             </div>
             <Separator className="bg-divider-75" />
 
-            <div className="flex items-center gap-4 cursor-pointer" onClick={() => { _onChange("SAT"); }}>
+            <div className="flex items-center gap-4 cursor-pointer" onClick={() => { _onChange("sat"); }}>
               <div className="flex items-center justify-center rounded-full">
                 <img
                   src={BitcoinCurrencyIcon}
@@ -102,7 +102,7 @@ export default function CurrencySelector({ children, onChange }: CurrencySelecto
 
               <div className="flex flex-col gap-0.5">
                 <Label>Bitcoin</Label>
-                <Description>SAT</Description>
+                <Description>sat</Description>
               </div>
             </div>
           </div>

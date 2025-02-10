@@ -100,7 +100,7 @@ type CashFlowChartProps = {
 export default function ChashFlowChart({ values }: CashFlowChartProps) {
   const intl = useIntl();
   const data = useMemo(() => toChartData(values), [values]);
-  const [currency, setCurrency] = useState("SAT");
+  const [currency, setCurrency] = useState("sat");
 
   const projection = useMemo(() => {
     const base = data.at(data.length - 1);

@@ -21,7 +21,9 @@ function Details({ id }: { id: string }) {
 
   const { data: quote } = useQuery({
     queryKey: ["quotes", id],
-    queryFn: () => getQuote(id).catch(() => null),
+    queryFn: () => getQuote(id).then((quote) => {
+      return quote.quote_id === "" ? null : quote;
+    }).catch(() => { return null })
   });
 
   // if drawee and current identity node ids are the same, then the role is payer
