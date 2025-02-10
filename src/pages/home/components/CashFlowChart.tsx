@@ -32,14 +32,20 @@ const formatYAxisLabel = (intl: IntlShape, amount: number) => {
   if (amount > -1_000 && amount < 1_000) {
     return intl.formatNumber(amount, {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
+      maximumFractionDigits: 0,
     });
   }
+  if (amount > -1_000_000 && amount < 1_000_000) {
+    return `${intl.formatNumber(amount / 1_000, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })}k`;
+  }
 
-  return `${intl.formatNumber(amount / 1_000, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}k`;
+  return `${intl.formatNumber(amount / 1_000 / 1_000, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })}m`;
 };
 
 type ChartPoint = {
@@ -150,7 +156,7 @@ export default function ChashFlowChart({ values }: CashFlowChartProps) {
           >
             <XAxis dataKey="date" />
             <YAxis orientation="right" tick={({ x, y, payload } : {x :number, y:number, payload: ChartPoint}) => {
-              return (<text x={x + 25} y={y + 5} fill="#8D8579" textAnchor="middle" >{formatYAxisLabel(intl, payload.value)}</text>)
+              return (<text x={x + 25} y={y + 5} fill="#8D8579" textAnchor="middle" font-size="0.75rem">{formatYAxisLabel(intl, payload.value)}</text>)
             }} />
             <Tooltip cursor={true} isAnimationActive={true} />
             <Line type="step" dataKey="value" stroke="#1B0F00" />
