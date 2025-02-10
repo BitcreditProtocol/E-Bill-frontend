@@ -461,6 +461,8 @@
   "onboarding.screens.second": "B2B direct credit. no middlemen. Easier financing, better terms.",
   "onboarding.screens.third": "Practical, clear, and organised. Your finances at your fingertips.",
   "page.cashflow.title": "Cash flow",
+  "page.chartflow.chart.max.label": "Max",
+  "page.chartflow.chart.min.label": "Min",
   "page.chartflow.chart.projection.label": "Projection",
   "page.chartflow.chart.text_empty": "No data available",
   "page.chartflow.chart.title": "Cash flow",

@@ -5,6 +5,7 @@ import type { BillFull } from "@/types/bill";
 import { FormattedMessage, FormattedNumber, IntlShape, useIntl } from "react-intl";
 import { RotateCwSquareIcon } from "lucide-react";
 import CurrencySelector from "./CurrencySelector";
+import { FormattedCurrency } from "@/components/FormattedCurrency";
 
 const extrapolate = (values: number[]) => {
   if (values.length < 2) {
@@ -103,7 +104,10 @@ export default function ChashFlowChart({ values }: CashFlowChartProps) {
   const projection = useMemo(() => {
     const base = data.at(data.length - 1);
     return base !== undefined ? calcProjectionPercent(data.map((it) => it.value)) : undefined;
-  }, [data])
+  }, [data]);
+
+  const min = useMemo(() => Math.min(...data.map((it) => it.value)), [data]);
+  const max = useMemo(() => Math.max(...data.map((it) => it.value)), [data]);
 
   return (
     <div className="flex flex-col gap-2 w-full bg-elevation-200 border-[1px] border-divider-50 rounded-lg">
@@ -144,6 +148,45 @@ export default function ChashFlowChart({ values }: CashFlowChartProps) {
             />
           </div>
         </div>)}
+
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-text-300 font-mono">
+              <FormattedMessage
+                id="page.chartflow.chart.min.label"
+                defaultMessage="Min"
+                description="Minimum label for Cash flow chart"
+              />
+            </span>
+            <div className="flex gap-1 items-center">
+              <FormattedCurrency
+                className="text-sm font-mono"
+                value={min}
+                color="none"
+                signDisplay="negative"
+              />
+              <span className="text-text-200 text-[10px] font-normal">SAT</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-text-300 font-mono">
+              <FormattedMessage
+                id="page.chartflow.chart.max.label"
+                defaultMessage="Max"
+                description="Maximum label for Cash flow chart"
+              />
+            </span>
+            <div className="flex gap-1 items-center">
+              <FormattedCurrency
+                className="text-sm font-mono"
+                value={max}
+                color="none"
+                signDisplay="negative"
+              />
+              <span className="text-text-200 text-[10px] font-normal">SAT</span>
+            </div>
+          </div>
+        </div>
       </div>
       {data.length === 0 ? (<div className="flex justify-center p-8 text-xs text-text-200">
         <FormattedMessage
