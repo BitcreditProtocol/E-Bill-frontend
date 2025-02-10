@@ -102,7 +102,7 @@ export default function CurrencySelector({ children, onChange }: CurrencySelecto
 
               <div className="flex flex-col gap-0.5">
                 <Label>Bitcoin</Label>
-                <Description>sat</Description>
+                <Description>SAT</Description>
               </div>
             </div>
           </div>
