@@ -7,6 +7,7 @@ import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { Label } from "./components/Typography";
 import { useEffect, useState } from "react";
 import { WILDCAT_ONE } from "@/constants/mints";
+import { Switch } from "@/components/ui/switch";
 
 const formatUptime = (uptime: number) => {
   let secondsLeft = Math.floor(uptime / 1_000);
@@ -28,6 +29,10 @@ function Property({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
+type MintConfig = {
+  __dev_mintViewEnabled?: boolean
+};
+
 export default function Mints() {
   const intl = useIntl();
 
@@ -39,6 +44,22 @@ export default function Mints() {
     }, 1_000);
     return () => { clearInterval(timerId); };
   }, []);
+
+  const [mintConfig, setMintConfig] = useState<MintConfig>({});
+
+  useEffect(() => {
+    const rawMintConfig = localStorage.getItem('bitcr-mint-config');
+    const parsedMintConfig = rawMintConfig !== null ? JSON.parse(rawMintConfig) as MintConfig | undefined : undefined;
+    if (parsedMintConfig) {
+      setMintConfig(parsedMintConfig);
+    }
+  }, []);
+
+  const toggleMintConfigEnabled = () => {
+    const newConfig = {...mintConfig, __dev_mintViewEnabled: !mintConfig.__dev_mintViewEnabled };
+    setMintConfig(newConfig);
+    localStorage.setItem('bitcr-mint-config', JSON.stringify(newConfig));
+  }
 
   return (
     <Page className="gap-4">
@@ -172,6 +193,13 @@ export default function Mints() {
               }
             />
           </div>
+        </div>
+
+        <div className="flex items-center justify-between px-2 py-2">
+          <Label>
+              Mint view (dev)
+          </Label>
+          <Switch checked={mintConfig.__dev_mintViewEnabled} onCheckedChange={() => { toggleMintConfigEnabled(); }}/>
         </div>
       </div>
     </Page>
