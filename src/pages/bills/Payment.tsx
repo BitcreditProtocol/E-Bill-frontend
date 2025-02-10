@@ -129,7 +129,7 @@ function Information({ id }: { id: string }) {
                 "dd-MMM-yyyy"
               )}
               amount={Number(data.sum)}
-              currency="SAT"
+              currency="sat"
             />
           </div>
 
