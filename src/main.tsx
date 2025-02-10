@@ -73,6 +73,7 @@ import NonAcceptance from "./pages/recourse/NonAcceptance";
 import NonPayment from "./pages/recourse/NonPayment";
 
 import { Toaster } from "./components/ui/toaster";
+import CashFlow from "./pages/home/CashFlow";
 
 const queryClient = new QueryClient();
 
@@ -100,7 +101,7 @@ const router = createBrowserRouter(
         },
         {
           path: routes.CASHFLOW,
-          element: <Home />,
+          element: <CashFlow />,
         },
         {
           path: routes.SETTINGS,

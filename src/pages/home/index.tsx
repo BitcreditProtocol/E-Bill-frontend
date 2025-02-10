@@ -214,14 +214,16 @@ export default function Home() {
             <RecentBills />
           </Suspense>
 
-          <button className="flex items-center gap-1 p-0 text-brand-200 text-sm font-medium leading-5 mx-auto">
-            <FormattedMessage
-              id="home.recentBills.cashflow"
-              defaultMessage="Cashflow"
-              description="Button to access the cashflow page"
-            />
-            <ChartColumnIcon className="text-brand-200 h-4 w-4 stroke-1" />
-          </button>
+          <Link to={routes.CASHFLOW}>
+            <button className="flex items-center gap-1 p-0 text-brand-200 text-sm font-medium leading-5 mx-auto">
+              <FormattedMessage
+                id="home.recentBills.cashflow"
+                defaultMessage="Cashflow"
+                description="Button to access the cashflow page"
+              />
+              <ChartColumnIcon className="text-brand-200 h-4 w-4 stroke-1" />
+            </button>
+          </Link>
         </div>
       </div>
     </Page>
