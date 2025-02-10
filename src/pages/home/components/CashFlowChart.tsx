@@ -4,6 +4,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import type { BillFull } from "@/types/bill";
 import { FormattedMessage, FormattedNumber, IntlShape, useIntl } from "react-intl";
 import { RotateCwSquareIcon } from "lucide-react";
+import CurrencySelector from "./CurrencySelector";
 
 const extrapolate = (values: number[]) => {
   if (values.length < 2) {
@@ -118,7 +119,7 @@ export default function ChashFlowChart({ values }: CashFlowChartProps) {
           <RotateCwSquareIcon size={16} strokeWidth={1} color="#1B0F00" />
         </div>
 
-        {data.length > 0 && (<>
+        {data.length > 0 && (<div>
           <div className="flex items-center justify-between gap-2">
             {projection !== undefined && (
               <div className="flex items-center gap-2">
@@ -134,8 +135,15 @@ export default function ChashFlowChart({ values }: CashFlowChartProps) {
                 </div>
               </div>
             )}
+            <div className="flex-1"></div>
+            <CurrencySelector
+              value="BTC"
+              onChange={(currency) => {
+                console.log(currency);
+              }}
+            />
           </div>
-        </>)}
+        </div>)}
       </div>
       {data.length === 0 ? (<div className="flex justify-center p-8 text-xs text-text-200">
         <FormattedMessage
