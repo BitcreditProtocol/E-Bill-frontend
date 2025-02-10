@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "VITE_BITCR_API_MOCK_ENABLE=true vite",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "build:dev": "NODE_ENV=development npm run build -- --mode development",
     "build:crowdin": "VITE_BITCR_DEV_INCLUDE_CROWDIN_IN_CONTEXT_TOOLING=true npm run build:dev",
