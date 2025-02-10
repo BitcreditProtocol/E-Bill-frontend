@@ -1,11 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 import type { BillFull } from "@/types/bill";
 import { FormattedMessage, FormattedNumber, IntlShape, useIntl } from "react-intl";
-import { RotateCwSquareIcon } from "lucide-react";
-import CurrencySelector from "./CurrencySelector";
+import { ChevronDownIcon, RotateCwSquareIcon } from "lucide-react";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
+import CurrencySelector from "@/components/CurrencySelector";
 
 const extrapolate = (values: number[]) => {
   if (values.length < 2) {
@@ -100,6 +100,7 @@ type CashFlowChartProps = {
 export default function ChashFlowChart({ values }: CashFlowChartProps) {
   const intl = useIntl();
   const data = useMemo(() => toChartData(values), [values]);
+  const [currency, setCurrency] = useState("sat");
 
   const projection = useMemo(() => {
     const base = data.at(data.length - 1);
@@ -141,11 +142,14 @@ export default function ChashFlowChart({ values }: CashFlowChartProps) {
             )}
             <div className="flex-1"></div>
             <CurrencySelector
-              value="BTC"
-              onChange={(currency) => {
-                console.log(currency);
-              }}
-            />
+              value={currency}
+              onChange={(currency) => { setCurrency(currency); }}
+            >
+              <button className="flex items-center text-text-300">
+                <span className="text-xs font-medium leading-[18px]">{currency}</span>
+                <ChevronDownIcon className="h-4 w-4" strokeWidth={1} />
+              </button>
+            </CurrencySelector>
           </div>
         </div>)}
 
