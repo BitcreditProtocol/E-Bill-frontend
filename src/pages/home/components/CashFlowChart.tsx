@@ -6,6 +6,9 @@ import { FormattedMessage, FormattedNumber, IntlShape, useIntl } from "react-int
 import { RotateCwSquareIcon } from "lucide-react";
 
 const extrapolate = (values: number[]) => {
+  if (values.length < 2) {
+    return undefined;
+  }
   const xs = values.map((_, i) => i);
   const slope = (values[values.length - 1] - values[values.length - 2]) / (xs[xs.length - 1] - xs[xs.length - 2]);
   const extrapolated = values[values.length - 1] + slope * (values.length - xs[xs.length - 1]);
@@ -18,6 +21,9 @@ const calcProjectionPercent = (values: number[]) => {
   if (base === undefined || base === 0) return undefined;
 
   const extrapolated = extrapolate(values);
+  if (extrapolated === undefined) {
+    return undefined;
+  }
   const percentage = (extrapolated - base) / base * 100;
   return Math.abs(percentage) * (extrapolated < base ? -1 : 1);
 };
@@ -57,7 +63,7 @@ const toChartData = (values: Pick<BillFull, 'sum' | 'issue_date'>[]) : ChartPoin
   }));
 };
 
-const ProjectedValue = ({ value }: {value : number }) => {
+const ProjectedValue = ({ value }: { value : number }) => {
   const val = <FormattedNumber 
     value={value}
     minimumFractionDigits={2}
@@ -108,18 +114,20 @@ export default function ChashFlowChart({ values }: CashFlowChartProps) {
 
         {data.length > 0 && (<>
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-text-300 font-medium">
-                <FormattedMessage
-                  id="page.chartflow.chart.projection.label"
-                  defaultMessage="Projection"
-                  description="Projection label for Cash flow chart"
-                />
-              </span>
-              <div>
-                {projection !== undefined && (<ProjectedValue value={projection} />)}
+            {projection !== undefined && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-text-300 font-medium">
+                  <FormattedMessage
+                    id="page.chartflow.chart.projection.label"
+                    defaultMessage="Projection"
+                    description="Projection label for Cash flow chart"
+                  />
+                </span>
+                <div>
+                  <ProjectedValue value={projection} />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </>)}
       </div>
