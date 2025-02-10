@@ -99,6 +99,10 @@ const router = createBrowserRouter(
           element: <Home />,
         },
         {
+          path: routes.CASHFLOW,
+          element: <Home />,
+        },
+        {
           path: routes.SETTINGS,
           element: <Settings />,
         },
