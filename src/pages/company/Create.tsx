@@ -45,7 +45,6 @@ function LogoUpload() {
       return uploadFile(file);
     },
     onSuccess: (data) => {
-      console.log(data);
       setValue("logo_file_upload_id", data.file_upload_id);
     },
   });

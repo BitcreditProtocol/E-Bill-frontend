@@ -34,6 +34,8 @@ const CREATE_IDENTITY = "/identity/create";
 const UPLOAD_IDENTITY_FILE = "/identity/upload";
 const EDIT_IDENTITY = "/identity/change";
 const SWITCH_IDENTITY = "/identity/switch";
+const RESTORE_SEED_PHRASE = "/identity/seed/recover";
+const BACKUP_SEED_PHRASE = "/identity/seed/backup";
 
 // company endpoints
 const GET_COMPANIES = "/company/list";
@@ -93,6 +95,8 @@ export {
   UPLOAD_IDENTITY_FILE,
   EDIT_IDENTITY,
   SWITCH_IDENTITY,
+  RESTORE_SEED_PHRASE,
+  BACKUP_SEED_PHRASE,
 
   // company
   GET_COMPANIES,

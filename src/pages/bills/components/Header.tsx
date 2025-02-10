@@ -66,8 +66,6 @@ function Filters({ selected, onSelect }: FiltersProps) {
       return await searchBills(payload);
     },
     onSuccess: (data) => {
-      console.log(data);
-
       queryClient.setQueryData(["bills"], data);
     },
   });

@@ -26,7 +26,6 @@ export default function IdentityProvider({
   useEffect(() => {
     const initialize = async () => {
       const { type, node_id } = await getActiveIdentity();
-      console.log("initialized", node_id);
 
       setActiveIdentityType(type === 0 ? "personal" : "company");
       setActiveNodeId(node_id);

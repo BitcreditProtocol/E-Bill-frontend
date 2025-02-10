@@ -5,6 +5,8 @@ import {
   GET_IDENTITY_DETAILS,
   UPLOAD_IDENTITY_FILE,
   SWITCH_IDENTITY,
+  RESTORE_SEED_PHRASE,
+  BACKUP_SEED_PHRASE,
 } from "@/constants/endpoints";
 import type { Identity } from "@/types/identity";
 import { apiFetch } from "@/utils/api";
@@ -95,6 +97,32 @@ export async function switchIdentity(node_id: string) {
   return apiFetch(SWITCH_IDENTITY, {
     method: "PUT",
     body: JSON.stringify({ node_id, type: 0 }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+type SeedPhrasePayload = {
+  seed_phrase: string;
+};
+
+type RestoreSeedPhrasePayload = SeedPhrasePayload;
+
+export async function restoreSeedPhrase(data: RestoreSeedPhrasePayload) {
+  return apiFetch(RESTORE_SEED_PHRASE, {
+    method: "PUT",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+type BackupSeedPhraseResponse = SeedPhrasePayload;
+
+export async function backupSeedPhrase(): Promise<BackupSeedPhraseResponse> {
+  return apiFetch<BackupSeedPhraseResponse>(BACKUP_SEED_PHRASE, {
     headers: {
       "Content-Type": "application/json",
     },

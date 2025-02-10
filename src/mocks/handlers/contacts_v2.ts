@@ -50,7 +50,6 @@ export const createContact = http.post<never, CreateContactPayload>(
   CREATE_CONTACT,
   async ({ request }) => {
     const data = await request.json();
-    console.log("ctt create > ", data);
 
     await delay(1000);
 
