@@ -1,6 +1,8 @@
 import { FormattedMessage } from "react-intl";
 import { Button } from "@/components/ui/button";
 import createBillIllustration from "@/assets/create-bill-illustration.svg";
+import { Link } from "react-router-dom";
+import routes from "@/constants/routes";
 
 export default function Empty() {
   return (
@@ -26,16 +28,18 @@ export default function Empty() {
           </span>
         </div>
 
-        <Button
-          className="text-text-300 bg-transparent font-medium border-text-300 rounded-[8px] py-3 px-6 hover:bg-transparent"
-          variant="outline"
-        >
-          <FormattedMessage
-            id="Issue bill"
-            defaultMessage="Issue bill"
-            description="Action to start creating a bill"
-          />
-        </Button>
+        <Link to={`/${routes.CREATE_BILL}`}>
+          <Button
+            className="text-text-300 bg-transparent font-medium border-text-300 rounded-[8px] py-3 px-6 hover:bg-transparent"
+            variant="outline"
+          >
+            <FormattedMessage
+              id="Issue bill"
+              defaultMessage="Issue bill"
+              description="Action to start creating a bill"
+            />
+          </Button>
+        </Link>
       </div>
     </div>
   );

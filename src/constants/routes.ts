@@ -4,6 +4,7 @@ const UNLOCK = "unlock";
 const RESTORE_WITH_PRIVATE_KEY = "private-key";
 const RESTORE_WITH_SEED_PHRASE = "seed-phrase";
 const HOME = "home";
+const CASHFLOW = "/cashflow";
 const REQUIRED_INFORMATION = "required-information";
 const EMAIL_VERIFICATION = "email-verification";
 const OPTIONAL_INFORMATION = "optional-information";
@@ -66,6 +67,7 @@ export default {
   LOGIN,
   UNLOCK,
   HOME,
+  CASHFLOW,
   RESTORE_WITH_PRIVATE_KEY,
   RESTORE_WITH_SEED_PHRASE,
   REQUIRED_INFORMATION,
