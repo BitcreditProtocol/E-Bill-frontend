@@ -39,13 +39,13 @@ const formatYAxisLabel = (intl: IntlShape, amount: number) => {
   if (amount > -1_000_000 && amount < 1_000_000) {
     return `${intl.formatNumber(amount / 1_000, {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 1,
     })}k`;
   }
 
   return `${intl.formatNumber(amount / 1_000 / 1_000, {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 2,
   })}m`;
 };
 
