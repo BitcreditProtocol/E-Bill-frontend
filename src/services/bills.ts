@@ -96,8 +96,12 @@ export async function getBillsLight(): Promise<GetBillsLightResponse> {
   });
 }
 
-export async function getBillsAll(): Promise<GetBillsLightResponse> {
-  return apiFetch<GetBillsLightResponse>(GET_BILLS_ALL, {
+type GetBillsAllResponse = {
+  bills: BillFull[];
+};
+
+export async function getBillsAll(): Promise<GetBillsAllResponse> {
+  return apiFetch<GetBillsAllResponse>(GET_BILLS_ALL, {
     headers: {
       "Content-Type": "application/json",
     },

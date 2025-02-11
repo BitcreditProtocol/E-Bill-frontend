@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useIntl } from "react-intl";
@@ -7,20 +7,39 @@ import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import RefreshButton from "@/components/RefreshButton";
 import { useIdentity } from "@/context/identity/IdentityContext";
-import { getBillDetails } from "@/services/bills";
+import { getBillDetails, getBillsAll } from "@/services/bills";
 import { getQuote } from "@/services/quotes";
 import Card, { Loader } from "./components/BillCard";
 import Actions from "./components/Actions";
 import EcashToken from "./mint/components/EcashToken";
 import { API_URL } from "@/constants/api";
 import { GET_BILL_ATTACHMENT } from "@/constants/endpoints";
+import { MintConfig, readMintConfig } from "@/constants/mints";
+
+const __dev_findInListAllIfMintViewIsEnabledOrThrow = (id: string, mintConfig: MintConfig, err: unknown) => {
+  if (!mintConfig.__dev_mintViewEnabled) {
+    throw err;
+  } else {
+    return getBillsAll().then((res) => {
+      const filtered = res.bills.filter((it) => it.id === id);
+      if (filtered.length === 1) {
+        return filtered[0];
+      }
+      throw err;
+    })
+  }
+}
 
 function Details({ id }: { id: string }) {
   const { activeIdentity } = useIdentity();
+  const mintConfig = useMemo(() => readMintConfig(), []);
 
   const { data } = useSuspenseQuery({
     queryKey: ["bills", id],
-    queryFn: () => getBillDetails(id),
+    queryFn: () => getBillDetails(id).catch((err: unknown) => {
+      // try to fetch the bill from the "list all" endpoint if mint view is enabled
+      return __dev_findInListAllIfMintViewIsEnabledOrThrow(id, mintConfig, err)
+    }),
   });
 
   const { data: quote } = useQuery({
