@@ -8,6 +8,7 @@ const REQUIRED_INFORMATION = "/required-information";
 const EMAIL_VERIFICATION = "/email-verification";
 const OPTIONAL_INFORMATION = "/optional-information";
 const NOTIFICATIONS = "/notifications";
+const CASHFLOW = "/cashflow";
 const BILLS = "/bills";
 // todo: replace by /bills/:id once we integrate the api
 
@@ -68,6 +69,7 @@ export default {
   LOGIN,
   UNLOCK,
   HOME,
+  CASHFLOW,
   RESTORE_WITH_PRIVATE_KEY,
   RESTORE_WITH_SEED_PHRASE,
   REQUIRED_INFORMATION,

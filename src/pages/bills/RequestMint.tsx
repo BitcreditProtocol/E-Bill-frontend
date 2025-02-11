@@ -84,7 +84,9 @@ export default function RequestMint() {
 
   const { data: quote } = useSuspenseQuery({
     queryKey: ["quotes", id],
-    queryFn: () => getQuote(id as string).catch(() => { return null }),
+    queryFn: () => getQuote(id as string).then((quote) => {
+      return quote.quote_id === "" ? null : quote;
+    }).catch(() => { return null })
   });
 
   useEffect(() => {

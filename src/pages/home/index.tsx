@@ -123,19 +123,18 @@ function RecentBillsLoader() {
   );
 }
 
-function RecentBills() {
-  const { data } = useSuspenseQuery({
-    queryKey: ["recent-bills"],
-    queryFn: getBillsLight,
-  });
+type RecentBillsProps = {
+  values: Awaited<ReturnType<typeof getBillsLight>>['bills']
+}
 
-  return data.bills.length === 0 ? (
+function RecentBills({ values }: RecentBillsProps) {
+  return values.length === 0 ? (
     <div className="flex-1 flex flex-col items-center">
       <Empty />
     </div>
   ) : (
     <div className="flex flex-col gap-1.5">
-      {data.bills.slice(0, 3).map((bill) => (
+      {values.map((bill) => (
         <Link to={`/${routes.VIEW_BILL.replace(":id", bill.id)}`} key={bill.id}>
           <Bill
             title={bill.drawer.name}
@@ -152,6 +151,11 @@ function RecentBills() {
 export default function Home() {
   const { activeIdentity } = useIdentity();
   const intl = useIntl();
+
+  const { data } = useSuspenseQuery({
+    queryKey: ["recent-bills"],
+    queryFn: getBillsLight,
+  });
 
   return (
     <Page
@@ -211,17 +215,21 @@ export default function Home() {
           </div>
 
           <Suspense fallback={<RecentBillsLoader />}>
-            <RecentBills />
+            <RecentBills values={data.bills.slice(0, 3)}/>
           </Suspense>
 
-          <button className="flex items-center gap-1 p-0 text-brand-200 text-sm font-medium leading-5 mx-auto">
-            <FormattedMessage
-              id="home.recentBills.cashflow"
-              defaultMessage="Cashflow"
-              description="Button to access the cashflow page"
-            />
-            <ChartColumnIcon className="text-brand-200 h-4 w-4 stroke-1" />
-          </button>
+          {data.bills.length > 0 && (
+            <Link to={routes.CASHFLOW}>
+              <button className="flex items-center gap-1 p-0 text-brand-200 text-sm font-medium leading-5 mx-auto">
+                <FormattedMessage
+                  id="home.recentBills.cashflow"
+                  defaultMessage="Cashflow"
+                  description="Button to access the cashflow page"
+                />
+                <ChartColumnIcon className="text-brand-200 h-4 w-4 stroke-1" />
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     </Page>
