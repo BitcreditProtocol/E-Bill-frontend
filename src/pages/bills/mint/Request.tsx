@@ -132,7 +132,7 @@ function DiscountRate({ bill }: { bill: BillFull }) {
     sum
   } = watch();
   const hasDiscount = rate > 0 && days > 0;
-  const discountTerms = hasDiscount ? (<>`${days.toString()} @ ${rate.toString()}%`</>) : (<FormattedMessage
+  const discountTerms = hasDiscount ? (<>{`${days.toString()} @ ${rate.toString()}%`}</>) : (<FormattedMessage
     id="bill.sell.calculateDiscount"
     defaultMessage="Calculate discount"
     description="Calculate discount button"

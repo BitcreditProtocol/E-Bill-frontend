@@ -591,7 +591,7 @@ export default function Actions({
             <div className="flex">
               <Link to={routes.MINT_REQUEST.replace(":id", id)} className="w-full">
                 <Button size="sm" className="w-full">
-                  Request to mint
+                  Generate quote
                 </Button>
               </Link>
             </div>
