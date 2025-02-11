@@ -143,7 +143,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
 
   useEffect(() => {
     if (startDate === undefined) return
-    setValue("daysInput", String(Math.min(daysBetween(startDate, endDate), 100)), {
+    setValue("daysInput", String(Math.min(daysBetween(startDate, endDate), INPUT_DAYS_MAX_VALUE)), {
       shouldValidate: true,
       shouldDirty: true,
       shouldTouch: true,
@@ -181,7 +181,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
       <div className="flex flex-col">
         <InputContainer htmlFor="daysInput" label={
           <FormattedMessage
-              id="Days"
+              id="discountForm.days.label.text"
               defaultMessage="Days"
               description="Days label in discount form"
           />}>
@@ -211,7 +211,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
 
       <div className="flex flex-col">
         <InputContainer htmlFor="discountRateInput" label={<FormattedMessage
-            id="Discount rate"
+            id="discountForm.discountRate.label.text"
             defaultMessage="Discount rate"
             description="Discount rate label in discount form"
           />}>
@@ -244,7 +244,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
 
       <div className="flex flex-col">
         <InputContainer htmlFor="netInput" label={<FormattedMessage
-            id="Net amount"
+            id="discountForm.netAmount.label.text"
             defaultMessage="Net amount"
             description="Net amount label in discount form"
           />}>
@@ -275,7 +275,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
 
       <div className="mt-1 flex justify-between text-sm text-text-200 font-normal">
         <FormattedMessage
-          id="Mark up"
+          id="discountForm.markUp.label.text"
           defaultMessage="Mark up"
           description="Mark up label in discount form"
         />
@@ -293,7 +293,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
 
       <div className="flex justify-between items-center text-md text-text-300 font-semibold">
         <FormattedMessage
-          id="Gross amount"
+          id="discountForm.grossAmount.label.text"
           defaultMessage="Gross amount"
           description="Gross amount label in discount form"
         />
@@ -351,7 +351,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
 
   useEffect(() => {
     if (startDate === undefined) return;
-    setValue("daysInput", String(Math.min(daysBetween(startDate, endDate), 100)), {
+    setValue("daysInput", String(Math.min(daysBetween(startDate, endDate), INPUT_DAYS_MAX_VALUE)), {
       shouldValidate: true,
       shouldDirty: true,
       shouldTouch: true,
@@ -388,7 +388,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
       <div className="flex flex-col">
         <InputContainer htmlFor="daysInput" label={
           <FormattedMessage
-              id="Days"
+              id="discountForm.days.label.text"
               defaultMessage="Days"
               description="Days label in discount form"
           />}>
@@ -451,7 +451,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
 
       <div className="mt-1 flex justify-between items-center text-sm text-text-200 font-medium">
         <FormattedMessage
-          id="Gross amount"
+          id="discountForm.grossAmount.label.text"
           defaultMessage="Gross amount"
           description="Gross amount label in discount form"
         />
@@ -469,7 +469,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
 
       <div className="flex justify-between text-sm text-text-200 font-medium">
         <FormattedMessage
-          id="Discount"
+          id="discountForm.discount.label.text"
           defaultMessage="Discount"
           description="Discount label in discount form"
         />
@@ -487,7 +487,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
 
       <div className="flex justify-between items-center text-md text-text-300 font-semibold">
         <FormattedMessage
-          id="Net amount"
+          id="discountForm.netAmount.label.text"
           defaultMessage="Net amount"
           description="Net amount label in discount form"
         />
