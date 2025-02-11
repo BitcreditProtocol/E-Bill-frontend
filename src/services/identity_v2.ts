@@ -8,6 +8,7 @@ import {
   RESTORE_SEED_PHRASE,
   BACKUP_SEED_PHRASE,
   RESTORE_BACKUP_FILE,
+  DOWNLOAD_BACKUP,
 } from "@/constants/endpoints";
 import type { Identity } from "@/types/identity";
 import { apiFetch } from "@/utils/api";
@@ -137,5 +138,13 @@ export async function restoreBackupFile(file: File): Promise<void> {
   return apiFetch(RESTORE_BACKUP_FILE, {
     method: "POST",
     body: formData,
+  });
+}
+
+export async function downloadBackupFile(): Promise<void> {
+  return apiFetch(DOWNLOAD_BACKUP, {
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }

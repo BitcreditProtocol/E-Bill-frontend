@@ -40,6 +40,7 @@ const SWITCH_IDENTITY = "/identity/switch";
 const RESTORE_SEED_PHRASE = "/identity/seed/recover";
 const BACKUP_SEED_PHRASE = "/identity/seed/backup";
 const RESTORE_BACKUP_FILE = "/identity/restore";
+const DOWNLOAD_BACKUP = "/identity/backup";
 
 // company endpoints
 const GET_COMPANIES = "/company/list";
@@ -108,6 +109,7 @@ export {
   RESTORE_SEED_PHRASE,
   BACKUP_SEED_PHRASE,
   RESTORE_BACKUP_FILE,
+  DOWNLOAD_BACKUP,
 
   // company
   GET_COMPANIES,

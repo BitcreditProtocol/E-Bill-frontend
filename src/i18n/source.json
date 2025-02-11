@@ -488,6 +488,7 @@
   "pages.onboarding.emailVerification.resendCode": "Resend (30s)",
   "pages.onboarding.emailVerification.title": "Verify your email address",
   "settings.agreements.title": "Agreements",
+  "settings.backup.download": "Backup data",
   "settings.displayCurrency": "Display currency",
   "settings.displayCurrency.title": "Display currency",
   "settings.languagePreference": "Language",
