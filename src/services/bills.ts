@@ -23,6 +23,7 @@ import {
   GET_BILL_PAST_ENDORSEES,
   CHECK_BILLS_IN_DHT,
   CHECK_BILL_PAYMENT_STATUS,
+  GET_BILLS_ALL,
 } from "@/constants/endpoints";
 import type { BillFull, Peer } from "@/types/bill";
 
@@ -89,6 +90,14 @@ type GetBillsLightResponse = {
 
 export async function getBillsLight(): Promise<GetBillsLightResponse> {
   return apiFetch<GetBillsLightResponse>(GET_BILLS_LIGHT, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export async function getBillsAll(): Promise<GetBillsLightResponse> {
+  return apiFetch<GetBillsLightResponse>(GET_BILLS_ALL, {
     headers: {
       "Content-Type": "application/json",
     },

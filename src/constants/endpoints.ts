@@ -3,6 +3,7 @@ const UPLOAD_BILL_FILES = "/bill/upload_files";
 const CREATE_BILL = "/bill/issue";
 const GET_BILLS = "/bills";
 const GET_BILLS_LIGHT = "/bill/list/light";
+const GET_BILLS_ALL = "/bill/list_all";
 const GET_BILL_DETAILS = "/bill/detail";
 const GET_BILL_ENDORSEMENTS = "/bill/past_endorsees";
 const SEARCH_BILLS = "/bill/search";
@@ -75,6 +76,7 @@ export {
   GET_BILLS,
   SEARCH_BILLS,
   GET_BILLS_LIGHT,
+  GET_BILLS_ALL,
   GET_BILL_DETAILS,
   GET_BILL_ENDORSEMENTS,
   ENDORSE_BILL,
