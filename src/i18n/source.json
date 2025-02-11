@@ -172,6 +172,8 @@
   "bill.mint.requestToMint": "Request to mint",
   "bill.mint.selectQuote": "Select a quote",
   "bill.mint.title": "Mint quotes",
+  "bill.mintRequest.discountRate.label.text": "Discount Rate",
+  "bill.mintRequest.netAmount.label.text": "Net amount",
   "bill.offer.buyer": "Payment from",
   "bill.offer.id": "Sell bill",
   "bill.offer.payment.address": "Address to pay",
