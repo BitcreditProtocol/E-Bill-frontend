@@ -10,3 +10,20 @@ export const MINT_LIST = [
   { name: "Fishermans Mint", node_id: "1", enabled: false  },
   { name: "Whalers Mint", node_id: "2", enabled: false  },
 ];
+
+
+export type MintConfig = {
+  __dev_mintViewEnabled?: boolean
+};
+
+const DEFAULT_MINT_CONFIG: MintConfig = {}
+
+export const readMintConfig = () => {
+  const raw = localStorage.getItem('bitcr-mint-config');
+  return raw ? JSON.parse(raw) as MintConfig : DEFAULT_MINT_CONFIG;
+};
+
+export const writeMintConfig = (value: Partial<MintConfig>) => {
+  const config = {...readMintConfig(), ...value };
+  localStorage.setItem('bitcr-mint-config', JSON.stringify(config));
+};

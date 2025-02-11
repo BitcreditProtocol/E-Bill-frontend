@@ -6,7 +6,7 @@ import ViewDetails from "@/components/Identity/ViewDetails";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { Label } from "./components/Typography";
 import { useEffect, useState } from "react";
-import { WILDCAT_ONE } from "@/constants/mints";
+import { MintConfig, readMintConfig, WILDCAT_ONE, writeMintConfig } from "@/constants/mints";
 import { Switch } from "@/components/ui/switch";
 
 const formatUptime = (uptime: number) => {
@@ -29,10 +29,6 @@ function Property({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
-type MintConfig = {
-  __dev_mintViewEnabled?: boolean
-};
-
 export default function Mints() {
   const intl = useIntl();
 
@@ -45,20 +41,11 @@ export default function Mints() {
     return () => { clearInterval(timerId); };
   }, []);
 
-  const [mintConfig, setMintConfig] = useState<MintConfig>({});
+  const [mintConfig, setMintConfig] = useState<MintConfig>(readMintConfig());
 
-  useEffect(() => {
-    const rawMintConfig = localStorage.getItem('bitcr-mint-config');
-    const parsedMintConfig = rawMintConfig !== null ? JSON.parse(rawMintConfig) as MintConfig | undefined : undefined;
-    if (parsedMintConfig) {
-      setMintConfig(parsedMintConfig);
-    }
-  }, []);
-
-  const toggleMintConfigEnabled = () => {
-    const newConfig = {...mintConfig, __dev_mintViewEnabled: !mintConfig.__dev_mintViewEnabled };
-    setMintConfig(newConfig);
-    localStorage.setItem('bitcr-mint-config', JSON.stringify(newConfig));
+  const toggleMintView = () => {
+    writeMintConfig({ __dev_mintViewEnabled: !mintConfig.__dev_mintViewEnabled });
+    setMintConfig(readMintConfig());
   }
 
   return (
@@ -197,9 +184,14 @@ export default function Mints() {
 
         <div className="flex items-center justify-between px-2 py-2">
           <Label>
-              Mint view (dev)
+              <div className="flex flex-col">
+                <span>Mint view (dev)</span>
+                <span className="text-text-200 text-xs font-normal">
+                  Display all local bills in bill overview
+                </span>
+              </div>
           </Label>
-          <Switch checked={mintConfig.__dev_mintViewEnabled} onCheckedChange={() => { toggleMintConfigEnabled(); }}/>
+          <Switch checked={mintConfig.__dev_mintViewEnabled} onCheckedChange={() => { toggleMintView(); }}/>
         </div>
       </div>
     </Page>
