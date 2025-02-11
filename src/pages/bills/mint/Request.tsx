@@ -1,4 +1,4 @@
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import {
   CalculatorIcon,
   CheckIcon,
@@ -16,10 +16,10 @@ import SectionTitle from "@/components/typography/SectionTitle";
 
 import Preview from "../components/Preview";
 import { Button } from "@/components/ui/button";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { __dev_findInListAllIfMintViewIsEnabledOrThrow, readMintConfig } from "@/constants/mints";
-import { getBillDetails } from "@/services/bills";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { acceptMint, getBillDetails } from "@/services/bills";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { PropsWithChildren, Suspense, useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Picture from "@/components/Picture";
@@ -32,6 +32,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { DialogProps } from "vaul";
+import { toast } from "@/hooks/use-toast";
+import routes from "@/constants/routes";
 
 function Loader() {
   return (
@@ -60,7 +62,7 @@ function MintRequest({ bill } : MintRequestProps) {
           </Label>
         </div>
 
-        <ChevronRightIcon className="text-text-300 h-6 w-6 stroke-1" />
+        <ChevronRightIcon className="text-brand-200 h-6 w-6 stroke-1" />
       </div>
 
       <Preview
@@ -217,6 +219,8 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export default function Request() {
+  const intl = useIntl();
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
     const mintConfig = useMemo(() => readMintConfig(), []);
 
@@ -242,6 +246,44 @@ export default function Request() {
   });
 
   const { sum } = methods.watch();
+
+  // TODO: remove - fake accepting mint request here
+  const { mutate: doAcceptMint, isPending } = useMutation({
+    mutationFn: async () => {
+      await acceptMint({
+        bill_id: data.id,
+        sum: String(Math.floor(Number(sum))),
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "error",
+        title: intl.formatMessage({
+          id: "bill.mint.request.toast.error.title",
+          defaultMessage: "Error!",
+        }),
+        description: intl.formatMessage({
+          id: "bill.mint.request.toast.error.description",
+          defaultMessage: "Error while generating quote!",
+        }),
+        position: "bottom-center",
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: intl.formatMessage({
+          id: "bill.mint.request.toast.success.title",
+          defaultMessage: "Success!",
+        }),
+        description: intl.formatMessage({
+          id: "bill.mint.request.toast.success.description",
+          defaultMessage: "Successfully generated quote!",
+        }),
+        position: "bottom-center",
+      });
+      navigate(routes.VIEW_BILL.replace(":id", data.id));
+    }
+  });
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -294,7 +336,8 @@ export default function Request() {
                 />
               </Button>
 
-              <Button className="w-full gap-2" variant="outline" size="md" disabled={sum === undefined}>
+              <Button className="w-full gap-2" variant="outline" size="md" disabled={sum === undefined || isPending}
+                onClick={() => { doAcceptMint(); }}>
                 <CheckIcon className="text-text-300 h-5 w-5 stroke-1" />
 
                 <FormattedMessage
