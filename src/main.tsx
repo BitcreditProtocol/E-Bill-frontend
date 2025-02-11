@@ -17,7 +17,7 @@ import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/home";
-import { Notifications, NotificationsEmpty } from "./pages/Notifications";
+import Notifications from "./pages/Notifications";
 import routes from "./constants/routes";
 
 import "./index.css";
@@ -127,10 +127,6 @@ const router = createBrowserRouter(
         {
           path: routes.NOTIFICATIONS,
           element: <Notifications />,
-        },
-        {
-          path: "notifications-empty",
-          element: <NotificationsEmpty />,
         },
         {
           path: routes.BILLS,

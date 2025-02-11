@@ -58,6 +58,8 @@ const SEARCH_CONTACTS = "/contacts/search";
 
 // other endpoints
 const BALANCES_OVERVIEW = "/overview?currency=";
+const LIST_ACTIVE_NOTIFICATIONS = "/notifications";
+const RESOLVE_NOTIFICATION = "/notifications/:notification_id/done";
 
 export {
   // bill
@@ -119,4 +121,6 @@ export {
 
   // other
   BALANCES_OVERVIEW,
+  LIST_ACTIVE_NOTIFICATIONS,
+  RESOLVE_NOTIFICATION,
 };
