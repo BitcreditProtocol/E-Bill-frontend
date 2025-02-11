@@ -12,6 +12,8 @@ import { getQuote } from "@/services/quotes";
 import Card, { Loader } from "./components/BillCard";
 import Actions from "./components/Actions";
 import EcashToken from "./mint/components/EcashToken";
+import { API_URL } from "@/constants/api";
+import { GET_BILL_ATTACHMENT } from "@/constants/endpoints";
 
 function Details({ id }: { id: string }) {
   const { activeIdentity } = useIdentity();
@@ -36,6 +38,8 @@ function Details({ id }: { id: string }) {
   const role = isPayer ? "payer" : isHolder ? "holder" : null;
   const holder = data.endorsed && data.endorsee ? data.endorsee : data.payee;
 
+  const attachment = `${API_URL}${GET_BILL_ATTACHMENT}/${id}/${data.files[0].name}`;
+
   return (
     <div className="flex-1 flex flex-col gap-5 justify-between">
       <Card
@@ -56,6 +60,7 @@ function Details({ id }: { id: string }) {
         accepted={data.accepted}
         paid={data.paid}
         waiting_for_payment={data.waiting_for_payment}
+        attachment={attachment}
       />
 
       {quote && quote.token && (

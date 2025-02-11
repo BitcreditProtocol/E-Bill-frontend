@@ -196,6 +196,7 @@ type CardProps = {
   paid: BillFull["paid"];
   requested_to_pay: BillFull["requested_to_pay"];
   waiting_for_payment: BillFull["waiting_for_payment"];
+  attachment: string;
 };
 
 export default function BillCard({
@@ -216,6 +217,7 @@ export default function BillCard({
   paid,
   requested_to_pay,
   waiting_for_payment,
+  attachment,
 }: CardProps) {
   const intl = useIntl();
   const formattedIssueDate = format(parseISO(issue_date), "dd-MMM-yyyy");
@@ -248,9 +250,11 @@ export default function BillCard({
             </h2>
           </div>
 
-          <button className="h-fit p-0">
-            <PaperclipIcon className="text-text-300 w-5 h-5 stroke-1" />
-          </button>
+          <Link to={attachment} target="_blank">
+            <button className="h-fit p-0">
+              <PaperclipIcon className="text-text-300 w-5 h-5 stroke-1" />
+            </button>
+          </Link>
         </div>
 
         <Separators />

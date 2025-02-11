@@ -149,8 +149,7 @@ export default function Preview({
         position: "bottom-center",
       });
 
-      // todo: fix ugly route concat
-      navigate(`/${routes.CONTACTS}`);
+      navigate(routes.CONTACTS);
     },
   });
 

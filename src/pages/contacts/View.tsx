@@ -64,7 +64,7 @@ function Delete({ contactId }: DeleteContactProps) {
         position: "bottom-center",
       });
 
-      navigate(`/${routes.CONTACTS}`);
+      navigate(routes.CONTACTS);
     },
   });
 

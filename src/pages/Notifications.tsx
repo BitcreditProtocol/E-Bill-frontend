@@ -184,8 +184,9 @@ function List() {
 
   return (
     <div className="flex flex-col gap-3 pt-10 pb-16 my-auto">
-      {data.length === 0 ||
-        (todayNotifications.length === 0 && <EmptyNotifications />)}
+      {(data.length === 0 || todayNotifications.length === 0) && (
+        <EmptyNotifications />
+      )}
       {todayNotifications.length > 0 && (
         <div className="flex flex-col gap-3">
           <span className="text-text-300 text-base font-medium leading-normal">

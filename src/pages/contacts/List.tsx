@@ -13,6 +13,7 @@ import type { Contact } from "@/types/contact";
 import { getContacts } from "@/services/contact_v2";
 import routes from "@/constants/routes";
 import TypeFilter from "./components/TypeFilter";
+import EmptyList from "./components/EmptyList";
 
 type ContactProps = Pick<Contact, "type" | "node_id" | "name" | "address">;
 
@@ -89,6 +90,7 @@ function List() {
 
   return (
     <div className="flex flex-col gap-2">
+      {data.contacts.length === 0 && <EmptyList />}
       {data.contacts.map((contact) => (
         <Contact key={contact.node_id} {...contact} />
       ))}

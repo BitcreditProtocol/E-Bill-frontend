@@ -25,6 +25,7 @@ const GET_BILL_PRIVATE_KEY = "/bill/bitcoin_key";
 const GET_BILL_PAST_ENDORSEES = "/bill/past_endorsees/:id";
 const CHECK_BILLS_IN_DHT = "/bill/dht";
 const CHECK_BILL_PAYMENT_STATUS = "/bill/check_payment";
+const GET_BILL_ATTACHMENT = "/bill/attachment";
 
 // quote endpoints
 const GET_QUOTE = "/quote/return/:id";
@@ -94,6 +95,7 @@ export {
   GET_BILL_PAST_ENDORSEES,
   CHECK_BILLS_IN_DHT,
   CHECK_BILL_PAYMENT_STATUS,
+  GET_BILL_ATTACHMENT,
 
   // quote
   GET_QUOTE,
