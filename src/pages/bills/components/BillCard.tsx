@@ -196,7 +196,7 @@ type CardProps = {
   paid: BillFull["paid"];
   requested_to_pay: BillFull["requested_to_pay"];
   waiting_for_payment: BillFull["waiting_for_payment"];
-  attachment: string;
+  attachment: string | null;
 };
 
 export default function BillCard({
@@ -250,11 +250,13 @@ export default function BillCard({
             </h2>
           </div>
 
-          <Link to={attachment} target="_blank">
-            <button className="h-fit p-0">
-              <PaperclipIcon className="text-text-300 w-5 h-5 stroke-1" />
-            </button>
-          </Link>
+          {attachment && (
+            <Link to={attachment} target="_blank">
+              <button className="h-fit p-0">
+                <PaperclipIcon className="text-text-300 w-5 h-5 stroke-1" />
+              </button>
+            </Link>
+          )}
         </div>
 
         <Separators />

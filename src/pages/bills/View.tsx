@@ -38,7 +38,10 @@ function Details({ id }: { id: string }) {
   const role = isPayer ? "payer" : isHolder ? "holder" : null;
   const holder = data.endorsed && data.endorsee ? data.endorsee : data.payee;
 
-  const attachment = `${API_URL}${GET_BILL_ATTACHMENT}/${id}/${data.files[0].name}`;
+  const hasAttachments = data.files.length > 0;
+  const attachment = hasAttachments
+    ? `${API_URL}${GET_BILL_ATTACHMENT}/${id}/${data.files[0].name}`
+    : null;
 
   return (
     <div className="flex-1 flex flex-col gap-5 justify-between">
