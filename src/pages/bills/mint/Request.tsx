@@ -31,6 +31,7 @@ import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
+import { DialogProps } from "vaul";
 
 function Loader() {
   return (
@@ -73,8 +74,11 @@ function MintRequest({ bill } : MintRequestProps) {
   );
 }
 
-function DiscountCalculator({ children, bill }: PropsWithChildren<{ bill: BillFull }>) {
-  const [open, setOpen] = useState(false);
+type DiscountCalculatorProps = PropsWithChildren<{
+  bill: BillFull,
+}> & Required<Pick<DialogProps, 'open' | 'onOpenChange'>>
+
+function DiscountCalculator({ children, bill, open, onOpenChange }: DiscountCalculatorProps) {
   const { watch, setValue } = useFormContext<FormSchema>();
   const {
     discount: { start_date, end_date }
@@ -94,7 +98,7 @@ function DiscountCalculator({ children, bill }: PropsWithChildren<{ bill: BillFu
   };
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerTrigger className="flex items-center gap-1 p-0 text-text-300 text-xs font-medium leading-normal">
         {children}
       </DrawerTrigger>
@@ -108,7 +112,7 @@ function DiscountCalculator({ children, bill }: PropsWithChildren<{ bill: BillFu
               rate: values.discountRate.mul(100).toNumber(),
               days: values.days,
             });
-            setOpen(false);
+            onOpenChange(false);
           }}
           gross={{
             value: Big(parseInt(bill.sum)),
@@ -121,13 +125,19 @@ function DiscountCalculator({ children, bill }: PropsWithChildren<{ bill: BillFu
 }
 
 function DiscountRate({ bill }: { bill: BillFull }) {
+  const [open, setOpen] = useState(false);
   const { watch } = useFormContext<FormSchema>();
   const {
     discount: { rate, days },
     sum
   } = watch();
   const hasDiscount = rate > 0 && days > 0;
-  const discountTerms = `${days.toString()} @ ${rate.toString()}%`;
+  const discountTerms = hasDiscount ? (<>`${days.toString()} @ ${rate.toString()}%`</>) : (<FormattedMessage
+    id="bill.sell.calculateDiscount"
+    defaultMessage="Calculate discount"
+    description="Calculate discount button"
+  />);
+
 
   return (
     <div className="flex flex-col gap-2">
@@ -139,22 +149,15 @@ function DiscountRate({ bill }: { bill: BillFull }) {
             description="Label for bill value input"
           />
         </span>
-        <DiscountCalculator bill={bill}>
+        <DiscountCalculator bill={bill} open={open} onOpenChange={setOpen}>
           <>
             <CalculatorIcon className="text-text-300 h-4 w-4 stroke-1" />
-            {hasDiscount ? (
-              discountTerms
-            ) : (
-              <FormattedMessage
-                id="bill.sell.calculateDiscount"
-                defaultMessage="Calculate discount"
-                description="Calculate discount button"
-              />
-            )}
+            {discountTerms}
           </>
         </DiscountCalculator>
       </div>
-      <div className="flex items-center justify-between gap-1 py-5 px-4 bg-elevation-200 border border-divider-50 rounded-lg">
+      <div className="flex items-center justify-between gap-1 py-5 px-4 bg-elevation-200 border border-divider-50 rounded-lg cursor-pointer"
+        onClick={() => { setOpen(true); }}>
         <div className="flex items-center gap-1.5">
           <span className="text-text-300 text-sm font-medium leading-5">
             <FormattedMessage
@@ -168,7 +171,7 @@ function DiscountRate({ bill }: { bill: BillFull }) {
           value={rate}
           type="text"
           inputMode="numeric"
-          className="flex-1 bg-transparent text-right outline-none"
+          className="flex-1 bg-transparent text-right outline-none cursor-pointer"
           readOnly
         />
         <div className="">
@@ -232,11 +235,13 @@ export default function Request() {
       discount: {
         start_date: parseISO(data.issue_date),
         end_date: parseISO(data.maturity_date),
-        rate: 1,
-        days: 0,
+        rate: undefined,
+        days: undefined,
       },
     },
   });
+
+  const { sum } = methods.watch();
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -289,7 +294,7 @@ export default function Request() {
                 />
               </Button>
 
-              <Button className="w-full gap-2" variant="outline" size="md">
+              <Button className="w-full gap-2" variant="outline" size="md" disabled={sum === undefined}>
                 <CheckIcon className="text-text-300 h-5 w-5 stroke-1" />
 
                 <FormattedMessage
