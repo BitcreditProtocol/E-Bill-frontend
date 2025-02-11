@@ -113,13 +113,16 @@ function UploadInvoiceFile() {
           id="bills.create.noProtest"
           defaultMessage="No protest."
           description="No protest label"
-        />{" "}
+        />
         {watch("file_upload_id") && (
-          <FormattedMessage
-            id="bills.create.valueReceived"
-            defaultMessage="Value received."
-            description="Value received label"
-          />
+          <>
+            {" "}
+            <FormattedMessage
+              id="bills.create.valueReceived"
+              defaultMessage="Value received."
+              description="Value received label"
+            />
+          </>
         )}
       </span>
     </div>

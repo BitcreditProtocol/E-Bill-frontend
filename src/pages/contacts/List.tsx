@@ -19,8 +19,7 @@ type ContactProps = Pick<Contact, "type" | "node_id" | "name" | "address">;
 
 function Contact({ type, node_id, name, address }: ContactProps) {
   return (
-    // todo: fix endpoint
-    <Link to={`/contacts/${node_id}`}>
+    <Link to={routes.VIEW_CONTACT.replace(":nodeId", node_id)}>
       <div className="flex items-center gap-3 py-4 px-3 w-full border-[1px] border-divider-75 rounded-xl cursor-pointer select-none">
         <Picture type={type} name={name} image="" />
 

@@ -247,6 +247,7 @@ function OptionalInformation({
   useEffect(() => {
     const validateData = async () => {
       const isValid = await trigger([
+        "registration_date",
         "country_of_registration",
         "city_of_registration",
         "registration_number",
@@ -260,12 +261,16 @@ function OptionalInformation({
 
   const skipInformation = () => {
     [
+      "registration_date",
       "country_of_registration",
       "city_of_registration",
       "registration_number",
     ].forEach((field) => {
       setValue(field, "");
     });
+
+    setValue("logo_file_upload_id", null);
+    moveToNextStep();
   };
 
   return (
