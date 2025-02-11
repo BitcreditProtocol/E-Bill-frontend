@@ -24,10 +24,12 @@ import "./index.css";
 import "./styles/fonts.css";
 import { BillsEmpty } from "./pages/Bills";
 
+// settings
 import Settings from "./pages/settings";
 import NotificationsSettings from "./pages/settings/Notifications";
 import Security from "./pages/settings/Security";
 import Mints from "./pages/settings/Mints";
+import SeedPhrase from "./pages/settings/SeedPhrase";
 
 // contact flows
 import Create from "./pages/contacts/Create";
@@ -113,6 +115,10 @@ const router = createBrowserRouter(
         {
           path: routes.SECURITY_SETTINGS,
           element: <Security />,
+        },
+        {
+          path: routes.RECOVERY_SEED_PHRASE,
+          element: <SeedPhrase />,
         },
         {
           path: routes.RESTORE_WITH_SEED_PHRASE,

@@ -1194,6 +1194,7 @@ export default function Create() {
       // default to selected contact info
       country_of_payment: "AT",
       city_of_payment: "Vienna",
+      // send a null if no file is selected
       file_upload_id: "",
     },
   });

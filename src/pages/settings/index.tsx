@@ -47,7 +47,7 @@ export default function Settings() {
         bitcoin_public_key={"1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"}
       />
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mb-16">
         <div className="flex flex-col gap-4 py-6 px-4 border border-divider-75 rounded-xl">
           <span className="text-text-200 text-sm font-medium leading-5">
             <FormattedMessage
