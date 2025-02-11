@@ -1,9 +1,11 @@
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useIntl } from "react-intl";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
+import RefreshButton from "@/components/RefreshButton";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { getBillDetails } from "@/services/bills";
 import { getQuote } from "@/services/quotes";
@@ -68,11 +70,29 @@ function Details({ id }: { id: string }) {
 }
 
 export default function View() {
+  const { formatMessage: f } = useIntl();
   const { id } = useParams<{ id: string }>();
 
   return (
     <Page className="gap-5">
-      <Topbar lead={<NavigateBack />} />
+      <Topbar
+        lead={<NavigateBack />}
+        trail={
+          <RefreshButton
+            label={f({
+              id: "bill.status.refresh",
+              defaultMessage: "Refresh",
+              description: "Refresh button label",
+            })}
+            content={f({
+              id: "bill.status.refresh.content",
+              defaultMessage: "Refresh bill status",
+              description: "Refresh bill status tooltip",
+            })}
+            onClick={() => {}}
+          />
+        }
+      />
 
       <Suspense fallback={<Loader />}>
         <Details id={id as string} />

@@ -1,6 +1,7 @@
 import { apiFetch } from "@/utils/api";
 import {
   ADD_COMPANY_SIGNER,
+  CHECK_COMPANIES_IN_DHT,
   CREATE_COMPANY,
   EDIT_COMPANY,
   GET_COMPANIES,
@@ -136,6 +137,14 @@ export async function removeSignatory(
     method: "PUT",
     body: JSON.stringify(data),
 
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export async function checkCompaniesInDHT(): Promise<void> {
+  return apiFetch(CHECK_COMPANIES_IN_DHT, {
     headers: {
       "Content-Type": "application/json",
     },

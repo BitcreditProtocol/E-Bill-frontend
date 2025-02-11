@@ -32,6 +32,7 @@
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-toast": "^1.2.4",
+    "@radix-ui/react-tooltip": "^1.1.8",
     "@tanstack/react-query": "^5.62.16",
     "big.js": "^6.2.2",
     "class-variance-authority": "^0.7.1",

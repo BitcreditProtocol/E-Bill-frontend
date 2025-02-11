@@ -23,6 +23,8 @@ const REQUEST_BILL_ACCEPTANCE_RECOURSE =
 const REJECT_BILL_PAYMENT_RECOURSE = "/bill/reject_recourse_for_payment";
 const GET_BILL_PRIVATE_KEY = "/bill/bitcoin_key";
 const GET_BILL_PAST_ENDORSEES = "/bill/past_endorsees/:id";
+const CHECK_BILLS_IN_DHT = "/bill/dht";
+const CHECK_BILL_PAYMENT_STATUS = "/bill/check_payment";
 
 // quote endpoints
 const GET_QUOTE = "/quote/return/:id";
@@ -48,6 +50,7 @@ const UPLOAD_COMPANY_FILE = "/company/upload_file";
 const EDIT_COMPANY = "/company/edit";
 const ADD_COMPANY_SIGNER = "/company/add_signatory";
 const REMOVE_COMPANY_SIGNER = "/company/remove_signatory";
+const CHECK_COMPANIES_IN_DHT = "/company/check_dht";
 
 // contacts endpoints
 const GET_CONTACTS = "/contacts/list";
@@ -88,6 +91,8 @@ export {
   REJECT_BILL_PAYMENT_RECOURSE,
   GET_BILL_PRIVATE_KEY,
   GET_BILL_PAST_ENDORSEES,
+  CHECK_BILLS_IN_DHT,
+  CHECK_BILL_PAYMENT_STATUS,
 
   // quote
   GET_QUOTE,
@@ -113,6 +118,7 @@ export {
   GET_COMPANY_SIGNERS,
   ADD_COMPANY_SIGNER,
   REMOVE_COMPANY_SIGNER,
+  CHECK_COMPANIES_IN_DHT,
 
   // contacts
   SEARCH_CONTACTS,

@@ -21,6 +21,8 @@ import {
   GET_BILL_ENDORSEMENTS,
   GET_BILL_PRIVATE_KEY,
   GET_BILL_PAST_ENDORSEES,
+  CHECK_BILLS_IN_DHT,
+  CHECK_BILL_PAYMENT_STATUS,
 } from "@/constants/endpoints";
 import type { BillFull, Peer } from "@/types/bill";
 
@@ -372,5 +374,21 @@ export async function rejectToPayRecourse(bill_id: string): Promise<void> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ bill_id }),
+  });
+}
+
+export async function checkBillsInDHT(): Promise<void> {
+  return apiFetch(CHECK_BILLS_IN_DHT, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export async function checkBillPaymentStatus(): Promise<void> {
+  return apiFetch(CHECK_BILL_PAYMENT_STATUS, {
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }
