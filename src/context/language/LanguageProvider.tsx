@@ -2,6 +2,7 @@ import { IntlProvider } from "react-intl";
 import { useMemo, useState } from "react";
 import { detectBrowserLanguage } from "@/utils";
 import { DEFAULT_LOCALE, LanguageContext } from "./LanguageContext";
+import meta from "@/constants/meta";
 
 type TranslationMessages = Record<string, string>;
 
@@ -34,7 +35,7 @@ const availableLocales = Object.keys(translations);
 
 export default function LanguageProvider({
   defaultLocale = DEFAULT_LOCALE,
-  initWithBrowserLocale = import.meta.env.PROD,
+  initWithBrowserLocale = !meta.devModeEnabled,
   children,
 }: {
   defaultLocale?: string
