@@ -13,6 +13,8 @@ export default function IdentityProvider({
 }: {
   children: ReactNode;
 }) {
+  // todo: change this logic. not looking good/maintainable
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
   const [activeIdentityType, setActiveIdentityType] = useState<
     "personal" | "company" | null
@@ -26,10 +28,17 @@ export default function IdentityProvider({
   useEffect(() => {
     const initialize = async () => {
       const { type, node_id } = await getActiveIdentity();
-      console.log("initialized", node_id);
 
       setActiveIdentityType(type === 0 ? "personal" : "company");
       setActiveNodeId(node_id);
+
+      try {
+        await getIdentityDetails();
+      } catch {
+        setIsAuthenticated(false);
+
+        return;
+      }
     };
 
     void initialize();
@@ -100,6 +109,7 @@ export default function IdentityProvider({
   return (
     <IdentityContext.Provider
       value={{
+        isAuthenticated,
         activeIdentity: {
           type: activeIdentityType,
           node_id: activeNodeId ?? "",

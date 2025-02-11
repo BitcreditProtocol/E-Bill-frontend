@@ -22,6 +22,10 @@ const REQUEST_BILL_ACCEPTANCE_RECOURSE =
   "/bill/request_recourse_for_acceptance";
 const REJECT_BILL_PAYMENT_RECOURSE = "/bill/reject_recourse_for_payment";
 const GET_BILL_PRIVATE_KEY = "/bill/bitcoin_key";
+const GET_BILL_PAST_ENDORSEES = "/bill/past_endorsees/:id";
+const CHECK_BILLS_IN_DHT = "/bill/dht";
+const CHECK_BILL_PAYMENT_STATUS = "/bill/check_payment";
+const GET_BILL_ATTACHMENT = "/bill/attachment";
 
 // quote endpoints
 const GET_QUOTE = "/quote/return/:id";
@@ -31,9 +35,13 @@ const ACCEPT_QUOTE = "/quote/accept/:id";
 const GET_ACTIVE_IDENTITY = "/identity/active";
 const GET_IDENTITY_DETAILS = "/identity/detail";
 const CREATE_IDENTITY = "/identity/create";
-const UPLOAD_IDENTITY_FILE = "/identity/upload";
+const UPLOAD_IDENTITY_FILE = "/identity/upload_file";
 const EDIT_IDENTITY = "/identity/change";
 const SWITCH_IDENTITY = "/identity/switch";
+const RESTORE_SEED_PHRASE = "/identity/seed/recover";
+const BACKUP_SEED_PHRASE = "/identity/seed/backup";
+const RESTORE_BACKUP_FILE = "/identity/restore";
+const DOWNLOAD_BACKUP = "/identity/backup";
 
 // company endpoints
 const GET_COMPANIES = "/company/list";
@@ -44,6 +52,7 @@ const UPLOAD_COMPANY_FILE = "/company/upload_file";
 const EDIT_COMPANY = "/company/edit";
 const ADD_COMPANY_SIGNER = "/company/add_signatory";
 const REMOVE_COMPANY_SIGNER = "/company/remove_signatory";
+const CHECK_COMPANIES_IN_DHT = "/company/check_dht";
 
 // contacts endpoints
 const GET_CONTACTS = "/contacts/list";
@@ -56,6 +65,8 @@ const SEARCH_CONTACTS = "/contacts/search";
 
 // other endpoints
 const BALANCES_OVERVIEW = "/overview?currency=";
+const LIST_ACTIVE_NOTIFICATIONS = "/notifications";
+const RESOLVE_NOTIFICATION = "/notifications/:notification_id/done";
 
 export {
   // bill
@@ -81,6 +92,10 @@ export {
   REQUEST_BILL_ACCEPTANCE_RECOURSE,
   REJECT_BILL_PAYMENT_RECOURSE,
   GET_BILL_PRIVATE_KEY,
+  GET_BILL_PAST_ENDORSEES,
+  CHECK_BILLS_IN_DHT,
+  CHECK_BILL_PAYMENT_STATUS,
+  GET_BILL_ATTACHMENT,
 
   // quote
   GET_QUOTE,
@@ -93,6 +108,10 @@ export {
   UPLOAD_IDENTITY_FILE,
   EDIT_IDENTITY,
   SWITCH_IDENTITY,
+  RESTORE_SEED_PHRASE,
+  BACKUP_SEED_PHRASE,
+  RESTORE_BACKUP_FILE,
+  DOWNLOAD_BACKUP,
 
   // company
   GET_COMPANIES,
@@ -103,6 +122,7 @@ export {
   GET_COMPANY_SIGNERS,
   ADD_COMPANY_SIGNER,
   REMOVE_COMPANY_SIGNER,
+  CHECK_COMPANIES_IN_DHT,
 
   // contacts
   SEARCH_CONTACTS,
@@ -115,4 +135,6 @@ export {
 
   // other
   BALANCES_OVERVIEW,
+  LIST_ACTIVE_NOTIFICATIONS,
+  RESOLVE_NOTIFICATION,
 };

@@ -35,8 +35,13 @@ export default function Picture({ type, name, image, size }: PictureProps) {
   const avatarType = type === 0 ? "personal" : "company";
 
   return (
-    <Avatar className={cn(pictureVariants({ type: avatarType, size }))}>
-      <AvatarImage src={image} alt={name} />
+    <Avatar
+      className={cn(
+        { "!p-0": image !== "" },
+        pictureVariants({ type: avatarType, size })
+      )}
+    >
+      <AvatarImage className="object-fit" src={image} alt={name} />
       <AvatarFallback
         className={cn(pictureVariants({ type: avatarType, size }))}
       >

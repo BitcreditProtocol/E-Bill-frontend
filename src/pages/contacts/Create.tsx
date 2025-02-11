@@ -284,6 +284,11 @@ function OptionalInformation({
     ].forEach((field) => {
       setValue(field, "");
     });
+
+    setValue("avatar_file_upload_id", null);
+    setValue("proof_document_file_upload_id", null);
+
+    moveToNextStep();
   };
 
   return (

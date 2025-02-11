@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import {
   BuildingIcon,
   ChevronRightIcon,
@@ -15,15 +15,19 @@ import Page from "@/components/wrappers/Page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Picture from "@/components/Picture";
+import RefreshButton from "@/components/RefreshButton";
+import { useToast } from "@/hooks/use-toast";
 import { useIdentity } from "@/context/identity/IdentityContext";
+import { checkCompaniesInDHT, getCompanies } from "@/services/company";
+import { getIdentityDetails } from "@/services/identity_v2";
+import { copyToClipboard } from "@/utils";
 import { truncateString } from "@/utils/strings";
 import routes from "@/constants/routes";
-import { getCompanies } from "@/services/company";
-import { getIdentityDetails } from "@/services/identity_v2";
 import { API_URL } from "@/constants/api";
 
 function SelectedIdentity() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { activeIdentity } = useIdentity();
 
   if (!activeIdentity.node_id) {
@@ -32,7 +36,7 @@ function SelectedIdentity() {
 
   const { node_id, type, name, avatar } = activeIdentity;
 
-  const truncatedBitcoinPublicKey = truncateString(node_id, 14);
+  const truncatedNodeId = truncateString(node_id, 14);
   const viewIdentityRoute =
     type === "company" ? routes.VIEW_COMPANY : routes.VIEW_IDENTITY;
 
@@ -50,8 +54,18 @@ function SelectedIdentity() {
           {name}
         </span>
 
-        <button className="flex items-center gap-1 text-text-200 text-xs leading-normal">
-          {truncatedBitcoinPublicKey}
+        <button
+          className="flex items-center gap-1 text-text-200 text-xs leading-normal"
+          onClick={() => {
+            void copyToClipboard(node_id, () => {
+              toast({
+                description: "Copied to clipboard",
+                position: "bottom-center",
+              });
+            });
+          }}
+        >
+          {truncatedNodeId}
 
           <CopyIcon className="h-4 w-4 stroke-1" />
         </button>
@@ -199,7 +213,16 @@ function Remove() {
 }
 
 export default function List() {
+  const { formatMessage: f } = useIntl();
   const { activeIdentity } = useIdentity();
+
+  const { refetch } = useQuery({
+    queryFn: () => checkCompaniesInDHT(),
+    queryKey: ["companies", "check"],
+    enabled: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
 
   return (
     <Page className="gap-7">
@@ -234,13 +257,31 @@ export default function List() {
             </Suspense>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <span className="text-text-200 text-sm font-medium leading-5">
-              <FormattedMessage
-                id="identity.list.companies"
-                defaultMessage="Company identities"
+          <div className="flex flex-col gap-3 mt-2">
+            <div className="flex items-center justify-between">
+              <span className="text-text-200 text-sm font-medium leading-5">
+                <FormattedMessage
+                  id="identity.list.companies"
+                  defaultMessage="Company identities"
+                />
+              </span>
+
+              <RefreshButton
+                label={f({
+                  id: "identity.list.refresh",
+                  defaultMessage: "Refresh",
+                  description: "Refresh companies list button label",
+                })}
+                content={f({
+                  id: "identity.list.refresh.content",
+                  defaultMessage: "Refresh companies list",
+                  description: "Refresh companies list tooltip",
+                })}
+                onClick={() => {
+                  void refetch();
+                }}
               />
-            </span>
+            </div>
             <Suspense fallback={<CompaniesLoader />}>
               <Companies />
             </Suspense>

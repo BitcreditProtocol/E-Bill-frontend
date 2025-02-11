@@ -1,214 +1,272 @@
+import { Suspense, useCallback, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { parseISO, isToday, isBefore, startOfToday, format } from "date-fns";
 import { FormattedMessage } from "react-intl";
-import { XIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import Page from "@/components/wrappers/Page";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { getNotifications } from "@/services/notifications";
+import routes from "@/constants/routes";
 import createBillIllustration from "@/assets/create-bill-illustration.svg";
+import type { Notification } from "@/types/notification";
+import { FormattedCurrency } from "@/components/FormattedCurrency";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export function Notifications() {
+type NotificationProps = Pick<
+  Notification,
+  "id" | "description" | "datetime" | "active" | "payload"
+>;
+
+function Notification({
+  description,
+  datetime,
+  active,
+  payload,
+}: NotificationProps) {
+  const navigate = useNavigate();
+  const parsedDatetime = format(parseISO(datetime), "dd-MMM-yyyy · HH:mm");
+
+  const handleClick = useCallback(() => {
+    navigate(routes.VIEW_BILL.replace(":id", payload.bill_id));
+  }, [navigate, payload.bill_id]);
+
   return (
-    <div className="flex flex-col min-h-fit h-screen gap-6 py-12 px-6 w-full">
-      <div className="flex w-full">
-        <button className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6">
-          <XIcon width={16} strokeWidth={1} color="#1B0F00" />
-        </button>
+    <div
+      className="flex flex-col gap-2 p-3 bg-elevation-50 border border-divider-75 rounded-xl cursor-pointer"
+      onClick={handleClick}
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-signal-success text-sm font-medium leading-5">
+          {payload.action_type}
+        </span>
+        {active && (
+          <div className="shrink-0 !h-2 !w-2 bg-[#FF2600] rounded-full" />
+        )}
       </div>
-
-      <div className="flex flex-col gap-3">
-        <div className="flex gap-1 items-center">
-          <h2 className="text-xl font-medium text-text-300">
-            <FormattedMessage
-              id="Notifications"
-              defaultMessage="Notifications"
-              description="Title for Notifications page"
-            />
-          </h2>
-          <span className="text-xs font-medium text-text-200">(3)</span>
+      <div className="flex items-end justify-between py-4 px-3 border border-divider-75 rounded-lg">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-text-300 text-base font-medium leading-normal line-clamp-1">
+            {description}
+          </span>
+          <span className="text-text-200 text-xs font-normal leading-normal">
+            {parsedDatetime}
+          </span>
         </div>
 
-        <div className="flex gap-2">
-          <Button variant="filter">
-            <FormattedMessage
-              id="All"
-              defaultMessage="All"
-              description="Filter to view All notifications"
-            />
-          </Button>
-          <Button variant="filter">
-            <FormattedMessage
-              id="Pay"
-              defaultMessage="Pay"
-              description="Filter to view pending Pay notifications"
-            />
-          </Button>
-          <Button variant="filter">
-            <FormattedMessage
-              id="Accept"
-              defaultMessage="Accept"
-              description="Filter to view pending Accept notifications"
-            />
-          </Button>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <h3 className="text-base font-medium text-text-300">Today</h3>
-
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-2 bg-elevation-200 p-3 border-[1px] border-divider-75 rounded-[12px]">
-            <div className="px-3">
-              <span className="text-xs font-semibold text-[#816E57]">
-                Gooogle inc. has requested you to pay
-              </span>
-            </div>
-            <div className="flex flex-col p-4 gap-0.5 bg-elevation-50 border-[1px] border-divider-75 rounded-[12px]">
-              <span className="text-base font-medium text-text-300">
-                Hayek Ltd.
-              </span>
-
-              <div className="flex justify-between">
-                <span className="text-sm text-text-200">12-Nov-24</span>
-                <div className="flex gap-1 items-baseline">
-                  <span className="text-sm text-signal-success">+12.49002</span>
-                  <span className="text-xs text-text-300">USD</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 bg-elevation-200 p-3 border-[1px] border-divider-75 rounded-[12px]">
-            <div className="px-3">
-              <span className="text-xs font-semibold text-[#816E57]">
-                Gooogle inc. has requested you to pay
-              </span>
-            </div>
-            <div className="flex flex-col p-4 gap-0.5 bg-elevation-50 border-[1px] border-divider-75 rounded-[12px]">
-              <span className="text-base font-medium text-text-300">
-                Hayek Ltd.
-              </span>
-
-              <div className="flex justify-between">
-                <span className="text-sm text-text-200">12-Nov-24</span>
-                <div className="flex gap-1 items-baseline">
-                  <span className="text-sm text-signal-success">+12.49002</span>
-                  <span className="text-xs text-text-300">USD</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 bg-elevation-200 p-3 border-[1px] border-divider-75 rounded-[12px]">
-            <div className="px-3">
-              <span className="text-xs font-semibold text-[#816E57]">
-                Gooogle inc. has requested you to pay
-              </span>
-            </div>
-            <div className="flex flex-col p-4 gap-0.5 bg-elevation-50 border-[1px] border-divider-75 rounded-[12px]">
-              <span className="text-base font-medium text-text-300">
-                Hayek Ltd.
-              </span>
-
-              <div className="flex justify-between">
-                <span className="text-sm text-text-200">12-Nov-24</span>
-                <div className="flex gap-1 items-baseline">
-                  <span className="text-sm text-signal-success">+12.49002</span>
-                  <span className="text-xs text-text-300">USD</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <Button variant="link" className="text-text-200 font-medium text-sm">
-          <FormattedMessage
-            id="See history"
-            defaultMessage="See history"
-            description="Link to view notification history"
+        <div className="flex items-center gap-1">
+          <FormattedCurrency
+            value={1000}
+            className="text-sm font-normal leading-5"
           />
-        </Button>
+          <span className="text-text-300 text-xs font-normal leading-normal">
+            sat
+          </span>
+        </div>
       </div>
     </div>
   );
 }
 
-export function NotificationsEmpty() {
+function EmptyNotifications() {
   return (
-    <div className="flex flex-col min-h-fit h-screen gap-6 py-12 px-6 w-full">
-      <div className="flex w-full">
-        <button className="flex items-center justify-center w-8 h-8 bg-[#1B0F00]/20 rounded-full border-[1px] border-[#1B0F00]/6">
-          <XIcon width={16} strokeWidth={1} color="#1B0F00" />
-        </button>
+    <div className="flex flex-col items-center gap-4 mb-5">
+      <img src={createBillIllustration} className="h-12 w-12 mb-1" />
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-text-300 text-xl font-medium leading-normal">
+          <FormattedMessage
+            id="notifications.empty.title"
+            defaultMessage="No notifications"
+            description="Empty notifications message"
+          />
+        </span>
+        <span className="text-text-200 text-base font-normal leading-normal text-center mx-12">
+          <FormattedMessage
+            id="notifications.empty.description"
+            defaultMessage="Start creating a bill and distribute it to your contacts"
+            description="Description to start creating a bill"
+          />
+        </span>
       </div>
+      <Link to={routes.CREATE_BILL}>
+        <button className="flex items-center justify-center w-28 py-2.5 px-4 text-text-300 text-xs font-medium leading-normal border border-text-300 rounded-lg">
+          <FormattedMessage
+            id="notifications.empty.issueBill"
+            defaultMessage="Issue bill"
+            description="Action to start creating a bill"
+          />
+        </button>
+      </Link>
+    </div>
+  );
+}
 
+function History({ notifications }: { notifications: NotificationProps[] }) {
+  const [displayHistory, setDisplayHistory] = useState(false);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <button
+        className="flex items-center gap-1 text-text-300 text-sm font-medium leading-5 mx-auto"
+        onClick={() => {
+          setDisplayHistory((prev) => !prev);
+        }}
+      >
+        {displayHistory ? (
+          <>
+            <FormattedMessage
+              id="notifications.history.collapse"
+              defaultMessage="Collapse history"
+              description="Collapse history button"
+            />
+            <ChevronUpIcon className="text-text-300 h-4 w-4 stroke-1" />
+          </>
+        ) : (
+          <>
+            <FormattedMessage
+              id="notifications.history.view"
+              defaultMessage="See history"
+              description="View history button"
+            />
+            <ChevronDownIcon className="text-text-300 h-4 w-4 stroke-1" />
+          </>
+        )}
+      </button>
+      {displayHistory && (
+        <>
+          <Separator className="bg-divider-75" />
+          <div className="flex flex-col gap-3">
+            <span className="text-text-300 text-base font-medium leading-normal">
+              <FormattedMessage
+                id="notifications.list.history"
+                defaultMessage="History"
+                description="History notifications section title"
+              />
+            </span>
+            {notifications.map((notification) => (
+              <Notification key={notification.id} {...notification} />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function Loader() {
+  return (
+    <div className="flex flex-col gap-3 mt-6">
+      <Skeleton className="bg-elevation-200 h-6 w-1/3" />
+
+      <Skeleton className="bg-elevation-200 h-24 w-full" />
+      <Skeleton className="bg-elevation-200 h-24 w-full" />
+      <Skeleton className="bg-elevation-200 h-24 w-full" />
+    </div>
+  );
+}
+
+function List() {
+  const { data } = useSuspenseQuery({
+    queryFn: () => getNotifications(),
+    queryKey: ["notifications"],
+  });
+
+  const today = startOfToday();
+
+  const todayNotifications = data.filter((notification) =>
+    isToday(parseISO(notification.datetime))
+  );
+
+  const earlierNotifications = data.filter((notification) =>
+    isBefore(parseISO(notification.datetime), today)
+  );
+
+  return (
+    <div className="flex flex-col gap-3 pt-10 pb-16 my-auto">
+      {(data.length === 0 || todayNotifications.length === 0) && (
+        <EmptyNotifications />
+      )}
+      {todayNotifications.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <span className="text-text-300 text-base font-medium leading-normal">
+            <FormattedMessage
+              id="notifications.list.today"
+              defaultMessage="Today"
+              description="Today notifications section title"
+            />
+          </span>
+          <div className="flex flex-col gap-3">
+            {todayNotifications.map((notification) => (
+              <Notification key={notification.id} {...notification} />
+            ))}
+          </div>
+        </div>
+      )}
+      {earlierNotifications.length > 0 && (
+        <History notifications={earlierNotifications} />
+      )}
+    </div>
+  );
+}
+
+function Filters() {
+  return (
+    <div className="flex item-center gap-2">
+      <Button variant="filter">
+        <FormattedMessage
+          id="notifications.filter.all"
+          defaultMessage="All"
+          description="Filter to view all notifications"
+        />
+      </Button>
+      <Button variant="filter">
+        <FormattedMessage
+          id="notifications.filter.pay"
+          defaultMessage="Pay"
+          description="Filter to view pending pay notifications"
+        />
+      </Button>
+      <Button variant="filter">
+        <FormattedMessage
+          id="notifications.filter.accept"
+          defaultMessage="Accept"
+          description="Filter to view pending accept notifications"
+        />
+      </Button>
+      <Button variant="filter">
+        <FormattedMessage
+          id="notifications.filter.recourse"
+          defaultMessage="Recourse"
+          description="Filter to view pending recourse notifications"
+        />
+      </Button>
+    </div>
+  );
+}
+
+export default function Notifications() {
+  return (
+    <Page displayBottomNavigation>
       <div className="flex flex-col gap-3">
         <div className="flex gap-1 items-center">
-          <h2 className="text-xl font-medium text-text-300">
+          <h2 className="text-text-300 text-xl font-medium leading-normal">
             <FormattedMessage
-              id="Notifications"
+              id="notifications.list.title"
               defaultMessage="Notifications"
               description="Title for Notifications page"
             />
           </h2>
-          <span className="text-xs font-medium text-text-200">(0)</span>
+          <span className="text-text-200 text-xs font-medium leading-none">
+            (0)
+          </span>
         </div>
-
-        <div className="flex gap-2">
-          <Button variant="filter">
-            <FormattedMessage
-              id="All"
-              defaultMessage="All"
-              description="Filter to view All notifications"
-            />
-          </Button>
-          <Button variant="filter">
-            <FormattedMessage
-              id="Pay"
-              defaultMessage="Pay"
-              description="Filter to view pending Pay notifications"
-            />
-          </Button>
-          <Button variant="filter">
-            <FormattedMessage
-              id="Accept"
-              defaultMessage="Accept"
-              description="Filter to view pending Accept notifications"
-            />
-          </Button>
-        </div>
+        <Filters />
       </div>
 
-      <div className="flex flex-col gap-3 flex-1 items-center justify-center">
-        <div className="flex flex-col items-center gap-4 px-12">
-          <img src={createBillIllustration} className="mb-1" />
-
-          <div className="flex flex-col items-center gap-2">
-            <h3 className="text-xl font-medium text-text-300">
-              <FormattedMessage
-                id="No notifications"
-                defaultMessage="No notifications"
-                description="Empty notifications message"
-              />
-            </h3>
-
-            <span className="text-base text-text-200 text-center">
-              <FormattedMessage
-                id="Start creating a bill and distribute it to your contacts"
-                defaultMessage="Start creating a bill and distribute it to your contacts"
-                description="Description to start creating a bill"
-              />
-            </span>
-          </div>
-
-          <Button
-            className="text-text-300 bg-transparent font-medium border-text-300 rounded-[8px] py-3 px-6 hover:bg-transparent"
-            variant="outline"
-          >
-            <FormattedMessage
-              id="Issue a bill"
-              defaultMessage="Issue a bill"
-              description="Action to start creating a bill"
-            />
-          </Button>
-        </div>
-      </div>
-    </div>
+      <Suspense fallback={<Loader />}>
+        <List />
+      </Suspense>
+    </Page>
   );
 }

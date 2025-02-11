@@ -3,28 +3,31 @@ import { Link } from "react-router-dom";
 import {
   AlignVerticalJustifyCenterIcon,
   BellDotIcon,
+  CloudDownloadIcon,
   InfoIcon,
   LandmarkIcon,
   LockIcon,
   PowerIcon,
 } from "lucide-react";
-
 import Page from "@/components/wrappers/Page";
 import { Separator } from "@/components/ui/separator";
 import ViewDetails from "@/components/Identity/ViewDetails";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import routes from "@/constants/routes";
-
+import { WILDCAT_ONE } from "@/constants/mints";
+import { API_URL } from "@/constants/api";
+import { DOWNLOAD_BACKUP } from "@/constants/endpoints";
 import DisplayCurrency from "./components/DisplayCurrency";
-import LanguagePreference from "./components/LanguagePreference";
 import Agreements from "./components/Agreements";
 import Theme from "./components/Theme";
 import MenuOption from "./components/MenuOption";
-import { WILDCAT_ONE } from "@/constants/mints";
+import LanguagePreference from "./components/LanguagePreference";
 
 export default function Settings() {
   const intl = useIntl();
   const { activeIdentity } = useIdentity();
+
+  const backupFileUrl = `${API_URL}${DOWNLOAD_BACKUP}`;
 
   return (
     <Page className="gap-6" displayBottomNavigation>
@@ -44,10 +47,10 @@ export default function Settings() {
         type={activeIdentity.type}
         name={activeIdentity.name}
         // todo: replace by node id
-        bitcoin_public_key={"1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"}
+        bitcoin_public_key={activeIdentity.node_id}
       />
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mb-16">
         <div className="flex flex-col gap-4 py-6 px-4 border border-divider-75 rounded-xl">
           <span className="text-text-200 text-sm font-medium leading-5">
             <FormattedMessage
@@ -131,14 +134,27 @@ export default function Settings() {
           <Agreements />
         </div>
 
-        <span className="text-text-300 text-sm font-medium leading-5">
-          <FormattedMessage
-            id="settings.versionNumber"
-            defaultMessage="Version: {version}"
-            description="Application version number"
-            values={{ version: "0.0.1" }}
-          />
-        </span>
+        <div className="flex items-center justify-between pr-2">
+          <span className="text-text-300 text-sm font-medium leading-5">
+            <FormattedMessage
+              id="settings.versionNumber"
+              defaultMessage="Version: {version}"
+              description="Application version number"
+              values={{ version: "0.0.1" }}
+            />
+          </span>
+
+          <Link to={backupFileUrl}>
+            <button className="flex gap-1 text-brand-200 text-sm font-normal leading-normal">
+              <CloudDownloadIcon className="h-4 w-4 stroke-1" />
+              <FormattedMessage
+                id="settings.backup.download"
+                defaultMessage="Backup data"
+                description="Backup button"
+              />
+            </button>
+          </Link>
+        </div>
       </div>
     </Page>
   );

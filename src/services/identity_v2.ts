@@ -5,6 +5,10 @@ import {
   GET_IDENTITY_DETAILS,
   UPLOAD_IDENTITY_FILE,
   SWITCH_IDENTITY,
+  RESTORE_SEED_PHRASE,
+  BACKUP_SEED_PHRASE,
+  RESTORE_BACKUP_FILE,
+  DOWNLOAD_BACKUP,
 } from "@/constants/endpoints";
 import type { Identity } from "@/types/identity";
 import { apiFetch } from "@/utils/api";
@@ -36,8 +40,8 @@ type CreateIdentityPayload = Pick<
   | "city_of_birth"
   | "identification_number"
 > & {
-  profile_picture_file_upload_id: string;
-  identity_document_file_upload_id: string;
+  profile_picture_file_upload_id: string | null;
+  identity_document_file_upload_id: string | null;
 };
 
 type CreateIdentityResponse = Identity;
@@ -95,6 +99,50 @@ export async function switchIdentity(node_id: string) {
   return apiFetch(SWITCH_IDENTITY, {
     method: "PUT",
     body: JSON.stringify({ node_id, type: 0 }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+type SeedPhrasePayload = {
+  seed_phrase: string;
+};
+
+type RestoreSeedPhrasePayload = SeedPhrasePayload;
+
+export async function restoreSeedPhrase(data: RestoreSeedPhrasePayload) {
+  return apiFetch(RESTORE_SEED_PHRASE, {
+    method: "PUT",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+type BackupSeedPhraseResponse = SeedPhrasePayload;
+
+export async function backupSeedPhrase(): Promise<BackupSeedPhraseResponse> {
+  return apiFetch<BackupSeedPhraseResponse>(BACKUP_SEED_PHRASE, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export async function restoreBackupFile(file: File): Promise<void> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return apiFetch(RESTORE_BACKUP_FILE, {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export async function downloadBackupFile(): Promise<void> {
+  return apiFetch(DOWNLOAD_BACKUP, {
     headers: {
       "Content-Type": "application/json",
     },

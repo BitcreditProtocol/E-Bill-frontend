@@ -1,10 +1,12 @@
+import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 
 import Page from "@/components/wrappers/Page";
-import NavigateBack from "@/components/NavigateBack";
 import Topbar from "@/components/Topbar";
-import { Button } from "@/components/ui/button";
+import NavigateBack from "@/components/NavigateBack";
 import { Title, Description } from "@/components/typography/Step";
+import { Button } from "@/components/ui/button";
+import routes from "@/constants/routes";
 import LockIllustration from "@/assets/encrypted-data-illustration.svg";
 
 export default function GetStarted() {
@@ -35,20 +37,25 @@ export default function GetStarted() {
       </div>
 
       <div className="flex flex-col gap-2 mt-auto">
-        <Button size="md">
-          <FormattedMessage
-            id="identity.create.createNew"
-            defaultMessage="Create new identity"
-            description="Button to start creating a new identity"
-          />
-        </Button>
-        <Button variant="outline" size="md">
-          <FormattedMessage
-            id="identity.create.restore"
-            defaultMessage="Restore identity"
-            description="Button to restore an existing identity"
-          />
-        </Button>
+        <Link to={routes.CREATE_IDENTITY}>
+          <Button className="w-full" size="md">
+            <FormattedMessage
+              id="identity.create.new"
+              defaultMessage="Create new identity"
+              description="Button to start creating a new identity"
+            />
+          </Button>
+        </Link>
+
+        <Link to={routes.RESTORE_WITH_SEED_PHRASE}>
+          <Button className="w-full !text-text-300" variant="outline" size="md">
+            <FormattedMessage
+              id="identity.create.restore"
+              defaultMessage="Restore identity"
+              description="Button to restore an existing identity"
+            />
+          </Button>
+        </Link>
       </div>
     </Page>
   );

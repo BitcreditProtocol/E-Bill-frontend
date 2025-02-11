@@ -16,6 +16,8 @@ import { Switch } from "@/components/ui/switch";
 
 import { Label } from "./components/Typography";
 import ResetConfirmation from "./components/ResetConfirmation";
+import { Link } from "react-router-dom";
+import routes from "@/constants/routes";
 
 function Option({
   icon,
@@ -27,7 +29,7 @@ function Option({
   description: string;
 }) {
   return (
-    <div className="flex items-center justify-between py-6 px-4 border border-divider-75 rounded-xl cursor-pointer">
+    <div className="flex items-center justify-between py-6 px-4 text-text-300 border border-divider-75 rounded-xl cursor-pointer">
       <div className="flex items-center gap-3">
         {icon}
         <Label>{label}</Label>
@@ -59,7 +61,6 @@ export default function Security() {
             />
           </PageTitle>
         }
-        trail={<></>}
       />
 
       <div className="flex flex-col gap-4">
@@ -105,17 +106,19 @@ export default function Security() {
           })}
         />
 
-        <Option
-          icon={<KeyRoundIcon className="text-text-300 h-6 w-6 stroke-1" />}
-          label={intl.formatMessage({
-            id: "settings.security.recoveryPhrase",
-            defaultMessage: "Recovery phrase",
-          })}
-          description={intl.formatMessage({
-            id: "settings.security.recoveryPhraseDescription",
-            defaultMessage: "12 words",
-          })}
-        />
+        <Link to={routes.RECOVERY_SEED_PHRASE}>
+          <Option
+            icon={<KeyRoundIcon className="text-text-300 h-6 w-6 stroke-1" />}
+            label={intl.formatMessage({
+              id: "settings.security.recoveryPhrase",
+              defaultMessage: "Recovery phrase",
+            })}
+            description={intl.formatMessage({
+              id: "settings.security.recoveryPhraseDescription",
+              defaultMessage: "12 words",
+            })}
+          />
+        </Link>
 
         <ResetConfirmation>
           <Option

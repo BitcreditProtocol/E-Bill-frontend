@@ -64,7 +64,7 @@ function Delete({ contactId }: DeleteContactProps) {
         position: "bottom-center",
       });
 
-      navigate(`/${routes.CONTACTS}`);
+      navigate(routes.CONTACTS);
     },
   });
 
@@ -281,7 +281,7 @@ export default function View() {
     <Page className="gap-6">
       <Topbar
         // todo: fix this route too lol
-        lead={<NavigateBack route={"/" + routes.CONTACTS} />}
+        lead={<NavigateBack route={routes.CONTACTS} />}
         middle={
           <PageTitle>
             <FormattedMessage

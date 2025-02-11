@@ -113,13 +113,16 @@ function UploadInvoiceFile() {
           id="bills.create.noProtest"
           defaultMessage="No protest."
           description="No protest label"
-        />{" "}
+        />
         {watch("file_upload_id") && (
-          <FormattedMessage
-            id="bills.create.valueReceived"
-            defaultMessage="Value received."
-            description="Value received label"
-          />
+          <>
+            {" "}
+            <FormattedMessage
+              id="bills.create.valueReceived"
+              defaultMessage="Value received."
+              description="Value received label"
+            />
+          </>
         )}
       </span>
     </div>
@@ -985,7 +988,7 @@ function Preview() {
         position: "bottom-center",
       });
 
-      navigate("/" + routes.VIEW_BILL.replace(":id", data.id));
+      navigate(routes.VIEW_BILL.replace(":id", data.id));
     },
     onError: () => {
       toast({
@@ -1194,6 +1197,7 @@ export default function Create() {
       // default to selected contact info
       country_of_payment: "AT",
       city_of_payment: "Vienna",
+      // send a null if no file is selected
       file_upload_id: "",
     },
   });

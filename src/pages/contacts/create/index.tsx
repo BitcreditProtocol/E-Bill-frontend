@@ -381,10 +381,6 @@ function OptionalInformation({
           onAddFile={(file) => {
             setValue("document_name", file.name);
             setValue("document_size", Math.round(file.size / 1024).toString());
-            console.log(file);
-
-            console.log(getValues("document_name"));
-            console.log(getValues("document_size"));
           }}
           onRemoveFile={() => {
             setValue("document_name", "");

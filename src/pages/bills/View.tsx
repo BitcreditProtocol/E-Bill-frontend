@@ -1,15 +1,19 @@
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useIntl } from "react-intl";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
+import RefreshButton from "@/components/RefreshButton";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { getBillDetails } from "@/services/bills";
 import { getQuote } from "@/services/quotes";
 import Card, { Loader } from "./components/BillCard";
 import Actions from "./components/Actions";
 import EcashToken from "./mint/components/EcashToken";
+import { API_URL } from "@/constants/api";
+import { GET_BILL_ATTACHMENT } from "@/constants/endpoints";
 
 function Details({ id }: { id: string }) {
   const { activeIdentity } = useIdentity();
@@ -36,6 +40,11 @@ function Details({ id }: { id: string }) {
   const role = isPayer ? "payer" : isHolder ? "holder" : null;
   const holder = data.endorsed && data.endorsee ? data.endorsee : data.payee;
 
+  const hasAttachments = data.files.length > 0;
+  const attachment = hasAttachments
+    ? `${API_URL}${GET_BILL_ATTACHMENT}/${id}/${data.files[0].name}`
+    : null;
+
   return (
     <div className="flex-1 flex flex-col gap-5 justify-between">
       <Card
@@ -56,6 +65,7 @@ function Details({ id }: { id: string }) {
         accepted={data.accepted}
         paid={data.paid}
         waiting_for_payment={data.waiting_for_payment}
+        attachment={attachment}
       />
 
       {quote && quote.token && (
@@ -70,11 +80,29 @@ function Details({ id }: { id: string }) {
 }
 
 export default function View() {
+  const { formatMessage: f } = useIntl();
   const { id } = useParams<{ id: string }>();
 
   return (
     <Page className="gap-5">
-      <Topbar lead={<NavigateBack />} />
+      <Topbar
+        lead={<NavigateBack />}
+        trail={
+          <RefreshButton
+            label={f({
+              id: "bill.status.refresh",
+              defaultMessage: "Refresh",
+              description: "Refresh button label",
+            })}
+            content={f({
+              id: "bill.status.refresh.content",
+              defaultMessage: "Refresh bill status",
+              description: "Refresh bill status tooltip",
+            })}
+            onClick={() => {}}
+          />
+        }
+      />
 
       <Suspense fallback={<Loader />}>
         <Details id={id as string} />

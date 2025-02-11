@@ -1,9 +1,16 @@
+import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import routes from "@/constants/routes";
 import contactsIllustration from "@/assets/contacts-illustration.svg";
 
 export default function EmptyList() {
+  const navigate = useNavigate();
+  const goToCreateContact = () => {
+    navigate(routes.CREATE_CONTACT);
+  };
+
   return (
     <div className="flex-1 flex flex-col items-center pt-10 w-52 mx-auto">
       <img src={contactsIllustration} className="w-18 h-18 mx-auto mb-5" />
@@ -26,7 +33,12 @@ export default function EmptyList() {
         </span>
       </div>
 
-      <Button className="gap-2" variant="outline" size="xs">
+      <Button
+        className="gap-2"
+        variant="outline"
+        size="xs"
+        onClick={goToCreateContact}
+      >
         <PlusIcon className="text-text-300 h-4 w-4 stroke-1" />
         <FormattedMessage
           id="contacts.empty.create"

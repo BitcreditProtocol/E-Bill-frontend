@@ -1,8 +1,8 @@
 import { Suspense, useState } from "react";
 import { Link } from "react-router-dom";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { isToday, parseISO } from "date-fns";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { CalendarDaysIcon, ChevronsUpDownIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
@@ -11,7 +11,8 @@ import { DatePicker } from "@/components/DatePicker/datePicker";
 import { Skeleton } from "@/components/ui/skeleton";
 import Search from "@/components/ui/search";
 import { Button } from "@/components/ui/button";
-import { getBillsLight } from "@/services/bills";
+import RefreshButton from "@/components/RefreshButton";
+import { checkBillsInDHT, getBillsLight } from "@/services/bills";
 import { cn } from "@/lib/utils";
 import routes from "@/constants/routes";
 import { Card } from "./components/Card";
@@ -156,6 +157,7 @@ function Loader() {
 }
 
 function List() {
+  const { formatMessage: f } = useIntl();
   const { data } = useSuspenseQuery({
     queryKey: ["bills"],
     queryFn: () => getBillsLight(),
@@ -169,9 +171,35 @@ function List() {
     (bill) => !isToday(parseISO(bill.issue_date))
   );
 
+  const { refetch } = useQuery({
+    queryFn: () => checkBillsInDHT(),
+    queryKey: ["bills", "check"],
+    enabled: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
   return (
     // todo: fix scroll area viewports
     <div className="flex-1 flex flex-col gap-6 mb-24">
+      <div className="ml-auto">
+        <RefreshButton
+          label={f({
+            id: "bills.list.refresh",
+            defaultMessage: "Refresh",
+            description: "Refresh button label",
+          })}
+          content={f({
+            id: "bills.list.refresh.content",
+            defaultMessage: "Refresh bills list",
+            description: "Refresh bills list tooltip",
+          })}
+          onClick={() => {
+            void refetch();
+          }}
+        />
+      </div>
+
       {data.bills.length === 0 ? (
         <div className="flex-1 flex flex-col items-center">
           <Empty />
@@ -198,10 +226,7 @@ function List() {
             )}
 
             {todayBills.map((bill) => (
-              <Link
-                to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
-                key={bill.id}
-              >
+              <Link to={routes.VIEW_BILL.replace(":id", bill.id)} key={bill.id}>
                 <Card
                   key={bill.id}
                   name={bill.drawer.name}
@@ -233,10 +258,7 @@ function List() {
             </div>
 
             {earlierBills.map((bill) => (
-              <Link
-                to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
-                key={bill.id}
-              >
+              <Link to={routes.VIEW_BILL.replace(":id", bill.id)} key={bill.id}>
                 <Card
                   key={bill.id}
                   name={bill.drawee.name}

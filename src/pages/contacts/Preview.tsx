@@ -149,8 +149,7 @@ export default function Preview({
         position: "bottom-center",
       });
 
-      // todo: fix ugly route concat
-      navigate(`/${routes.CONTACTS}`);
+      navigate(routes.CONTACTS);
     },
   });
 
@@ -226,7 +225,7 @@ export default function Preview({
     description: "Label for registration document",
   });
 
-  const address = `${getValues("street") as string},
+  const address = `${getValues("address") as string},
   ${getValues("zip") as string}, ${getValues("city") as string}`;
   const countryKey = getValues("country") as keyof typeof COUNTRIES;
   const country = COUNTRIES[countryKey];
@@ -303,10 +302,15 @@ export default function Preview({
               : companyRegistrationDocumentLabel
           }
           value={
-            <UploadedFile
-              name={getValues("document_name") as string}
-              size={getValues("document_size") as string}
-            />
+            getValues("document_name") !== "" &&
+            getValues("document_size") !== "" ? (
+              <UploadedFile
+                name={getValues("document_name") as string}
+                size={getValues("document_size") as string}
+              />
+            ) : (
+              "-"
+            )
           }
         />
       </div>
