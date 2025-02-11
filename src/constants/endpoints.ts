@@ -22,6 +22,7 @@ const REQUEST_BILL_ACCEPTANCE_RECOURSE =
   "/bill/request_recourse_for_acceptance";
 const REJECT_BILL_PAYMENT_RECOURSE = "/bill/reject_recourse_for_payment";
 const GET_BILL_PRIVATE_KEY = "/bill/bitcoin_key";
+const GET_BILL_PAST_ENDORSEES = "/bill/past_endorsees/:id";
 
 // quote endpoints
 const GET_QUOTE = "/quote/return/:id";
@@ -85,6 +86,7 @@ export {
   REQUEST_BILL_ACCEPTANCE_RECOURSE,
   REJECT_BILL_PAYMENT_RECOURSE,
   GET_BILL_PRIVATE_KEY,
+  GET_BILL_PAST_ENDORSEES,
 
   // quote
   GET_QUOTE,

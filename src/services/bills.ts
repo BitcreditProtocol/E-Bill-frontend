@@ -20,6 +20,7 @@ import {
   REJECT_BILL_PAYMENT_RECOURSE,
   GET_BILL_ENDORSEMENTS,
   GET_BILL_PRIVATE_KEY,
+  GET_BILL_PAST_ENDORSEES,
 } from "@/constants/endpoints";
 import type { BillFull, Peer } from "@/types/bill";
 
@@ -291,6 +292,40 @@ export async function rejectToPay(bill_id: string): Promise<void> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ bill_id }),
+  });
+}
+
+type GetPastEndorseesResponse = {
+  past_endorsees: {
+    pay_to_the_order_of: {
+      node_id: string;
+      name: string;
+    };
+    signed: {
+      node_id: string;
+      name: string;
+      signatory: {
+        node_id: string;
+        name: string;
+      };
+    };
+    signing_timestamp: number;
+    signing_address: {
+      country: string;
+      city: string;
+      zip: string;
+      address: string;
+    };
+  }[];
+};
+
+export async function getPastEndorsees(
+  id: string
+): Promise<GetPastEndorseesResponse> {
+  return apiFetch(GET_BILL_PAST_ENDORSEES.replace(":id", id), {
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }
 

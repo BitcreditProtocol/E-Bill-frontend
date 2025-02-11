@@ -47,6 +47,7 @@ const PAYMENT = "/bill/:id/payment";
 const PAY = "/bill/:id/pay";
 const SELL_BILL = "/bill/:id/sell";
 const OFFER = "/bill/:id/offer";
+const RECOURSE = "/bill/:id/recourse";
 
 const REQUEST_MINT = "/bill/:id/request-mint";
 const SELECT_QUOTE = "/bill/:id/select-quote";
@@ -81,6 +82,7 @@ export default {
   MINT_BILL,
   SELL_BILL,
   OFFER,
+  RECOURSE,
 
   CONTACTS,
   CREATE_CONTACT,

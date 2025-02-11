@@ -12,6 +12,7 @@ import routes from "@/constants/routes";
 import createBillIllustration from "@/assets/create-bill-illustration.svg";
 import type { Notification } from "@/types/notification";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type NotificationProps = Pick<
   Notification,
@@ -153,6 +154,18 @@ function History({ notifications }: { notifications: NotificationProps[] }) {
   );
 }
 
+function Loader() {
+  return (
+    <div className="flex flex-col gap-3 mt-6">
+      <Skeleton className="bg-elevation-200 h-6 w-1/3" />
+
+      <Skeleton className="bg-elevation-200 h-24 w-full" />
+      <Skeleton className="bg-elevation-200 h-24 w-full" />
+      <Skeleton className="bg-elevation-200 h-24 w-full" />
+    </div>
+  );
+}
+
 function List() {
   const { data } = useSuspenseQuery({
     queryFn: () => getNotifications(),
@@ -250,7 +263,7 @@ export default function Notifications() {
         <Filters />
       </div>
 
-      <Suspense fallback={<>Loading</>}>
+      <Suspense fallback={<Loader />}>
         <List />
       </Suspense>
     </Page>

@@ -51,7 +51,7 @@ import IssueBill from "./pages/IssueBill";
 import PreviewBill from "./pages/PreviewBill";
 import MintBill from "./pages/MintBill";
 import SellBill from "./pages/bills/Sell";
-
+import Recourse from "./pages/bills/Recourse";
 import RequestMint from "./pages/bills/RequestMint";
 import SelectQuote from "./pages/bills/mint/SelectQuote";
 import Preview from "./pages/bills/mint/Preview";
@@ -163,6 +163,10 @@ const router = createBrowserRouter(
         {
           path: routes.OFFER,
           element: <Offer />,
+        },
+        {
+          path: routes.RECOURSE,
+          element: <Recourse />,
         },
         {
           path: routes.CREATE_BILL,
