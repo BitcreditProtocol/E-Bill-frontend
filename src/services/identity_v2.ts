@@ -131,11 +131,11 @@ export async function backupSeedPhrase(): Promise<BackupSeedPhraseResponse> {
 }
 
 export async function restoreBackupFile(file: File): Promise<void> {
+  const formData = new FormData();
+  formData.append("file", file);
+
   return apiFetch(RESTORE_BACKUP_FILE, {
     method: "POST",
-    headers: {
-      "Content-Type": file.type,
-    },
-    body: file,
+    body: formData,
   });
 }

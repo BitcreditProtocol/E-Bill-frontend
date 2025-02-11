@@ -230,7 +230,7 @@ function RestoreBackupFile() {
       });
 
       setTimeout(() => {
-        navigate("/" + routes.HOME);
+        navigate(routes.HOME);
       }, 2000);
     },
     onError: () => {

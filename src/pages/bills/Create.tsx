@@ -985,7 +985,7 @@ function Preview() {
         position: "bottom-center",
       });
 
-      navigate("/" + routes.VIEW_BILL.replace(":id", data.id));
+      navigate(routes.VIEW_BILL.replace(":id", data.id));
     },
     onError: () => {
       toast({

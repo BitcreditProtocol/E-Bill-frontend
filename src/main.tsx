@@ -14,7 +14,7 @@ import IdentityProvider from "./context/identity/IdentityProvider";
 import DefaultLayout from "./layouts/Default";
 import Authenticated from "./layouts/Authenticated";
 
-import Unlock from "./pages/Unlock";
+// import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/home";
@@ -82,32 +82,30 @@ const queryClient = new QueryClient();
 const router = createBrowserRouter(
   [
     {
-      path: routes.ROOT,
       element: <DefaultLayout />,
       children: [
         {
-          path: routes.ONBOARDING,
-          element: <GetStarted />,
-        },
-        {
-          path: routes.CREATE_IDENTITY,
-          element: <IdentityCreation />,
-        },
-        {
-          path: routes.UNLOCK,
-          element: <Unlock />,
-        },
-        {
-          path: routes.LOGIN,
-          element: <Login />,
-        },
-        {
-          path: routes.RESTORE_WITH_SEED_PHRASE,
-          element: <RecoverWithSeedPhrase />,
-        },
-        {
           element: <Authenticated />,
           children: [
+            // public
+            {
+              path: routes.ONBOARDING,
+              element: <GetStarted />,
+            },
+            {
+              path: routes.CREATE_IDENTITY,
+              element: <IdentityCreation />,
+            },
+            {
+              path: routes.LOGIN,
+              element: <Login />,
+            },
+            {
+              path: routes.RESTORE_WITH_SEED_PHRASE,
+              element: <RecoverWithSeedPhrase />,
+            },
+
+            // private routes
             {
               path: routes.HOME,
               element: <Home />,

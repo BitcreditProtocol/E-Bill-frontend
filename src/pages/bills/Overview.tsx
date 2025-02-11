@@ -198,10 +198,7 @@ function List() {
             )}
 
             {todayBills.map((bill) => (
-              <Link
-                to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
-                key={bill.id}
-              >
+              <Link to={routes.VIEW_BILL.replace(":id", bill.id)} key={bill.id}>
                 <Card
                   key={bill.id}
                   name={bill.drawer.name}
@@ -233,10 +230,7 @@ function List() {
             </div>
 
             {earlierBills.map((bill) => (
-              <Link
-                to={"/" + routes.VIEW_BILL.replace(":id", bill.id)}
-                key={bill.id}
-              >
+              <Link to={routes.VIEW_BILL.replace(":id", bill.id)} key={bill.id}>
                 <Card
                   key={bill.id}
                   name={bill.drawee.name}

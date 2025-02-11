@@ -1,34 +1,34 @@
 const ROOT = "/";
-const LOGIN = "login";
-const UNLOCK = "unlock";
-const RESTORE_WITH_PRIVATE_KEY = "private-key";
-const RESTORE_WITH_SEED_PHRASE = "seed-phrase";
-const HOME = "home";
-const REQUIRED_INFORMATION = "required-information";
-const EMAIL_VERIFICATION = "email-verification";
-const OPTIONAL_INFORMATION = "optional-information";
-const NOTIFICATIONS = "notifications";
+const LOGIN = "/login";
+const UNLOCK = "/unlock";
+const RESTORE_WITH_PRIVATE_KEY = "/private-key";
+const RESTORE_WITH_SEED_PHRASE = "/seed-phrase";
+const HOME = "/home";
+const REQUIRED_INFORMATION = "/required-information";
+const EMAIL_VERIFICATION = "/email-verification";
+const OPTIONAL_INFORMATION = "/optional-information";
+const NOTIFICATIONS = "/notifications";
 const BILLS = "/bills";
 // todo: replace by /bills/:id once we integrate the api
 
-const SIGNUP = "signup";
-const VIEW_BILL = "bill/:id";
-const ISSUE_BILL = "issue-bill";
-const CREATE_BILL = "create-bill";
-const PREVIEW_BILL = "preview-bill";
-const MINT_BILL = "mint-bill";
-const CONTACTS = "contacts";
+const SIGNUP = "/signup";
+const VIEW_BILL = "/bill/:id";
+const ISSUE_BILL = "/issue-bill";
+const CREATE_BILL = "/create-bill";
+const PREVIEW_BILL = "/preview-bill";
+const MINT_BILL = "/mint-bill";
+const CONTACTS = "/contacts";
 const CREATE_CONTACT = "new";
 const VIEW_CONTACT = ":nodeId";
 const EDIT_CONTACT = ":nodeId/edit";
-const SETTINGS = "settings";
-const ONBOARDING = "get-started";
+const SETTINGS = "/settings";
+const ONBOARDING = "/get-started";
 
 const CREATE_IDENTITY = "/create-identity";
-const IDENTITY_CATEGORY = "category";
-const BILL_ISSUER = "bill-issuer";
-const AUTHORIZED_SIGNER = "authorized-signer";
-const SUCCESS = "success";
+const IDENTITY_CATEGORY = "/category";
+const BILL_ISSUER = "/bill-issuer";
+const AUTHORIZED_SIGNER = "/authorized-signer";
+const SUCCESS = "/success";
 
 const VIEW_IDENTITY = "/identity";
 const EDIT_IDENTITY = "/identity/edit";
@@ -41,7 +41,7 @@ const VIEW_COMPANY = "/company";
 
 const CREATE_COMPANY_SUCCESS = "success";
 const AUTHORIZED_SIGNERS = "/authorized-signers";
-const ENDORSEMENTS = "bill/:id/endorsements";
+const ENDORSEMENTS = "/bill/:id/endorsements";
 const ENDORSE = "/bill/:id/endorse";
 const PAYMENT = "/bill/:id/payment";
 const PAY = "/bill/:id/pay";

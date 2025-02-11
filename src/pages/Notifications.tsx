@@ -29,7 +29,7 @@ function Notification({
   const parsedDatetime = format(parseISO(datetime), "dd-MMM-yyyy · HH:mm");
 
   const handleClick = useCallback(() => {
-    navigate("/" + routes.VIEW_BILL.replace(":id", payload.bill_id));
+    navigate(routes.VIEW_BILL.replace(":id", payload.bill_id));
   }, [navigate, payload.bill_id]);
 
   return (
@@ -89,7 +89,7 @@ function EmptyNotifications() {
           />
         </span>
       </div>
-      <Link to={"/" + routes.CREATE_BILL}>
+      <Link to={routes.CREATE_BILL}>
         <button className="flex items-center justify-center w-28 py-2.5 px-4 text-text-300 text-xs font-medium leading-normal border border-text-300 rounded-lg">
           <FormattedMessage
             id="notifications.empty.issueBill"

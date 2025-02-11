@@ -334,7 +334,7 @@ function Form() {
   };
 
   return !isHolder ? (
-    <Navigate to={"/" + routes.VIEW_BILL.replace(":id", id)} />
+    <Navigate to={routes.VIEW_BILL.replace(":id", id)} />
   ) : (
     <>
       <Preview

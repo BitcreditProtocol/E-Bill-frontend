@@ -47,8 +47,8 @@ export default function GetStarted() {
           </Button>
         </Link>
 
-        <Link to={"/" + routes.RESTORE_WITH_SEED_PHRASE}>
-          <Button className="w-full" variant="outline" size="md">
+        <Link to={routes.RESTORE_WITH_SEED_PHRASE}>
+          <Button className="w-full !text-text-300" variant="outline" size="md">
             <FormattedMessage
               id="identity.create.restore"
               defaultMessage="Restore identity"

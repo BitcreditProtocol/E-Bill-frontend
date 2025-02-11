@@ -670,7 +670,7 @@ function Success() {
         />
       </div>
 
-      <Link to={"/" + routes.HOME}>
+      <Link to={routes.HOME}>
         <Button className="w-full" size="md">
           <FormattedMessage
             id="identity.create.finish"

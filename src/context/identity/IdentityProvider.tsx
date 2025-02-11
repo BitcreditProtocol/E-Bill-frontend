@@ -32,9 +32,9 @@ export default function IdentityProvider({
       setActiveIdentityType(type === 0 ? "personal" : "company");
       setActiveNodeId(node_id);
 
-      const details = await getIdentityDetails();
-
-      if (!details.address) {
+      try {
+        await getIdentityDetails();
+      } catch {
         setIsAuthenticated(false);
 
         return;
