@@ -114,6 +114,10 @@ const router = createBrowserRouter(
               element: <Home />,
             },
             {
+              path: routes.CASHFLOW,
+              element: <CashFlow />,
+            },
+            {
               path: routes.NOTIFICATIONS,
               element: <Notifications />,
             },
