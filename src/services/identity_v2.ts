@@ -38,8 +38,8 @@ type CreateIdentityPayload = Pick<
   | "city_of_birth"
   | "identification_number"
 > & {
-  profile_picture_file_upload_id: string;
-  identity_document_file_upload_id: string;
+  profile_picture_file_upload_id: string | null;
+  identity_document_file_upload_id: string | null;
 };
 
 type CreateIdentityResponse = Identity;

@@ -102,6 +102,11 @@ export const messages = defineMessages({
     defaultMessage: "Social security number",
     description: "Label for the identification number field",
   },
+  "identity.personal.identity_file": {
+    id: "identity.personal.identity_file",
+    defaultMessage: "Identity document",
+    description: "Label for the identity document field",
+  },
   // company identity
   "identity.company.name": {
     id: "identity.company.name",

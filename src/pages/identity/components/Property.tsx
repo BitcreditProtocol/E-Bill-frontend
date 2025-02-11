@@ -5,12 +5,14 @@ export default function Property({
   value,
 }: {
   label: React.ReactNode;
-  value: string;
+  value: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
       <Label>{label}</Label>
-      <Value>{value.length === 0 ? "-" : value}</Value>
+      <Value>
+        {typeof value === "string" ? (value.length > 0 ? value : "-") : value}
+      </Value>
     </div>
   );
 }
