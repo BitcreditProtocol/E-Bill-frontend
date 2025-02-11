@@ -13,8 +13,10 @@ import Summary from "@/components/Summary";
 import { getIdentityDetails } from "@/services/identity_v2";
 import routes from "@/constants/routes";
 import { COUNTRIES } from "@/constants/countries";
+import { API_URL } from "@/constants/api";
 import Property from "./components/Property";
 import { messages } from "./components/messages";
+import { format, parseISO } from "date-fns";
 
 function Loader() {
   return (
@@ -62,11 +64,20 @@ function Information() {
     country_of_birth,
     city_of_birth,
     identification_number,
+    profile_picture_file,
   } = data;
+
+  const avatar =
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    profile_picture_file !== null
+      ? `${API_URL}/identity/file/${profile_picture_file.name}`
+      : "";
+  // todo: standardize date format; maybe use an util
+  const formattedDateOfBirth = format(parseISO(date_of_birth), "dd-MMM-yyyy");
 
   return (
     <div className="flex flex-col gap-4">
-      <Summary identityType={0} name={name} nodeId={node_id} picture="" />
+      <Summary identityType={0} name={name} nodeId={node_id} picture={avatar} />
 
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
         <Property label={f(messages["identity.name"])} value={name} />
@@ -83,7 +94,7 @@ function Information() {
 
         <Property
           label={f(messages["identity.date_of_birth"])}
-          value={date_of_birth}
+          value={formattedDateOfBirth}
         />
         <Separator className="bg-divider-75" />
 
@@ -97,7 +108,7 @@ function Information() {
           label={f(messages["identity.city_of_birth"])}
           value={city_of_birth}
         />
-        <Separator className="bg-divider-75" />
+        <Separator className="bg-divider-75 mt-0.5" />
 
         <Property
           label={f(messages["identity.identification_number"])}

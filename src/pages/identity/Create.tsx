@@ -234,7 +234,7 @@ function PostalAddress({ moveToNextStep }: { moveToNextStep: () => void }) {
             description="Title for the postal address step"
           />
         </Title>
-        <Description>
+        <Description className="text-center mx-8">
           <FormattedMessage
             id="identity.create.postalAddress.description"
             defaultMessage="These fields are only needed if you want to issue bills in your own name"

@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 
 type IdentityContextType = {
+  isAuthenticated: boolean;
   activeIdentity: {
     type: "personal" | "company" | null;
     node_id: string;

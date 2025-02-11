@@ -15,7 +15,9 @@ import Page from "@/components/wrappers/Page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Picture from "@/components/Picture";
+import { useToast } from "@/hooks/use-toast";
 import { useIdentity } from "@/context/identity/IdentityContext";
+import { copyToClipboard } from "@/utils";
 import { truncateString } from "@/utils/strings";
 import routes from "@/constants/routes";
 import { getCompanies } from "@/services/company";
@@ -24,6 +26,7 @@ import { API_URL } from "@/constants/api";
 
 function SelectedIdentity() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { activeIdentity } = useIdentity();
 
   if (!activeIdentity.node_id) {
@@ -32,7 +35,7 @@ function SelectedIdentity() {
 
   const { node_id, type, name, avatar } = activeIdentity;
 
-  const truncatedBitcoinPublicKey = truncateString(node_id, 14);
+  const truncatedNodeId = truncateString(node_id, 14);
   const viewIdentityRoute =
     type === "company" ? routes.VIEW_COMPANY : routes.VIEW_IDENTITY;
 
@@ -50,8 +53,18 @@ function SelectedIdentity() {
           {name}
         </span>
 
-        <button className="flex items-center gap-1 text-text-200 text-xs leading-normal">
-          {truncatedBitcoinPublicKey}
+        <button
+          className="flex items-center gap-1 text-text-200 text-xs leading-normal"
+          onClick={() => {
+            void copyToClipboard(node_id, () => {
+              toast({
+                description: "Copied to clipboard",
+                position: "bottom-center",
+              });
+            });
+          }}
+        >
+          {truncatedNodeId}
 
           <CopyIcon className="h-4 w-4 stroke-1" />
         </button>

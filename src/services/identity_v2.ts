@@ -7,6 +7,7 @@ import {
   SWITCH_IDENTITY,
   RESTORE_SEED_PHRASE,
   BACKUP_SEED_PHRASE,
+  RESTORE_BACKUP_FILE,
 } from "@/constants/endpoints";
 import type { Identity } from "@/types/identity";
 import { apiFetch } from "@/utils/api";
@@ -126,5 +127,15 @@ export async function backupSeedPhrase(): Promise<BackupSeedPhraseResponse> {
     headers: {
       "Content-Type": "application/json",
     },
+  });
+}
+
+export async function restoreBackupFile(file: File): Promise<void> {
+  return apiFetch(RESTORE_BACKUP_FILE, {
+    method: "POST",
+    headers: {
+      "Content-Type": file.type,
+    },
+    body: file,
   });
 }

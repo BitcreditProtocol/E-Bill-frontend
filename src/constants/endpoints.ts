@@ -37,6 +37,7 @@ const EDIT_IDENTITY = "/identity/change";
 const SWITCH_IDENTITY = "/identity/switch";
 const RESTORE_SEED_PHRASE = "/identity/seed/recover";
 const BACKUP_SEED_PHRASE = "/identity/seed/backup";
+const RESTORE_BACKUP_FILE = "/identity/restore";
 
 // company endpoints
 const GET_COMPANIES = "/company/list";
@@ -101,6 +102,7 @@ export {
   SWITCH_IDENTITY,
   RESTORE_SEED_PHRASE,
   BACKUP_SEED_PHRASE,
+  RESTORE_BACKUP_FILE,
 
   // company
   GET_COMPANIES,

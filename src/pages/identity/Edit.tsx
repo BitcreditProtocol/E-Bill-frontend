@@ -28,6 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import Summary from "@/components/Summary";
 import { editIdentity, getIdentityDetails } from "@/services/identity_v2";
+import { API_URL } from "@/constants/api";
 import { messages } from "./components/messages";
 
 function Loader() {
@@ -131,13 +132,19 @@ function Form() {
     },
   });
 
+  const avatar =
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    data.profile_picture_file !== null
+      ? `${API_URL}/identity/file/${data.profile_picture_file.name}`
+      : "";
+
   return (
     <div className="flex-1 flex flex-col gap-6">
       <Summary
         identityType={0}
         name={data.name}
         nodeId={data.node_id}
-        picture=""
+        picture={avatar}
       />
 
       <FormProvider {...methods}>

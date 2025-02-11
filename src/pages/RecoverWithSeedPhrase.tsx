@@ -1,11 +1,17 @@
 import { useState } from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { CircleXIcon, CopyIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
+import { useMutation } from "@tanstack/react-query";
+import { restoreBackupFile, restoreSeedPhrase } from "@/services/identity_v2";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import routes from "@/constants/routes";
+import Upload from "@/components/Upload";
 
 type WordFieldProps = {
   id: number;
@@ -32,8 +38,55 @@ function WordField({ id, value, onChange, onPaste }: WordFieldProps) {
   );
 }
 
-export default function RecoverWithSeedPhrase() {
+function SeedPhrase({ goToBackup }: { goToBackup: () => void }) {
   const [seedWords, setSeedWords] = useState(Array<string>(12).fill(""));
+  const { formatMessage: f } = useIntl();
+  const { toast } = useToast();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      const combinedSeedPhrase = seedWords.join(" ");
+
+      return restoreSeedPhrase({
+        seed_phrase: combinedSeedPhrase,
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: f({
+          id: "identity.restore.success",
+          defaultMessage: "Success!",
+          description:
+            "Toast message title when identity is restored successfully",
+        }),
+        description: f({
+          id: "identity.restore.success.description",
+          defaultMessage: "Your identity has been restored successfully",
+          description:
+            "Toast message description when identity is restored successfully",
+        }),
+        position: "bottom-center",
+      });
+
+      goToBackup();
+    },
+    onError: () => {
+      toast({
+        title: f({
+          id: "identity.restore.error",
+          defaultMessage: "Error!",
+          description: "Toast message title when identity restoration fails",
+        }),
+        description: f({
+          id: "identity.restore.error.description",
+          defaultMessage: "Failed to restore your identity. Please try again.",
+          description:
+            "Toast message description when identity restoration fails",
+        }),
+        position: "bottom-center",
+      });
+    },
+  });
 
   const handleInputChange = (index: number, newValue: string) => {
     const updatedWords = [...seedWords];
@@ -65,20 +118,18 @@ export default function RecoverWithSeedPhrase() {
   const hasAnyFieldFilled = seedWords.some((word) => word !== "");
 
   return (
-    <Page className="gap-6">
-      <Topbar className="mb-6" lead={<NavigateBack />} />
-
+    <div className="flex-1 flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-text-300 text-2xl font-medium leading-8">
           <FormattedMessage
-            id="seedPhrase.recover.heading"
+            id="identity.restore.heading"
             defaultMessage="Recover with seed phrase"
             description="Heading copy for the recover with seed phrase page"
           />
         </h1>
         <span className="text-text-200 text-base font-normal leading-6 mx-10">
           <FormattedMessage
-            id="seedPhrase.recover.description"
+            id="identity.restore.description"
             defaultMessage="Please enter your seed phrase to restore your identity"
             description="Description copy for the recover with seed phrase page"
           />
@@ -125,7 +176,7 @@ export default function RecoverWithSeedPhrase() {
           >
             <CopyIcon width={20} color="#1B0F0080" strokeWidth={1} />
             <FormattedMessage
-              id="Paste from clipboard"
+              id="identity.restore.paste"
               defaultMessage="Paste from clipboard"
               description="Button to paste seed phrase from clipboard in the recover with seed phrase page"
             />
@@ -134,14 +185,128 @@ export default function RecoverWithSeedPhrase() {
       </div>
 
       <div className="flex flex-col gap-3 mt-auto">
-        <Button size="md" disabled={seedWords.some((word) => word === "")}>
+        <Button
+          size="md"
+          disabled={seedWords.some((word) => word === "") || isPending}
+          onClick={() => {
+            mutate();
+          }}
+        >
           <FormattedMessage
-            id="Restore identity"
+            id="identity.restore.button"
             defaultMessage="Restore identity"
             description="Button to restore identity in the recover with seed phrase page"
           />
         </Button>
       </div>
+    </div>
+  );
+}
+
+function RestoreBackupFile() {
+  const navigate = useNavigate();
+  const { formatMessage: f } = useIntl();
+  const { toast } = useToast();
+
+  const { mutate } = useMutation({
+    mutationFn: (file: File) => {
+      return restoreBackupFile(file);
+    },
+    onSuccess: () => {
+      toast({
+        title: f({
+          id: "identity.restore.success",
+          defaultMessage: "Success!",
+          description:
+            "Toast message title when identity is restored successfully",
+        }),
+        description: f({
+          id: "identity.restore.success.description",
+          defaultMessage: "Your identity has been restored successfully",
+          description:
+            "Toast message description when identity is restored successfully",
+        }),
+        position: "bottom-center",
+      });
+
+      setTimeout(() => {
+        navigate("/" + routes.HOME);
+      }, 2000);
+    },
+    onError: () => {
+      toast({
+        title: f({
+          id: "identity.restore.error",
+          defaultMessage: "Error!",
+          description: "Toast message title when identity restoration fails",
+        }),
+        description: f({
+          id: "identity.restore.error.description",
+          defaultMessage: "Failed to restore your identity. Please try again.",
+          description:
+            "Toast message description when identity restoration fails",
+        }),
+        position: "bottom-center",
+      });
+    },
+  });
+
+  return (
+    <div className="flex-1 flex flex-col">
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-text-300 text-xl font-medium leading-8">
+          <FormattedMessage
+            id="identity.restore.backup.heading"
+            defaultMessage="Restore backup file"
+            description="Heading copy for the restore backup step"
+          />
+        </span>
+        <span className="text-text-200 text-sm font-normal text-center leading-6 mx-10">
+          <FormattedMessage
+            id="identity.restore.backup.description"
+            defaultMessage="Please upload your backup file to restore your data"
+            description="Description copy for the restore backup step"
+          />
+        </span>
+      </div>
+
+      <div className="my-auto">
+        <Upload
+          label={f({
+            id: "identity.restore.backup.label",
+            defaultMessage: "Upload backup file",
+            description: "Label for the upload backup file input",
+          })}
+          description={f({
+            id: "identity.restore.backup.description",
+            defaultMessage: "Select the backup file you want to restore",
+            description: "Description for the upload backup file input",
+          })}
+          onAddFile={(file) => {
+            mutate(file);
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default function RecoverWithSeedPhrase() {
+  const [activeTab, setActiveTab] = useState<"seed" | "backup">("seed");
+
+  return (
+    <Page className="gap-6">
+      <Topbar className="mb-6" lead={<NavigateBack />} />
+
+      {activeTab === "seed" ? (
+        <SeedPhrase
+          goToBackup={() => {
+            setActiveTab("backup");
+          }}
+        />
+      ) : (
+        <RestoreBackupFile />
+      )}
     </Page>
   );
 }
