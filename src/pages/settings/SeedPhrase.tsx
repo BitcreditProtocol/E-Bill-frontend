@@ -1,6 +1,7 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { FormattedMessage } from "react-intl";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
@@ -28,24 +29,59 @@ function Loader() {
 }
 
 function WordsList() {
+  const [showSeedPhrase, setShowSeedPhrase] = useState(false);
+
   const { data } = useSuspenseQuery({
     queryFn: () => backupSeedPhrase(),
     queryKey: ["identity", "seed-phrase"],
   });
 
   return (
-    <div className="grid grid-cols-2 grid-rows-6 gap-x-4 gap-y-2">
-      {data.seed_phrase.split(" ").map((word: string, index: number) => (
-        <div
-          key={index}
-          className="flex items-center gap-2 px-2 h-12 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg"
-        >
-          <div className="flex items-center justify-center h-[30px] w-[30px] bg-elevation-300 rounded-[4px]">
-            {index}
+    <div className="flex flex-col gap-5">
+      <div className="grid grid-cols-2 grid-rows-6 gap-x-4 gap-y-2">
+        {data.seed_phrase.split(" ").map((word: string, index: number) => (
+          <div
+            key={index}
+            className="flex items-center gap-2 px-2 h-12 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg"
+          >
+            <div className="flex items-center justify-center p-3 h-[30px] w-[30px] bg-elevation-300 rounded-[4px]">
+              {index}
+            </div>
+            <div className="flex items-center w-full">
+              {showSeedPhrase ? (
+                word
+              ) : (
+                <div className="h-5 w-3/4 bg-elevation-350 rounded-sm" />
+              )}
+            </div>
           </div>
-          <span>{word}</span>
-        </div>
-      ))}
+        ))}
+      </div>
+      <button
+        className="flex items-center gap-1 p-0 text-brand-200 text-sm font-medium leading-5 mx-auto"
+        onClick={() => {
+          setShowSeedPhrase((prev) => !prev);
+        }}
+      >
+        {showSeedPhrase ? (
+          <EyeIcon className="h-4 w-4 stroke-1" />
+        ) : (
+          <EyeOffIcon className="h-4 w-4 stroke-1" />
+        )}
+        {showSeedPhrase ? (
+          <FormattedMessage
+            id="settings.security.recoveryPhrase.hideSeedPhrase"
+            defaultMessage="Hide seedphrase"
+            description="Button to toggle seedphrase visibility"
+          />
+        ) : (
+          <FormattedMessage
+            id="settings.security.recoveryPhrase.viewSeedPhrase"
+            defaultMessage="View seedphrase"
+            description="Button to toggle seedphrase visibility"
+          />
+        )}
+      </button>
     </div>
   );
 }
