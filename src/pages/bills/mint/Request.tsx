@@ -204,7 +204,6 @@ function DiscountRate({ bill }: { bill: BillFull }) {
   );
 }
 
-
 const formSchema = z.object({
   bill_id: z.string().min(1),
   discount: z.object({
