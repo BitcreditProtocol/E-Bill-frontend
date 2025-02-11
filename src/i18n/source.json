@@ -421,6 +421,7 @@
   "identity.create.optionalInformation.skip": "Skip",
   "identity.create.optionalInformation.title": "Optional: other information",
   "identity.create.postalAddress.description": "These fields are only needed if you want to issue bills in your own name",
+  "identity.create.postalAddress.skip": "Skip",
   "identity.create.postalAddress.title": "Optional: postal address",
   "identity.create.preview.description": "Please check your personal data before signing",
   "identity.create.preview.mainInformation": "Main information",

@@ -216,6 +216,14 @@ function PostalAddress({ moveToNextStep }: { moveToNextStep: () => void }) {
     void validate();
   }, [watchRequiredFields, trigger]);
 
+  const skipInformation = () => {
+    ["country", "city", "zip", "address"].forEach((field) => {
+      setValue(field, "");
+    });
+
+    moveToNextStep();
+  };
+
   return (
     <div className="flex-1 flex flex-col gap-11">
       <div className="flex flex-col items-center gap-2">
@@ -264,13 +272,22 @@ function PostalAddress({ moveToNextStep }: { moveToNextStep: () => void }) {
         />
       </div>
 
-      <Button size="md" onClick={moveToNextStep} disabled={!isDataValid}>
-        <FormattedMessage
-          id="identity.create.continue"
-          defaultMessage="Continue"
-          description="Label for the continue to next step button"
-        />
-      </Button>
+      <div className="flex flex-col gap-2 mt-auto">
+        <Button size="md" onClick={moveToNextStep} disabled={!isDataValid}>
+          <FormattedMessage
+            id="identity.create.continue"
+            defaultMessage="Continue"
+            description="Label for the continue to next step button"
+          />
+        </Button>
+        <Button size="md" variant="outline" onClick={skipInformation}>
+          <FormattedMessage
+            id="identity.create.postalAddress.skip"
+            defaultMessage="Skip"
+            description="Label for the skip postal address button"
+          />
+        </Button>
+      </div>
     </div>
   );
 }
@@ -626,8 +643,8 @@ function Preview({ moveToNextStep }: { moveToNextStep: () => void }) {
 
 function Success() {
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col gap-12 justify-center h-full">
+    <div className="flex-1 flex flex-col">
+      <div className="flex flex-col gap-12 justify-center mb-auto">
         <div className="flex flex-col gap-2 items-center">
           <h1 className="text-text-300 text-2xl font-medium text-center leading-8 mb-0 mx-6">
             <FormattedMessage
@@ -652,8 +669,9 @@ function Success() {
           className="aspect-square max-w-[220px] mx-auto pointer-events-none"
         />
       </div>
-      <Link to={routes.HOME}>
-        <Button size="md">
+
+      <Link to={"/" + routes.HOME}>
+        <Button className="w-full" size="md">
           <FormattedMessage
             id="identity.create.finish"
             defaultMessage="Finish"
