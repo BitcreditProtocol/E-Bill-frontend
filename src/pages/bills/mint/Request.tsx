@@ -281,9 +281,10 @@ export default function Request() {
           id: "bill.mint.request.toast.success.description",
           defaultMessage: "Successfully generated quote!",
         }),
+        variant: "success",
         position: "bottom-center",
       });
-      navigate(routes.VIEW_BILL.replace(":id", data.id));
+      navigate(routes.HOME);
     }
   });
 
