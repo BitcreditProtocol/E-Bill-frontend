@@ -174,7 +174,7 @@ function List() {
     (bill) => !isToday(parseISO(bill.issue_date))
   );
 
-  const { refetch } = useQuery({
+  const { refetch, isFetching } = useQuery({
     queryFn: () => checkBillsInDHT(),
     queryKey: ["bills", "check"],
     enabled: false,
@@ -200,6 +200,7 @@ function List() {
           onClick={() => {
             void refetch();
           }}
+          loading={isFetching}
         />
       </div>
 
