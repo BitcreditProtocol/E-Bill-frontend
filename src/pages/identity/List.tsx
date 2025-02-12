@@ -216,7 +216,7 @@ export default function List() {
   const { formatMessage: f } = useIntl();
   const { activeIdentity } = useIdentity();
 
-  const { refetch } = useQuery({
+  const { refetch, isFetching } = useQuery({
     queryFn: () => checkCompaniesInDHT(),
     queryKey: ["companies", "check"],
     enabled: false,
@@ -280,6 +280,7 @@ export default function List() {
                 onClick={() => {
                   void refetch();
                 }}
+                loading={isFetching}
               />
             </div>
             <Suspense fallback={<CompaniesLoader />}>
