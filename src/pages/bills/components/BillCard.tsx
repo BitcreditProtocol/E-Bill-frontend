@@ -250,7 +250,7 @@ export default function BillCard({
             </h2>
           </div>
 
-          {attachment && (
+          {attachment && attachment !== "" && (
             <Link to={attachment} target="_blank">
               <button className="h-fit p-0">
                 <PaperclipIcon className="text-text-300 w-5 h-5 stroke-1" />

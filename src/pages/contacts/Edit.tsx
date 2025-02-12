@@ -201,6 +201,7 @@ function Form({ nodeId }: { nodeId: string }) {
     "country",
     "city",
     "address",
+    "zip",
   ]);
 
   useEffect(() => {
