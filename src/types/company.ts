@@ -13,11 +13,11 @@ export type Company = {
   proof_of_registration_file: {
     name: string;
     hash: string;
-  };
+  } | null;
   logo_file: {
     name: string;
     hash: string;
-  };
+  } | null;
   signatories: Signer[];
 };
 

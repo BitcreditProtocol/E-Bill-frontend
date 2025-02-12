@@ -17,7 +17,6 @@ import routes from "@/constants/routes";
 import { COUNTRIES } from "@/constants/countries";
 import { API_URL } from "@/constants/api";
 import { GET_COMPANY_FILE } from "@/constants/endpoints";
-import type { Company } from "@/types/company";
 import Property from "./components/Property";
 import { messages } from "./components/messages";
 
@@ -58,13 +57,13 @@ function Loader() {
 
 function Information({ companyId }: { companyId: string }) {
   const { formatMessage: f } = useIntl();
-  const { data } = useSuspenseQuery<Company>({
+  const { data } = useSuspenseQuery({
     queryKey: ["company", companyId, "details"],
     queryFn: () => getCompanyDetails(companyId),
   });
 
   const avatarImageUrl =
-    (data.logo_file.hash &&
+    (data.logo_file !== null &&
       `${API_URL}/${GET_COMPANY_FILE.replace(
         ":node_id/:name",
         data.id + "/" + data.logo_file.name
