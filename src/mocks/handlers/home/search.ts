@@ -44,11 +44,9 @@ const filterSearchResponse = (
     contacts: [],
   };
 
-  const allItemTypes = item_types === undefined || item_types.length === 0;
-
-  filteredData.bills = (!allItemTypes && !item_types.includes("bills")) ? [] : data.bills.filter((it) => matchesSearchTerm(it, search_term));
-  filteredData.companies = (!allItemTypes && !item_types.includes("companies")) ? [] : data.companies.filter((it) => matchesSearchTerm(it, search_term));
-  filteredData.contacts = (!allItemTypes && !item_types.includes("contacts")) ? [] : data.contacts.filter((it) => matchesSearchTerm(it, search_term));
+  filteredData.bills = (!item_types.includes("Bill")) ? [] : data.bills.filter((it) => matchesSearchTerm(it, search_term));
+  filteredData.companies = (!item_types.includes("Company")) ? [] : data.companies.filter((it) => matchesSearchTerm(it, search_term));
+  filteredData.contacts = (!item_types.includes("Contact")) ? [] : data.contacts.filter((it) => matchesSearchTerm(it, search_term));
   return filteredData;
 };
 

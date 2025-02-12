@@ -1,19 +1,11 @@
 import { SEARCH } from "@/constants/endpoints";
-import type { Bill } from "@/types/bill";
 import type { Company } from "@/types/company";
 import type { Contact } from "@/types/contact";
+import { apiFetch } from "@/utils/api";
+import { getBillsLight } from "./bills";
 
 export type SearchResponse = {
-  bills: Pick<Bill,
-  | "bill_name"
-  | "role"
-  | "payer"
-  | "holder"
-  | "payee"
-  | "drawer"
-  | "sum"
-  | "issue_date"
-  >[];
+  bills: Awaited<ReturnType<typeof getBillsLight>>['bills'];
   companies: Pick<Company,
   | "id"
   | "name"
@@ -41,29 +33,24 @@ export type SearchResponse = {
   | "avatar_file"
   >[];
 };
-
+export type SearchItemType = "Bill" | "Company" | "Contact" 
 
 export type SearchPayload = {
   filter: {
-    search_term?: string;
-    item_types?: string[];
+    search_term: string;
+    currency: string;
+    item_types: SearchItemType[];
   };
 };
 
+export const SEARCH_ITEMS_ALL: SearchItemType[] = ["Bill", "Company", "Contact"];
+
 export const search = async (payload: SearchPayload) => {
-  const response = await fetch(SEARCH, {
+  return apiFetch<SearchResponse>(SEARCH, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
   });
-
-  if (!response.ok) {
-    throw new Error(`Failed to search: ${response.statusText}`);
-  }
-
-  const data = (await response.json()) as Promise<SearchResponse>;
-
-  return data;
 };

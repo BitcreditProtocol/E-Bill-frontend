@@ -6,8 +6,8 @@ import { randomAvatar } from "@/utils/dev";
 import { SearchIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SearchResponse } from "@/services/search";
+import { findHolderLight } from "@/utils/bill";
 import { useMemo } from "react";
-
 
 type RecentContactItemProps = Pick<Contact, "name" | "type" | "avatar_file">;
 
@@ -25,7 +25,7 @@ function RecentContacts({ values }: { values: RecentContactItemProps[] }) {
   <div className="flex flex-col gap-2 w-full">
     <div className="text-text-200 text-xs font-medium">
       <FormattedMessage
-        id="Recent"
+        id="home.search.recent.title"
         defaultMessage="Recent"
         description="Title for recent contacts on home page"
       />
@@ -44,7 +44,7 @@ function SearchSuggestions() {
     <div className="flex flex-col gap-4 w-full">
       <div className="text-text-200 text-xs font-medium">
         <FormattedMessage
-          id="Try searching for"
+          id="home.search.suggestion.title"
           defaultMessage="Try searching for"
           description="Title for search suggestions on home page"
         />
@@ -53,7 +53,7 @@ function SearchSuggestions() {
         <div className="flex items-center gap-2">
           <SearchIcon className="w-5 h-5" strokeWidth={1} />
           <FormattedMessage
-            id="Recent bills"
+            id="home.search.suggestion.recent_bills.label"
             defaultMessage="Recent bills"
             description="Search suggestion for recent bills on home page"
           />
@@ -61,7 +61,7 @@ function SearchSuggestions() {
         <div className="flex items-center gap-2">
           <SearchIcon className="w-5 h-5" strokeWidth={1} />
           <FormattedMessage
-            id="All contacts"
+            id="home.search.suggestion.all_contacts.label"
             defaultMessage="All contacts"
             description="Search suggestion for all contacts on home page"
           />
@@ -100,13 +100,25 @@ function ContactPreview({ value }: { value: SearchResponse['contacts'][0]}) {
       </div>
       <div className="flex items-center gap-1 text-text-200 text-xs">
         <span>
-          {value.type === ContactTypes.Company ? "Company" : "Contact"}
+          {value.type === ContactTypes.Company ? (<FormattedMessage
+            id="home.search.preview.contact.type.company.label"
+            defaultMessage="Company"
+            description="Type label for company contacts on home page"
+          />) : (<FormattedMessage
+            id="home.search.preview.contact.type.person.label"
+            defaultMessage="Contact"
+            description="Type label for person contacts on home page"
+          />)}
         </span>
         <span>
           ·
         </span>
         <span>
-          In contacts
+          <FormattedMessage
+            id="home.search.preview.contact.in_contacts.label"
+            defaultMessage="In contacts"
+            description="In contact label for contacts on home page"
+          />
         </span>
       </div>
     </div>
@@ -114,16 +126,22 @@ function ContactPreview({ value }: { value: SearchResponse['contacts'][0]}) {
 }
 
 function BillPreview({ value }: { value: SearchResponse['bills'][0]}) {
+  const holder = findHolderLight(value);
+
   return (<div className="flex items-center gap-3">
-    <Icon type={ContactTypes.Company} name={value.bill_name} />
+    <Icon type={ContactTypes.Company} name={value.id} />
 
     <div className="flex flex-col">
       <div className="text-text-300 text-base font-medium">
-        {value.bill_name}
+        {holder.name}
       </div>
       <div className="flex items-center gap-1 text-text-200 text-xs">
         <span>
-          Bill
+          <FormattedMessage
+            id="home.search.preview.bill.label"
+            defaultMessage="Bill"
+            description="Label for bills on home page"
+          />
         </span>
         <span>
           ·
@@ -143,26 +161,26 @@ function SearchResults({ data } : { data: SearchResponse }) {
     <div className="flex flex-col gap-4">
       <div className="text-text-200 text-xs font-medium">
         <FormattedMessage
-          id="Search results"
+          id="home.search.results.title"
           defaultMessage="Search results"
           description="Title for search results on home page"
         />
       </div>
       {isEmpty ? (<div className="text-text-300 text-sm font-medium">
         <FormattedMessage
-          id="No results"
+          id="home.search.results.no_results.text"
           defaultMessage="No results"
           description="Title for no search results on Home page"
         />
       </div>) : (<div className="flex flex-col gap-4">
-        {data.companies.map((it) => {
-          return <CompanyPreview value={it} />
+        {data.companies.map((it, index) => {
+          return <CompanyPreview value={it} key={index} />
         })}
-        {data.contacts.map((it) => {
-          return <ContactPreview value={it} />
+        {data.contacts.map((it, index) => {
+          return <ContactPreview value={it} key={index} />
         })}
-        {data.bills.map((it) => {
-          return <BillPreview value={it} />
+        {data.bills.map((it, index) => {
+          return <BillPreview value={it} key={index} />
         })}
       </div>)}
     </div>
@@ -188,18 +206,17 @@ const __dev__RECENT_CONTACTS: Pick<Contact, "name" | "type" | "avatar_file">[] =
 
 interface HomeSearchProps {
   searchTerm: string
-  isPending: boolean
+  isLoading: boolean
   data: SearchResponse | undefined
 }
 
-export default function HomeSearch({ searchTerm, isPending, data }: HomeSearchProps) {
-
+export default function HomeSearch({ searchTerm, isLoading, data }: HomeSearchProps) {
   return (
     <div className="flex flex-col gap-6 mt-2 w-full">
       <RecentContacts values={__dev__RECENT_CONTACTS} />
-      { (!searchTerm || !data) && (<SearchSuggestions />) }
-      {isPending && <Loader />}
-      { searchTerm && data && <SearchResults data={data} /> }
+      { (!searchTerm || !data) && !isLoading && (<SearchSuggestions />) }
+      {isLoading && <Loader />}
+      { !isLoading && searchTerm && data && <SearchResults data={data} /> }
     </div>
   );
 }
