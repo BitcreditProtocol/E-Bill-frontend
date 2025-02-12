@@ -19,6 +19,7 @@ import {
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
+import StepIndicator from "@/components/StepIndicator";
 import { Description, Title } from "@/components/typography/Step";
 import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
@@ -699,8 +700,11 @@ export default function Create() {
   };
 
   return (
-    <Page className="gap-5">
-      <Topbar lead={<NavigateBack callBack={previousStep} />} />
+    <Page className="gap-5" displayBackgroundEllipse={step === 4}>
+      <Topbar
+        lead={<NavigateBack callBack={previousStep} />}
+        middle={<StepIndicator totalSteps={5} currentStep={step} />}
+      />
 
       <FormProvider {...methods}>
         {step === 0 && <RequiredInformation nextStep={nextStep} />}
