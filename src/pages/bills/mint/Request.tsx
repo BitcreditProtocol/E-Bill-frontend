@@ -71,7 +71,7 @@ function MintRequest({ bill } : MintRequestProps) {
       <Preview
         className="bg-elevation-50 border-divider-75"
         name={holder.name}
-        date={bill.issue_date}
+        date={bill.maturity_date}
         amount={Number(bill.sum)}
         currency={bill.currency}
       />
