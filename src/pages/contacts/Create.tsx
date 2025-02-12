@@ -26,6 +26,7 @@ import {
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
+import StepIndicator from "@/components/StepIndicator";
 import { Description, Title } from "@/components/typography/Step";
 import Picture from "@/components/Picture";
 import { Input } from "@/components/ui/input";
@@ -751,7 +752,11 @@ export default function Create() {
 
   return (
     <Page className="gap-5">
-      <Topbar lead={<NavigateBack callBack={previousStep} />} />
+      <Topbar
+        lead={<NavigateBack callBack={previousStep} />}
+        middle={<StepIndicator totalSteps={3} currentStep={step} />}
+      />
+
       <FormProvider {...methods}>
         {step === 0 && <RequiredInformation nextStep={nextStep} />}
         {step === 1 && <PostalAddress nextStep={nextStep} />}

@@ -420,13 +420,11 @@ function OptionalInformation({ nextStep }: { nextStep: () => void }) {
           {...register("city_of_registration")}
           label={f(messages["company.city_of_registration"])}
           icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          required
         />
         <Input
           {...register("registration_number")}
           label={f(messages["company.registration_number"])}
           icon={<ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          required
         />
         <DocumentFileUpload />
       </div>
