@@ -8,6 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SearchResponse } from "@/services/search";
 import { findHolderLight } from "@/utils/bill";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
+import routes from "@/constants/routes";
 
 type RecentContactItemProps = Pick<Contact, "name" | "type" | "avatar_file">;
 
@@ -91,67 +93,71 @@ function CompanyPreview({ value }: { value: SearchResponse['companies'][0]}) {
 }
 
 function ContactPreview({ value }: { value: SearchResponse['contacts'][0]}) {
-  return (<div className="flex items-center gap-3">
-    <Icon type={value.type} name={value.name} />
+  return (<Link to={`${routes.CONTACTS}/${routes.VIEW_CONTACT.replace(":nodeId", value.node_id)}`}>
+    <div className="flex items-center gap-3">
+      <Icon type={value.type} name={value.name} />
 
-    <div className="flex flex-col">
-      <div className="text-text-300 text-base font-medium">
-        {value.name}
-      </div>
-      <div className="flex items-center gap-1 text-text-200 text-xs">
-        <span>
-          {value.type === ContactTypes.Company ? (<FormattedMessage
-            id="home.search.preview.contact.type.company.label"
-            defaultMessage="Company"
-            description="Type label for company contacts on home page"
-          />) : (<FormattedMessage
-            id="home.search.preview.contact.type.person.label"
-            defaultMessage="Contact"
-            description="Type label for person contacts on home page"
-          />)}
-        </span>
-        <span>
-          ·
-        </span>
-        <span>
-          <FormattedMessage
-            id="home.search.preview.contact.in_contacts.label"
-            defaultMessage="In contacts"
-            description="In contact label for contacts on home page"
-          />
-        </span>
+      <div className="flex flex-col">
+        <div className="text-text-300 text-base font-medium">
+          {value.name}
+        </div>
+        <div className="flex items-center gap-1 text-text-200 text-xs">
+          <span>
+            {value.type === ContactTypes.Company ? (<FormattedMessage
+              id="home.search.preview.contact.type.company.label"
+              defaultMessage="Company"
+              description="Type label for company contacts on home page"
+            />) : (<FormattedMessage
+              id="home.search.preview.contact.type.person.label"
+              defaultMessage="Contact"
+              description="Type label for person contacts on home page"
+            />)}
+          </span>
+          <span>
+            ·
+          </span>
+          <span>
+            <FormattedMessage
+              id="home.search.preview.contact.in_contacts.label"
+              defaultMessage="In contacts"
+              description="In contact label for contacts on home page"
+            />
+          </span>
+        </div>
       </div>
     </div>
-  </div>);
+  </Link>);
 }
 
 function BillPreview({ value }: { value: SearchResponse['bills'][0]}) {
   const holder = findHolderLight(value);
 
-  return (<div className="flex items-center gap-3">
-    <Icon type={ContactTypes.Company} name={value.id} />
+  return (<Link to={routes.VIEW_BILL.replace(":id", value.id)}>
+    <div className="flex items-center gap-3">
+      <Icon type={ContactTypes.Company} name={value.id} />
 
-    <div className="flex flex-col">
-      <div className="text-text-300 text-base font-medium">
-        {holder.name}
-      </div>
-      <div className="flex items-center gap-1 text-text-200 text-xs">
-        <span>
-          <FormattedMessage
-            id="home.search.preview.bill.label"
-            defaultMessage="Bill"
-            description="Label for bills on home page"
-          />
-        </span>
-        <span>
-          ·
-        </span>
-        <span>
-          Accepted
-        </span>
+      <div className="flex flex-col">
+        <div className="text-text-300 text-base font-medium">
+          {holder.name}
+        </div>
+        <div className="flex items-center gap-1 text-text-200 text-xs">
+          <span>
+            <FormattedMessage
+              id="home.search.preview.bill.label"
+              defaultMessage="Bill"
+              description="Label for bills on home page"
+            />
+          </span>
+          <span>
+            ·
+          </span>
+          <span>
+            Accepted
+          </span>
+        </div>
       </div>
     </div>
-  </div>);
+  </Link>);
 }
 
 function SearchResults({ data } : { data: SearchResponse }) {
