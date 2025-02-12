@@ -56,6 +56,7 @@ export default function Summary({
               toast({
                 description: "Copied to clipboard",
                 position: "bottom-center",
+                duration: 750
               });
             });
           }}

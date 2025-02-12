@@ -61,6 +61,7 @@ function SelectedIdentity() {
               toast({
                 description: "Copied to clipboard",
                 position: "bottom-center",
+                duration: 750
               });
             });
           }}

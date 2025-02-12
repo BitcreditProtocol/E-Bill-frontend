@@ -156,6 +156,7 @@ function Holder({
               description="Request acceptance error toast message"
             />
           ),
+          variant: "error",
           position: "bottom-center",
         });
       },
@@ -192,6 +193,7 @@ function Holder({
             description="Request payment error toast message"
           />
         ),
+        variant: "error",
         position: "bottom-center",
       });
     },
@@ -439,6 +441,7 @@ function Buyer({ id }: BuyerActionsProps) {
           defaultMessage: "Bill rejection failed",
           description: "Bill rejection error toast message",
         }),
+        variant: "error",
         position: "bottom-center",
       });
     },

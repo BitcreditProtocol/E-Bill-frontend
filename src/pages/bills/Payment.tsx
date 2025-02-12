@@ -187,6 +187,7 @@ function Information({ id }: { id: string }) {
                         toast({
                           description:
                             "Failed to copy private key to clipboard",
+                          variant: "error",
                           position: "bottom-center",
                         });
                       });

@@ -244,6 +244,7 @@ function Review() {
           defaultMessage: "An error occurred while requesting the recourse",
           description: "Bill recourse error toast description",
         }),
+        variant: "error",
         position: "bottom-center",
       });
     },

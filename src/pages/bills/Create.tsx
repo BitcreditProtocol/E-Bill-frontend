@@ -1003,6 +1003,7 @@ function Preview() {
             "Error while creating bill. Please review the information and try again.",
           description: "Error toast description",
         }),
+        variant: "error",
         position: "bottom-center",
       });
     },

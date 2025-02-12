@@ -316,6 +316,7 @@ function Form() {
           defaultMessage: "An error occurred while offering the bill for sale",
           description: "Bill sell error toast description",
         }),
+        variant: "error",
         position: "bottom-center",
       });
     },

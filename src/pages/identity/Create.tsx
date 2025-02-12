@@ -487,6 +487,7 @@ function Preview({ moveToNextStep }: { moveToNextStep: () => void }) {
             "Error while creating identity. Please review the information and try again.",
           description: "Error toast description",
         }),
+        variant: "error",
         position: "bottom-center",
       });
     },
