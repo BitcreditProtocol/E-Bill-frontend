@@ -56,7 +56,9 @@ export async function createContact(
   });
 }
 
-export type EditContactPayload = Partial<Contact>;
+export type EditContactPayload = Partial<Contact> & {
+  avatar_file_upload_id?: string | null;
+};
 
 type EditContactResponse = Contact;
 

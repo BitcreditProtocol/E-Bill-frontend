@@ -1,13 +1,14 @@
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useMutation,
   useSuspenseQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
   GitForkIcon,
@@ -17,6 +18,8 @@ import {
   MapPinnedIcon,
   ShieldCheckIcon,
   MailIcon,
+  CalendarIcon,
+  PencilIcon,
 } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
@@ -25,17 +28,22 @@ import NavigateBack from "@/components/NavigateBack";
 import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
 import { DatePicker } from "@/components/DatePicker/datePicker";
-import Summary from "@/components/Summary";
 import Upload from "@/components/Upload";
+import Picture from "@/components/Picture";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { editContact, getContactDetails } from "@/services/contact_v2";
-import { getMessage, messages } from "./components/messages";
+import { truncateString } from "@/utils/strings";
+import {
+  editContact,
+  getContactDetails,
+  uploadFile,
+} from "@/services/contact_v2";
 import { API_URL } from "@/constants/api";
-import { GET_CONTACT_FILE } from "@/constants/endpoints";
+import { GET_CONTACT_FILE, GET_TEMP_FILE } from "@/constants/endpoints";
 import routes from "@/constants/routes";
+import { getMessage, messages } from "./components/messages";
 
 function Loader() {
   return (
@@ -65,7 +73,65 @@ function Loader() {
   );
 }
 
+function EditProfilePicture() {
+  const { watch, setValue } = useFormContext<FormSchema>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { mutate } = useMutation({
+    mutationFn: (file: File) => {
+      return uploadFile(file);
+    },
+    onSuccess: (data) => {
+      const previewUrl = `${API_URL}/${GET_TEMP_FILE.replace(
+        ":file_id",
+        data.file_upload_id
+      )}`;
+
+      setValue("avatar.file_upload_id", data.file_upload_id);
+      setValue("avatar.preview_url", previewUrl);
+    },
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      mutate(file);
+    }
+  };
+
+  const triggerFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <div
+      className="relative mx-auto cursor-pointer"
+      onClick={triggerFileSelect}
+    >
+      <Picture
+        size="lg"
+        name={watch("name")}
+        image={watch("avatar.preview_url") || ""}
+        type={watch("type")}
+      />
+      <button className="relative bottom-6 left-12 flex items-center justify-center p-1.5 h-6 w-6 bg-brand-200 rounded-full">
+        <PencilIcon className="text-white h-3 w-3 stroke-1" />
+      </button>
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        onChange={handleFileChange}
+      />
+    </div>
+  );
+}
+
 const formSchema = z.object({
+  type: z.number(),
   node_id: z.string().min(1),
   name: z.string().min(1),
   email: z.string().email().min(1),
@@ -73,16 +139,20 @@ const formSchema = z.object({
   country: z.string().min(1),
   city: z.string().min(1),
   zip: z.string().optional(),
-  street: z.string().min(1),
+  address: z.string().min(1),
 
-  date_of_registration: z.string().min(1),
-  country_of_registration: z.string().min(1),
-  city_of_registration: z.string().min(1),
-  registration_number: z.string().min(1),
+  date_of_birth_or_registration: z.string().optional(),
+  country_of_birth_or_registration: z.string().optional(),
+  city_of_birth_or_registration: z.string().optional(),
+  identification_number: z.string().optional(),
 
-  document_name: z.string().min(1),
-  document_size: z.string().min(1),
+  avatar: z.object({
+    preview_url: z.string().optional().nullable(),
+    file_upload_id: z.string().optional().nullable(),
+  }),
 });
+
+type FormSchema = z.infer<typeof formSchema>;
 
 function Form({ nodeId }: { nodeId: string }) {
   const [isDataValid, setIsDataValid] = useState(false);
@@ -94,9 +164,17 @@ function Form({ nodeId }: { nodeId: string }) {
     queryFn: () => getContactDetails(nodeId),
   });
 
-  const methods = useForm({
+  const avatarImageUrl = data.avatar_file?.name
+    ? `${API_URL}/${GET_CONTACT_FILE.replace(
+        ":node_id/:name",
+        `${data.node_id}/${data.avatar_file.name}`
+      )}`
+    : "";
+
+  const methods = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      type: data.type,
       node_id: data.node_id,
       name: data.name,
       email: data.email,
@@ -109,16 +187,32 @@ function Form({ nodeId }: { nodeId: string }) {
       city_of_birth_or_registration: data.city_of_birth_or_registration,
       identification_number: data.identification_number,
 
-      document_name: "",
-      document_size: "",
+      avatar: {
+        preview_url: avatarImageUrl,
+        file_upload_id: "",
+      },
     },
   });
 
-  const watchRequiredFields = methods.watch(["node_id", "name", "email"]);
+  const watchRequiredFields = methods.watch([
+    "node_id",
+    "name",
+    "email",
+    "country",
+    "city",
+    "address",
+  ]);
 
   useEffect(() => {
     const validate = async () => {
-      const isValid = await methods.trigger(["node_id", "name", "email"]);
+      const isValid = await methods.trigger([
+        "node_id",
+        "name",
+        "email",
+        "country",
+        "city",
+        "address",
+      ]);
 
       setIsDataValid(isValid);
     };
@@ -126,13 +220,26 @@ function Form({ nodeId }: { nodeId: string }) {
     void validate();
   }, [watchRequiredFields, methods]);
 
+  const values = methods.getValues();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => {
       return editContact({
-        ...methods.getValues(),
+        node_id: values.node_id,
+        name: values.name,
+        email: values.email,
+        country: values.country,
+        city: values.city,
+        zip: values.zip,
+        address: values.address,
+        date_of_birth_or_registration: values.date_of_birth_or_registration,
+        country_of_birth_or_registration:
+          values.country_of_birth_or_registration,
+        city_of_birth_or_registration: values.city_of_birth_or_registration,
+        identification_number: values.identification_number,
+        avatar_file_upload_id: values.avatar.file_upload_id,
       });
     },
     onSuccess: async () => {
@@ -157,21 +264,20 @@ function Form({ nodeId }: { nodeId: string }) {
   });
 
   const contactType = data.type;
-  const avatarImageUrl = data.avatar_file?.name
-    ? `${API_URL}/${GET_CONTACT_FILE.replace(
-        ":node_id/:name",
-        `${data.node_id}/${data.avatar_file.name}`
-      )}`
-    : "";
 
   return (
     <FormProvider {...methods}>
-      <Summary
-        identityType={data.type}
-        name={data.name}
-        nodeId={data.node_id}
-        picture={avatarImageUrl}
-      />
+      <div className="flex flex-col items-center gap-4">
+        <EditProfilePicture />
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-text-300 text-xl font-medium leading-[30px]">
+            {data.name}
+          </span>
+          <span className="text-text-200 text-xs font-normal leading-[18px]">
+            {truncateString(data.node_id, 16)}
+          </span>
+        </div>
+      </div>
 
       <div className="flex flex-col gap-3">
         <Input
@@ -200,6 +306,7 @@ function Form({ nodeId }: { nodeId: string }) {
             methods.setValue("country", country);
           }}
           value={methods.watch("country")}
+          required
         />
         <Input
           {...methods.register("city")}
@@ -221,7 +328,20 @@ function Form({ nodeId }: { nodeId: string }) {
         <DatePicker
           label={f(getMessage(contactType, "date"))}
           mode="single"
-          onChange={() => null}
+          customComponent={
+            <div className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg cursor-pointer">
+              <CalendarIcon className="text-text-300 h-5 w-5 stroke-1" />
+              {methods.watch("date_of_birth_or_registration") ||
+                f(getMessage(contactType, "date"))}
+            </div>
+          }
+          onChange={({ from }) => {
+            methods.setValue(
+              "date_of_birth_or_registration",
+              // @ts-expect-error - TS doesn't know about the date object
+              format(from, "yyyy-MM-dd")
+            );
+          }}
         />
 
         <CountrySelector

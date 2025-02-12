@@ -124,6 +124,7 @@ function Form({ companyId }: { companyId: string }) {
       });
     },
     onSuccess: async () => {
+      navigate(routes.VIEW_COMPANY);
       await queryClient.invalidateQueries({
         queryKey: ["company", "details", companyId],
       });

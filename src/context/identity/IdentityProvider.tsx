@@ -54,7 +54,7 @@ export default function IdentityProvider({
         const company = await getCompanyDetails(activeNodeId);
 
         const companyAvatar =
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+           
           company.logo_file !== null
             ? `${API_URL}/company/file/${company.id}/${company.logo_file.name}`
             : "";
