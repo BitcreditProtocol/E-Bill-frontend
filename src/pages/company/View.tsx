@@ -81,7 +81,7 @@ function Information({ companyId }: { companyId: string }) {
       .join(", ") || "-";
 
   const registrationDate =
-    data.registration_date !== ""
+    data.registration_date && data.registration_date !== ""
       ? format(parseISO(data.registration_date), "dd-MMM-yyyy")
       : "";
 

@@ -200,7 +200,6 @@ function Form({ companyId }: { companyId: string }) {
 
           <DatePicker
             mode="single"
-            value={{ from: parseISO(methods.watch("registration_date")) }}
             customComponent={
               <button className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg">
                 <CalendarIcon className="text-text-300 h-5 w-5 stroke-1" />
