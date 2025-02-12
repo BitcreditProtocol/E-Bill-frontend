@@ -13,6 +13,7 @@ const ALICE = {
   country_of_birth_or_registration: "US",
   city_of_birth_or_registration: "Miami",
   identification_number: "1234567890",
+  avatar_file: null,
 };
 
 const BOB = {
@@ -28,6 +29,7 @@ const BOB = {
   country_of_birth_or_registration: "US",
   city_of_birth_or_registration: "Miami",
   identification_number: "1234567890",
+  avatar_file: null,
 };
 
 const DAVID = {
@@ -43,6 +45,7 @@ const DAVID = {
   country_of_birth_or_registration: "UK",
   city_of_birth_or_registration: "London",
   identification_number: "AB123456C",
+  avatar_file: null,
 };
 
 const EMILY = {
@@ -58,6 +61,7 @@ const EMILY = {
   country_of_birth_or_registration: "AU",
   city_of_birth_or_registration: "Sydney",
   identification_number: "7890123456",
+  avatar_file: null,
 };
 
 const FIONA = {
@@ -73,6 +77,7 @@ const FIONA = {
   country_of_birth_or_registration: "IE",
   city_of_birth_or_registration: "Dublin",
   identification_number: "IR987654321",
+  avatar_file: null,
 };
 
 const GEORGE = {
@@ -88,6 +93,7 @@ const GEORGE = {
   country_of_birth_or_registration: "NZ",
   city_of_birth_or_registration: "Wellington",
   identification_number: "NZ123450987",
+  avatar_file: null,
 };
 
 export const data: Contact[] = [ALICE, BOB, DAVID, EMILY, FIONA, GEORGE];
