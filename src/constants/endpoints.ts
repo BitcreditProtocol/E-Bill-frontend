@@ -53,6 +53,7 @@ const EDIT_COMPANY = "/company/edit";
 const ADD_COMPANY_SIGNER = "/company/add_signatory";
 const REMOVE_COMPANY_SIGNER = "/company/remove_signatory";
 const CHECK_COMPANIES_IN_DHT = "/company/check_dht";
+const GET_COMPANY_FILE = "/company/file/:node_id/:name";
 
 // contacts endpoints
 const GET_CONTACTS = "/contacts/list";
@@ -125,6 +126,7 @@ export {
   ADD_COMPANY_SIGNER,
   REMOVE_COMPANY_SIGNER,
   CHECK_COMPANIES_IN_DHT,
+  GET_COMPANY_FILE,
 
   // contacts
   SEARCH_CONTACTS,

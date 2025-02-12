@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
@@ -28,6 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Upload, { UploadedFilePreview } from "@/components/Upload";
 import Picture from "@/components/Picture";
+import Sign from "@/components/Sign";
 import { useToast } from "@/hooks/use-toast";
 import { API_URL } from "@/constants/api";
 import { GET_TEMP_FILE } from "@/constants/endpoints";
@@ -37,7 +38,6 @@ import { createCompany, uploadFile } from "@/services/company";
 import SuccessIllustration from "@/assets/images/success-illustration.svg";
 import { messages } from "./components/messages";
 import Property from "./components/Property";
-import Sign from "@/components/Sign";
 
 function LogoPictureUpload() {
   const { watch, setValue } = useFormContext<FormSchema>();
@@ -453,7 +453,6 @@ function OptionalInformation({ nextStep }: { nextStep: () => void }) {
 
 function Preview({ nextStep }: { nextStep: () => void }) {
   const [signOpen, setSignOpen] = useState(false);
-  const navigate = useNavigate();
   const { formatMessage: f } = useIntl();
   const { getValues } = useFormContext<FormSchema>();
   const { toast } = useToast();
@@ -631,10 +630,8 @@ function Preview({ nextStep }: { nextStep: () => void }) {
           cancel={
             <Button
               size="md"
+              className="w-full"
               variant="outline"
-              onClick={() => {
-                navigate(routes.CONTACTS);
-              }}
               disabled={isPending}
             >
               <FormattedMessage

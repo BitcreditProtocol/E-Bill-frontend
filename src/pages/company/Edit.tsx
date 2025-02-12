@@ -32,6 +32,8 @@ import { DatePicker } from "@/components/DatePicker/datePicker";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { editCompany, getCompanyDetails } from "@/services/company";
 import { useToast } from "@/hooks/use-toast";
+import { API_URL } from "@/constants/api";
+import { GET_COMPANY_FILE } from "@/constants/endpoints";
 import routes from "@/constants/routes";
 import { messages } from "./components/messages";
 
@@ -125,9 +127,22 @@ function Form({ companyId }: { companyId: string }) {
     },
   });
 
+  const logoImageUrl =
+    (data.logo_file.hash &&
+      `${API_URL}/${GET_COMPANY_FILE.replace(
+        ":node_id/:name",
+        data.id + "/" + data.logo_file.name
+      )}`) ||
+    "";
+
   return (
     <div className="flex flex-col gap-6">
-      <Summary identityType={1} name={data.name} nodeId={data.id} picture="" />
+      <Summary
+        identityType={1}
+        name={data.name}
+        nodeId={data.id}
+        picture={logoImageUrl}
+      />
 
       <FormProvider {...methods}>
         <div className="flex flex-col gap-3">
