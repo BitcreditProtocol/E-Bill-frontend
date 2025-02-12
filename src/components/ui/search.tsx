@@ -59,7 +59,10 @@ function Search({
       className={cn(searchVariants({ size }), className)}
     >
       <SearchIcon
-        className={`${size === "xs" ? "h-4 w-4" : "h-5 w-5"} text-text-300`}
+        className={cn("text-text-300", {
+          "h-4 w-4": size === "xs",
+          "h-5 w-5": size !== "xs"
+        })}
         strokeWidth={1}
       />
 
