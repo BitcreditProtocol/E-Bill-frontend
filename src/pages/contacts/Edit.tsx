@@ -35,6 +35,7 @@ import { editContact, getContactDetails } from "@/services/contact_v2";
 import { getMessage, messages } from "./components/messages";
 import { API_URL } from "@/constants/api";
 import { GET_CONTACT_FILE } from "@/constants/endpoints";
+import routes from "@/constants/routes";
 
 function Loader() {
   return (
@@ -148,6 +149,10 @@ function Form({ nodeId }: { nodeId: string }) {
         }),
         position: "bottom-center",
       });
+
+      setTimeout(() => {
+        navigate(routes.CONTACTS + "/" + data.node_id);
+      }, 1000);
     },
   });
 

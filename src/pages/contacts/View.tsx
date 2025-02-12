@@ -54,6 +54,7 @@ function Delete({ contactId }: DeleteContactProps) {
     },
     onSuccess: async () => {
       setIsDrawerOpen(false);
+      navigate(routes.CONTACTS);
 
       await queryClient.invalidateQueries({
         queryKey: ["contacts"],
@@ -67,8 +68,6 @@ function Delete({ contactId }: DeleteContactProps) {
         }),
         position: "bottom-center",
       });
-
-      navigate(routes.CONTACTS);
     },
   });
 
@@ -267,12 +266,13 @@ function Information({ contactId }: { contactId: string }) {
           label={f(getMessage(type, "identificationNumber"))}
           value={identification_number}
         />
-        <Separator className="bg-divider-75" />
+        {/*  <Separator className="bg-divider-75" /> */}
 
+        {/* enable when we add metadata (name and size) to the response 
         <Property
           label={f(getMessage(type, "document"))}
           value={"proof_document.file_upload_id"}
-        />
+        /> */}
       </div>
     </div>
   );

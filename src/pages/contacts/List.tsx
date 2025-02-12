@@ -100,7 +100,7 @@ function List() {
   });
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 mb-16">
       {data.contacts.length === 0 && <EmptyList />}
       {data.contacts.map((contact) => (
         <Contact key={contact.node_id} {...contact} />
