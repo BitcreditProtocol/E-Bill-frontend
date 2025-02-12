@@ -2,6 +2,7 @@ import { recentBills } from "./handlers/home/recent-bills";
 import { billsList } from "./handlers/bills/list";
 import { searchBills } from "./handlers/bills/search";
 import { searchContacts } from "./handlers/contacts/search";
+import { search } from "./handlers/home/search";
 import {
   getCompaniesList,
   getSignersList,
@@ -29,6 +30,7 @@ export const handlers = [
   // home
   getBalances,
   recentBills,
+  search,
   // bills
   getBillsLight,
   billsList,

@@ -7,7 +7,24 @@ import { matchesSearchTerm } from "../utils";
 import type { SearchPayload, SearchResponse } from "@/services/search";
 
 const data: SearchResponse = {
-  bills: bills.data,
+  bills: bills.data.map((it) => ({ ...it,
+    id: it.bill_name,
+    drawee: {
+      ...it.drawer,
+      node_id: it.drawer.name
+    },
+    drawer: {
+      ...it.drawer,
+      node_id: it.drawer.name
+    },
+    payee: {
+      ...it.payee,
+      node_id: it.payee.name
+    },
+    endorsee: null,
+    sum: it.sum.amount,
+    currency: it.sum.currency,
+  })),
   // TODO: use mocked company data once it exists
   companies: [{
     "id": "C5Pjn2jmz7W9xqty3qZ9V9SKBAxqoirRaibF1zqp2abX",
