@@ -34,6 +34,7 @@ import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { DialogProps } from "vaul";
 import { toast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
+import { findHolder } from "@/utils/bill";
 
 function Loader() {
   return (
@@ -48,6 +49,8 @@ type MintRequestProps = {
 }
 
 function MintRequest({ bill } : MintRequestProps) {
+  const holder = findHolder(bill);
+
   return (
     <div className="flex flex-col gap-2 p-3 bg-elevation-200 border border-divider-75 rounded-xl">
       <div className="flex justify-between">
@@ -67,7 +70,7 @@ function MintRequest({ bill } : MintRequestProps) {
 
       <Preview
         className="bg-elevation-50 border-divider-75"
-        name={bill.drawee.name}
+        name={holder.name}
         date={bill.issue_date}
         amount={Number(bill.sum)}
         currency={bill.currency}
