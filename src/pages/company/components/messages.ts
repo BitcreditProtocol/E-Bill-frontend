@@ -51,4 +51,9 @@ export const messages = defineMessages({
     defaultMessage: "Registration number",
     description: "Label for the registration number field",
   },
+  "company.proof_of_registration": {
+    id: "company.proof_of_registration",
+    defaultMessage: "Registration document",
+    description: "Label for the proof of registration field",
+  },
 });

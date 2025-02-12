@@ -68,8 +68,7 @@ import ViewIdentity from "./pages/identity/View";
 import EditIdentity from "./pages/identity/Edit";
 
 // company flows
-import CreateCompany from "./pages/company/RefactorCreate";
-// import CreateCompany from "./pages/company/Create";
+import CreateCompany from "./pages/company/Create";
 import CompanySigners from "./pages/company/Signers";
 import EditCompany from "./pages/company/Edit";
 import ViewCompany from "./pages/company/View";
