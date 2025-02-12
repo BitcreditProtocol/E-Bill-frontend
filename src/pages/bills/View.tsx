@@ -1,13 +1,13 @@
 import { Suspense, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useIntl } from "react-intl";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import RefreshButton from "@/components/RefreshButton";
 import { useIdentity } from "@/context/identity/IdentityContext";
-import { getBillDetails } from "@/services/bills";
+import { checkBillInDHT, getBillDetails } from "@/services/bills";
 import { getQuote } from "@/services/quotes";
 import Card, { Loader } from "./components/BillCard";
 import Actions from "./components/Actions";
@@ -16,6 +16,7 @@ import { API_URL } from "@/constants/api";
 import { GET_BILL_ATTACHMENT } from "@/constants/endpoints";
 import { __dev_findInListAllIfMintViewIsEnabledOrThrow, readMintConfig } from "@/constants/mints";
 import { findHolder } from "@/utils/bill";
+import { toast } from "@/hooks/use-toast";
 
 function Details({ id }: { id: string }) {
   const { activeIdentity } = useIdentity();
@@ -84,7 +85,32 @@ function Details({ id }: { id: string }) {
 
 export default function View() {
   const { formatMessage: f } = useIntl();
+  const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
+
+  const { mutate: refetch, isPending } = useMutation({
+    mutationFn: () => checkBillInDHT(id as string),
+    retry: false,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["bills", id],
+      });
+
+      toast({
+        title: f({
+          id: "bill.status.refresh.success.title",
+          defaultMessage: "Success!",
+        }),
+        description: f({
+          id: "bill.status.refresh.success.description",
+          defaultMessage: "Successfully refreshed bill status!",
+        }),
+        variant: "success",
+        position: "bottom-center",
+        duration: 1_000
+      });
+    }
+  });
 
   return (
     <Page className="gap-5">
@@ -102,7 +128,8 @@ export default function View() {
               defaultMessage: "Refresh bill status",
               description: "Refresh bill status tooltip",
             })}
-            onClick={() => {}}
+            onClick={() => { refetch(); }}
+            loading={isPending}
           />
         }
       />

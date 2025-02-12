@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/drawer";
 import { toast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
-import { WILDCAT_ONE } from "@/constants/mints";
+import { MintConfig, readMintConfig } from "@/constants/mints";
 import { DialogProps } from "vaul";
 function Loader() {
   return (
@@ -105,6 +105,8 @@ export default function Preview() {
   const intl = useIntl();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+
+  const [mintConfig] = useState<MintConfig>(readMintConfig());
 
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -191,7 +193,7 @@ export default function Preview() {
               />
             </Label>
 
-            <Mint name={WILDCAT_ONE.name} nodeId={WILDCAT_ONE.node_id} />
+            <Mint name={mintConfig.wildcatOne.name} nodeId={mintConfig.wildcatOne.node_id} />
           </div>
 
           <div className="flex flex-col gap-2">

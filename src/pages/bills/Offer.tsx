@@ -98,6 +98,7 @@ function Payment({
                         defaultMessage:
                           "Error while copying address to clipboard",
                       }),
+                      variant: "error",
                       position: "bottom-center",
                     });
                   });

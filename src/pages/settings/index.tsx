@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import ViewDetails from "@/components/Identity/ViewDetails";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import routes from "@/constants/routes";
-import { WILDCAT_ONE } from "@/constants/mints";
+import { MintConfig, readMintConfig } from "@/constants/mints";
 import { API_URL } from "@/constants/api";
 import { DOWNLOAD_BACKUP } from "@/constants/endpoints";
 import DisplayCurrency from "./components/DisplayCurrency";
@@ -22,12 +22,15 @@ import Agreements from "./components/Agreements";
 import Theme from "./components/Theme";
 import MenuOption from "./components/MenuOption";
 import LanguagePreference from "./components/LanguagePreference";
+import { useState } from "react";
 
 export default function Settings() {
   const intl = useIntl();
   const { activeIdentity } = useIdentity();
 
   const backupFileUrl = `${API_URL}${DOWNLOAD_BACKUP}`;
+
+  const [mintConfig] = useState<MintConfig>(readMintConfig());
 
   return (
     <Page className="gap-6" displayBottomNavigation>
@@ -113,7 +116,7 @@ export default function Settings() {
                 defaultMessage: "Mints",
                 description: "Mints menu item",
               })}
-              defaultValue={WILDCAT_ONE.name}
+              defaultValue={mintConfig.wildcatOne.name}
             />
           </Link>
           <Separator className="bg-divider-75" />
