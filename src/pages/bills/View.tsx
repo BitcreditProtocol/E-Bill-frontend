@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useIntl } from "react-intl";
@@ -14,13 +14,19 @@ import Actions from "./components/Actions";
 import EcashToken from "./mint/components/EcashToken";
 import { API_URL } from "@/constants/api";
 import { GET_BILL_ATTACHMENT } from "@/constants/endpoints";
+import { __dev_findInListAllIfMintViewIsEnabledOrThrow, readMintConfig } from "@/constants/mints";
+import { findHolder } from "@/utils/bill";
 
 function Details({ id }: { id: string }) {
   const { activeIdentity } = useIdentity();
+  const mintConfig = useMemo(() => readMintConfig(), []);
 
   const { data } = useSuspenseQuery({
     queryKey: ["bills", id],
-    queryFn: () => getBillDetails(id),
+    queryFn: () => getBillDetails(id).catch((err: unknown) => {
+      // try to fetch the bill from the "list all" endpoint if mint view is enabled
+      return __dev_findInListAllIfMintViewIsEnabledOrThrow(id, mintConfig, err)
+    }),
   });
 
   const { data: quote } = useQuery({
@@ -30,15 +36,12 @@ function Details({ id }: { id: string }) {
     }).catch(() => { return null })
   });
 
+  const holder = findHolder(data);
   // if drawee and current identity node ids are the same, then the role is payer
   // if bill is endorsed, and endorsee and current identity node ids are the same, then the role is holder
   const isPayer = data.drawee.node_id === activeIdentity.node_id;
-  const isHolder =
-    (data.endorsee && data.endorsee.node_id === activeIdentity.node_id) ||
-    data.payee.node_id === activeIdentity.node_id;
-
+  const isHolder = holder.node_id === activeIdentity.node_id;
   const role = isPayer ? "payer" : isHolder ? "holder" : null;
-  const holder = data.endorsed && data.endorsee ? data.endorsee : data.payee;
 
   const hasAttachments = data.files.length > 0;
   const attachment = hasAttachments

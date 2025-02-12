@@ -195,7 +195,7 @@ function Status({
             value={Number(sum)}
             type="credit"
           />
-          <span className="text-text-200 text-[10px] font-normal">SAT</span>
+          <span className="text-text-200 text-[10px] font-normal">sat</span>
         </div>
       </div>
 

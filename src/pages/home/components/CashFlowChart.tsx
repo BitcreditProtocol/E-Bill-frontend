@@ -169,7 +169,7 @@ export default function ChashFlowChart({ values }: CashFlowChartProps) {
                 color="none"
                 signDisplay="negative"
               />
-              <span className="text-text-200 text-[10px] font-normal">SAT</span>
+              <span className="text-text-200 text-[10px] font-normal">sat</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -187,7 +187,7 @@ export default function ChashFlowChart({ values }: CashFlowChartProps) {
                 color="none"
                 signDisplay="negative"
               />
-              <span className="text-text-200 text-[10px] font-normal">SAT</span>
+              <span className="text-text-200 text-[10px] font-normal">sat</span>
             </div>
           </div>
         </div>

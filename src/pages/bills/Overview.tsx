@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { isToday, parseISO } from "date-fns";
@@ -12,11 +12,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Search from "@/components/ui/search";
 import { Button } from "@/components/ui/button";
 import RefreshButton from "@/components/RefreshButton";
-import { checkBillsInDHT, getBillsLight } from "@/services/bills";
+import { checkBillsInDHT, getBillsAll, getBillsLight } from "@/services/bills";
 import { cn } from "@/lib/utils";
 import routes from "@/constants/routes";
 import { Card } from "./components/Card";
 import Empty from "./components/Empty";
+import { readMintConfig } from "@/constants/mints";
 
 function DateRangeFilter({ onChange }: { onChange: (e: unknown) => void }) {
   return (
@@ -158,9 +159,11 @@ function Loader() {
 
 function List() {
   const { formatMessage: f } = useIntl();
+  const mintConfig = useMemo(() => readMintConfig(), []);
+
   const { data } = useSuspenseQuery({
-    queryKey: ["bills"],
-    queryFn: () => getBillsLight(),
+    queryKey: [mintConfig.__dev_mintViewEnabled ? "bills-all" : "bills"],
+    queryFn: () => mintConfig.__dev_mintViewEnabled ? getBillsAll() :  getBillsLight(),
   });
 
   // todo: fix bills being identified as earlier if date is not strictly today
@@ -171,7 +174,7 @@ function List() {
     (bill) => !isToday(parseISO(bill.issue_date))
   );
 
-  const { refetch } = useQuery({
+  const { refetch, isFetching } = useQuery({
     queryFn: () => checkBillsInDHT(),
     queryKey: ["bills", "check"],
     enabled: false,
@@ -197,6 +200,7 @@ function List() {
           onClick={() => {
             void refetch();
           }}
+          loading={isFetching}
         />
       </div>
 

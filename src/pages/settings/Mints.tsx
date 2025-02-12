@@ -6,7 +6,8 @@ import ViewDetails from "@/components/Identity/ViewDetails";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { Label } from "./components/Typography";
 import { useEffect, useState } from "react";
-import { WILDCAT_ONE } from "@/constants/mints";
+import { MintConfig, readMintConfig, WILDCAT_ONE, writeMintConfig } from "@/constants/mints";
+import { Switch } from "@/components/ui/switch";
 
 const formatUptime = (uptime: number) => {
   let secondsLeft = Math.floor(uptime / 1_000);
@@ -39,6 +40,13 @@ export default function Mints() {
     }, 1_000);
     return () => { clearInterval(timerId); };
   }, []);
+
+  const [mintConfig, setMintConfig] = useState<MintConfig>(readMintConfig());
+
+  const toggleMintView = () => {
+    writeMintConfig({ __dev_mintViewEnabled: !mintConfig.__dev_mintViewEnabled });
+    setMintConfig(readMintConfig());
+  }
 
   return (
     <Page className="gap-4">
@@ -172,6 +180,18 @@ export default function Mints() {
               }
             />
           </div>
+        </div>
+
+        <div className="flex items-center justify-between px-2 py-2">
+          <Label>
+              <div className="flex flex-col">
+                <span>Mint view (dev)</span>
+                <span className="text-text-200 text-xs font-normal">
+                  Display all local bills in bill overview
+                </span>
+              </div>
+          </Label>
+          <Switch checked={mintConfig.__dev_mintViewEnabled} onCheckedChange={() => { toggleMintView(); }}/>
         </div>
       </div>
     </Page>
