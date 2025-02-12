@@ -1,52 +1,43 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  FormProvider,
-  useForm,
-  useFormContext,
-  useWatch,
-} from "react-hook-form";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
   CalendarIcon,
-  CopyIcon,
-  GitForkIcon,
   MailIcon,
   MapIcon,
   MapPinIcon,
   MapPinnedIcon,
   PencilIcon,
   ShieldCheckIcon,
-  UserPenIcon,
+  UserIcon,
 } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import { Description, Title } from "@/components/typography/Step";
-import Picture from "@/components/Picture";
 import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
+import { DatePicker } from "@/components/DatePicker/datePicker";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { DatePicker } from "@/components/DatePicker/datePicker";
 import Upload from "@/components/Upload";
+import Picture from "@/components/Picture";
 import { useToast } from "@/hooks/use-toast";
-import { createContact, uploadFile } from "@/services/contact_v2";
-import { copyToClipboard } from "@/utils";
-import { truncateString } from "@/utils/strings";
-import routes from "@/constants/routes";
 import { API_URL } from "@/constants/api";
 import { GET_TEMP_FILE } from "@/constants/endpoints";
-import { ContactTypes } from "@/types/contact";
-import SwitchContactType from "./components/SwitchContactType";
-import { Label, Value } from "./components/Typography";
-import { messages, getMessage } from "./components/messages";
+import routes from "@/constants/routes";
+import { COUNTRIES } from "@/constants/countries";
+import { createCompany, uploadFile } from "@/services/company";
+import SuccessIllustration from "@/assets/images/success-illustration.svg";
+import { messages } from "./components/messages";
+import Property from "./components/Property";
 
-function ProfilePictureUpload() {
+function LogoPictureUpload() {
   const { watch, setValue } = useFormContext<FormSchema>();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -60,9 +51,9 @@ function ProfilePictureUpload() {
         data.file_upload_id
       )}`;
 
-      setValue("avatar.has_selected", true);
-      setValue("avatar.file_upload_id", data.file_upload_id);
-      setValue("avatar.preview_url", previewUrl);
+      setValue("logo.has_selected", true);
+      setValue("logo.file_upload_id", data.file_upload_id);
+      setValue("logo.preview_url", previewUrl);
     },
   });
 
@@ -86,8 +77,8 @@ function ProfilePictureUpload() {
       <Picture
         size="lg"
         name={watch("name")}
-        image={watch("avatar.preview_url") || ""}
-        type={watch("type")}
+        image={watch("logo.preview_url") || ""}
+        type={1}
       />
       <button className="relative bottom-6 left-12 flex items-center justify-center p-1.5 h-6 w-6 bg-brand-200 rounded-full">
         <PencilIcon className="text-white h-3 w-3 stroke-1" />
@@ -106,40 +97,42 @@ function ProfilePictureUpload() {
 
 function DocumentFileUpload() {
   const { formatMessage: f } = useIntl();
-  const { setValue, getValues } = useFormContext<FormSchema>();
+  const { setValue } = useFormContext<FormSchema>();
 
   const { mutate } = useMutation({
     mutationFn: (file: File) => {
       return uploadFile(file);
     },
     onSuccess: (data) => {
-      setValue("proof_document.has_selected", true);
-      setValue("proof_document.file_upload_id", data.file_upload_id);
+      setValue("proof_of_registration.has_selected", true);
+      setValue("proof_of_registration.file_upload_id", data.file_upload_id);
     },
   });
-
-  const contactType = getValues("type");
 
   return (
     <div className="flex flex-col gap-2">
       <Upload
-        label={f(getMessage(contactType, "uploadDocument"))}
+        label={f({
+          id: "company.create.upload",
+          defaultMessage: "Upload registration document",
+          description: "Proof of registration upload label",
+        })}
         description={f({
-          id: "contacts.create.upload.acceptedFormats",
+          id: "company.create.upload.acceptedFormats",
           defaultMessage: "PDF, PNG or JPG (max. 5mb)",
           description: "Accepted file formats",
         })}
         onAddFile={(file) => {
           mutate(file);
 
-          setValue("proof_document.name", file.name);
-          setValue("proof_document.size", file.size);
+          setValue("proof_of_registration.name", file.name);
+          setValue("proof_of_registration.size", file.size);
         }}
         onRemoveFile={() => {
-          setValue("proof_document.has_selected", false);
-          setValue("proof_document.file_upload_id", null);
-          setValue("proof_document.name", null);
-          setValue("proof_document.size", null);
+          setValue("proof_of_registration.has_selected", false);
+          setValue("proof_of_registration.file_upload_id", null);
+          setValue("proof_of_registration.name", null);
+          setValue("proof_of_registration.size", null);
         }}
       />
     </div>
@@ -147,10 +140,8 @@ function DocumentFileUpload() {
 }
 
 const requiredInformationFormSchema = z.object({
-  type: z.number(),
-  node_id: z.string().min(1),
-  email: z.string().min(1),
   name: z.string().min(1),
+  email: z.string().min(1),
 });
 
 type RequiredInformationFormSchema = z.infer<
@@ -159,14 +150,15 @@ type RequiredInformationFormSchema = z.infer<
 
 function RequiredInformation({ nextStep }: { nextStep: () => void }) {
   const { formatMessage: f } = useIntl();
-  const { register, watch, trigger, setValue } =
+  const { register, watch, trigger } =
     useFormContext<RequiredInformationFormSchema>();
+
   const [canContinue, setCanContinue] = useState(false);
-  const watchValues = watch(["type", "node_id", "email", "name"]);
+  const watchValues = watch(["name", "email"]);
 
   useEffect(() => {
     const validate = async () => {
-      const isValid = await trigger(["type", "node_id", "email", "name"]);
+      const isValid = await trigger(["name", "email"]);
 
       setCanContinue(isValid);
     };
@@ -174,63 +166,44 @@ function RequiredInformation({ nextStep }: { nextStep: () => void }) {
     void validate();
   }, [watchValues, trigger]);
 
-  const contactType = watch("type");
-  const changeContactType = (type: number) => {
-    setValue("type", type);
-  };
-
   return (
     <div className="flex-1 flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-2 mb-2">
+      <div className="flex flex-col items-center gap-2">
         <Title>
           <FormattedMessage
-            id="contacts.create.requiredInformation.title"
-            defaultMessage="Required"
-            description="Title for create contact page"
+            id="company.create.requiredInformation.title"
+            defaultMessage="Company identity"
           />
         </Title>
-        <Description className="text-center mx-16">
+        <Description className="text-center mx-10">
           <FormattedMessage
-            id="contacts.create.requiredInformation.description"
-            defaultMessage="This information is required for bill counterparties"
-            description="Description for create contact page"
+            id="company.create.requiredInformation.description"
+            defaultMessage="Please enter the required data to create a new company identity"
+            description="Description for the required information step"
           />
         </Description>
       </div>
 
-      <div className="mx-auto">
-        <SwitchContactType
-          contactType={contactType || ContactTypes.Person}
-          onChange={changeContactType}
-        />
-      </div>
-
       <div className="flex flex-col gap-3 mb-auto">
         <Input
-          {...register("node_id")}
-          icon={<GitForkIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={f(messages["contacts.nodeId"])}
+          {...register("name")}
+          label={f(messages["company.name"])}
+          icon={<UserIcon className="text-text-300 h-5 w-5 stroke-1" />}
           required
         />
         <Input
           {...register("email")}
+          label={f(messages["company.email"])}
           icon={<MailIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={f(getMessage(contactType, "email"))}
-          required
-        />
-        <Input
-          {...register("name")}
-          icon={<UserPenIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={f(getMessage(contactType, "name"))}
           required
         />
       </div>
 
       <Button size="md" disabled={!canContinue} onClick={nextStep}>
         <FormattedMessage
-          id="contacts.create.continue"
+          id="company.create.continue"
           defaultMessage="Continue"
-          description="Button to go to next step in contact creation"
+          description="Label for the continue to next step button"
         />
       </Button>
     </div>
@@ -251,11 +224,12 @@ function PostalAddress({ nextStep }: { nextStep: () => void }) {
   const { register, watch, trigger, setValue } =
     useFormContext<PostalAddressFormSchema>();
   const [canContinue, setCanContinue] = useState(false);
-  const watchValues = watch(["country", "city", "zip", "address"]);
+
+  const watchValues = watch(["country", "city", "address"]);
 
   useEffect(() => {
     const validate = async () => {
-      const isValid = await trigger(["country", "city", "zip", "address"]);
+      const isValid = await trigger(["country", "city", "address"]);
 
       setCanContinue(isValid);
     };
@@ -265,56 +239,56 @@ function PostalAddress({ nextStep }: { nextStep: () => void }) {
 
   return (
     <div className="flex-1 flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-2 mb-2">
+      <div className="flex flex-col items-center gap-2">
         <Title>
           <FormattedMessage
-            id="contacts.create.postalAddress.title"
-            defaultMessage="Required"
-            description="Title for contact creation postal address step"
+            id="company.create.postalAddress.title"
+            defaultMessage="Company postal address"
           />
         </Title>
         <Description className="text-center mx-10">
           <FormattedMessage
-            id="contacts.create.postalAddress.description"
-            defaultMessage="Postal address of the bill counterparty"
-            description="Description for contact creation postal address step"
+            id="company.create.postalAddress.description"
+            defaultMessage="These fields are needed for bills in your company’s name"
+            description="Description for the postal address step"
           />
         </Description>
       </div>
 
       <div className="flex flex-col gap-3 mb-auto">
         <CountrySelector
-          label={f(messages["contacts.country"])}
+          label={f(messages["company.country"])}
           callback={(country) => {
             setValue("country", country);
           }}
           value={watch("country") || undefined}
           required
         />
+
         <Input
           {...register("city")}
           icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={f(messages["contacts.city"])}
+          label={f(messages["company.city"])}
           required
         />
         <Input
           {...register("zip")}
           icon={<MapPinIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={f(messages["contacts.zipCode"])}
+          label={f(messages["company.zip"])}
         />
         <Input
           {...register("address")}
           icon={<MapPinnedIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={f(messages["contacts.address"])}
+          label={f(messages["company.address"])}
           required
         />
       </div>
 
       <Button size="md" disabled={!canContinue} onClick={nextStep}>
         <FormattedMessage
-          id="contacts.create.continue"
+          id="company.create.continue"
           defaultMessage="Continue"
-          description="Button to go to next step in contact creation"
+          description="Label for the continue to next step button"
         />
       </Button>
     </div>
@@ -322,16 +296,16 @@ function PostalAddress({ nextStep }: { nextStep: () => void }) {
 }
 
 const optionalInformationFormSchema = z.object({
-  date_of_birth_or_registration: z.string().optional().nullable(),
-  country_of_birth_or_registration: z.string().optional().nullable(),
-  city_of_birth_or_registration: z.string().optional().nullable(),
-  identification_number: z.string().optional().nullable(),
-  avatar: z.object({
+  registration_date: z.string().optional().nullable(),
+  country_of_registration: z.string().optional().nullable(),
+  city_of_registration: z.string().optional().nullable(),
+  registration_number: z.string().optional().nullable(),
+  logo: z.object({
     has_selected: z.boolean(),
     preview_url: z.string().optional().nullable(),
     file_upload_id: z.string().optional().nullable(),
   }),
-  proof_document: z.object({
+  proof_of_registration: z.object({
     has_selected: z.boolean(),
     name: z.string().optional().nullable(),
     size: z.number().optional().nullable(),
@@ -349,21 +323,20 @@ function OptionalInformation({ nextStep }: { nextStep: () => void }) {
     useFormContext<OptionalInformationFormSchema>();
   const [canContinue, setCanContinue] = useState(false);
 
-  const contactType = useWatch<FormSchema, "type">({ name: "type" });
   const watchValues = watch([
-    "date_of_birth_or_registration",
-    "country_of_birth_or_registration",
-    "city_of_birth_or_registration",
-    "identification_number",
+    "registration_date",
+    "country_of_registration",
+    "city_of_registration",
+    "registration_number",
   ]);
 
   useEffect(() => {
     const validate = async () => {
       const isValid = await trigger([
-        "date_of_birth_or_registration",
-        "country_of_birth_or_registration",
-        "city_of_birth_or_registration",
-        "identification_number",
+        "registration_date",
+        "country_of_registration",
+        "city_of_registration",
+        "registration_number",
       ]);
 
       setCanContinue(isValid);
@@ -375,16 +348,16 @@ function OptionalInformation({ nextStep }: { nextStep: () => void }) {
   const skip = () => {
     reset((prev) => ({
       ...prev,
-      date_of_birth_or_registration: null,
-      country_of_birth_or_registration: null,
-      city_of_birth_or_registration: null,
-      identification_number: null,
-      avatar: {
+      registration_date: null,
+      country_of_registration: null,
+      city_of_registration: null,
+      registration_number: null,
+      logo: {
         has_selected: false,
         preview_url: null,
         file_upload_id: null,
       },
-      proof_document: {
+      proof_of_registration: {
         has_selected: false,
         name: null,
         size: null,
@@ -397,60 +370,61 @@ function OptionalInformation({ nextStep }: { nextStep: () => void }) {
 
   return (
     <div className="flex-1 flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-2 mb-2">
+      <div className="flex flex-col items-center gap-2">
         <Title>
           <FormattedMessage
-            id="contacts.create.optionalInformation.title"
-            defaultMessage="Optional"
-            description="Title for optional information when creating a contact"
+            id="company.create.optionalInformation.title"
+            defaultMessage="Optional: other information"
+            description="Title for the optional information step"
           />
         </Title>
-        <Description className="text-center mx-10">
+        <Description className="text-center mx-8">
           <FormattedMessage
-            id="contacts.create.optionalInformation.description"
-            defaultMessage="This information is optional, just for your own records"
-            description="Description for optional information when creating a contact"
+            id="company.create.optionalInformation.description"
+            defaultMessage="This information is optional, enter it for your company's credit score"
+            description="Description for the optional information step"
           />
         </Description>
       </div>
 
-      <ProfilePictureUpload />
+      <LogoPictureUpload />
 
       <div className="flex flex-col gap-3 mb-auto">
         <DatePicker
           mode="single"
-          label={f(getMessage(contactType, "date"))}
           customComponent={
             <div className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg cursor-pointer">
               <CalendarIcon className="text-text-300 h-5 w-5 stroke-1" />
-              {watch("date_of_birth_or_registration") ||
-                f(getMessage(contactType, "date"))}
+              {watch("registration_date") ||
+                f(messages["company.registration_date"])}
             </div>
           }
           onChange={({ from }) => {
             setValue(
-              "date_of_birth_or_registration",
+              "registration_date",
               // @ts-expect-error - TS doesn't know about the date object
               format(from, "yyyy-MM-dd")
             );
           }}
         />
         <CountrySelector
-          label={f(getMessage(contactType, "country"))}
+          label={f(messages["company.country_of_registration"])}
           callback={(country) => {
-            setValue("country_of_birth_or_registration", country);
+            setValue("country_of_registration", country);
           }}
-          value={watch("country_of_birth_or_registration") || undefined}
+          value={watch("country_of_registration") || undefined}
         />
         <Input
-          {...register("city_of_birth_or_registration")}
+          {...register("city_of_registration")}
+          label={f(messages["company.city_of_registration"])}
           icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={f(getMessage(contactType, "city"))}
+          required
         />
         <Input
-          {...register("identification_number")}
+          {...register("registration_number")}
+          label={f(messages["company.registration_number"])}
           icon={<ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={f(getMessage(contactType, "identificationNumber"))}
+          required
         />
         <DocumentFileUpload />
       </div>
@@ -458,14 +432,14 @@ function OptionalInformation({ nextStep }: { nextStep: () => void }) {
       <div className="flex flex-col gap-2">
         <Button size="md" disabled={!canContinue} onClick={nextStep}>
           <FormattedMessage
-            id="contacts.create.continue"
+            id="company.create.optionalInformation.continue"
             defaultMessage="Continue"
-            description="Button to go to next step in contact creation"
+            description="Continue button for optional information"
           />
         </Button>
         <Button variant="outline" size="md" onClick={skip}>
           <FormattedMessage
-            id="contacts.create.optionalInformation.skip"
+            id="company.create.optionalInformation.skip"
             defaultMessage="Skip"
             description="Skip button for optional information"
           />
@@ -475,195 +449,135 @@ function OptionalInformation({ nextStep }: { nextStep: () => void }) {
   );
 }
 
-const formSchema = requiredInformationFormSchema
-  .merge(postalAddressFormSchema)
-  .merge(optionalInformationFormSchema);
-
-type FormSchema = z.infer<typeof formSchema>;
-
-function Property({
-  label,
-  value,
-}: {
-  label: React.ReactNode;
-  value: React.ReactNode | string | null;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label>{label}</Label>
-      {value !== null ? (
-        typeof value === "string" && value !== "" ? (
-          <Value>{value}</Value>
-        ) : (
-          value
-        )
-      ) : (
-        "-"
-      )}
-    </div>
-  );
-}
-
-function Preview() {
+function Preview({ nextStep }: { nextStep: () => void }) {
+  const navigate = useNavigate();
   const { formatMessage: f } = useIntl();
   const { getValues } = useFormContext<FormSchema>();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const {
-    type,
-    node_id,
     name,
     email,
     country,
     city,
     zip,
     address,
-    date_of_birth_or_registration,
-    country_of_birth_or_registration,
-    city_of_birth_or_registration,
-    identification_number,
-    avatar,
-    proof_document,
+    country_of_registration,
+    city_of_registration,
+    registration_number,
+    registration_date,
+    logo,
+    proof_of_registration,
   } = getValues();
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => {
-      return createContact({
-        type,
-        node_id,
-        name,
-        email,
-        country,
-        city,
-        zip,
-        address,
-        date_of_birth_or_registration: date_of_birth_or_registration || null,
-        country_of_birth_or_registration:
-          country_of_birth_or_registration || null,
-        city_of_birth_or_registration: city_of_birth_or_registration || null,
-        identification_number: identification_number || null,
-        avatar_file_upload_id: avatar.file_upload_id,
-        proof_document_file_upload_id: proof_document.file_upload_id,
+      return createCompany({
+        name: name,
+        email: email,
+        country: country,
+        city: city,
+        zip: zip || "",
+        address: address,
+        registration_date: registration_date || null,
+        country_of_registration: country_of_registration || null,
+        city_of_registration: city_of_registration || null,
+        registration_number: registration_number || null,
+        logo_file_upload_id: logo.file_upload_id || null,
+        proof_of_registration_file_upload_id:
+          proof_of_registration.file_upload_id || null,
       });
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["contacts"],
-      });
-
-      toast({
-        title: f({
-          id: "contacts.create.success",
-          defaultMessage: "Success!",
-          description: "Contact created successfully toast message",
-        }),
-        description: f({
-          id: "contacts.create.success.description",
-          defaultMessage: "Contact created successfully!",
-          description: "Contact created successfully toast message",
-        }),
-        position: "bottom-center",
-      });
-
-      navigate(routes.CONTACTS);
+    onSuccess: () => {
+      nextStep();
     },
     onError: () => {
       toast({
-        title: f({
-          id: "contacts.create.error",
-          defaultMessage: "Error!",
-          description: "Error while creating contact toast message",
-        }),
+        title: f({ id: "company.create.error", defaultMessage: "Error!" }),
         description: f({
-          id: "contacts.create.error.description",
-          defaultMessage:
-            "An error occurred while creating the contact. Please, try again.",
-          description: "Error while creating contact toast message",
+          id: "company.create.error",
+          defaultMessage: "Error while creating company. Please try again.",
         }),
         position: "bottom-center",
       });
     },
   });
 
+  const combinedAddress =
+    [address, zip, city, COUNTRIES[country as keyof typeof COUNTRIES]]
+      .filter(Boolean)
+      .join(", ") || "-";
+
+  const parsedCountryOfRegistrationName =
+    COUNTRIES[country_of_registration as keyof typeof COUNTRIES];
+
   return (
     <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-2">
+        <Title>
+          <FormattedMessage
+            id="company.preview.title"
+            defaultMessage="Preview company"
+            description="Title for the company preview step"
+          />
+        </Title>
+        <Description className="text-center mx-10">
+          <FormattedMessage
+            id="company.preview.description"
+            defaultMessage="Please check your company data before signing"
+            description="Description for the company preview step"
+          />
+        </Description>
+      </div>
+
       <div className="flex flex-col items-center gap-4">
         <Picture
-          type={type}
-          name={name}
-          image={avatar.preview_url || ""}
           size="lg"
+          name={name}
+          image={logo.preview_url || ""}
+          type={1}
         />
-
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex flex-col items-center gap-2">
-            <span className="text-text-300 text-xl font-medium leading-normal">
-              {name}
-            </span>
-
-            <div className="flex items-center justify-center gap-1">
-              <span className="text-text-200 text-xs font-normal leading-normal">
-                {truncateString(node_id, 14)}
-              </span>
-              <button
-                className="p-0"
-                onClick={() => {
-                  void copyToClipboard(node_id);
-                }}
-              >
-                <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
-              </button>
-            </div>
-          </div>
-        </div>
+        <span className="text-text-300 text-xl font-medium leading-normal">
+          {name}
+        </span>
       </div>
 
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
+        <Property label={f(messages["company.email"])} value={email} />
+        <Separator className="bg-divider-75" />
+
         <Property
-          label={f(getMessage(type, "email"))}
-          value={getValues("email")}
+          label={f(messages["company.address"])}
+          value={combinedAddress}
         />
         <Separator className="bg-divider-75" />
 
         <Property
-          label={f(messages["contacts.address"])}
-          value={getValues("address")}
+          label={f(messages["company.registration_date"])}
+          value={registration_date}
         />
         <Separator className="bg-divider-75" />
 
         <Property
-          label={f(getMessage(type, "date"))}
-          value={getValues("date_of_birth_or_registration")}
+          label={f(messages["company.country_of_registration"])}
+          value={parsedCountryOfRegistrationName}
         />
         <Separator className="bg-divider-75" />
 
         <Property
-          label={f(getMessage(type, "country"))}
-          value={getValues("country_of_birth_or_registration")}
+          label={f(messages["company.city_of_registration"])}
+          value={city_of_registration}
         />
         <Separator className="bg-divider-75" />
 
         <Property
-          label={f(getMessage(type, "city"))}
-          value={getValues("city_of_birth_or_registration")}
+          label={f(messages["company.registration_number"])}
+          value={registration_number}
         />
         <Separator className="bg-divider-75" />
-
-        <Property
-          label={f(getMessage(type, "identificationNumber"))}
-          value={getValues("identification_number")}
-        />
-        <Separator className="bg-divider-75" />
-
-        <Property
-          label={f(getMessage(type, "document"))}
-          value={getValues("proof_document.file_upload_id")}
-        />
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 mt-auto">
         <Button
           size="md"
           onClick={() => {
@@ -697,29 +611,73 @@ function Preview() {
   );
 }
 
+function Success() {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-between pt-20">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h1 className="text-text-300 text-2xl font-medium leading-8">
+          <FormattedMessage
+            id="company.create.success.title"
+            defaultMessage="Success"
+            description="Title for the company created step"
+          />
+        </h1>
+        <span className="text-text-200 text-base font-normal leading-6 mx-6">
+          <FormattedMessage
+            id="company.create.success.description"
+            defaultMessage="We have successfully created your company and can add other signers"
+            description="Description for the company created step"
+          />
+        </span>
+      </div>
+
+      <img
+        className="aspect-square max-w-52 pointer-events-none"
+        src={SuccessIllustration}
+        alt="Success illustration"
+      />
+
+      <Link className="w-full" to={routes.IDENTITY_LIST}>
+        <Button className="w-full" size="md">
+          <FormattedMessage
+            id="company.create.success.finish"
+            defaultMessage="Finish"
+            description="Label for the finish button"
+          />
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
+const formSchema = requiredInformationFormSchema
+  .merge(postalAddressFormSchema)
+  .merge(optionalInformationFormSchema);
+
+type FormSchema = z.infer<typeof formSchema>;
+
 export default function Create() {
   const [step, setStep] = useState(0);
 
   const methods = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: 0,
-      node_id: "",
       name: "",
+      email: "",
       country: "",
       city: "",
       zip: "",
       address: "",
-      date_of_birth_or_registration: null,
-      country_of_birth_or_registration: null,
-      city_of_birth_or_registration: null,
-      identification_number: null,
-      avatar: {
+      registration_date: null,
+      country_of_registration: null,
+      city_of_registration: "",
+      registration_number: "",
+      logo: {
         has_selected: false,
         preview_url: null,
         file_upload_id: null,
       },
-      proof_document: {
+      proof_of_registration: {
         has_selected: false,
         name: null,
         size: null,
@@ -743,11 +701,13 @@ export default function Create() {
   return (
     <Page className="gap-5">
       <Topbar lead={<NavigateBack callBack={previousStep} />} />
+
       <FormProvider {...methods}>
         {step === 0 && <RequiredInformation nextStep={nextStep} />}
         {step === 1 && <PostalAddress nextStep={nextStep} />}
         {step === 2 && <OptionalInformation nextStep={nextStep} />}
-        {step === 3 && <Preview />}
+        {step === 3 && <Preview nextStep={nextStep} />}
+        {step === 4 && <Success />}
       </FormProvider>
     </Page>
   );

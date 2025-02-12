@@ -5,12 +5,17 @@ export default function Property({
   value,
 }: {
   label: React.ReactNode;
-  value: string;
+  value: React.ReactNode | string | null | undefined;
 }) {
+  const shouldDisplayPlaceholder =
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "");
+
   return (
     <div className="flex flex-col gap-1.5">
       <Label>{label}</Label>
-      <Value>{value.length === 0 ? "-" : value}</Value>
+      {shouldDisplayPlaceholder ? <span>-</span> : <Value>{value}</Value>}
     </div>
   );
 }
