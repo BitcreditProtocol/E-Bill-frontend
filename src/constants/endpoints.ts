@@ -62,11 +62,13 @@ const UPLOAD_CONTACT_FILE = "/contacts/upload_file";
 const EDIT_CONTACT = "/contacts/edit";
 const REMOVE_CONTACT = "/contacts/remove";
 const SEARCH_CONTACTS = "/contacts/search";
+const GET_CONTACT_FILE = "contacts/file/:node_id/:name";
 
 // other endpoints
 const BALANCES_OVERVIEW = "/overview?currency=";
 const LIST_ACTIVE_NOTIFICATIONS = "/notifications";
 const RESOLVE_NOTIFICATION = "/notifications/:notification_id/done";
+const GET_TEMP_FILE = "/temp_file/:file_id";
 
 export {
   // bill
@@ -132,9 +134,11 @@ export {
   UPLOAD_CONTACT_FILE,
   EDIT_CONTACT,
   REMOVE_CONTACT,
+  GET_CONTACT_FILE,
 
   // other
   BALANCES_OVERVIEW,
   LIST_ACTIVE_NOTIFICATIONS,
   RESOLVE_NOTIFICATION,
+  GET_TEMP_FILE,
 };

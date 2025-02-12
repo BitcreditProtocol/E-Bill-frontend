@@ -1,82 +1,183 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  FormProvider,
+  useForm,
+  useFormContext,
+  useWatch,
+} from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormattedMessage, useIntl } from "react-intl";
 import { format } from "date-fns";
+import { FormattedMessage, useIntl } from "react-intl";
 import {
+  CalendarIcon,
+  CopyIcon,
   GitForkIcon,
-  UserPenIcon,
+  MailIcon,
   MapIcon,
   MapPinIcon,
   MapPinnedIcon,
+  PencilIcon,
   ShieldCheckIcon,
-  MailIcon,
+  UserPenIcon,
 } from "lucide-react";
-
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
-import PageTitle from "@/components/typography/PageTitle";
 import NavigateBack from "@/components/NavigateBack";
-import StepIndicator from "@/components/StepIndicator";
 import { Description, Title } from "@/components/typography/Step";
-import UploadAvatar from "@/components/UploadAvatar";
+import Picture from "@/components/Picture";
 import { Input } from "@/components/ui/input";
+import CountrySelector from "@/components/CountrySelector";
+import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/DatePicker/datePicker";
-import CountrySelector from "@/components/CountrySelector";
 import Upload from "@/components/Upload";
-import { getInitials } from "@/utils";
-
+import { useToast } from "@/hooks/use-toast";
+import { createContact, uploadFile } from "@/services/contact_v2";
+import { copyToClipboard } from "@/utils";
+import { truncateString } from "@/utils/strings";
+import routes from "@/constants/routes";
+import { API_URL } from "@/constants/api";
+import { GET_TEMP_FILE } from "@/constants/endpoints";
+import { ContactTypes } from "@/types/contact";
 import SwitchContactType from "./components/SwitchContactType";
-import Preview from "./Preview";
-import { messages } from "./components/messages";
+import { Label, Value } from "./components/Typography";
+import { messages, getMessage } from "./components/messages";
 
-const formSchema = z.object({
-  type: z.enum(["person", "company", "mint"]),
+function ProfilePictureUpload() {
+  const { watch, setValue } = useFormContext<FormSchema>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { mutate } = useMutation({
+    mutationFn: (file: File) => {
+      return uploadFile(file);
+    },
+    onSuccess: (data) => {
+      const previewUrl = `${API_URL}/${GET_TEMP_FILE.replace(
+        ":file_id",
+        data.file_upload_id
+      )}`;
+
+      setValue("avatar.has_selected", true);
+      setValue("avatar.file_upload_id", data.file_upload_id);
+      setValue("avatar.preview_url", previewUrl);
+    },
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      mutate(file);
+    }
+  };
+
+  const triggerFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <div
+      className="relative mx-auto cursor-pointer"
+      onClick={triggerFileSelect}
+    >
+      <Picture
+        size="lg"
+        name={watch("name")}
+        image={watch("avatar.preview_url") || ""}
+        type={watch("type")}
+      />
+      <button className="relative bottom-6 left-12 flex items-center justify-center p-1.5 h-6 w-6 bg-brand-200 rounded-full">
+        <PencilIcon className="text-white h-3 w-3 stroke-1" />
+      </button>
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        onChange={handleFileChange}
+      />
+    </div>
+  );
+}
+
+function DocumentFileUpload() {
+  const { formatMessage: f } = useIntl();
+  const { setValue, getValues } = useFormContext<FormSchema>();
+
+  const { mutate } = useMutation({
+    mutationFn: (file: File) => {
+      return uploadFile(file);
+    },
+    onSuccess: (data) => {
+      setValue("proof_document.has_selected", true);
+      setValue("proof_document.file_upload_id", data.file_upload_id);
+    },
+  });
+
+  const contactType = getValues("type");
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Upload
+        label={f(getMessage(contactType, "uploadDocument"))}
+        description={f({
+          id: "contacts.create.upload.acceptedFormats",
+          defaultMessage: "PDF, PNG or JPG (max. 5mb)",
+          description: "Accepted file formats",
+        })}
+        onAddFile={(file) => {
+          mutate(file);
+
+          setValue("proof_document.name", file.name);
+          setValue("proof_document.size", file.size);
+        }}
+        onRemoveFile={() => {
+          setValue("proof_document.has_selected", false);
+          setValue("proof_document.file_upload_id", null);
+          setValue("proof_document.name", null);
+          setValue("proof_document.size", null);
+        }}
+      />
+    </div>
+  );
+}
+
+const requiredInformationFormSchema = z.object({
+  type: z.number(),
   node_id: z.string().min(1),
+  email: z.string().min(1),
   name: z.string().min(1),
-  email: z.string().email().min(1),
-
-  country: z.string().min(1),
-  city: z.string().min(1),
-  zip: z.string().optional(),
-  address: z.string().min(1),
-
-  date_of_registration: z.string().min(1),
-  country_of_registration: z.string().min(1),
-  city_of_registration: z.string().min(1),
-  registration_number: z.string().min(1),
-
-  document_name: z.string().min(1),
-  document_size: z.string().min(1),
 });
 
-function RequiredInformation({
-  contactType,
-  switchContact,
-  moveToNextStep,
-}: {
-  contactType: "person" | "company" | "mint";
-  switchContact: React.ReactNode;
-  moveToNextStep: () => void;
-}) {
-  const { formatMessage: f } = useIntl();
-  const [isDataValid, setIsDataValid] = useState(false);
+type RequiredInformationFormSchema = z.infer<
+  typeof requiredInformationFormSchema
+>;
 
-  const { register, watch, trigger } = useFormContext();
-  const watchRequiredValues = watch(["node_id", "name", "email"]);
+function RequiredInformation({ nextStep }: { nextStep: () => void }) {
+  const { formatMessage: f } = useIntl();
+  const { register, watch, trigger, setValue } =
+    useFormContext<RequiredInformationFormSchema>();
+  const [canContinue, setCanContinue] = useState(false);
+  const watchValues = watch(["type", "node_id", "email", "name"]);
 
   useEffect(() => {
-    const validateData = async () => {
-      const isValid = await trigger(["node_id", "name", "email"]);
+    const validate = async () => {
+      const isValid = await trigger(["type", "node_id", "email", "name"]);
 
-      setIsDataValid(isValid);
+      setCanContinue(isValid);
     };
 
-    void validateData();
-  }, [watchRequiredValues, trigger]);
+    void validate();
+  }, [watchValues, trigger]);
+
+  const contactType = watch("type");
+  const changeContactType = (type: number) => {
+    setValue("type", type);
+  };
 
   return (
     <div className="flex-1 flex flex-col gap-6">
@@ -88,7 +189,6 @@ function RequiredInformation({
             description="Title for create contact page"
           />
         </Title>
-        {f(messages["contacts.company.cityOfRegistration"])}
         <Description className="text-center mx-16">
           <FormattedMessage
             id="contacts.create.requiredInformation.description"
@@ -98,9 +198,14 @@ function RequiredInformation({
         </Description>
       </div>
 
-      <div className="mx-auto">{switchContact}</div>
+      <div className="mx-auto">
+        <SwitchContactType
+          contactType={contactType || ContactTypes.Person}
+          onChange={changeContactType}
+        />
+      </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 mb-auto">
         <Input
           {...register("node_id")}
           icon={<GitForkIcon className="text-text-300 h-5 w-5 stroke-1" />}
@@ -110,62 +215,53 @@ function RequiredInformation({
         <Input
           {...register("email")}
           icon={<MailIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={
-            contactType === "person"
-              ? f(messages["contacts.person.email"])
-              : f(messages["contacts.company.email"])
-          }
+          label={f(getMessage(contactType, "email"))}
           required
         />
         <Input
           {...register("name")}
           icon={<UserPenIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={
-            contactType === "person"
-              ? f(messages["contacts.person.name"])
-              : f(messages["contacts.company.name"])
-          }
+          label={f(getMessage(contactType, "name"))}
           required
         />
       </div>
 
-      <Button
-        className="mt-auto"
-        onClick={moveToNextStep}
-        disabled={!isDataValid}
-      >
+      <Button size="md" disabled={!canContinue} onClick={nextStep}>
         <FormattedMessage
-          id="contacts.create.requiredInformation.continue"
+          id="contacts.create.continue"
           defaultMessage="Continue"
-          description="Continue button for create contact page"
+          description="Button to go to next step in contact creation"
         />
       </Button>
     </div>
   );
 }
 
-function PostalAddress({
-  switchContact,
-  moveToNextStep,
-}: {
-  switchContact: React.ReactNode;
-  moveToNextStep: () => void;
-}) {
-  const { formatMessage: f } = useIntl();
-  const [isDataValid, setIsDataValid] = useState(false);
+const postalAddressFormSchema = z.object({
+  country: z.string().min(1),
+  city: z.string().min(1),
+  zip: z.string().nullable(),
+  address: z.string().min(1),
+});
 
-  const { register, watch, trigger, getValues, setValue } = useFormContext();
-  const watchRequiredValues = watch(["country", "city", "address"]);
+type PostalAddressFormSchema = z.infer<typeof postalAddressFormSchema>;
+
+function PostalAddress({ nextStep }: { nextStep: () => void }) {
+  const { formatMessage: f } = useIntl();
+  const { register, watch, trigger, setValue } =
+    useFormContext<PostalAddressFormSchema>();
+  const [canContinue, setCanContinue] = useState(false);
+  const watchValues = watch(["country", "city", "zip", "address"]);
 
   useEffect(() => {
-    const validateData = async () => {
-      const isValid = await trigger(["country", "city", "address"]);
+    const validate = async () => {
+      const isValid = await trigger(["country", "city", "zip", "address"]);
 
-      setIsDataValid(isValid);
+      setCanContinue(isValid);
     };
 
-    void validateData();
-  }, [watchRequiredValues, trigger]);
+    void validate();
+  }, [watchValues, trigger]);
 
   return (
     <div className="flex-1 flex flex-col gap-6">
@@ -186,15 +282,14 @@ function PostalAddress({
         </Description>
       </div>
 
-      <div className="mx-auto">{switchContact}</div>
-
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 mb-auto">
         <CountrySelector
           label={f(messages["contacts.country"])}
-          callback={(e) => {
-            setValue("country", e);
+          callback={(country) => {
+            setValue("country", country);
           }}
-          value={getValues("country") as string}
+          value={watch("country") || undefined}
+          required
         />
         <Input
           {...register("city")}
@@ -215,80 +310,89 @@ function PostalAddress({
         />
       </div>
 
-      <Button
-        className="mt-auto"
-        size="md"
-        onClick={moveToNextStep}
-        disabled={!isDataValid}
-      >
+      <Button size="md" disabled={!canContinue} onClick={nextStep}>
         <FormattedMessage
-          id="contacts.create.postalAddress.next"
+          id="contacts.create.continue"
           defaultMessage="Continue"
-          description="Button text for next step in contact creation"
+          description="Button to go to next step in contact creation"
         />
       </Button>
     </div>
   );
 }
 
-function OptionalInformation({
-  contactType,
-  switchContact,
-  setProfilePicturePreview,
-  moveToNextStep,
-}: {
-  contactType: "person" | "company" | "mint";
-  switchContact: React.ReactNode;
-  setProfilePicturePreview: (file: string) => void;
-  moveToNextStep: () => void;
-}) {
+const optionalInformationFormSchema = z.object({
+  date_of_birth_or_registration: z.string().optional().nullable(),
+  country_of_birth_or_registration: z.string().optional().nullable(),
+  city_of_birth_or_registration: z.string().optional().nullable(),
+  identification_number: z.string().optional().nullable(),
+  avatar: z.object({
+    has_selected: z.boolean(),
+    preview_url: z.string().optional().nullable(),
+    file_upload_id: z.string().optional().nullable(),
+  }),
+  proof_document: z.object({
+    has_selected: z.boolean(),
+    name: z.string().optional().nullable(),
+    size: z.number().optional().nullable(),
+    file_upload_id: z.string().optional().nullable(),
+  }),
+});
+
+type OptionalInformationFormSchema = z.infer<
+  typeof optionalInformationFormSchema
+>;
+
+function OptionalInformation({ nextStep }: { nextStep: () => void }) {
   const { formatMessage: f } = useIntl();
+  const { register, watch, trigger, setValue, reset } =
+    useFormContext<OptionalInformationFormSchema>();
+  const [canContinue, setCanContinue] = useState(false);
 
-  const [isDataValid, setIsDataValid] = useState(false);
-  const [currentDate, setCurrentDate] = useState();
-
-  const { register, watch, trigger, getValues, setValue } = useFormContext();
-  const watchRequiredValues = watch([
-    "date_of_registration",
-    "country_of_registration",
-    "city_of_registration",
-    "registration_number",
+  const contactType = useWatch<FormSchema, "type">({ name: "type" });
+  const watchValues = watch([
+    "date_of_birth_or_registration",
+    "country_of_birth_or_registration",
+    "city_of_birth_or_registration",
+    "identification_number",
   ]);
 
-  const handleSavePreview = (previewUrl: string) => {
-    setProfilePicturePreview(previewUrl); // Save the preview URL for later use
-  };
-  const avatarFallback = getInitials(getValues("name") as string);
-
   useEffect(() => {
-    const validateData = async () => {
+    const validate = async () => {
       const isValid = await trigger([
-        "date_of_registration",
-        "country_of_registration",
-        "city_of_registration",
-        "registration_number",
+        "date_of_birth_or_registration",
+        "country_of_birth_or_registration",
+        "city_of_birth_or_registration",
+        "identification_number",
       ]);
 
-      setIsDataValid(isValid);
+      setCanContinue(isValid);
     };
 
-    void validateData();
-  }, [watchRequiredValues, trigger]);
+    void validate();
+  }, [watchValues, trigger]);
 
-  const skipInformation = () => {
-    [
-      "date_of_registration",
-      "country_of_registration",
-      "city_of_registration",
-      "registration_number",
-    ].forEach((field) => {
-      setValue(field, "");
-    });
+  const skip = () => {
+    reset((prev) => ({
+      ...prev,
+      date_of_birth_or_registration: null,
+      country_of_birth_or_registration: null,
+      city_of_birth_or_registration: null,
+      identification_number: null,
+      avatar: {
+        has_selected: false,
+        preview_url: null,
+        file_upload_id: null,
+      },
+      proof_document: {
+        has_selected: false,
+        name: null,
+        size: null,
+        file_upload_id: null,
+      },
+    }));
 
-    setValue("avatar_file_upload_id", null);
-    setValue("proof_document_file_upload_id", null);
-
-    moveToNextStep();
+    nextStep();
   };
 
   return (
@@ -310,94 +414,58 @@ function OptionalInformation({
         </Description>
       </div>
 
-      <div className="mx-auto">{switchContact}</div>
+      <ProfilePictureUpload />
 
-      <div className="flex flex-col gap-3">
-        <div className="mb-5 mx-auto">
-          <UploadAvatar
-            name={avatarFallback}
-            onSavePreview={handleSavePreview}
-            label={f({
-              id: "Add photo",
-              defaultMessage: "Add photo",
-              description: "Label for avatar upload",
-            })}
-          />
-        </div>
-
+      <div className="flex flex-col gap-3 mb-auto">
         <DatePicker
-          label={
-            contactType === "person"
-              ? f(messages["contacts.person.dateOfBirth"])
-              : f(messages["contacts.company.dateOfRegistration"])
-          }
-          value={{
-            from: currentDate,
-          }}
           mode="single"
+          label={f(getMessage(contactType, "date"))}
+          customComponent={
+            <div className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg">
+              <CalendarIcon className="text-text-300 h-5 w-5 stroke-1" />
+              {watch("date_of_birth_or_registration") ||
+                f(getMessage(contactType, "date"))}
+            </div>
+          }
           onChange={({ from }) => {
-            // @ts-expect-error - TS doesn't know about the date object
-            setCurrentDate(from);
-            // @ts-expect-error - TS doesn't know about the date object
-            setValue("date_of_registration", format(from, "dd-MMM-yyyy"));
+            console.log(from);
+            console.log(watch("date_of_birth_or_registration"));
+            setValue(
+              "date_of_birth_or_registration",
+              // @ts-expect-error - TS doesn't know about the date object
+              format(from, "yyyy-MM-dd")
+            );
           }}
         />
         <CountrySelector
-          label={
-            contactType === "person"
-              ? f(messages["contacts.person.countryOfBirth"])
-              : f(messages["contacts.company.countryOfRegistration"])
-          }
-          callback={(e) => {
-            setValue("country_of_registration", e);
+          label={f(getMessage(contactType, "country"))}
+          callback={(country) => {
+            setValue("country_of_birth_or_registration", country);
           }}
+          value={watch("country_of_birth_or_registration") || undefined}
         />
         <Input
-          {...register("city_of_registration")}
+          {...register("city_of_birth_or_registration")}
           icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={
-            contactType === "person"
-              ? f(messages["contacts.person.cityOfBirth"])
-              : f(messages["contacts.company.cityOfRegistration"])
-          }
+          label={f(getMessage(contactType, "city"))}
         />
         <Input
-          {...register("registration_number")}
+          {...register("identification_number")}
           icon={<ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={
-            contactType === "person"
-              ? f(messages["contacts.person.identityNumber"])
-              : f(messages["contacts.company.registrationNumber"])
-          }
+          label={f(getMessage(contactType, "identificationNumber"))}
         />
-        <Upload
-          label={
-            contactType === "person"
-              ? f(messages["contacts.person.identityDocument"])
-              : f(messages["contacts.company.registrationDocument"])
-          }
-          description="PDF, PNG or JPG (max. 5mb)"
-          onAddFile={(file) => {
-            setValue("document_name", file.name);
-            setValue("document_size", Math.round(file.size / 1024).toString());
-          }}
-          onRemoveFile={() => {
-            setValue("document_name", "");
-            setValue("document_size", "");
-          }}
-        />
+        <DocumentFileUpload />
       </div>
 
-      <div className="flex flex-col gap-2 mt-auto">
-        <Button size="md" onClick={moveToNextStep} disabled={!isDataValid}>
+      <div className="flex flex-col gap-2">
+        <Button size="md" disabled={!canContinue} onClick={nextStep}>
           <FormattedMessage
-            id="contacts.create.optionalInformation.continue"
+            id="contacts.create.continue"
             defaultMessage="Continue"
-            description="Continue button for optional information"
+            description="Button to go to next step in contact creation"
           />
         </Button>
-
-        <Button variant="outline" size="md" onClick={skipInformation}>
+        <Button variant="outline" size="md" onClick={skip}>
           <FormattedMessage
             id="contacts.create.optionalInformation.skip"
             defaultMessage="Skip"
@@ -409,116 +477,279 @@ function OptionalInformation({
   );
 }
 
-export default function Create() {
-  const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [contactType, setContactType] = useState<"person" | "company" | "mint">(
-    "person"
-  );
-  const [profilePicturePreview, setProfilePicturePreview] = useState("");
-  const [isPreview, setIsPreview] = useState(false);
+const formSchema = requiredInformationFormSchema
+  .merge(postalAddressFormSchema)
+  .merge(optionalInformationFormSchema);
 
-  const methods = useForm({
+type FormSchema = z.infer<typeof formSchema>;
+
+function Property({
+  label,
+  value,
+}: {
+  label: React.ReactNode;
+  value: React.ReactNode | string | null;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <Label>{label}</Label>
+      {value !== null ? (
+        typeof value === "string" && value !== "" ? (
+          <Value>{value}</Value>
+        ) : (
+          value
+        )
+      ) : (
+        "-"
+      )}
+    </div>
+  );
+}
+
+function Preview() {
+  const { formatMessage: f } = useIntl();
+  const { getValues } = useFormContext<FormSchema>();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const {
+    type,
+    node_id,
+    name,
+    email,
+    country,
+    city,
+    zip,
+    address,
+    date_of_birth_or_registration,
+    country_of_birth_or_registration,
+    city_of_birth_or_registration,
+    identification_number,
+    avatar,
+    proof_document,
+  } = getValues();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      return createContact({
+        type,
+        node_id,
+        name,
+        email,
+        country,
+        city,
+        zip,
+        address,
+        date_of_birth_or_registration: date_of_birth_or_registration || null,
+        country_of_birth_or_registration:
+          country_of_birth_or_registration || null,
+        city_of_birth_or_registration: city_of_birth_or_registration || null,
+        identification_number: identification_number || null,
+        avatar_file_upload_id: avatar.file_upload_id,
+        proof_document_file_upload_id: proof_document.file_upload_id,
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["contacts"],
+      });
+
+      toast({
+        title: f({
+          id: "contacts.create.success",
+          defaultMessage: "Success!",
+          description: "Contact created successfully toast message",
+        }),
+        description: f({
+          id: "contacts.create.success.description",
+          defaultMessage: "Contact created successfully!",
+          description: "Contact created successfully toast message",
+        }),
+        position: "bottom-center",
+      });
+
+      navigate(routes.CONTACTS);
+    },
+    onError: () => {
+      toast({
+        title: f({
+          id: "contacts.create.error",
+          defaultMessage: "Error!",
+          description: "Error while creating contact toast message",
+        }),
+        description: f({
+          id: "contacts.create.error.description",
+          defaultMessage:
+            "An error occurred while creating the contact. Please, try again.",
+          description: "Error while creating contact toast message",
+        }),
+        position: "bottom-center",
+      });
+    },
+  });
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-4">
+        <Picture
+          type={type}
+          name={name}
+          image={avatar.preview_url || ""}
+          size="lg"
+        />
+
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-text-300 text-xl font-medium leading-normal">
+              {name}
+            </span>
+
+            <div className="flex items-center justify-center gap-1">
+              <span className="text-text-200 text-xs font-normal leading-normal">
+                {truncateString(node_id, 14)}
+              </span>
+              <button
+                className="p-0"
+                onClick={() => {
+                  void copyToClipboard(node_id);
+                }}
+              >
+                <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
+        <Property
+          label={f(getMessage(type, "email"))}
+          value={getValues("email")}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["contacts.address"])}
+          value={getValues("address")}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(getMessage(type, "date"))}
+          value={getValues("date_of_birth_or_registration")}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(getMessage(type, "country"))}
+          value={getValues("country_of_birth_or_registration")}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(getMessage(type, "city"))}
+          value={getValues("city_of_birth_or_registration")}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(getMessage(type, "identificationNumber"))}
+          value={getValues("identification_number")}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(getMessage(type, "document"))}
+          value={getValues("proof_document.file_upload_id")}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Button
+          size="md"
+          onClick={() => {
+            mutate();
+          }}
+          disabled={isPending}
+        >
+          <FormattedMessage
+            id="contacts.create.preview.save"
+            defaultMessage="Save"
+            description="Save contact button"
+          />
+        </Button>
+
+        <Button
+          size="md"
+          variant="outline"
+          onClick={() => {
+            navigate(routes.CONTACTS);
+          }}
+          disabled={isPending}
+        >
+          <FormattedMessage
+            id="contacts.create.preview.cancel"
+            defaultMessage="Cancel"
+            description="Cancel contact creation button"
+          />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export default function Create() {
+  const [step, setStep] = useState(0);
+
+  const methods = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: "person",
+      type: 0,
       node_id: "",
       name: "",
-      email: "",
       country: "",
       city: "",
       zip: "",
       address: "",
-      // todo: fix property names
-      date_of_registration: "",
-      country_of_registration: "",
-      city_of_registration: "",
-      registration_number: "",
-
-      document_name: "",
-      document_size: "",
+      date_of_birth_or_registration: null,
+      country_of_birth_or_registration: null,
+      city_of_birth_or_registration: null,
+      identification_number: null,
+      avatar: {
+        has_selected: false,
+        preview_url: null,
+        file_upload_id: null,
+      },
+      proof_document: {
+        has_selected: false,
+        name: null,
+        size: null,
+        file_upload_id: null,
+      },
     },
   });
 
-  const moveToPreviousStep = () => {
-    if (currentStep === 0) {
-      return;
-    }
+  const previousStep = () => {
+    setStep((prev) => {
+      if (prev === 0) return 0;
 
-    setCurrentStep((prev) => prev - 1);
-  };
-  const moveToNextStep = () => {
-    setCurrentStep((prev) => prev + 1);
+      return prev - 1;
+    });
   };
 
-  const changeContactType = (type: "person" | "company" | "mint") => {
-    setContactType(type);
+  const nextStep = () => {
+    setStep((prev) => prev + 1);
   };
-
-  const contactTypeSwitch = (
-    <SwitchContactType contactType={contactType} onChange={changeContactType} />
-  );
-
-  const steps = [
-    <RequiredInformation
-      contactType={contactType}
-      switchContact={contactTypeSwitch}
-      moveToNextStep={moveToNextStep}
-    />,
-    <PostalAddress
-      switchContact={contactTypeSwitch}
-      moveToNextStep={moveToNextStep}
-    />,
-    <OptionalInformation
-      contactType={contactType}
-      switchContact={contactTypeSwitch}
-      setProfilePicturePreview={setProfilePicturePreview}
-      moveToNextStep={() => {
-        setIsPreview(true);
-      }}
-    />,
-  ];
 
   return (
     <Page className="gap-5">
-      <Topbar
-        lead={
-          <NavigateBack
-            callBack={() => {
-              if (currentStep !== 0) {
-                moveToPreviousStep();
-                return;
-              }
-              navigate(-1);
-            }}
-          />
-        }
-        middle={
-          isPreview ? (
-            <PageTitle>
-              <FormattedMessage
-                id="contacts.create.preview.title"
-                defaultMessage="Preview"
-                description="Title for contact creation preview"
-              />
-            </PageTitle>
-          ) : (
-            <StepIndicator
-              totalSteps={steps.length}
-              currentStep={currentStep}
-            />
-          )
-        }
-      />
+      <Topbar lead={<NavigateBack callBack={previousStep} />} />
       <FormProvider {...methods}>
-        {isPreview ? (
-          <Preview
-            profilePicturePreview={profilePicturePreview}
-            contactType={contactType}
-          />
-        ) : (
-          steps[currentStep]
-        )}
+        {step === 0 && <RequiredInformation nextStep={nextStep} />}
+        {step === 1 && <PostalAddress nextStep={nextStep} />}
+        {step === 2 && <OptionalInformation nextStep={nextStep} />}
+        {step === 3 && <Preview />}
       </FormProvider>
     </Page>
   );

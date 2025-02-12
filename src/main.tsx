@@ -81,7 +81,6 @@ import CashFlow from "./pages/home/CashFlow";
 
 const queryClient = new QueryClient();
 
-
 const router = createBrowserRouter(
   [
     {

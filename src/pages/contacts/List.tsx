@@ -9,19 +9,31 @@ import PageTitle from "@/components/typography/PageTitle";
 import Picture from "@/components/Picture";
 import { Skeleton } from "@/components/ui/skeleton";
 import Search from "@/components/ui/search";
-import type { Contact } from "@/types/contact";
 import { getContacts } from "@/services/contact_v2";
 import routes from "@/constants/routes";
+import { API_URL } from "@/constants/api";
+import { GET_CONTACT_FILE } from "@/constants/endpoints";
+import type { Contact } from "@/types/contact";
 import TypeFilter from "./components/TypeFilter";
 import EmptyList from "./components/EmptyList";
 
-type ContactProps = Pick<Contact, "type" | "node_id" | "name" | "address">;
+type ContactProps = Pick<
+  Contact,
+  "type" | "node_id" | "name" | "address" | "avatar_file"
+>;
 
-function Contact({ type, node_id, name, address }: ContactProps) {
+function Contact({ type, node_id, name, address, avatar_file }: ContactProps) {
+  const avatarImageUrl = avatar_file?.name
+    ? `${API_URL}/${GET_CONTACT_FILE.replace(
+        ":node_id/:name",
+        `${node_id}/${avatar_file.name}`
+      )}`
+    : "";
+
   return (
     <Link to={routes.VIEW_CONTACT.replace(":nodeId", node_id)}>
       <div className="flex items-center gap-3 py-4 px-3 w-full border-[1px] border-divider-75 rounded-xl cursor-pointer select-none">
-        <Picture type={type} name={name} image="" />
+        <Picture type={type} name={name} image={avatarImageUrl} />
 
         <div className="flex items-center gap-3 mr-auto">
           <div className="flex flex-col">

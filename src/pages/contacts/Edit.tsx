@@ -32,7 +32,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { editContact, getContactDetails } from "@/services/contact_v2";
-import { messages } from "./components/messages";
+import { getMessage, messages } from "./components/messages";
+import { API_URL } from "@/constants/api";
+import { GET_CONTACT_FILE } from "@/constants/endpoints";
 
 function Loader() {
   return (
@@ -149,13 +151,21 @@ function Form({ nodeId }: { nodeId: string }) {
     },
   });
 
+  const contactType = data.type;
+  const avatarImageUrl = data.avatar_file?.name
+    ? `${API_URL}/${GET_CONTACT_FILE.replace(
+        ":node_id/:name",
+        `${data.node_id}/${data.avatar_file.name}`
+      )}`
+    : "";
+
   return (
     <FormProvider {...methods}>
       <Summary
         identityType={data.type}
         name={data.name}
         nodeId={data.node_id}
-        picture=""
+        picture={avatarImageUrl}
       />
 
       <div className="flex flex-col gap-3">
@@ -169,21 +179,13 @@ function Form({ nodeId }: { nodeId: string }) {
         <Input
           {...methods.register("email")}
           icon={<MailIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={
-            data.type === 0
-              ? f(messages["contacts.person.email"])
-              : f(messages["contacts.company.email"])
-          }
+          label={f(getMessage(contactType, "email"))}
           required
         />
         <Input
           {...methods.register("name")}
           icon={<UserPenIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={
-            data.type === 0
-              ? f(messages["contacts.person.name"])
-              : f(messages["contacts.company.name"])
-          }
+          label={f(getMessage(contactType, "name"))}
           required
         />
 
@@ -212,21 +214,13 @@ function Form({ nodeId }: { nodeId: string }) {
           required
         />
         <DatePicker
-          label={
-            data.type === 0
-              ? f(messages["contacts.person.dateOfBirth"])
-              : f(messages["contacts.company.dateOfRegistration"])
-          }
+          label={f(getMessage(contactType, "date"))}
           mode="single"
           onChange={() => null}
         />
 
         <CountrySelector
-          label={
-            data.type === 0
-              ? f(messages["contacts.person.countryOfBirth"])
-              : f(messages["contacts.company.countryOfRegistration"])
-          }
+          label={f(getMessage(contactType, "country"))}
           callback={(country) => {
             methods.setValue("country_of_birth_or_registration", country);
           }}
@@ -235,28 +229,20 @@ function Form({ nodeId }: { nodeId: string }) {
         <Input
           {...methods.register("city_of_birth_or_registration")}
           icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={
-            data.type === 0
-              ? f(messages["contacts.person.cityOfBirth"])
-              : f(messages["contacts.company.cityOfRegistration"])
-          }
+          label={f(getMessage(contactType, "city"))}
         />
         <Input
           {...methods.register("identification_number")}
           icon={<ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          label={
-            data.type === 0
-              ? f(messages["contacts.person.identityNumber"])
-              : f(messages["contacts.company.registrationNumber"])
-          }
+          label={f(getMessage(contactType, "identificationNumber"))}
         />
         <Upload
-          label={
-            data.type === 0
-              ? f(messages["contacts.person.identityDocument"])
-              : f(messages["contacts.company.registrationDocument"])
-          }
-          description="PDF, PNG or JPG (max. 5mb)"
+          label={f(getMessage(contactType, "document"))}
+          description={f({
+            id: "contacts.create.upload.acceptedFormats",
+            defaultMessage: "PDF, PNG or JPG (max. 5mb)",
+            description: "Accepted file formats",
+          })}
         />
       </div>
 
