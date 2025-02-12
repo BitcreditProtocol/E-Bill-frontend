@@ -144,7 +144,7 @@ const formSchema = z.object({
   date_of_birth_or_registration: z.string().optional(),
   country_of_birth_or_registration: z.string().optional(),
   city_of_birth_or_registration: z.string().optional(),
-  identification_number: z.string().optional(),
+  identification_number: z.string().min(1),
 
   avatar: z.object({
     preview_url: z.string().optional().nullable(),
@@ -201,7 +201,6 @@ function Form({ nodeId }: { nodeId: string }) {
     "country",
     "city",
     "address",
-    "zip",
   ]);
 
   useEffect(() => {
@@ -221,26 +220,14 @@ function Form({ nodeId }: { nodeId: string }) {
     void validate();
   }, [watchRequiredFields, methods]);
 
-  const values = methods.getValues();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => {
       return editContact({
-        node_id: values.node_id,
-        name: values.name,
-        email: values.email,
-        country: values.country,
-        city: values.city,
-        zip: values.zip,
-        address: values.address,
-        date_of_birth_or_registration: values.date_of_birth_or_registration,
-        country_of_birth_or_registration:
-          values.country_of_birth_or_registration,
-        city_of_birth_or_registration: values.city_of_birth_or_registration,
-        identification_number: values.identification_number,
-        avatar_file_upload_id: values.avatar.file_upload_id,
+        ...methods.getValues(),
+        avatar_file_upload_id: methods.getValues("avatar.file_upload_id"),
       });
     },
     onSuccess: async () => {
