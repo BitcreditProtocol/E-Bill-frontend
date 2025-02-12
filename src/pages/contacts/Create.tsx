@@ -33,7 +33,7 @@ import CountrySelector from "@/components/CountrySelector";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/DatePicker/datePicker";
-import Upload from "@/components/Upload";
+import Upload, { UploadedFilePreview } from "@/components/Upload";
 import { useToast } from "@/hooks/use-toast";
 import { createContact, uploadFile } from "@/services/contact_v2";
 import { copyToClipboard } from "@/utils";
@@ -659,7 +659,16 @@ function Preview() {
 
         <Property
           label={f(getMessage(type, "document"))}
-          value={getValues("proof_document.file_upload_id")}
+          value={
+            !proof_document.has_selected ? (
+              "-"
+            ) : (
+              <UploadedFilePreview
+                name={proof_document.name ?? "-"}
+                size={proof_document.size ?? 0}
+              />
+            )
+          }
         />
       </div>
 
