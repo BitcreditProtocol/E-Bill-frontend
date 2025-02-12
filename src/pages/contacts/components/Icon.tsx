@@ -5,10 +5,11 @@ import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export type IconProps = Pick<Contact, 'type' | 'name'> & {
+  src?: string
   className?: string;
 };
 
-export default function Icon({ name, type, className }: IconProps) {
+export default function Icon({ name, type, src, className }: IconProps) {
   const lang = useLanguage();
 
   return (
@@ -16,7 +17,7 @@ export default function Icon({ name, type, className }: IconProps) {
       "rounded-full": type === ContactTypes.Person,
       "rounded-md": type !== ContactTypes.Person,
     }, className)}>
-      <AvatarImage src="https://randomuser.me/api/portraits" alt="name" />
+      <AvatarImage src={src} alt="name" />
       <AvatarFallback className="bg-brand-50 text-brand-200 text-[20px] font-medium">
         {name.charAt(0).toLocaleUpperCase(lang.locale) || '?'}
       </AvatarFallback>
