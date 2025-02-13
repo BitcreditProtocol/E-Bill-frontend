@@ -195,9 +195,9 @@ function SearchResults({ data } : { data: SearchResponse }) {
 
 function Loader() {
   return (
-    <div className="flex flex-col gap-3 w-full">
+    <div className="flex flex-col gap-2 w-full">
       {Array.from({ length: 3 }, (_, index) => (
-        <Skeleton key={index} className="w-full h-14 bg-elevation-200 rounded-sm" />
+        <Skeleton key={index} className="w-full h-12 bg-elevation-200 rounded-sm" />
       ))}
     </div>
   );

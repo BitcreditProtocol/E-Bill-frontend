@@ -163,7 +163,7 @@ export default function Home() {
   });
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilters, setTypeFilters] = useState<SearchItemType[]>(SEARCH_ITEMS_ALL);
+  const [typeFilters, setTypeFilters] = useState<SearchItemType[]>([]);
   const [searchModeEnabled, setSearchModeEnabled] = useState(searchTerm.length > 0);
 
   const { isFetching: searchIsLoading, data: searchData, refetch: doSearch } = useQuery({

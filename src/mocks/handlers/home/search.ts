@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { delay, http, HttpResponse } from "msw";
 import { SEARCH } from "@/constants/endpoints";
 
 import * as bills from "@/mocks/handlers/bills/list";
@@ -76,6 +76,7 @@ export const search = http.post<
   const payload = await request.json();
 
   const filteredData = filterSearchResponse(data, payload);
+  await delay(1000);
 
   return HttpResponse.json(filteredData);
 });
