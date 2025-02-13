@@ -376,7 +376,7 @@ function Payer({
 
       {!paid && requested_to_pay && (
         <Link to={routes.PAY.replace(":id", id)}>
-          <Button size="sm">
+          <Button className="w-full" size="sm">
             <FormattedMessage
               id="bill.actions.pay"
               defaultMessage="Pay"
