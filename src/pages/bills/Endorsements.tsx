@@ -11,6 +11,7 @@ import Picture from "@/components/Picture";
 import { getEndorsements } from "@/services/bills";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
+import { BillFull } from "@/types/bill";
 
 function Loader() {
   return (
@@ -84,7 +85,7 @@ function Endorsement({ payee, signer, timestamp }: EndorsementProps) {
   );
 }
 
-function List({ id }: { id: string }) {
+function List({ id }: { id: BillFull["id"] }) {
   const { data } = useSuspenseQuery({
     queryKey: ["bills", id, "endorsements"],
     queryFn: () => getEndorsements(id),
@@ -98,7 +99,7 @@ function List({ id }: { id: string }) {
             id="bill.endorsements.title"
             defaultMessage="Endorsements ({count})"
             description="Endorsements title"
-            values={{ count: data.past_endorsees.length }}
+            values={{ count: data.endorsements.length }}
           />
         </h1>
 
@@ -113,7 +114,7 @@ function List({ id }: { id: string }) {
         </button>
       </div>
       <div className="flex flex-col gap-3">
-        {data.past_endorsees.map((endorsement, index) => (
+        {data.endorsements.map((endorsement, index) => (
           <Endorsement
             key={index}
             payee={endorsement.pay_to_the_order_of.name}

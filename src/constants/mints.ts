@@ -6,10 +6,9 @@ const WILDCAT_ONE = {
   restart_timestamp: 1731920651384,
 };
 
-export const MINT_LIST = [
-  { ...WILDCAT_ONE, enabled: true },
-  // { name: "Fishermans Mint", node_id: "1", enabled: false },
-  // { name: "Whalers Mint", node_id: "2", enabled: false },
+const OTHER_MINTS: {name: string, node_id: string, enabled: boolean}[] = [
+  //{ name: "Fishermans Mint", node_id: "1", enabled: false },
+  //{ name: "Whalers Mint", node_id: "2", enabled: false },
 ];
 
 export type MintConfig = {
@@ -19,6 +18,15 @@ export type MintConfig = {
 
 const DEFAULT_MINT_CONFIG: MintConfig = {
   wildcatOne: WILDCAT_ONE,
+};
+
+
+export const readMintList = () => {
+  const config = readMintConfig();
+  return [
+    { ...config.wildcatOne, enabled: true },
+    ...OTHER_MINTS
+  ]
 };
 
 export const readMintConfig = () => {

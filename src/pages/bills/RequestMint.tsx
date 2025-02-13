@@ -12,14 +12,14 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getBillDetails, requestToMint } from "@/services/bills";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
 import { getQuote } from "@/services/quotes";
 import { cn } from "@/lib/utils";
 import { CheckedState } from "@radix-ui/react-checkbox";
-import { MINT_LIST } from "@/constants/mints";
+import { readMintList } from "@/constants/mints";
 
 type MintProps = {
   name: string;
@@ -76,6 +76,7 @@ export default function RequestMint() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const mintList = useMemo(() => readMintList(), []);
 
   const { data: bill } = useSuspenseQuery({
     queryKey: ["bills", id],
@@ -130,7 +131,7 @@ export default function RequestMint() {
     },
   });
 
-  const [selectedMints, setSelectedMints] = useState<typeof MINT_LIST>([]);
+  const [selectedMints, setSelectedMints] = useState<typeof mintList>([]);
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -166,7 +167,7 @@ export default function RequestMint() {
             </SectionTitle>
 
             <div className="flex flex-col gap-3 p-4 border border-divider-75 rounded-xl">
-              {MINT_LIST.map((it, index) => (
+              {mintList.map((it, index) => (
                 <div key={index} className="flex flex-col gap-3">
                   <Mint name={it.name}
                     disabled={!it.enabled}
@@ -174,7 +175,7 @@ export default function RequestMint() {
                     onChange={(checked) => {
                       setSelectedMints((current) => checked ? [...current, it] : current.filter((v) => v !== it));
                     }} />
-                  {index < MINT_LIST.length - 1 && (
+                  {index < mintList.length - 1 && (
                     <Separator className="bg-divider-75" />
                   )}
                 </div>

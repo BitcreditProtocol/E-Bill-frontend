@@ -139,10 +139,14 @@ export async function getPrivateKey(
 }
 
 type GetBillEndorsementsResponse = {
-  past_endorsees: {
+  endorsements: {
     pay_to_the_order_of: {
       name: string;
       node_id: string;
+      country: string;
+      city: string;
+      zip: string;
+      address: string;
     };
     signed: {
       name: string;
@@ -153,13 +157,19 @@ type GetBillEndorsementsResponse = {
       };
     };
     signing_timestamp: number;
+    signing_address: {
+      country: string;
+      city: string;
+      zip: string;
+      address: string;
+    };
   }[];
 };
 
 export async function getEndorsements(
   id: BillFull["id"]
 ): Promise<GetBillEndorsementsResponse> {
-  return apiFetch(`${GET_BILL_ENDORSEMENTS}/${id}`, {
+  return apiFetch(GET_BILL_ENDORSEMENTS.replace(":id", id), {
     headers: {
       "Content-Type": "application/json",
     },

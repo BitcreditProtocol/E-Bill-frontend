@@ -11,10 +11,10 @@ import { Link, useParams } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { acceptMint, getBillDetails } from "@/services/bills";
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { getQuote } from "@/services/quotes";
 import routes from "@/constants/routes";
-import { MINT_LIST } from "@/constants/mints";
+import { readMintList } from "@/constants/mints";
 
 function Loader() {
   return (
@@ -43,6 +43,7 @@ function Information({ id }: { id: string }) {
 export default function SelectQuote() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const mintList = useMemo(() => readMintList(), []);
 
   const { data: bill } = useSuspenseQuery({
     queryKey: ["bills", id],
@@ -109,7 +110,7 @@ export default function SelectQuote() {
           </SectionTitle>
 
           <div className="flex flex-col gap-3">
-            {MINT_LIST.filter((it) => it.enabled)
+            {mintList.filter((it) => it.enabled)
               .map((it, index) => {
                 return (<div key={index} onClick={() => {
                   if (!quote && !isAcceptPending) {

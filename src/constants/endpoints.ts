@@ -5,7 +5,6 @@ const GET_BILLS = "/bills";
 const GET_BILLS_LIGHT = "/bill/list/light";
 const GET_BILLS_ALL = "/bill/list_all";
 const GET_BILL_DETAILS = "/bill/detail";
-const GET_BILL_ENDORSEMENTS = "/bill/past_endorsees";
 const SEARCH_BILLS = "/bill/search";
 const ENDORSE_BILL = "/bill/endorse";
 const MINT_BILL = "/bill/mint";
@@ -23,6 +22,7 @@ const REQUEST_BILL_ACCEPTANCE_RECOURSE =
   "/bill/request_recourse_for_acceptance";
 const REJECT_BILL_PAYMENT_RECOURSE = "/bill/reject_recourse_for_payment";
 const GET_BILL_PRIVATE_KEY = "/bill/bitcoin_key";
+const GET_BILL_ENDORSEMENTS = "/bill/endorsements/:id";
 const GET_BILL_PAST_ENDORSEES = "/bill/past_endorsees/:id";
 const CHECK_BILLS_IN_DHT = "/bill/dht";
 const CHECK_BILL_IN_DHT = "/bill/dht/:id";
