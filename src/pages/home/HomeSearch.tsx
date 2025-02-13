@@ -219,7 +219,10 @@ interface HomeSearchProps {
 export default function HomeSearch({ searchTerm, isLoading, data }: HomeSearchProps) {
   return (
     <div className="flex flex-col gap-6 mt-2 w-full">
-      <RecentContacts values={__dev__RECENT_CONTACTS} />
+      <div className="hidden">
+        {/* NOTE: Hidden for now, till actual data can be used. */}
+        <RecentContacts values={__dev__RECENT_CONTACTS} />
+      </div>
       { (!searchTerm || !data) && !isLoading && (<SearchSuggestions />) }
       {isLoading && <Loader />}
       { !isLoading && searchTerm && data && <SearchResults data={data} /> }
