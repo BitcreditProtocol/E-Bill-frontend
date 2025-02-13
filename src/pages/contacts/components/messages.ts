@@ -21,7 +21,7 @@ export const messages = defineMessages({
   },
   "contacts.address": {
     id: "contacts.address",
-    defaultMessage: "Street address",
+    defaultMessage: "Postal address",
   },
   // person
   "contacts.person.name": {

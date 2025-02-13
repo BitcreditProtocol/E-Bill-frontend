@@ -5,6 +5,7 @@ import {
   useQueryClient,
   useMutation,
 } from "@tanstack/react-query";
+import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CopyIcon, PencilIcon, TrashIcon, TriangleAlert } from "lucide-react";
 import Page from "@/components/wrappers/Page";
@@ -203,6 +204,12 @@ function Information({ contactId }: { contactId: string }) {
       .filter(Boolean)
       .join(", ") || "-";
 
+  // todo: this can be a util. it's everywhere
+  const formattedDate = format(
+    parseISO(date_of_birth_or_registration),
+    "dd-MMM-yyyy"
+  );
+
   const parsedCountryOfOriginName =
     COUNTRIES[country_of_birth_or_registration as keyof typeof COUNTRIES];
 
@@ -244,10 +251,7 @@ function Information({ contactId }: { contactId: string }) {
         />
         <Separator className="bg-divider-75" />
 
-        <Property
-          label={f(getMessage(type, "date"))}
-          value={date_of_birth_or_registration}
-        />
+        <Property label={f(getMessage(type, "date"))} value={formattedDate} />
         <Separator className="bg-divider-75" />
 
         <Property
