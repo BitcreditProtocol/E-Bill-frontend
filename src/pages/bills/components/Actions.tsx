@@ -123,7 +123,6 @@ function Holder({
   requested_to_accept,
   requested_to_pay,
   paid,
-  endorsed,
 }: Omit<BillActionsProps, "role" | "seller" | "buyer">) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -198,10 +197,6 @@ function Holder({
       });
     },
   });
-
-  if (endorsed) {
-    return <></>;
-  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -377,7 +372,7 @@ function Payer({
 }: Omit<BillActionsProps, "role" | "seller" | "buyer">) {
   return (
     <div className="flex flex-col gap-3">
-      {(!accepted || requested_to_accept) && <Acceptance id={id} />}
+      {(!accepted && requested_to_accept) && <Acceptance id={id} />}
 
       {!paid && requested_to_pay && (
         <Link to={routes.PAY.replace(":id", id)}>
