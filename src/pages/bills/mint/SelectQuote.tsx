@@ -50,15 +50,20 @@ export default function SelectQuote() {
   });
 
   const { data: quote } = useSuspenseQuery({
-    queryKey: ["quotes", id as string],
+    queryKey: ["quotes", id as string, "select"],
     queryFn: () => getQuote(id as string).then((quote) => {
       return quote.quote_id === "" ? null : quote;
     }).catch(() => { return null }),
     refetchInterval: 5_000,
+    staleTime: 5_000,
+    refetchOnMount: 'always',
+    refetchOnReconnect: 'always',
+    refetchOnWindowFocus: 'always',
+
   });
 
   // TODO: remove - fake accepting mint request here
-  const { mutate: __dev_doAcceptMint, isPending } = useMutation({
+  const { mutate: __dev_doAcceptMint, isPending: isAcceptPending } = useMutation({
     mutationFn: async () => {
       await acceptMint({
         bill_id: bill.id,
@@ -88,10 +93,9 @@ export default function SelectQuote() {
         trail={<></>}
       />
 
+    <Suspense fallback={<Loader />}>
       <div className="flex flex-col gap-6">
-        <Suspense fallback={<Loader />}>
-          <Information id={id as string} />
-        </Suspense>
+        <Information id={id as string} />
       </div>
 
       <div className="flex-1 flex flex-col gap-6">
@@ -108,7 +112,7 @@ export default function SelectQuote() {
             {MINT_LIST.filter((it) => it.enabled)
               .map((it, index) => {
                 return (<div key={index} onClick={() => {
-                  if (!quote && !isPending) {
+                  if (!quote && !isAcceptPending) {
                     __dev_doAcceptMint()
                   }
                 }}>
@@ -136,6 +140,7 @@ export default function SelectQuote() {
           />
         </Button>
       </div>
+      </Suspense>
     </div>
   );
 }
