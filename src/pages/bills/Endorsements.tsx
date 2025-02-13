@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, FormattedNumber } from "react-intl";
 import { ChevronsUpDownIcon, CalendarIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
@@ -12,6 +12,7 @@ import { getEndorsements } from "@/services/bills";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { BillFull } from "@/types/bill";
+import { formatAddress } from "@/utils/strings";
 
 function Loader() {
   return (
@@ -22,14 +23,16 @@ function Loader() {
   );
 }
 
+type EndorsementDetails = Awaited<ReturnType<typeof getEndorsements>>['endorsements'][0]
+
 type EndorsementProps = {
-  payee: string;
-  signer: string;
-  address: string;
-  timestamp: number;
+  payee: EndorsementDetails['pay_to_the_order_of'];
+  signer: EndorsementDetails['signed'];
+  address: EndorsementDetails['signing_address'];
+  timestamp: EndorsementDetails['signing_timestamp'];
 };
 
-function Endorsement({ payee, signer, timestamp }: EndorsementProps) {
+function Endorsement({ payee, signer, address, timestamp }: EndorsementProps) {
   const formattedDate = format(new Date(timestamp * 1000), "dd MMM yyyy");
 
   return (
@@ -37,7 +40,7 @@ function Endorsement({ payee, signer, timestamp }: EndorsementProps) {
       <div className="flex flex-col gap-3 p-3 bg-elevation-200 border-b border-b-divider-75 rounded-t-xl">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <Picture type={1} name={payee} image="" size="sm" />
+            <Picture type={1} name={payee.name} image="" size="sm" />
 
             <div className="flex flex-col gap-1">
               <span className="text-text-200 text-xs font-normal">
@@ -47,9 +50,9 @@ function Endorsement({ payee, signer, timestamp }: EndorsementProps) {
                   description="Payee label"
                 />
               </span>
-              <span className="text-text-300 text-sm font-medium">{payee}</span>
+              <span className="text-text-300 text-sm font-medium">{payee.name}</span>
               <span className="text-text-200 text-xs font-normal">
-                Address here
+                {formatAddress(payee)}
               </span>
             </div>
           </div>
@@ -57,7 +60,7 @@ function Endorsement({ payee, signer, timestamp }: EndorsementProps) {
           <Separator className="bg-divider-75" />
 
           <div className="flex items-center gap-2">
-            <Picture type={1} name={signer} image="" size="sm" />
+            <Picture type={1} name={signer.name} image="" size="sm" />
 
             <div className="flex flex-col gap-1">
               <span className="text-text-200 text-xs font-normal">
@@ -68,7 +71,7 @@ function Endorsement({ payee, signer, timestamp }: EndorsementProps) {
                 />
               </span>
               <span className="text-text-300 text-sm font-medium">
-                {signer}
+                {signer.name}
               </span>
             </div>
           </div>
@@ -77,6 +80,9 @@ function Endorsement({ payee, signer, timestamp }: EndorsementProps) {
 
       <div className="flex items-center gap-1 py-3 px-5">
         <CalendarIcon className="text-text-300 w-4 h-4 stroke-1" />
+        <span className="text-text-300 text-xs font-normal">
+          {address.city},
+        </span>
         <span className="text-text-300 text-xs font-normal">
           {formattedDate}
         </span>
@@ -94,14 +100,23 @@ function List({ id }: { id: BillFull["id"] }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-text-300 text-base font-medium">
-          <FormattedMessage
-            id="bill.endorsements.title"
-            defaultMessage="Endorsements ({count})"
-            description="Endorsements title"
-            values={{ count: data.endorsements.length }}
-          />
-        </h1>
+        <div className="flex items-center gap-1">
+          <h1 className="text-text-300 text-base font-medium">
+            <FormattedMessage
+              id="bill.endorsements.title"
+              defaultMessage="Endorsements"
+              description="Endorsements title"
+            />
+          </h1>
+          <div className="text-text-200 text-xs font-medium">
+            (<FormattedNumber
+              value={data.endorsements.length}
+              signDisplay="negative"
+              minimumFractionDigits={0}
+              maximumFractionDigits={0}
+            />)
+          </div>
+        </div>
 
         <button className="flex items-center gap-1 p-0 text-text-300 text-xs font-medium">
           <ChevronsUpDownIcon className="text-text-300 w-4 h-4 stroke-1" />
@@ -117,10 +132,10 @@ function List({ id }: { id: BillFull["id"] }) {
         {data.endorsements.map((endorsement, index) => (
           <Endorsement
             key={index}
-            payee={endorsement.pay_to_the_order_of.name}
-            signer={endorsement.signed.name}
+            payee={endorsement.pay_to_the_order_of}
+            signer={endorsement.signed}
+            address={endorsement.signing_address}
             timestamp={endorsement.signing_timestamp}
-            address=""
           />
         ))}
       </div>

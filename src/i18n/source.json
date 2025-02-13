@@ -173,7 +173,7 @@
   "bill.endorsement.payee": "Pay to the order of",
   "bill.endorsement.signer": "Signed",
   "bill.endorsements.sort": "Newest",
-  "bill.endorsements.title": "Endorsements ({count})",
+  "bill.endorsements.title": "Endorsements",
   "bill.mint.cancel": "Cancel mint request",
   "bill.mint.preview.forTheSumOf": "for the sum of",
   "bill.mint.preview.mintedEcash": "Ecash minted",
