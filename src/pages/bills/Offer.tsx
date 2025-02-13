@@ -98,6 +98,7 @@ function Payment({
                         defaultMessage:
                           "Error while copying address to clipboard",
                       }),
+                      variant: "error",
                       position: "bottom-center",
                     });
                   });
@@ -195,7 +196,7 @@ function Status({
             value={Number(sum)}
             type="credit"
           />
-          <span className="text-text-200 text-[10px] font-normal">SAT</span>
+          <span className="text-text-200 text-[10px] font-normal">sat</span>
         </div>
       </div>
 

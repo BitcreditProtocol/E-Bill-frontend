@@ -5,8 +5,16 @@ import NavigateBack from "@/components/NavigateBack";
 import ViewDetails from "@/components/Identity/ViewDetails";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { Label } from "./components/Typography";
-import { useEffect, useState } from "react";
-import { WILDCAT_ONE } from "@/constants/mints";
+import { useCallback, useEffect, useState } from "react";
+import { MintConfig, readMintConfig, resetMintConfig, writeMintConfig } from "@/constants/mints";
+import { Switch } from "@/components/ui/switch";
+import { Form, FormProvider, FormSubmitHandler, useForm } from "react-hook-form";
+import { IdCardIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 const formatUptime = (uptime: number) => {
   let secondsLeft = Math.floor(uptime / 1_000);
@@ -28,17 +36,73 @@ function Property({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
+const formSchema = z.object({
+  mint_node_id: z.string().optional(),
+});
+
+type FormValues = {
+  mint_node_id: string
+};
+
 export default function Mints() {
   const intl = useIntl();
 
-  const [uptime, setUptime] = useState(Date.now() - WILDCAT_ONE.restart_timestamp);
+
+  const [mintConfig, setMintConfig] = useState<MintConfig>(readMintConfig());
+  const [uptime, setUptime] = useState(Date.now() - mintConfig.wildcatOne.restart_timestamp);
 
   useEffect(() => {
     const timerId = setInterval(() => {
-      setUptime(Date.now() - WILDCAT_ONE.restart_timestamp)
+      setUptime(Date.now() - mintConfig.wildcatOne.restart_timestamp)
     }, 1_000);
     return () => { clearInterval(timerId); };
-  }, []);
+  }, [mintConfig.wildcatOne.restart_timestamp]);
+
+  const toggleMintView = useCallback(() => {
+    writeMintConfig({ __dev_mintViewEnabled: !mintConfig.__dev_mintViewEnabled });
+    setMintConfig(readMintConfig());
+  }, [setMintConfig, mintConfig.__dev_mintViewEnabled]);
+
+  const resetToDefault = useCallback(() => {
+    resetMintConfig();
+    setMintConfig(readMintConfig());
+  }, [setMintConfig]);
+
+  const methods = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      mint_node_id: mintConfig.wildcatOne.node_id,
+    },
+  });
+
+  const [mintNodeId] = methods.watch(["mint_node_id"]);
+
+  const onSubmit: FormSubmitHandler<FormValues> = ({ data }) => {
+    if (data.mint_node_id.length !== 66) {
+      toast({
+        title: "Error!",
+        description: "Could not save mint config.",
+        variant: "error",
+        position: "bottom-center",
+      });
+    } else {
+      writeMintConfig({
+        ...mintConfig,
+        wildcatOne: {
+          ...mintConfig.wildcatOne,
+          node_id: data.mint_node_id
+        }
+      });
+      setMintConfig(readMintConfig());
+
+      toast({
+        title: "Success!",
+        description: "Successfully saved mint config.",
+        variant: "success",
+        position: "bottom-center",
+      });
+    }
+  };
 
   return (
     <Page className="gap-4">
@@ -47,8 +111,8 @@ export default function Mints() {
       <div className="flex flex-col gap-4 mt-2">
         <ViewDetails
           type="company"
-          name={WILDCAT_ONE.name}
-          bitcoin_public_key={WILDCAT_ONE.node_id}
+          name={mintConfig.wildcatOne.name}
+          bitcoin_public_key={mintConfig.wildcatOne.node_id}
         />
 
         <div className="flex flex-col gap-4 py-6 px-4 border border-divider-75 rounded-xl">
@@ -173,6 +237,41 @@ export default function Mints() {
             />
           </div>
         </div>
+
+        <div className="flex items-center justify-between px-2 py-2">
+          <Label>
+              <div className="flex flex-col">
+                <span>Mint view (dev)</span>
+                <span className="text-text-200 text-xs font-normal">
+                  Display all local bills in bill overview
+                </span>
+              </div>
+          </Label>
+          <Switch checked={mintConfig.__dev_mintViewEnabled === true} onCheckedChange={() => { toggleMintView(); }}/>
+        </div>
+
+        {mintConfig.__dev_mintViewEnabled && (<div className="flex items-center justify-between px-2 py-2">
+          <div className="flex-1">
+            <FormProvider {...methods}>
+              <Form onSubmit={onSubmit} className="flex flex-col gap-2">
+                <div className="flex gap-1">
+                  <Input
+                    {...methods.register("mint_node_id")}
+                    label={"Mint Node Id"}
+                    icon={<IdCardIcon className="text-text-300 h-5 w-5 stroke-1" />}
+                    minLength={66}
+                    maxLength={66}
+                    required
+                  />
+                  <Button type="submit" disabled={mintNodeId.length !== 66}>Save</Button>
+                </div>
+                <div className="flex gap-1 justify-end">
+                  <Button onClick={() => { resetToDefault(); }} size="xs" variant="ghost" type="button">Reset to default</Button>
+                </div>
+              </Form>
+            </FormProvider>
+          </div>
+        </div>)}
       </div>
     </Page>
   );

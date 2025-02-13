@@ -3,6 +3,7 @@ const UPLOAD_BILL_FILES = "/bill/upload_files";
 const CREATE_BILL = "/bill/issue";
 const GET_BILLS = "/bills";
 const GET_BILLS_LIGHT = "/bill/list/light";
+const GET_BILLS_ALL = "/bill/list_all";
 const GET_BILL_DETAILS = "/bill/detail";
 const GET_BILL_ENDORSEMENTS = "/bill/past_endorsees";
 const SEARCH_BILLS = "/bill/search";
@@ -24,6 +25,7 @@ const REJECT_BILL_PAYMENT_RECOURSE = "/bill/reject_recourse_for_payment";
 const GET_BILL_PRIVATE_KEY = "/bill/bitcoin_key";
 const GET_BILL_PAST_ENDORSEES = "/bill/past_endorsees/:id";
 const CHECK_BILLS_IN_DHT = "/bill/dht";
+const CHECK_BILL_IN_DHT = "/bill/dht/:id";
 const CHECK_BILL_PAYMENT_STATUS = "/bill/check_payment";
 const GET_BILL_ATTACHMENT = "/bill/attachment";
 
@@ -68,6 +70,7 @@ const GET_CONTACT_FILE = "contacts/file/:node_id/:name";
 // other endpoints
 const BALANCES_OVERVIEW = "/overview?currency=";
 const LIST_ACTIVE_NOTIFICATIONS = "/notifications";
+const SEARCH = "/search";
 const RESOLVE_NOTIFICATION = "/notifications/:notification_id/done";
 const GET_TEMP_FILE = "/temp_file/:file_id";
 
@@ -78,6 +81,7 @@ export {
   GET_BILLS,
   SEARCH_BILLS,
   GET_BILLS_LIGHT,
+  GET_BILLS_ALL,
   GET_BILL_DETAILS,
   GET_BILL_ENDORSEMENTS,
   ENDORSE_BILL,
@@ -97,6 +101,7 @@ export {
   GET_BILL_PRIVATE_KEY,
   GET_BILL_PAST_ENDORSEES,
   CHECK_BILLS_IN_DHT,
+  CHECK_BILL_IN_DHT,
   CHECK_BILL_PAYMENT_STATUS,
   GET_BILL_ATTACHMENT,
 
@@ -141,6 +146,7 @@ export {
   // other
   BALANCES_OVERVIEW,
   LIST_ACTIVE_NOTIFICATIONS,
+  SEARCH,
   RESOLVE_NOTIFICATION,
   GET_TEMP_FILE,
 };

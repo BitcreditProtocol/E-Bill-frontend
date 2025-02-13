@@ -4,10 +4,13 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 interface SearchProps {
+  value?: string;
   placeholder: string;
   size?: "xs" | "sm" | "md" | "lg";
   className?: string;
   onChange?: (value: string) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   onSearch: () => void;
 }
 
@@ -29,10 +32,13 @@ const searchVariants = cva(
 );
 
 function Search({
+  value,
   placeholder,
   size,
   className,
   onChange,
+  onFocus,
+  onBlur,
   onSearch,
 }: SearchProps) {
   const searchFieldRef = useRef<HTMLInputElement>(null);
@@ -42,7 +48,7 @@ function Search({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && searchFieldRef.current?.value) {
+    if (event.key === "Enter") {
       onSearch();
     }
   };
@@ -53,13 +59,19 @@ function Search({
       className={cn(searchVariants({ size }), className)}
     >
       <SearchIcon
-        className={`${size === "xs" ? "h-4 w-4" : "h-5 w-5"} text-text-300`}
+        className={cn("text-text-300", {
+          "h-4 w-4": size === "xs",
+          "h-5 w-5": size !== "xs"
+        })}
         strokeWidth={1}
       />
 
       <input
         ref={searchFieldRef}
+        value={value}
         onChange={(e) => onChange?.(e.target.value)}
+        onFocus={onFocus}
+        onBlur={onBlur}
         type="text"
         placeholder={placeholder}
         className="w-full text-text-300 bg-transparent font-medium placeholder-text-300 focus:outline-none"

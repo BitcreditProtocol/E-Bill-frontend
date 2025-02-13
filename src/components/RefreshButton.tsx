@@ -5,17 +5,20 @@ import {
   TooltipProvider,
   TooltipContent,
 } from "./ui/tooltip";
+import { cn } from "@/lib/utils";
 
 type RefreshButtonProps = {
   label?: React.ReactNode;
   content: string;
   onClick: () => void;
+  loading?: boolean
 };
 
 export default function RefreshButton({
   label,
   content,
   onClick,
+  loading,
 }: RefreshButtonProps) {
   return (
     <TooltipProvider>
@@ -26,7 +29,9 @@ export default function RefreshButton({
             onClick={onClick}
           >
             {label}
-            <RefreshCwIcon className="h-4 w-4 stroke-2" />
+            <RefreshCwIcon className={cn("h-4 w-4 stroke-2", {
+              "animate-spin": loading
+            })} />
           </button>
         </TooltipTrigger>
         <TooltipContent>{content}</TooltipContent>

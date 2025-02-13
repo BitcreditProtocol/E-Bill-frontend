@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -33,6 +33,7 @@ import routes from "@/constants/routes";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import type { BillFull } from "@/types/bill";
 import Sign from "@/components/Sign";
+import { readMintConfig } from "@/constants/mints";
 
 function SecondaryActions({ id }: { id: string }) {
   return (
@@ -155,6 +156,7 @@ function Holder({
               description="Request acceptance error toast message"
             />
           ),
+          variant: "error",
           position: "bottom-center",
         });
       },
@@ -191,6 +193,7 @@ function Holder({
             description="Request payment error toast message"
           />
         ),
+        variant: "error",
         position: "bottom-center",
       });
     },
@@ -438,6 +441,7 @@ function Buyer({ id }: BuyerActionsProps) {
           defaultMessage: "Bill rejection failed",
           description: "Bill rejection error toast message",
         }),
+        variant: "error",
         position: "bottom-center",
       });
     },
@@ -529,6 +533,10 @@ export default function Actions({
   buyer,
 }: BillActionsProps) {
   const { activeIdentity } = useIdentity();
+  const mintConfig = useMemo(() => readMintConfig(), []);
+
+  const __dev_mightBeMintRequest = mintConfig.__dev_mintViewEnabled && role === null;
+
   const isOfferedForSale = seller !== null && waiting_for_payment;
   const isSeller = seller?.node_id === activeIdentity.node_id;
   const isBuyer =
@@ -581,7 +589,17 @@ export default function Actions({
           />
         )
       ) : (
-        <></>
+        <>
+          {__dev_mightBeMintRequest && (<>
+            <div className="flex">
+              <Link to={routes.MINT_REQUEST.replace(":id", id)} className="w-full">
+                <Button size="sm" className="w-full">
+                  Generate quote
+                </Button>
+              </Link>
+            </div>
+          </>)}
+        </>
       )}
     </div>
   );

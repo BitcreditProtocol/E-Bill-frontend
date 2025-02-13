@@ -1,8 +1,8 @@
-import { Suspense } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { FormattedMessage, useIntl } from "react-intl";
-import { ChartColumnIcon, LayoutListIcon } from "lucide-react";
+import { ChartColumnIcon, ChevronLeftIcon, LayoutListIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import Search from "@/components/ui/search";
@@ -16,6 +16,11 @@ import { getBillsLight } from "@/services/bills";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import routes from "@/constants/routes";
 import Empty from "../bills/components/Empty";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import HomeSearch from "./HomeSearch";
+import SearchTypeFilter from "./components/SearchTypeFilter";
+import { search, SEARCH_ITEMS_ALL, SearchItemType } from "@/services/search";
 
 function Balances() {
   const { isPending, data } = useQuery({
@@ -157,6 +162,46 @@ export default function Home() {
     queryFn: getBillsLight,
   });
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilters, setTypeFilters] = useState<SearchItemType[]>([]);
+  const [searchModeEnabled, setSearchModeEnabled] = useState(searchTerm.length > 0);
+
+  const { isFetching: searchIsLoading, data: searchData, refetch: doSearch } = useQuery({
+    queryKey: ["search", searchTerm, typeFilters],
+    queryFn: () => search({
+      filter: {
+        search_term: searchTerm,
+        currency: "sat",
+        item_types: typeFilters.length === 0 ? SEARCH_ITEMS_ALL : typeFilters,
+      }
+    }),
+    staleTime: 30 * 1_000,
+    enabled: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
+  const disableSearchMode = useCallback(() => {
+    setSearchTerm("");
+    setSearchModeEnabled(false);
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleEscape = (event: Event) => {
+      if (event instanceof KeyboardEvent && event.key === "Escape") {
+        disableSearchMode();
+      }
+    }
+    document.addEventListener("keydown", handleEscape, false);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape, false);
+    };
+  }, [disableSearchMode]);
+
   return (
     <Page
       className="gap-6 pb-20"
@@ -164,15 +209,25 @@ export default function Home() {
       displayBottomNavigation
     >
       <Topbar
-        lead={
-          <Link to={routes.IDENTITY_LIST}>
-            <Picture
-              type={activeIdentity.type === "company" ? 1 : 0}
-              name={activeIdentity.name}
-              image={activeIdentity.avatar}
-              size="sm"
-            />
-          </Link>
+        lead={<>
+            {!searchModeEnabled ? (<Link to={routes.IDENTITY_LIST}>
+              <Picture
+                type={activeIdentity.type === "company" ? 1 : 0}
+                name={activeIdentity.name}
+                image={activeIdentity.avatar}
+                size="sm"
+              />
+            </Link>) : (<>
+              <Button variant="outline" size="xs"
+                className="p-0 w-full h-full bg-elevation-200 border-divider-50 text-text-300"
+                onClick={() => {
+                  disableSearchMode();
+                }}
+              >
+                <ChevronLeftIcon className="w-5 h-5" strokeWidth={1} />
+              </Button>
+            </>)}
+          </>
         }
         middle={
           <Search
@@ -183,14 +238,21 @@ export default function Home() {
               defaultMessage: "Search...",
               description: "Search placeholder for home page",
             })}
+            value={searchTerm}
+            onChange={setSearchTerm}
+            onFocus={() => { setSearchModeEnabled(true); }}
             onSearch={() => {
-              console.log("search");
+              if (searchTerm) {
+                void doSearch()
+              }
             }}
           />
         }
       />
 
-      <div className="flex-1 flex flex-col gap-8">
+      <div className={cn("flex-1 flex flex-col gap-8", {
+        "hidden": searchModeEnabled,
+      })}>
         <Balances />
 
         <div className="flex-1 flex flex-col gap-3">
@@ -232,6 +294,18 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      <div className={cn("flex-1 flex flex-col gap-2", {
+        "hidden": !searchModeEnabled,
+      })}>
+        <div className="flex flex-col gap-2">
+          <SearchTypeFilter values={typeFilters} onChange={setTypeFilters} />
+          <Separator className="bg-divider-75" />
+
+          <HomeSearch searchTerm={searchTerm} isLoading={searchIsLoading} data={searchData} />
+        </div>
+      </div>
+
     </Page>
   );
 }

@@ -1,4 +1,4 @@
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
@@ -13,7 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { getBillDetails } from "@/services/bills";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { acceptQuote, getQuote } from "@/services/quotes";
 import { TriangleAlertIcon } from "lucide-react";
 
@@ -26,7 +26,8 @@ import {
 } from "@/components/ui/drawer";
 import { toast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
-import { WILDCAT_ONE } from "@/constants/mints";
+import { MintConfig, readMintConfig } from "@/constants/mints";
+import { DialogProps } from "vaul";
 function Loader() {
   return (
     <div className="flex flex-col gap-6">
@@ -35,9 +36,13 @@ function Loader() {
   );
 }
 
-function ConfirmSign({ onConfirm } : { onConfirm: () => void }) {
+type ConfirmSignProps = {
+  onConfirm: () => void
+} & Required<Pick<DialogProps, 'open' | 'onOpenChange'>>
+
+function ConfirmSign({ onConfirm, open, onOpenChange} : ConfirmSignProps) {
   return (
-    <Drawer>
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerTrigger>
         <Button className="w-full" size="md">
           <FormattedMessage
@@ -97,8 +102,13 @@ function ConfirmSign({ onConfirm } : { onConfirm: () => void }) {
 }
 
 export default function Preview() {
+  const intl = useIntl();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+
+  const [mintConfig] = useState<MintConfig>(readMintConfig());
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const { data: bill } = useSuspenseQuery({
     queryKey: ["bills", id],
@@ -113,6 +123,21 @@ export default function Preview() {
   const { mutate: doAcceptQuote } = useMutation({
     mutationFn: () => {
       return acceptQuote(id as string);
+    },
+    onError: () => {
+      toast({
+        variant: "error",
+        title: intl.formatMessage({
+          id: "bill.actions.requestAcceptance.error.title",
+          defaultMessage: "Error!",
+        }),
+        description: intl.formatMessage({
+          id: "bill.actions.requestAcceptance.error.description",
+          defaultMessage: "Error while accepting quote!",
+        }),
+        position: "bottom-center",
+      });
+      setConfirmOpen(false);
     },
     onSuccess: () => {
       toast({
@@ -168,7 +193,7 @@ export default function Preview() {
               />
             </Label>
 
-            <Mint name={WILDCAT_ONE.name} nodeId={WILDCAT_ONE.node_id} />
+            <Mint name={mintConfig.wildcatOne.name} nodeId={mintConfig.wildcatOne.node_id} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -204,7 +229,7 @@ export default function Preview() {
       </div>
 
       <div className="flex flex-col gap-5 mt-auto">
-        <ConfirmSign onConfirm={() => { doAcceptQuote(); }}/>
+        <ConfirmSign onConfirm={() => { doAcceptQuote(); }} open={confirmOpen} onOpenChange={setConfirmOpen}/>
       </div>
     </div>
   );

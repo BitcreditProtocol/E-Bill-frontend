@@ -23,6 +23,8 @@ import {
   GET_BILL_PAST_ENDORSEES,
   CHECK_BILLS_IN_DHT,
   CHECK_BILL_PAYMENT_STATUS,
+  GET_BILLS_ALL,
+  CHECK_BILL_IN_DHT,
 } from "@/constants/endpoints";
 import type { BillFull, Peer } from "@/types/bill";
 
@@ -95,12 +97,24 @@ export async function getBillsLight(): Promise<GetBillsLightResponse> {
   });
 }
 
+type GetBillsAllResponse = {
+  bills: BillFull[];
+};
+
+export async function getBillsAll(): Promise<GetBillsAllResponse> {
+  return apiFetch<GetBillsAllResponse>(GET_BILLS_ALL, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
 export async function getBillsWithDetails() {}
 
 type GetBillDetailsResponse = BillFull;
 
 export async function getBillDetails(
-  id: string
+  id: BillFull["id"]
 ): Promise<GetBillDetailsResponse> {
   return apiFetch<GetBillDetailsResponse>(`${GET_BILL_DETAILS}/${id}`, {
     headers: {
@@ -114,7 +128,7 @@ type GetPrivateKeyResponse = {
 };
 
 export async function getPrivateKey(
-  id: string
+  id: BillFull["id"]
 ): Promise<GetPrivateKeyResponse> {
   return apiFetch<GetPrivateKeyResponse>(`${GET_BILL_PRIVATE_KEY}/${id}`, {
     headers: {
@@ -142,7 +156,7 @@ type GetBillEndorsementsResponse = {
 };
 
 export async function getEndorsements(
-  id: string
+  id: BillFull["id"]
 ): Promise<GetBillEndorsementsResponse> {
   return apiFetch(`${GET_BILL_ENDORSEMENTS}/${id}`, {
     headers: {
@@ -152,7 +166,7 @@ export async function getEndorsements(
 }
 
 type EndorsePayload = {
-  bill_id: string;
+  bill_id: BillFull["id"];
   endorsee: string;
 };
 
@@ -167,7 +181,7 @@ export async function endorse(data: EndorsePayload): Promise<void> {
 }
 
 type MintPayload = {
-  bill_id: string;
+  bill_id: BillFull["id"];
   endorsee: string;
   sum: string;
   currency: string;
@@ -184,7 +198,7 @@ export async function mint(data: MintPayload): Promise<void> {
 }
 
 type OfferToSellPayload = {
-  bill_id: string;
+  bill_id: BillFull["id"];
   buyer: string;
   sum: string;
   currency: string;
@@ -200,7 +214,7 @@ export async function offerToSell(data: OfferToSellPayload): Promise<void> {
   });
 }
 
-export async function rejectToBuy(bill_id: string): Promise<void> {
+export async function rejectToBuy(bill_id: BillFull["id"]): Promise<void> {
   return apiFetch(REJECT_TO_BUY_BILL, {
     method: "PUT",
     headers: {
@@ -211,7 +225,7 @@ export async function rejectToBuy(bill_id: string): Promise<void> {
 }
 
 type RequestToMintPayload = {
-  bill_id: string;
+  bill_id: BillFull["id"];
   mint_node: string;
   sum: string;
   currency: string;
@@ -228,7 +242,7 @@ export async function requestToMint(data: RequestToMintPayload): Promise<void> {
 }
 
 type AcceptMintPayload = {
-  bill_id: string;
+  bill_id: BillFull["id"];
   sum: string;
 };
 
@@ -242,7 +256,7 @@ export async function acceptMint(data: AcceptMintPayload): Promise<void> {
   });
 }
 
-export async function requestToAccept(bill_id: string): Promise<void> {
+export async function requestToAccept(bill_id: BillFull["id"]): Promise<void> {
   return apiFetch(REQUEST_TO_ACCEPT_BILL, {
     method: "PUT",
     headers: {
@@ -252,7 +266,7 @@ export async function requestToAccept(bill_id: string): Promise<void> {
   });
 }
 
-export async function rejectToAccept(bill_id: string): Promise<void> {
+export async function rejectToAccept(bill_id: BillFull["id"]): Promise<void> {
   return apiFetch(REJECT_TO_ACCEPT_BILL, {
     method: "PUT",
     headers: {
@@ -262,7 +276,7 @@ export async function rejectToAccept(bill_id: string): Promise<void> {
   });
 }
 
-export async function accept(bill_id: string): Promise<void> {
+export async function accept(bill_id: BillFull["id"]): Promise<void> {
   return apiFetch(ACCEPT_BILL, {
     method: "PUT",
     headers: {
@@ -273,7 +287,7 @@ export async function accept(bill_id: string): Promise<void> {
 }
 
 type RequestToPayPayload = {
-  bill_id: string;
+  bill_id: BillFull["id"];
   currency: string;
 };
 
@@ -287,7 +301,7 @@ export async function requestToPay(data: RequestToPayPayload): Promise<void> {
   });
 }
 
-export async function rejectToPay(bill_id: string): Promise<void> {
+export async function rejectToPay(bill_id: BillFull["id"]): Promise<void> {
   return apiFetch(REJECT_TO_PAY_BILL, {
     method: "PUT",
     headers: {
@@ -322,7 +336,7 @@ type GetPastEndorseesResponse = {
 };
 
 export async function getPastEndorsees(
-  id: string
+  id: BillFull["id"]
 ): Promise<GetPastEndorseesResponse> {
   return apiFetch(GET_BILL_PAST_ENDORSEES.replace(":id", id), {
     headers: {
@@ -332,7 +346,7 @@ export async function getPastEndorsees(
 }
 
 type RequestPaymentRecoursePayload = {
-  bill_id: string;
+  bill_id: BillFull["id"];
   recoursee: string;
   sum: string;
   currency: string;
@@ -351,7 +365,7 @@ export async function requestPaymentRecourse(
 }
 
 type RequestAcceptanceRecoursePayload = {
-  bill_id: string;
+  bill_id: BillFull["id"];
   recoursee: string;
 };
 
@@ -367,7 +381,7 @@ export async function requestAcceptanceRecourse(
   });
 }
 
-export async function rejectToPayRecourse(bill_id: string): Promise<void> {
+export async function rejectToPayRecourse(bill_id: BillFull["id"]): Promise<void> {
   return apiFetch(REJECT_BILL_PAYMENT_RECOURSE, {
     method: "PUT",
     headers: {
@@ -379,6 +393,14 @@ export async function rejectToPayRecourse(bill_id: string): Promise<void> {
 
 export async function checkBillsInDHT(): Promise<void> {
   return apiFetch(CHECK_BILLS_IN_DHT, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export async function checkBillInDHT(bill_id: BillFull["id"]): Promise<void> {
+  return apiFetch(CHECK_BILL_IN_DHT.replace(":id", bill_id), {
     headers: {
       "Content-Type": "application/json",
     },

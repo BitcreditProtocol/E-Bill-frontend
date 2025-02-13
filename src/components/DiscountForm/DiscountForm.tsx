@@ -99,6 +99,9 @@ const DiscountForm = ({ startDate: userStartDate, endDate, ...props } : Discount
 
 DiscountForm.displayName = "DiscountForm";
 
+const INPUT_DAYS_MIN_VALUE = 1;
+const INPUT_DAYS_MAX_VALUE = 360;
+
 type NetToGrossFormValues = FormValues & {
   netInput?: string
 };
@@ -140,7 +143,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
 
   useEffect(() => {
     if (startDate === undefined) return
-    setValue("daysInput", String(daysBetween(startDate, endDate)), {
+    setValue("daysInput", String(Math.min(daysBetween(startDate, endDate), INPUT_DAYS_MAX_VALUE)), {
       shouldValidate: true,
       shouldDirty: true,
       shouldTouch: true,
@@ -178,7 +181,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
       <div className="flex flex-col">
         <InputContainer htmlFor="daysInput" label={
           <FormattedMessage
-              id="Days"
+              id="discountForm.days.label.text"
               defaultMessage="Days"
               description="Days label in discount form"
           />}>
@@ -189,26 +192,26 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
             className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             {...register("daysInput", {
               required: true,
-              min: 1,
-              max: 360,
+              min: INPUT_DAYS_MIN_VALUE,
+              max: INPUT_DAYS_MAX_VALUE,
             })}
           />
         </InputContainer>
         {errors.daysInput && (<div className="text-[10px] text-signal-error">
           {intl.formatMessage({
-            id: "Please enter a valid value between {min} and {max}.",
-            defaultMessage: "Please enter a valid value between 1 and 360.",
+            id: "discountForm.daysInput.error.text",
+            defaultMessage: "Please enter a valid value between {min} and {max}.",
             description: "Error message for field 'days' in discount form",
           }, {
-            min: intl.formatNumber(1),
-            max: intl.formatNumber(360),
+            min: intl.formatNumber(INPUT_DAYS_MIN_VALUE),
+            max: intl.formatNumber(INPUT_DAYS_MAX_VALUE),
           })}
         </div>)}
       </div>
 
       <div className="flex flex-col">
         <InputContainer htmlFor="discountRateInput" label={<FormattedMessage
-            id="Discount rate"
+            id="discountForm.discountRate.label.text"
             defaultMessage="Discount rate"
             description="Discount rate label in discount form"
           />}>
@@ -229,8 +232,8 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
         </InputContainer>
         {errors.discountRateInput && (<div className="text-[10px] text-signal-error">
           {intl.formatMessage({
-            id: "Please enter a valid value between {min} and {max}.",
-            defaultMessage: "Please enter a valid value between 0 and 99.9999.",
+            id: "discountForm.discountRate.error.text",
+            defaultMessage: "Please enter a valid value between {min} and {max}.",
             description: "Error message for field 'discountRate' in discount form",
           }, {
             min: `${intl.formatNumber(0)}%`,
@@ -241,7 +244,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
 
       <div className="flex flex-col">
         <InputContainer htmlFor="netInput" label={<FormattedMessage
-            id="Net amount"
+            id="discountForm.netAmount.label.text"
             defaultMessage="Net amount"
             description="Net amount label in discount form"
           />}>
@@ -272,7 +275,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
 
       <div className="mt-1 flex justify-between text-sm text-text-200 font-normal">
         <FormattedMessage
-          id="Mark up"
+          id="discountForm.markUp.label.text"
           defaultMessage="Mark up"
           description="Mark up label in discount form"
         />
@@ -290,7 +293,7 @@ const NetToGrossDiscountForm = ({ startDate, endDate, currency, onSubmit } : Net
 
       <div className="flex justify-between items-center text-md text-text-300 font-semibold">
         <FormattedMessage
-          id="Gross amount"
+          id="discountForm.grossAmount.label.text"
           defaultMessage="Gross amount"
           description="Gross amount label in discount form"
         />
@@ -348,7 +351,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
 
   useEffect(() => {
     if (startDate === undefined) return;
-    setValue("daysInput", String(daysBetween(startDate, endDate)), {
+    setValue("daysInput", String(Math.min(daysBetween(startDate, endDate), INPUT_DAYS_MAX_VALUE)), {
       shouldValidate: true,
       shouldDirty: true,
       shouldTouch: true,
@@ -385,7 +388,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
       <div className="flex flex-col">
         <InputContainer htmlFor="daysInput" label={
           <FormattedMessage
-              id="Days"
+              id="discountForm.days.label.text"
               defaultMessage="Days"
               description="Days label in discount form"
           />}>
@@ -396,19 +399,19 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
             className="bg-transparent text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             {...register("daysInput", {
               required: true,
-              min: 1,
-              max: 360,
+              min: INPUT_DAYS_MIN_VALUE,
+              max: INPUT_DAYS_MAX_VALUE,
             })}
           />
         </InputContainer>
         {errors.daysInput && (<div className="text-[10px] text-signal-error">
           {intl.formatMessage({
-            id: "Please enter a valid value between {min} and {max}.",
-            defaultMessage: "Please enter a valid value between 1 and 360.",
+            id: "discountForm.daysInput.error.text",
+            defaultMessage: "Please enter a valid value between {min} and {max}.",
             description: "Error message for field 'days' in discount form",
           }, {
-            min: intl.formatNumber(1),
-            max: intl.formatNumber(360),
+            min: intl.formatNumber(INPUT_DAYS_MIN_VALUE),
+            max: intl.formatNumber(INPUT_DAYS_MAX_VALUE),
           })}
         </div>)}
       </div>
@@ -419,7 +422,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
             defaultMessage="Discount rate"
             description="Discount rate label in discount form"
           />}>
-          <div>
+          <div className="flex gap-0.5">
             <input
               id="discountRateInput"
               step="0.0001"
@@ -436,8 +439,8 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
         </InputContainer>
         {errors.discountRateInput && (<div className="text-[10px] text-signal-error">
           {intl.formatMessage({
-            id: "Please enter a valid value between {min} and {max}.",
-            defaultMessage: "Please enter a valid value between 0 and 99.9999.",
+            id: "discountForm.discountRate.error.text",
+            defaultMessage: "Please enter a valid value between {min} and {max}.",
             description: "Error message for field 'discountRate' in discount form",
           }, {
             min: `${intl.formatNumber(0)}%`,
@@ -448,7 +451,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
 
       <div className="mt-1 flex justify-between items-center text-sm text-text-200 font-medium">
         <FormattedMessage
-          id="Gross amount"
+          id="discountForm.grossAmount.label.text"
           defaultMessage="Gross amount"
           description="Gross amount label in discount form"
         />
@@ -466,7 +469,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
 
       <div className="flex justify-between text-sm text-text-200 font-medium">
         <FormattedMessage
-          id="Discount"
+          id="discountForm.discount.label.text"
           defaultMessage="Discount"
           description="Discount label in discount form"
         />
@@ -484,7 +487,7 @@ const GrossToNetDiscountForm = ({ startDate, endDate, gross, onSubmit } : GrossT
 
       <div className="flex justify-between items-center text-md text-text-300 font-semibold">
         <FormattedMessage
-          id="Net amount"
+          id="discountForm.netAmount.label.text"
           defaultMessage="Net amount"
           description="Net amount label in discount form"
         />

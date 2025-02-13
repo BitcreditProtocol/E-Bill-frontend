@@ -83,6 +83,7 @@ function SeedPhrase({ goToBackup }: { goToBackup: () => void }) {
           description:
             "Toast message description when identity restoration fails",
         }),
+        variant: "error",
         position: "bottom-center",
       });
     },
@@ -246,6 +247,7 @@ function RestoreBackupFile() {
           description:
             "Toast message description when identity restoration fails",
         }),
+        variant: "error",
         position: "bottom-center",
       });
     },

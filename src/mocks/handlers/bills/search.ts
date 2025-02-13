@@ -1,6 +1,7 @@
 import { http, HttpResponse } from "msw";
 import { SEARCH_BILLS } from "@/constants/endpoints";
 import type { Bill } from "@/types/bill";
+import { matchesSearchTerm } from "../utils";
 
 type SearchBillsResponse = Pick<
   Bill,
@@ -97,21 +98,7 @@ const filterBills = (
   return data.filter((bill) => {
     const { search_term, date_range, role, currency } = filter;
 
-    const matchesSearchTerm = search_term
-      ? Object.entries(bill).some(([, value]) => {
-          if (typeof value === "object") {
-            return Object.values(value).some(
-              (innerValue) =>
-                typeof innerValue === "string" &&
-                innerValue.toLowerCase().includes(search_term.toLowerCase())
-            );
-          }
-          return (
-            typeof value === "string" &&
-            value.toLowerCase().includes(search_term.toLowerCase())
-          );
-        })
-      : true;
+    const matchesTerm = matchesSearchTerm(bill, search_term);
 
     const matchesDateRange =
       date_range && date_range.from !== "" && date_range.to !== ""
@@ -124,7 +111,7 @@ const filterBills = (
     const matchesCurrency = currency ? bill.sum.currency === currency : true;
 
     return (
-      matchesSearchTerm && matchesDateRange && matchesRole && matchesCurrency
+      matchesTerm && matchesDateRange && matchesRole && matchesCurrency
     );
   });
 };

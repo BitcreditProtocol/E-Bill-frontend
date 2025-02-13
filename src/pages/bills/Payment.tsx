@@ -21,6 +21,7 @@ import { getActiveIdentity } from "@/services/identity_v2";
 import { copyToClipboard } from "@/utils";
 import LoaderIcon from "@/assets/icons/loader.svg";
 import Preview from "./components/Preview";
+import { findHolder } from "@/utils/bill";
 
 function Loader() {
   return (
@@ -46,11 +47,9 @@ function Information({ id }: { id: string }) {
     queryKey: ["bill", id],
   });
 
+  const holder = findHolder(data);
   const isPayer = data.drawee.node_id === activeIdentity.node_id;
-  const isHolder =
-    (data.endorsee && data.endorsee.node_id === activeIdentity.node_id) ||
-    data.payee.node_id === activeIdentity.node_id;
-
+  const isHolder = holder.node_id === activeIdentity.node_id;
   const role = isPayer ? "payer" : isHolder ? "holder" : null;
 
   const { data: privateKeyData } = useQuery({
@@ -129,7 +128,7 @@ function Information({ id }: { id: string }) {
                 "dd-MMM-yyyy"
               )}
               amount={Number(data.sum)}
-              currency="SAT"
+              currency="sat"
             />
           </div>
 
@@ -188,6 +187,7 @@ function Information({ id }: { id: string }) {
                         toast({
                           description:
                             "Failed to copy private key to clipboard",
+                          variant: "error",
                           position: "bottom-center",
                         });
                       });

@@ -92,6 +92,7 @@ function Information({ id }: { id: string }) {
                           defaultMessage:
                             "Error while copying address to clipboard",
                         }),
+                        variant: "error",
                         position: "bottom-center",
                       });
                     });
@@ -134,7 +135,7 @@ function Information({ id }: { id: string }) {
             "dd-MMM-yyyy"
           )}
           amount={Number(data.sum)}
-          currency="SAT"
+          currency="sat"
         />
       </div>
     </>

@@ -13,14 +13,16 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { getBillDetails } from "@/services/bills";
 import { getQuote } from "@/services/quotes";
 import EcashToken from "./components/EcashToken";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useLanguage } from "@/context/language/LanguageContext";
 import { formatDateAndTime } from "@/utils/dates";
-import { WILDCAT_ONE } from "@/constants/mints";
+import { MintConfig, readMintConfig } from "@/constants/mints";
 
 export default function Received() {
   const lang = useLanguage();
   const { id } = useParams<{ id: string }>();
+
+  const [mintConfig] = useState<MintConfig>(readMintConfig());
 
   const { data: bill } = useSuspenseQuery({
     queryKey: ["bills", id],
@@ -96,7 +98,7 @@ export default function Received() {
             />
           </Label>
 
-          <Mint name={WILDCAT_ONE.name} nodeId={WILDCAT_ONE.node_id} />
+          <Mint name={mintConfig.wildcatOne.name} nodeId={mintConfig.wildcatOne.node_id} />
         </div>
       </div>
 

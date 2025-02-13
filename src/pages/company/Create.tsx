@@ -498,6 +498,7 @@ function Preview({ nextStep }: { nextStep: () => void }) {
           id: "company.create.error",
           defaultMessage: "Error while creating company. Please try again.",
         }),
+        variant: "error",
         position: "bottom-center",
       });
     },

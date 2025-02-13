@@ -48,6 +48,7 @@ export default function ViewDetails({
                   defaultMessage: "Node ID copied to clipboard",
                 }),
                 position: "bottom-center",
+                duration: 750
               });
             });
           }}
