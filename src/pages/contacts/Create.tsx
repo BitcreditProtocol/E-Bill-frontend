@@ -708,6 +708,7 @@ function Preview() {
 }
 
 export default function Create() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(0);
 
   const methods = useForm<FormSchema>({
@@ -740,7 +741,9 @@ export default function Create() {
 
   const previousStep = () => {
     setStep((prev) => {
-      if (prev === 0) return 0;
+      if (prev === 0) {
+        navigate(routes.CONTACTS);
+      }
 
       return prev - 1;
     });

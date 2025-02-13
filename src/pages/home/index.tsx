@@ -40,14 +40,14 @@ function Balances() {
         </span>
 
         <span className="text-text-300 text-xs font-medium leading-normal">
-          BTC
+          sat
         </span>
       </div>
 
       <Separator className="bg-divider-75" />
 
       <div className="flex flex-col gap-3 pb-2 px-4">
-        <div className="flex items-start justify-between py-2 border-b-[1px] border-divider-75">
+        <div className="flex items-start justify-between py-2 border-b border-divider-75">
           <span className="text-text-200 text-sm">
             <FormattedMessage
               id="home.balances.payee"
@@ -65,11 +65,11 @@ function Balances() {
                 type="credit"
               />
             )}
-            <span className="text-text-200 text-xs leading-[18px]">BTC</span>
+            <span className="text-text-200 text-xs leading-normal">sat</span>
           </div>
         </div>
 
-        <div className="flex items-start justify-between py-2 border-b-[1px] border-divider-75">
+        <div className="flex items-start justify-between py-2 border-b border-divider-75">
           <span className="text-text-200 text-sm">
             <FormattedMessage
               id="home.balances.payer"
@@ -87,7 +87,7 @@ function Balances() {
                 type="debit"
               />
             )}
-            <span className="text-text-200 text-xs leading-normal">BTC</span>
+            <span className="text-text-200 text-xs leading-normal">sat</span>
           </div>
         </div>
 
@@ -110,7 +110,7 @@ function Balances() {
                 color="none"
               />
             )}
-            <span className="text-text-200 text-xs leading-normal">BTC</span>
+            <span className="text-text-200 text-xs leading-normal">sat</span>
           </div>
         </div>
       </div>
@@ -164,17 +164,24 @@ export default function Home() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilters, setTypeFilters] = useState<SearchItemType[]>([]);
-  const [searchModeEnabled, setSearchModeEnabled] = useState(searchTerm.length > 0);
+  const [searchModeEnabled, setSearchModeEnabled] = useState(
+    searchTerm.length > 0
+  );
 
-  const { isFetching: searchIsLoading, data: searchData, refetch: doSearch } = useQuery({
+  const {
+    isFetching: searchIsLoading,
+    data: searchData,
+    refetch: doSearch,
+  } = useQuery({
     queryKey: ["search", searchTerm, typeFilters],
-    queryFn: () => search({
-      filter: {
-        search_term: searchTerm,
-        currency: "sat",
-        item_types: typeFilters.length === 0 ? SEARCH_ITEMS_ALL : typeFilters,
-      }
-    }),
+    queryFn: () =>
+      search({
+        filter: {
+          search_term: searchTerm,
+          currency: "sat",
+          item_types: typeFilters.length === 0 ? SEARCH_ITEMS_ALL : typeFilters,
+        },
+      }),
     staleTime: 30 * 1_000,
     enabled: false,
     refetchOnWindowFocus: false,
@@ -194,7 +201,7 @@ export default function Home() {
       if (event instanceof KeyboardEvent && event.key === "Escape") {
         disableSearchMode();
       }
-    }
+    };
     document.addEventListener("keydown", handleEscape, false);
 
     return () => {
@@ -209,24 +216,31 @@ export default function Home() {
       displayBottomNavigation
     >
       <Topbar
-        lead={<>
-            {!searchModeEnabled ? (<Link to={routes.IDENTITY_LIST}>
-              <Picture
-                type={activeIdentity.type === "company" ? 1 : 0}
-                name={activeIdentity.name}
-                image={activeIdentity.avatar}
-                size="sm"
-              />
-            </Link>) : (<>
-              <Button variant="outline" size="xs"
-                className="p-0 w-full h-full bg-elevation-200 border-divider-50 text-text-300"
-                onClick={() => {
-                  disableSearchMode();
-                }}
-              >
-                <ChevronLeftIcon className="w-5 h-5" strokeWidth={1} />
-              </Button>
-            </>)}
+        lead={
+          <>
+            {!searchModeEnabled ? (
+              <Link to={routes.IDENTITY_LIST}>
+                <Picture
+                  type={activeIdentity.type === "company" ? 1 : 0}
+                  name={activeIdentity.name}
+                  image={activeIdentity.avatar}
+                  size="sm"
+                />
+              </Link>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  size="xs"
+                  className="p-0 w-full h-full bg-elevation-200 border-divider-50 text-text-300"
+                  onClick={() => {
+                    disableSearchMode();
+                  }}
+                >
+                  <ChevronLeftIcon className="w-5 h-5" strokeWidth={1} />
+                </Button>
+              </>
+            )}
           </>
         }
         middle={
@@ -240,19 +254,23 @@ export default function Home() {
             })}
             value={searchTerm}
             onChange={setSearchTerm}
-            onFocus={() => { setSearchModeEnabled(true); }}
+            onFocus={() => {
+              setSearchModeEnabled(true);
+            }}
             onSearch={() => {
               if (searchTerm) {
-                void doSearch()
+                void doSearch();
               }
             }}
           />
         }
       />
 
-      <div className={cn("flex-1 flex flex-col gap-8", {
-        "hidden": searchModeEnabled,
-      })}>
+      <div
+        className={cn("flex-1 flex flex-col gap-8", {
+          hidden: searchModeEnabled,
+        })}
+      >
         <Balances />
 
         <div className="flex-1 flex flex-col gap-3">
@@ -295,17 +313,22 @@ export default function Home() {
         </div>
       </div>
 
-      <div className={cn("flex-1 flex flex-col gap-2", {
-        "hidden": !searchModeEnabled,
-      })}>
+      <div
+        className={cn("flex-1 flex flex-col gap-2", {
+          hidden: !searchModeEnabled,
+        })}
+      >
         <div className="flex flex-col gap-2">
           <SearchTypeFilter values={typeFilters} onChange={setTypeFilters} />
           <Separator className="bg-divider-75" />
 
-          <HomeSearch searchTerm={searchTerm} isLoading={searchIsLoading} data={searchData} />
+          <HomeSearch
+            searchTerm={searchTerm}
+            isLoading={searchIsLoading}
+            data={searchData}
+          />
         </div>
       </div>
-
     </Page>
   );
 }

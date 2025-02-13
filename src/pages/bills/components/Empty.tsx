@@ -28,7 +28,7 @@ export default function Empty() {
           </span>
         </div>
 
-        <Link to={`/${routes.CREATE_BILL}`}>
+        <Link to={routes.CREATE_BILL}>
           <Button
             className="text-text-300 bg-transparent font-medium border-text-300 rounded-[8px] py-3 px-6 hover:bg-transparent"
             variant="outline"

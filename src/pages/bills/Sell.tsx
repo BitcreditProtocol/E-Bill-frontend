@@ -115,6 +115,7 @@ function Buyer() {
 }
 
 function DiscountCalculator() {
+  const [open, setOpen] = useState(false);
   const { watch, setValue } = useFormContext<FormSchema>();
   const {
     discount: { rate, days, start_date, end_date },
@@ -129,7 +130,7 @@ function DiscountCalculator() {
     rate,
     days,
   }: {
-    sum: string;
+    sum: number;
     rate: number;
     days: number;
   }) => {
@@ -138,7 +139,12 @@ function DiscountCalculator() {
   };
 
   return (
-    <Drawer>
+    <Drawer
+      open={open}
+      onOpenChange={() => {
+        setOpen((prev) => !prev);
+      }}
+    >
       <DrawerTrigger className="flex items-center gap-1 p-0 text-text-300 text-xs font-medium leading-normal">
         <CalculatorIcon className="text-text-300 h-4 w-4 stroke-1" />
         {hasDiscount ? (
@@ -157,13 +163,15 @@ function DiscountCalculator() {
           endDate={parseISO(end_date)}
           onSubmit={(values) => {
             setDiscount({
-              sum: values.net.value.round(0).toString(),
+              sum: Number(values.net.value.round(0, Big.roundDown)),
               rate: values.discountRate.mul(100).toNumber(),
               days: values.days,
             });
+
+            setOpen(false);
           }}
           gross={{
-            value: Big(parseInt(sum)),
+            value: Big(sum),
             currency: "sat",
           }}
         />
@@ -173,7 +181,7 @@ function DiscountCalculator() {
 }
 
 function Amount() {
-  const { register } = useFormContext<FormSchema>();
+  const { register, setValue } = useFormContext<FormSchema>();
 
   return (
     <div className="flex flex-col gap-2">
@@ -190,22 +198,29 @@ function Amount() {
       <div className="flex items-center justify-between gap-2 py-5 px-4 bg-elevation-200 border border-divider-50 rounded-lg">
         <div className="flex items-center gap-1.5">
           <img src={BitcoinCurrencyIcon} alt="Bitcoin" className="h-5 w-5" />
-          <span className="text-text-300 text-sm font-medium leading-5 uppercase">
-            btc
+          <span className="text-text-300 text-sm font-medium leading-5">
+            sat
           </span>
         </div>
         <input
           {...register("sum", {
-            setValueAs: (value: string) => {
-              const sanitized = value.replace(/\D/g, "");
-              return sanitized ? String(parseInt(sanitized, 10)) : "";
-            },
+            valueAsNumber: true,
+            validate: (value) =>
+              Number.isInteger(value) || "Sum must be an non-negative integer",
           })}
           type="text"
           inputMode="numeric"
           className="flex-1 bg-transparent text-right outline-none"
-          onInput={(e) => {
-            e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
+          onChange={(e) => {
+            const sanitizedValue = e.target.value.replace(/\D/g, "");
+            e.target.value = sanitizedValue;
+
+            if (!sanitizedValue || sanitizedValue === "") {
+              setValue("sum", 0);
+              return;
+            }
+
+            setValue("sum", parseInt(sanitizedValue, 10) || 0);
           }}
         />
         <span className="text-text-200 text-[10px] font-normal leading-[14px] lowercase">
@@ -229,7 +244,7 @@ const formSchema = z.object({
     rate: z.number().int().positive(),
     days: z.number().int().positive(),
   }),
-  sum: z.string().min(1),
+  sum: z.number().int().positive(),
   currency: z.string().min(1),
 });
 
@@ -261,7 +276,7 @@ function Form() {
         rate: 0,
         days: 0,
       },
-      sum: data.sum,
+      sum: parseInt(data.sum),
       currency: data.currency,
     },
   });
@@ -284,6 +299,7 @@ function Form() {
 
       return offerToSell({
         ...bill,
+        sum: bill.sum.toString(),
       });
     },
     onSuccess: async () => {
