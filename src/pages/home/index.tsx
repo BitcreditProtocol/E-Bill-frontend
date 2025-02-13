@@ -129,8 +129,8 @@ function RecentBillsLoader() {
 }
 
 type RecentBillsProps = {
-  values: Awaited<ReturnType<typeof getBillsLight>>['bills']
-}
+  values: Awaited<ReturnType<typeof getBillsLight>>["bills"];
+};
 
 function RecentBills({ values }: RecentBillsProps) {
   return values.length === 0 ? (
@@ -140,7 +140,7 @@ function RecentBills({ values }: RecentBillsProps) {
   ) : (
     <div className="flex flex-col gap-1.5">
       {values.map((bill) => (
-        <Link to={`/${routes.VIEW_BILL.replace(":id", bill.id)}`} key={bill.id}>
+        <Link to={routes.VIEW_BILL.replace(":id", bill.id)} key={bill.id}>
           <Bill
             title={bill.drawer.name}
             amount={bill.sum}
@@ -277,7 +277,7 @@ export default function Home() {
           </div>
 
           <Suspense fallback={<RecentBillsLoader />}>
-            <RecentBills values={data.bills.slice(0, 3)}/>
+            <RecentBills values={data.bills.slice(0, 3)} />
           </Suspense>
 
           {data.bills.length > 0 && (

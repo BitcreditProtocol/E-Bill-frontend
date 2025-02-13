@@ -5,8 +5,9 @@ import {
   useQueryClient,
   useMutation,
 } from "@tanstack/react-query";
+import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
-import { PencilIcon, TrashIcon, TriangleAlert } from "lucide-react";
+import { CopyIcon, PencilIcon, TrashIcon, TriangleAlert } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
@@ -23,14 +24,18 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import Summary from "@/components/Summary";
+import Picture from "@/components/Picture";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { getContactDetails, removeContact } from "@/services/contact_v2";
+import { useToast } from "@/hooks/use-toast";
+import { copyToClipboard } from "@/utils";
+import { truncateString } from "@/utils/strings";
+import { API_URL } from "@/constants/api";
+import { GET_CONTACT_FILE } from "@/constants/endpoints";
 import routes from "@/constants/routes";
 import { COUNTRIES } from "@/constants/countries";
-import { messages } from "./components/messages";
 import Property from "./components/Property";
+import { getMessage, messages } from "./components/messages";
 
 type DeleteContactProps = {
   contactId: string;
@@ -50,6 +55,7 @@ function Delete({ contactId }: DeleteContactProps) {
     },
     onSuccess: async () => {
       setIsDrawerOpen(false);
+      navigate(routes.CONTACTS);
 
       await queryClient.invalidateQueries({
         queryKey: ["contacts"],
@@ -63,8 +69,6 @@ function Delete({ contactId }: DeleteContactProps) {
         }),
         position: "bottom-center",
       });
-
-      navigate(routes.CONTACTS);
     },
   });
 
@@ -184,98 +188,102 @@ function Information({ contactId }: { contactId: string }) {
     country_of_birth_or_registration,
     city_of_birth_or_registration,
     identification_number,
+    avatar_file,
   } = data;
 
+  const avatarImageUrl =
+    avatar_file !== null
+      ? `${API_URL}/${GET_CONTACT_FILE.replace(
+          ":node_id/:name",
+          node_id + "/" + avatar_file.name
+        )}`
+      : "";
+
+  const combinedAddress =
+    [address, zip, city, COUNTRIES[country as keyof typeof COUNTRIES]]
+      .filter(Boolean)
+      .join(", ") || "-";
+
+  // todo: this can be a util. it's everywhere
+  const formattedDate = format(
+    parseISO(date_of_birth_or_registration),
+    "dd-MMM-yyyy"
+  );
+
+  const parsedCountryOfOriginName =
+    COUNTRIES[country_of_birth_or_registration as keyof typeof COUNTRIES];
+
   return (
-    <div className="flex flex-col gap-4">
-      <Summary identityType={type} name={name} nodeId={node_id} picture="" />
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-4">
+        <Picture type={type} name={name} image={avatarImageUrl} size="lg" />
+
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-text-300 text-xl font-medium leading-normal">
+              {name}
+            </span>
+
+            <div className="flex items-center justify-center gap-1">
+              <span className="text-text-200 text-xs font-normal leading-normal">
+                {truncateString(node_id, 14)}
+              </span>
+              <button
+                className="p-0"
+                onClick={() => {
+                  void copyToClipboard(node_id);
+                }}
+              >
+                <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
+        <Property label={f(getMessage(type, "email"))} value={email} />
+        <Separator className="bg-divider-75" />
+
         <Property
-          label={
-            type === 0
-              ? f(messages["contacts.person.name"])
-              : f(messages["contacts.company.name"])
-          }
-          value={name}
+          label={f(messages["contacts.address"])}
+          value={combinedAddress}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property label={f(getMessage(type, "date"))} value={formattedDate} />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(getMessage(type, "country"))}
+          value={parsedCountryOfOriginName}
         />
         <Separator className="bg-divider-75" />
 
         <Property
-          label={
-            type === 0
-              ? f(messages["contacts.person.email"])
-              : f(messages["contacts.company.email"])
-          }
-          value={email}
-        />
-        <Separator className="bg-divider-75" />
-
-        <Property label={f(messages["contacts.address"])} value={address} />
-        <Separator className="bg-divider-75" />
-
-        <Property
-          label={f(messages["contacts.country"])}
-          value={COUNTRIES[country as keyof typeof COUNTRIES]}
-        />
-        <Separator className="bg-divider-75" />
-
-        <Property label={f(messages["contacts.city"])} value={city} />
-        <Separator className="bg-divider-75" />
-
-        <Property label={f(messages["contacts.zipCode"])} value={zip} />
-        <Separator className="bg-divider-75" />
-
-        <Property
-          label={
-            type === 0
-              ? f(messages["contacts.person.dateOfBirth"])
-              : f(messages["contacts.company.dateOfRegistration"])
-          }
-          value={date_of_birth_or_registration}
-        />
-        <Separator className="bg-divider-75" />
-
-        <Property
-          label={
-            type === 0
-              ? f(messages["contacts.person.countryOfBirth"])
-              : f(messages["contacts.company.countryOfRegistration"])
-          }
-          value={
-            COUNTRIES[
-              country_of_birth_or_registration as keyof typeof COUNTRIES
-            ]
-          }
-        />
-        <Separator className="bg-divider-75" />
-
-        <Property
-          label={
-            type === 0
-              ? f(messages["contacts.person.cityOfBirth"])
-              : f(messages["contacts.company.cityOfRegistration"])
-          }
+          label={f(getMessage(type, "city"))}
           value={city_of_birth_or_registration}
         />
         <Separator className="bg-divider-75" />
 
         <Property
-          label={
-            type === 0
-              ? f(messages["contacts.person.identityNumber"])
-              : f(messages["contacts.company.registrationNumber"])
-          }
+          label={f(getMessage(type, "identificationNumber"))}
           value={identification_number}
         />
-        <Separator className="bg-divider-75" />
+        {/*  <Separator className="bg-divider-75" /> */}
+
+        {/* enable when we add metadata (name and size) to the response 
+        <Property
+          label={f(getMessage(type, "document"))}
+          value={"proof_document.file_upload_id"}
+        /> */}
       </div>
     </div>
   );
 }
 
 export default function View() {
-  const { nodeId } = useParams<{ nodeId: string }>();
+  const { nodeId } = useParams() as { nodeId: string };
 
   return (
     <Page className="gap-6">
@@ -293,7 +301,9 @@ export default function View() {
         }
         trail={
           // todo: fix route build
-          <Link to={`/${routes.CONTACTS}/${nodeId as string}/edit`}>
+          <Link
+            to={"/contacts/" + routes.EDIT_CONTACT.replace(":nodeId", nodeId)}
+          >
             <button className="flex flex-col items-center justify-center h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md">
               <PencilIcon className="text-text-300 h-5 w-5 stroke-1" />
             </button>
@@ -303,10 +313,10 @@ export default function View() {
 
       <div className="flex flex-col gap-6">
         <Suspense fallback={<Loader />}>
-          <Information contactId={nodeId as string} />
+          <Information contactId={nodeId} />
         </Suspense>
 
-        <Delete contactId={nodeId as string} />
+        <Delete contactId={nodeId} />
       </div>
     </Page>
   );

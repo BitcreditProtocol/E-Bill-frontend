@@ -67,7 +67,7 @@ export type Block = {
   label: string;
   op_code: string;
   previous_hash: string;
-  signature: string
+  signature: string;
   timestamp: number;
 };
 
@@ -103,6 +103,13 @@ export type BillFull = {
     hash: string;
   }[];
   chain_of_blocks: {
-    blocks: Block[]
-  }
+    blocks: Block[];
+  };
+};
+
+// for bill creation
+export const BILL_TYPE = {
+  DRAFT: 2,
+  SELF_DRAFTED: 1,
+  PROMISSORY_NOTE: 0,
 };

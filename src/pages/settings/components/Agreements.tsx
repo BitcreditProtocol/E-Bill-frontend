@@ -23,7 +23,7 @@ export default function Agreements() {
         />
       </DrawerTrigger>
 
-      <DrawerContent className="bg-elevation-50 py-4 px-5">
+      <DrawerContent className="max-w-[375px] bg-elevation-50 py-4 px-5 mx-auto">
         <div className="flex flex-col gap-3">
           <span className="text-text-300 text-lg font-medium leading-[28px]">
             <FormattedMessage

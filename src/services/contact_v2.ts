@@ -23,7 +23,24 @@ export async function uploadFile(file: File): Promise<UploadFileResponse> {
   });
 }
 
-export type CreateContactPayload = Partial<Contact>;
+export type CreateContactPayload = Partial<
+  Omit<
+    Contact,
+    | "zip"
+    | "date_of_birth_or_registration"
+    | "country_of_birth_or_registration"
+    | "city_of_birth_or_registration"
+    | "identification_number"
+  >
+> & {
+  zip: string | null;
+  date_of_birth_or_registration: string | null;
+  country_of_birth_or_registration: string | null;
+  city_of_birth_or_registration: string | null;
+  identification_number: string | null;
+  avatar_file_upload_id?: string | null;
+  proof_document_file_upload_id?: string | null;
+};
 
 type CreateContactResponse = Contact;
 
@@ -39,7 +56,9 @@ export async function createContact(
   });
 }
 
-export type EditContactPayload = Partial<Contact>;
+export type EditContactPayload = Partial<Contact> & {
+  avatar_file_upload_id?: string | null;
+};
 
 type EditContactResponse = Contact;
 

@@ -1,10 +1,11 @@
 import { forwardRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { cn } from "@/lib/utils";
+import { ContactTypes, type ContactType } from "@/types/contact";
 
 const Button = forwardRef<
   HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { active: boolean }
 >((props, ref) => {
   return (
     <button
@@ -22,45 +23,45 @@ export default function SwitchContactType({
   contactType,
   onChange,
 }: {
-  contactType: "person" | "company" | "mint";
-  onChange: (type: "person" | "company" | "mint") => void;
+  contactType: ContactType;
+  onChange: (type: ContactType) => void;
 }) {
   return (
     <div className="flex items-center gap-2">
       <Button
-        active={contactType === "person"}
+        active={contactType === ContactTypes.Person}
         onClick={() => {
-          onChange("person");
+          onChange(ContactTypes.Person);
         }}
       >
         <FormattedMessage
-          id="contacts.create.switchToPerson"
+          id="contacts.create.type.person"
           defaultMessage="Person"
           description="Switch to person contact type"
         />
       </Button>
 
       <Button
-        active={contactType === "company"}
+        active={contactType === ContactTypes.Company}
         onClick={() => {
-          onChange("company");
+          onChange(ContactTypes.Company);
         }}
       >
         <FormattedMessage
-          id="contacts.create.switchToCompany"
+          id="contacts.create.type.company"
           defaultMessage="Company"
           description="Switch to company contact type"
         />
       </Button>
 
       <Button
-        active={contactType === "mint"}
+        active={contactType === ContactTypes.Mint}
         onClick={() => {
-          onChange("mint");
+          onChange(ContactTypes.Mint);
         }}
       >
         <FormattedMessage
-          id="contacts.create.switchToMint"
+          id="contacts.create.type.mint"
           defaultMessage="Mint"
           description="Switch to mint contact type"
         />

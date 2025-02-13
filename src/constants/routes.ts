@@ -9,14 +9,15 @@ const EMAIL_VERIFICATION = "/email-verification";
 const OPTIONAL_INFORMATION = "/optional-information";
 const NOTIFICATIONS = "/notifications";
 const CASHFLOW = "/cashflow";
-const BILLS = "/bills";
-
 const SIGNUP = "/signup";
+
+const BILLS = "/bills";
 const VIEW_BILL = "/bill/:id";
 const ISSUE_BILL = "/issue-bill";
-const CREATE_BILL = "/create-bill";
+const CREATE_BILL = "/bill/create";
 const PREVIEW_BILL = "/preview-bill";
 const MINT_BILL = "/mint-bill";
+
 const CONTACTS = "/contacts";
 const CREATE_CONTACT = "new";
 const VIEW_CONTACT = ":nodeId";

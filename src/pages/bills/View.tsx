@@ -1,6 +1,11 @@
 import { Suspense, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useIntl } from "react-intl";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
@@ -9,12 +14,16 @@ import RefreshButton from "@/components/RefreshButton";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { checkBillInDHT, getBillDetails } from "@/services/bills";
 import { getQuote } from "@/services/quotes";
+import { API_URL } from "@/constants/api";
+import { GET_BILL_ATTACHMENT } from "@/constants/endpoints";
+import routes from "@/constants/routes";
 import Card, { Loader } from "./components/BillCard";
 import Actions from "./components/Actions";
 import EcashToken from "./mint/components/EcashToken";
-import { API_URL } from "@/constants/api";
-import { GET_BILL_ATTACHMENT } from "@/constants/endpoints";
-import { __dev_findInListAllIfMintViewIsEnabledOrThrow, readMintConfig } from "@/constants/mints";
+import {
+  __dev_findInListAllIfMintViewIsEnabledOrThrow,
+  readMintConfig,
+} from "@/constants/mints";
 import { findHolder } from "@/utils/bill";
 import { toast } from "@/hooks/use-toast";
 
@@ -24,17 +33,27 @@ function Details({ id }: { id: string }) {
 
   const { data } = useSuspenseQuery({
     queryKey: ["bills", id],
-    queryFn: () => getBillDetails(id).catch((err: unknown) => {
-      // try to fetch the bill from the "list all" endpoint if mint view is enabled
-      return __dev_findInListAllIfMintViewIsEnabledOrThrow(id, mintConfig, err)
-    }),
+    queryFn: () =>
+      getBillDetails(id).catch((err: unknown) => {
+        // try to fetch the bill from the "list all" endpoint if mint view is enabled
+        return __dev_findInListAllIfMintViewIsEnabledOrThrow(
+          id,
+          mintConfig,
+          err
+        );
+      }),
   });
 
   const { data: quote } = useQuery({
     queryKey: ["quotes", id],
-    queryFn: () => getQuote(id).then((quote) => {
-      return quote.quote_id === "" ? null : quote;
-    }).catch(() => { return null })
+    queryFn: () =>
+      getQuote(id)
+        .then((quote) => {
+          return quote.quote_id === "" ? null : quote;
+        })
+        .catch(() => {
+          return null;
+        }),
   });
 
   const holder = findHolder(data);
@@ -107,15 +126,15 @@ export default function View() {
         }),
         variant: "success",
         position: "bottom-center",
-        duration: 1_000
+        duration: 1_000,
       });
-    }
+    },
   });
 
   return (
     <Page className="gap-5">
       <Topbar
-        lead={<NavigateBack />}
+        lead={<NavigateBack route={routes.HOME} />}
         trail={
           <RefreshButton
             label={f({
@@ -128,7 +147,9 @@ export default function View() {
               defaultMessage: "Refresh bill status",
               description: "Refresh bill status tooltip",
             })}
-            onClick={() => { refetch(); }}
+            onClick={() => {
+              refetch();
+            }}
             loading={isPending}
           />
         }

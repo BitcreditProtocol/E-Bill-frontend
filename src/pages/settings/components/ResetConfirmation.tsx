@@ -18,7 +18,7 @@ export default function ResetConfirmation({
     <Drawer>
       <DrawerTrigger>{children}</DrawerTrigger>
 
-      <DrawerContent className="bg-elevation-50">
+      <DrawerContent className="max-w-[375px] bg-elevation-50 mx-auto">
         <div className="flex flex-col gap-6 py-8 px-5">
           <div className="flex gap-2">
             <TriangleAlertIcon className="text-signal-error h-5 w-5 stroke-1" />

@@ -12,6 +12,7 @@ import { Skeleton } from "../ui/skeleton";
 import Search from "../ui/search";
 import { Card } from "./Card";
 import Information from "./Information";
+import { cn } from "@/lib/utils";
 
 function Loader() {
   return (
@@ -63,14 +64,14 @@ const STEPS = {
 
 type ContactPickerProps = {
   children: React.ReactNode;
-  onSelect: (
-    contact: Pick<Contact, "node_id" | "name" | "address" | "type">
-  ) => void;
+  onSelect: (contact: Contact) => void;
+  canEdit: boolean;
 };
 
 export default function ContactPicker({
   children,
   onSelect,
+  canEdit = true,
 }: ContactPickerProps) {
   const { formatMessage: f } = useIntl();
   const [open, setOpen] = useState(false);
@@ -94,12 +95,21 @@ export default function ContactPicker({
     <Dialog
       open={open}
       onOpenChange={() => {
+        if (!canEdit) return;
+
         setOpen((prev) => !prev);
         setCurrentStep(STEPS.LIST);
         setViewingContact(null);
       }}
     >
-      <DialogTrigger>{children}</DialogTrigger>
+      <DialogTrigger
+        className={cn({
+          "cursor-pointer": canEdit,
+          "cursor-default": !canEdit,
+        })}
+      >
+        {children}
+      </DialogTrigger>
       <DialogContent className="flex flex-col gap-5 py-6 px-5 h-full max-w-[375px] bg-elevation-50">
         <Topbar
           className="mb-2.5"

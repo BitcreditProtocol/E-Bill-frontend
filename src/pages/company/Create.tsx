@@ -4,8 +4,8 @@ import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
-import { format, parseISO } from "date-fns";
 import {
   CalendarIcon,
   MailIcon,
@@ -19,25 +19,28 @@ import {
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
+import StepIndicator from "@/components/StepIndicator";
 import { Description, Title } from "@/components/typography/Step";
 import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
+import { DatePicker } from "@/components/DatePicker/datePicker";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import Property from "./components/Property";
-import { DatePicker } from "@/components/DatePicker/datePicker";
-import StepIndicator from "@/components/StepIndicator";
+import Upload, { UploadedFilePreview } from "@/components/Upload";
 import Picture from "@/components/Picture";
-import { COUNTRIES } from "@/constants/countries";
-import routes from "@/constants/routes";
-import { createCompany, uploadFile } from "@/services/company";
+import Sign from "@/components/Sign";
 import { useToast } from "@/hooks/use-toast";
+import { API_URL } from "@/constants/api";
+import { GET_TEMP_FILE } from "@/constants/endpoints";
+import routes from "@/constants/routes";
+import { COUNTRIES } from "@/constants/countries";
+import { createCompany, uploadFile } from "@/services/company";
 import SuccessIllustration from "@/assets/images/success-illustration.svg";
 import { messages } from "./components/messages";
+import Property from "./components/Property";
 
-function LogoUpload() {
-  const [preview, setPreview] = useState<string | null>(null);
-  const { watch, setValue } = useFormContext();
+function LogoPictureUpload() {
+  const { watch, setValue } = useFormContext<FormSchema>();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutate } = useMutation({
@@ -45,7 +48,14 @@ function LogoUpload() {
       return uploadFile(file);
     },
     onSuccess: (data) => {
-      setValue("logo_file_upload_id", data.file_upload_id);
+      const previewUrl = `${API_URL}/${GET_TEMP_FILE.replace(
+        ":file_id",
+        data.file_upload_id
+      )}`;
+
+      setValue("logo.has_selected", true);
+      setValue("logo.file_upload_id", data.file_upload_id);
+      setValue("logo.preview_url", previewUrl);
     },
   });
 
@@ -53,8 +63,6 @@ function LogoUpload() {
     const file = e.target.files?.[0];
 
     if (file) {
-      const logoImageObjectUrl = URL.createObjectURL(file);
-      setPreview(logoImageObjectUrl);
       mutate(file);
     }
   };
@@ -70,8 +78,8 @@ function LogoUpload() {
     >
       <Picture
         size="lg"
-        name={watch("name") as string}
-        image={preview || ""}
+        name={watch("name")}
+        image={watch("logo.preview_url") || ""}
         type={1}
       />
       <button className="relative bottom-6 left-12 flex items-center justify-center p-1.5 h-6 w-6 bg-brand-200 rounded-full">
@@ -89,26 +97,76 @@ function LogoUpload() {
   );
 }
 
-function RequiredInformation({
-  moveToNextStep,
-}: {
-  moveToNextStep: () => void;
-}) {
+function DocumentFileUpload() {
   const { formatMessage: f } = useIntl();
-  const { register, watch, trigger } = useFormContext();
-  const [isDataValid, setIsDataValid] = useState(false);
+  const { setValue } = useFormContext<FormSchema>();
 
-  const watchRequiredValues = watch(["name", "email"]);
+  const { mutate } = useMutation({
+    mutationFn: (file: File) => {
+      return uploadFile(file);
+    },
+    onSuccess: (data) => {
+      setValue("proof_of_registration.has_selected", true);
+      setValue("proof_of_registration.file_upload_id", data.file_upload_id);
+    },
+  });
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Upload
+        label={f({
+          id: "company.create.upload",
+          defaultMessage: "Upload registration document",
+          description: "Proof of registration upload label",
+        })}
+        description={f({
+          id: "company.create.upload.acceptedFormats",
+          defaultMessage: "PDF, PNG or JPG (max. 5mb)",
+          description: "Accepted file formats",
+        })}
+        onAddFile={(file) => {
+          mutate(file);
+
+          setValue("proof_of_registration.name", file.name);
+          setValue("proof_of_registration.size", file.size);
+        }}
+        onRemoveFile={() => {
+          setValue("proof_of_registration.has_selected", false);
+          setValue("proof_of_registration.file_upload_id", null);
+          setValue("proof_of_registration.name", null);
+          setValue("proof_of_registration.size", null);
+        }}
+      />
+    </div>
+  );
+}
+
+const requiredInformationFormSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().min(1),
+});
+
+type RequiredInformationFormSchema = z.infer<
+  typeof requiredInformationFormSchema
+>;
+
+function RequiredInformation({ nextStep }: { nextStep: () => void }) {
+  const { formatMessage: f } = useIntl();
+  const { register, watch, trigger } =
+    useFormContext<RequiredInformationFormSchema>();
+
+  const [canContinue, setCanContinue] = useState(false);
+  const watchValues = watch(["name", "email"]);
 
   useEffect(() => {
-    const validateData = async () => {
+    const validate = async () => {
       const isValid = await trigger(["name", "email"]);
 
-      setIsDataValid(isValid);
+      setCanContinue(isValid);
     };
 
-    void validateData();
-  }, [watchRequiredValues, trigger]);
+    void validate();
+  }, [watchValues, trigger]);
 
   return (
     <div className="flex-1 flex flex-col gap-6">
@@ -143,7 +201,7 @@ function RequiredInformation({
         />
       </div>
 
-      <Button size="md" onClick={moveToNextStep} disabled={!isDataValid}>
+      <Button size="md" disabled={!canContinue} onClick={nextStep}>
         <FormattedMessage
           id="company.create.continue"
           defaultMessage="Continue"
@@ -154,22 +212,32 @@ function RequiredInformation({
   );
 }
 
-function PostalAddress({ moveToNextStep }: { moveToNextStep: () => void }) {
-  const { formatMessage: f } = useIntl();
-  const { register, watch, trigger, setValue } = useFormContext();
-  const [isDataValid, setIsDataValid] = useState(false);
+const postalAddressFormSchema = z.object({
+  country: z.string().min(1),
+  city: z.string().min(1),
+  zip: z.string().nullable(),
+  address: z.string().min(1),
+});
 
-  const watchRequiredFields = watch(["country", "city", "address"]);
+type PostalAddressFormSchema = z.infer<typeof postalAddressFormSchema>;
+
+function PostalAddress({ nextStep }: { nextStep: () => void }) {
+  const { formatMessage: f } = useIntl();
+  const { register, watch, trigger, setValue } =
+    useFormContext<PostalAddressFormSchema>();
+  const [canContinue, setCanContinue] = useState(false);
+
+  const watchValues = watch(["country", "city", "address"]);
 
   useEffect(() => {
     const validate = async () => {
       const isValid = await trigger(["country", "city", "address"]);
 
-      setIsDataValid(isValid);
+      setCanContinue(isValid);
     };
 
     void validate();
-  }, [watchRequiredFields, trigger]);
+  }, [watchValues, trigger]);
 
   return (
     <div className="flex-1 flex flex-col gap-6">
@@ -195,30 +263,30 @@ function PostalAddress({ moveToNextStep }: { moveToNextStep: () => void }) {
           callback={(country) => {
             setValue("country", country);
           }}
+          value={watch("country") || undefined}
+          required
         />
 
         <Input
           {...register("city")}
-          label={f(messages["company.city"])}
           icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
+          label={f(messages["company.city"])}
           required
         />
-
         <Input
           {...register("zip")}
-          label={f(messages["company.zip"])}
           icon={<MapPinIcon className="text-text-300 h-5 w-5 stroke-1" />}
+          label={f(messages["company.zip"])}
         />
-
         <Input
           {...register("address")}
-          label={f(messages["company.address"])}
           icon={<MapPinnedIcon className="text-text-300 h-5 w-5 stroke-1" />}
+          label={f(messages["company.address"])}
           required
         />
       </div>
 
-      <Button size="md" onClick={moveToNextStep} disabled={!isDataValid}>
+      <Button size="md" disabled={!canContinue} onClick={nextStep}>
         <FormattedMessage
           id="company.create.continue"
           defaultMessage="Continue"
@@ -229,23 +297,43 @@ function PostalAddress({ moveToNextStep }: { moveToNextStep: () => void }) {
   );
 }
 
-function OptionalInformation({
-  moveToNextStep,
-}: {
-  moveToNextStep: () => void;
-}) {
-  const { formatMessage: f } = useIntl();
-  const { register, watch, trigger, setValue } = useFormContext();
-  const [isDataValid, setIsDataValid] = useState(false);
+const optionalInformationFormSchema = z.object({
+  registration_date: z.string().optional().nullable(),
+  country_of_registration: z.string().optional().nullable(),
+  city_of_registration: z.string().optional().nullable(),
+  registration_number: z.string().optional().nullable(),
+  logo: z.object({
+    has_selected: z.boolean(),
+    preview_url: z.string().optional().nullable(),
+    file_upload_id: z.string().optional().nullable(),
+  }),
+  proof_of_registration: z.object({
+    has_selected: z.boolean(),
+    name: z.string().optional().nullable(),
+    size: z.number().optional().nullable(),
+    file_upload_id: z.string().optional().nullable(),
+  }),
+});
 
-  const watchRequiredFields = watch([
+type OptionalInformationFormSchema = z.infer<
+  typeof optionalInformationFormSchema
+>;
+
+function OptionalInformation({ nextStep }: { nextStep: () => void }) {
+  const { formatMessage: f } = useIntl();
+  const { register, watch, trigger, setValue, reset } =
+    useFormContext<OptionalInformationFormSchema>();
+  const [canContinue, setCanContinue] = useState(false);
+
+  const watchValues = watch([
+    "registration_date",
     "country_of_registration",
     "city_of_registration",
     "registration_number",
   ]);
 
   useEffect(() => {
-    const validateData = async () => {
+    const validate = async () => {
       const isValid = await trigger([
         "registration_date",
         "country_of_registration",
@@ -253,24 +341,33 @@ function OptionalInformation({
         "registration_number",
       ]);
 
-      setIsDataValid(isValid);
+      setCanContinue(isValid);
     };
 
-    void validateData();
-  }, [watchRequiredFields, trigger]);
+    void validate();
+  }, [watchValues, trigger]);
 
-  const skipInformation = () => {
-    [
-      "registration_date",
-      "country_of_registration",
-      "city_of_registration",
-      "registration_number",
-    ].forEach((field) => {
-      setValue(field, "");
-    });
+  const skip = () => {
+    reset((prev) => ({
+      ...prev,
+      registration_date: null,
+      country_of_registration: null,
+      city_of_registration: null,
+      registration_number: null,
+      logo: {
+        has_selected: false,
+        preview_url: null,
+        file_upload_id: null,
+      },
+      proof_of_registration: {
+        has_selected: false,
+        name: null,
+        size: null,
+        file_upload_id: null,
+      },
+    }));
 
-    setValue("logo_file_upload_id", null);
-    moveToNextStep();
+    nextStep();
   };
 
   return (
@@ -283,7 +380,7 @@ function OptionalInformation({
             description="Title for the optional information step"
           />
         </Title>
-        <Description className="text-center mx-10">
+        <Description className="text-center mx-8">
           <FormattedMessage
             id="company.create.optionalInformation.description"
             defaultMessage="This information is optional, enter it for your company's credit score"
@@ -292,62 +389,55 @@ function OptionalInformation({
         </Description>
       </div>
 
-      <div className="flex flex-col gap-3">
-        <LogoUpload />
+      <LogoPictureUpload />
 
+      <div className="flex flex-col gap-3 mb-auto">
         <DatePicker
           mode="single"
           customComponent={
-            <button className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg">
+            <div className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg cursor-pointer">
               <CalendarIcon className="text-text-300 h-5 w-5 stroke-1" />
-              {(watch("registration_date") &&
-                format(
-                  parseISO(watch("registration_date") as string),
-                  "dd-MMM-yyyy"
-                )) ||
+              {watch("registration_date") ||
                 f(messages["company.registration_date"])}
-            </button>
+            </div>
           }
-          onChange={(date) => {
+          onChange={({ from }) => {
             setValue(
               "registration_date",
-              format(date.from as unknown as string, "yyyy-MM-dd")
+              // @ts-expect-error - TS doesn't know about the date object
+              format(from, "yyyy-MM-dd")
             );
           }}
         />
-
         <CountrySelector
           label={f(messages["company.country_of_registration"])}
           callback={(country) => {
             setValue("country_of_registration", country);
           }}
+          value={watch("country_of_registration") || undefined}
         />
-
         <Input
           {...register("city_of_registration")}
           label={f(messages["company.city_of_registration"])}
           icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          required
         />
-
         <Input
           {...register("registration_number")}
           label={f(messages["company.registration_number"])}
           icon={<ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />}
-          required
         />
+        <DocumentFileUpload />
       </div>
 
-      <div className="flex flex-col gap-2 mt-auto">
-        <Button size="md" onClick={moveToNextStep} disabled={!isDataValid}>
+      <div className="flex flex-col gap-2">
+        <Button size="md" disabled={!canContinue} onClick={nextStep}>
           <FormattedMessage
             id="company.create.optionalInformation.continue"
             defaultMessage="Continue"
             description="Continue button for optional information"
           />
         </Button>
-
-        <Button variant="outline" size="md" onClick={skipInformation}>
+        <Button variant="outline" size="md" onClick={skip}>
           <FormattedMessage
             id="company.create.optionalInformation.skip"
             defaultMessage="Skip"
@@ -359,31 +449,47 @@ function OptionalInformation({
   );
 }
 
-function Preview({ callback }: { callback: () => void }) {
+function Preview({ nextStep }: { nextStep: () => void }) {
+  const [signOpen, setSignOpen] = useState(false);
   const { formatMessage: f } = useIntl();
-  const { getValues } = useFormContext();
+  const { getValues } = useFormContext<FormSchema>();
   const { toast } = useToast();
 
-  const values = getValues();
+  const {
+    name,
+    email,
+    country,
+    city,
+    zip,
+    address,
+    country_of_registration,
+    city_of_registration,
+    registration_number,
+    registration_date,
+    logo,
+    proof_of_registration,
+  } = getValues();
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => {
       return createCompany({
-        name: values.name as string,
-        email: values.email as string,
-        country: values.country as string,
-        city: values.city as string,
-        zip: values.zip as string,
-        address: values.address as string,
-        registration_date: values.registration_date as string,
-        country_of_registration: values.country_of_registration as string,
-        city_of_registration: values.city_of_registration as string,
-        registration_number: values.registration_number as string,
-        logo_file_upload_id: values.logo_file_upload_id as string,
+        name: name,
+        email: email,
+        country: country,
+        city: city,
+        zip: zip || "",
+        address: address,
+        registration_date: registration_date || null,
+        country_of_registration: country_of_registration || null,
+        city_of_registration: city_of_registration || null,
+        registration_number: registration_number || null,
+        logo_file_upload_id: logo.file_upload_id || null,
+        proof_of_registration_file_upload_id:
+          proof_of_registration.file_upload_id || null,
       });
     },
     onSuccess: () => {
-      callback();
+      nextStep();
     },
     onError: () => {
       toast({
@@ -396,19 +502,21 @@ function Preview({ callback }: { callback: () => void }) {
         position: "bottom-center",
       });
     },
+    onSettled: () => {
+      setSignOpen(!signOpen);
+    },
   });
 
-  const address = `${values.address as string}${
-    (values.zip as string) && ","
-  } ${values.zip as string}, ${values.city as string}, ${
-    values.country as string
-  }`;
-  const countryOfRegistration = values.country_of_registration
-    ? COUNTRIES[values.country_of_registration as keyof typeof COUNTRIES]
-    : "";
+  const combinedAddress =
+    [address, zip, city, COUNTRIES[country as keyof typeof COUNTRIES]]
+      .filter(Boolean)
+      .join(", ") || "-";
+
+  const parsedCountryOfRegistrationName =
+    COUNTRIES[country_of_registration as keyof typeof COUNTRIES];
 
   return (
-    <div className="flex-1 flex flex-col justify-between gap-6">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2">
         <Title>
           <FormattedMessage
@@ -429,63 +537,119 @@ function Preview({ callback }: { callback: () => void }) {
       <div className="flex flex-col items-center gap-4">
         <Picture
           size="lg"
-          name={getValues("name") as string}
-          image={""}
+          name={name}
+          image={logo.preview_url || ""}
           type={1}
         />
         <span className="text-text-300 text-xl font-medium leading-normal">
-          {values.name}
+          {name}
         </span>
       </div>
 
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
-        <Property
-          label={f(messages["company.email"])}
-          value={values.email as string}
-        />
+        <Property label={f(messages["company.email"])} value={email} />
         <Separator className="bg-divider-75" />
 
-        <Property label={f(messages["company.address"])} value={address} />
+        <Property
+          label={f(messages["company.address"])}
+          value={combinedAddress}
+        />
         <Separator className="bg-divider-75" />
 
         <Property
           label={f(messages["company.registration_date"])}
-          value={values.registration_date as string}
+          value={registration_date}
         />
         <Separator className="bg-divider-75" />
 
         <Property
           label={f(messages["company.country_of_registration"])}
-          value={countryOfRegistration}
+          value={parsedCountryOfRegistrationName}
         />
         <Separator className="bg-divider-75" />
 
         <Property
           label={f(messages["company.city_of_registration"])}
-          value={values.city_of_registration as string}
+          value={city_of_registration}
         />
         <Separator className="bg-divider-75" />
 
         <Property
           label={f(messages["company.registration_number"])}
-          value={values.registration_number as string}
+          value={registration_number}
         />
         <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["company.proof_of_registration"])}
+          value={
+            !proof_of_registration.has_selected ? (
+              "-"
+            ) : (
+              <UploadedFilePreview
+                name={proof_of_registration.name ?? "-"}
+                size={proof_of_registration.size ?? 0}
+              />
+            )
+          }
+        />
       </div>
 
-      <Button
-        size="md"
-        onClick={() => {
-          mutate();
-        }}
-        disabled={isPending}
-      >
-        <FormattedMessage
-          id="company.create.sign"
-          defaultMessage="Sign"
-          description="Label for the sign button"
-        />
-      </Button>
+      <div className="mt-auto">
+        <Sign
+          open={signOpen}
+          onOpenChange={() => {
+            setSignOpen(!signOpen);
+          }}
+          title={f({
+            id: "company.create.sign.title",
+            defaultMessage: "Are you sure?",
+            description: "Sign confirmation title",
+          })}
+          description={f({
+            id: "company.create.sign.description",
+            defaultMessage: "The creation of a company is legally binding",
+            description: "Sign confirmation description",
+          })}
+          confirm={
+            <Button
+              size="md"
+              onClick={() => {
+                mutate();
+              }}
+              disabled={isPending}
+            >
+              <FormattedMessage
+                id="company.create.sign.confirm"
+                defaultMessage="Confirm"
+                description="Sign company creation confirmation button"
+              />
+            </Button>
+          }
+          cancel={
+            <Button
+              size="md"
+              className="w-full"
+              variant="outline"
+              disabled={isPending}
+            >
+              <FormattedMessage
+                id="company.create.sign.cancel"
+                defaultMessage="Cancel"
+                description="Cancel company creation button"
+              />
+            </Button>
+          }
+        >
+          <Button className="w-full" size="md">
+            <FormattedMessage
+              id="company.create.sign"
+              defaultMessage="Sign"
+              description="Button to trigger company creation signature"
+            />
+          </Button>
+        </Sign>
+      </div>
     </div>
   );
 }
@@ -529,34 +693,16 @@ function Success() {
   );
 }
 
-const CreationFormSteps = {
-  REQUIRED_INFORMATION: "REQUIRED_INFORMATION",
-  POSTAL_ADDRESS: "POSTAL_ADDRESS",
-  OPTIONAL_INFORMATION: "OPTIONAL_INFORMATION",
-  PREVIEW: "PREVIEW",
-  SUCCESS: "SUCCESS",
-} as const;
+const formSchema = requiredInformationFormSchema
+  .merge(postalAddressFormSchema)
+  .merge(optionalInformationFormSchema);
 
-const formSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  country: z.string().min(1),
-  city: z.string().min(1),
-  zip: z.string().optional(),
-  address: z.string().min(1),
-  registration_date: z.string().min(1).optional(),
-  country_of_registration: z.string().min(2).optional(),
-  city_of_registration: z.string().min(1).optional(),
-  registration_number: z.string().min(1).optional(),
-  logo_file_upload_id: z.string().optional(),
-});
+type FormSchema = z.infer<typeof formSchema>;
 
 export default function Create() {
-  const [currentStep, setCurrentStep] = useState<
-    keyof typeof CreationFormSteps
-  >(CreationFormSteps.REQUIRED_INFORMATION);
+  const [step, setStep] = useState(0);
 
-  const methods = useForm({
+  const methods = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -565,63 +711,56 @@ export default function Create() {
       city: "",
       zip: "",
       address: "",
-      registration_date: "",
-      country_of_registration: "",
+      registration_date: null,
+      country_of_registration: null,
       city_of_registration: "",
       registration_number: "",
-      logo_file_upload_id: "",
+      logo: {
+        has_selected: false,
+        preview_url: null,
+        file_upload_id: null,
+      },
+      proof_of_registration: {
+        has_selected: false,
+        name: null,
+        size: null,
+        file_upload_id: null,
+      },
     },
   });
 
-  const steps = {
-    [CreationFormSteps.REQUIRED_INFORMATION]: (
-      <RequiredInformation
-        moveToNextStep={() => {
-          setCurrentStep(CreationFormSteps.POSTAL_ADDRESS);
-        }}
-      />
-    ),
-    [CreationFormSteps.POSTAL_ADDRESS]: (
-      <PostalAddress
-        moveToNextStep={() => {
-          setCurrentStep(CreationFormSteps.OPTIONAL_INFORMATION);
-        }}
-      />
-    ),
-    [CreationFormSteps.OPTIONAL_INFORMATION]: (
-      <OptionalInformation
-        moveToNextStep={() => {
-          setCurrentStep(CreationFormSteps.PREVIEW);
-        }}
-      />
-    ),
-    [CreationFormSteps.PREVIEW]: (
-      <Preview
-        callback={() => {
-          setCurrentStep(CreationFormSteps.SUCCESS);
-        }}
-      />
-    ),
-    [CreationFormSteps.SUCCESS]: <Success />,
+  const previousStep = () => {
+    setStep((prev) => {
+      if (prev === 0) return 0;
+
+      return prev - 1;
+    });
   };
 
-  const isSuccess = currentStep === CreationFormSteps.SUCCESS;
+  const nextStep = () => {
+    setStep((prev) => prev + 1);
+  };
 
   return (
-    <Page className="gap-5" displayBackgroundEllipse={isSuccess}>
-      {!isSuccess && (
-        <Topbar
-          lead={<NavigateBack />}
-          middle={
-            <StepIndicator
-              totalSteps={Object.keys(steps).length - 1}
-              currentStep={Object.keys(CreationFormSteps).indexOf(currentStep)}
-            />
-          }
-        />
-      )}
+    <Page className="gap-5" displayBackgroundEllipse={step === 4}>
+      <Topbar
+        lead={<NavigateBack callBack={previousStep} />}
+        middle={
+          step <= 2 ? (
+            <StepIndicator totalSteps={3} currentStep={step} />
+          ) : (
+            <></>
+          )
+        }
+      />
 
-      <FormProvider {...methods}>{steps[currentStep]}</FormProvider>
+      <FormProvider {...methods}>
+        {step === 0 && <RequiredInformation nextStep={nextStep} />}
+        {step === 1 && <PostalAddress nextStep={nextStep} />}
+        {step === 2 && <OptionalInformation nextStep={nextStep} />}
+        {step === 3 && <Preview nextStep={nextStep} />}
+        {step === 4 && <Success />}
+      </FormProvider>
     </Page>
   );
 }

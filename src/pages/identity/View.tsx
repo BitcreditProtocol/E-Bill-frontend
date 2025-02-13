@@ -73,7 +73,14 @@ function Information() {
       ? `${API_URL}/identity/file/${profile_picture_file.name}`
       : "";
   // todo: standardize date format; maybe use an util
-  const formattedDateOfBirth = format(parseISO(date_of_birth), "dd-MMM-yyyy");
+  const formattedDateOfBirth =
+    date_of_birth && date_of_birth !== ""
+      ? format(parseISO(date_of_birth), "dd-MMM-yyyy")
+      : "";
+  const combinedAddress =
+    [address, zip, city, COUNTRIES[country as keyof typeof COUNTRIES]]
+      .filter(Boolean)
+      .join(", ") || "-";
 
   return (
     <div className="flex flex-col gap-4">
@@ -88,7 +95,7 @@ function Information() {
 
         <Property
           label={f(messages["identity.address"])}
-          value={`${address}, ${zip}, ${city}, ${country}`}
+          value={combinedAddress}
         />
         <Separator className="bg-divider-75" />
 

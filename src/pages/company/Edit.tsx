@@ -32,6 +32,8 @@ import { DatePicker } from "@/components/DatePicker/datePicker";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { editCompany, getCompanyDetails } from "@/services/company";
 import { useToast } from "@/hooks/use-toast";
+import { API_URL } from "@/constants/api";
+import { GET_COMPANY_FILE } from "@/constants/endpoints";
 import routes from "@/constants/routes";
 import { messages } from "./components/messages";
 
@@ -87,11 +89,23 @@ function Form({ companyId }: { companyId: string }) {
     },
   });
 
-  const watchRequiredFields = methods.watch(["name", "email"]);
+  const watchRequiredFields = methods.watch([
+    "name",
+    "email",
+    "country",
+    "city",
+    "address",
+  ]);
 
   useEffect(() => {
     const validate = async () => {
-      const isValid = await methods.trigger(["name", "email"]);
+      const isValid = await methods.trigger([
+        "name",
+        "email",
+        "country",
+        "city",
+        "address",
+      ]);
 
       setIsDataValid(isValid);
     };
@@ -110,6 +124,7 @@ function Form({ companyId }: { companyId: string }) {
       });
     },
     onSuccess: async () => {
+      navigate(routes.VIEW_COMPANY);
       await queryClient.invalidateQueries({
         queryKey: ["company", "details", companyId],
       });
@@ -125,9 +140,22 @@ function Form({ companyId }: { companyId: string }) {
     },
   });
 
+  const logoImageUrl =
+    (data.logo_file !== null &&
+      `${API_URL}/${GET_COMPANY_FILE.replace(
+        ":node_id/:name",
+        data.id + "/" + data.logo_file.name
+      )}`) ||
+    "";
+
   return (
     <div className="flex flex-col gap-6">
-      <Summary identityType={1} name={data.name} nodeId={data.id} picture="" />
+      <Summary
+        identityType={1}
+        name={data.name}
+        nodeId={data.id}
+        picture={logoImageUrl}
+      />
 
       <FormProvider {...methods}>
         <div className="flex flex-col gap-3">
@@ -149,11 +177,13 @@ function Form({ companyId }: { companyId: string }) {
               methods.setValue("country", country);
             }}
             value={methods.watch("country")}
+            required
           />
           <Input
             {...methods.register("city")}
             label={f(messages["company.city"])}
             icon={<MapIcon className="text-text-300 h-5 w-5 stroke-1" />}
+            required
           />
           <Input
             {...methods.register("zip")}
@@ -165,11 +195,11 @@ function Form({ companyId }: { companyId: string }) {
             {...methods.register("address")}
             label={f(messages["company.address"])}
             icon={<MapPinnedIcon className="text-text-300 h-5 w-5 stroke-1" />}
+            required
           />
 
           <DatePicker
             mode="single"
-            value={{ from: parseISO(methods.watch("registration_date")) }}
             customComponent={
               <button className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg">
                 <CalendarIcon className="text-text-300 h-5 w-5 stroke-1" />

@@ -74,6 +74,7 @@ function Buyer() {
       </span>
 
       <ContactPicker
+        canEdit={true}
         onSelect={(contact) => {
           select(contact);
         }}

@@ -7,7 +7,10 @@ type IdentityContextType = {
     node_id: string;
     name: string;
     avatar: string;
-    address: string;
+    address: string | null;
+    country: string | null;
+    city: string | null;
+    zip: string | null;
   };
   switchActiveIdentity: ({
     node_id,

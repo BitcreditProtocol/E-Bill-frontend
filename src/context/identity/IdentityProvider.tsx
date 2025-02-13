@@ -21,8 +21,11 @@ export default function IdentityProvider({
   >(null);
   const [identityDetails, setIdentityDetails] = useState<{
     name: string;
-    address: string;
     avatar: string;
+    address: string;
+    country: string | null;
+    city: string | null;
+    zip: string | null;
   } | null>(null);
 
   useEffect(() => {
@@ -54,7 +57,6 @@ export default function IdentityProvider({
         const company = await getCompanyDetails(activeNodeId);
 
         const companyAvatar =
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           company.logo_file !== null
             ? `${API_URL}/company/file/${company.id}/${company.logo_file.name}`
             : "";
@@ -65,6 +67,9 @@ export default function IdentityProvider({
           // todo: fix logo file returned from the API
           // avatar: company.logo_file.name,
           avatar: companyAvatar,
+          city: company.city,
+          country: company.country,
+          zip: company.zip,
         });
 
         return;
@@ -81,6 +86,9 @@ export default function IdentityProvider({
           name: personalIdentity.name,
           address: personalIdentity.address,
           avatar: personalAvatar,
+          city: personalIdentity.city,
+          country: personalIdentity.country,
+          zip: personalIdentity.zip,
         });
 
         return;
@@ -115,7 +123,10 @@ export default function IdentityProvider({
           node_id: activeNodeId ?? "",
           name: identityDetails?.name ?? "",
           avatar: identityDetails?.avatar ?? "",
-          address: identityDetails?.address ?? "",
+          address: identityDetails?.address ?? null,
+          country: identityDetails?.country ?? null,
+          city: identityDetails?.city ?? null,
+          zip: identityDetails?.zip ?? null,
         },
         switchActiveIdentity,
       }}

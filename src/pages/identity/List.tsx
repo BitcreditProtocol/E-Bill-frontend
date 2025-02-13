@@ -170,7 +170,7 @@ function Companies() {
       name={company.name}
       address={company.address}
       avatar={
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+         
         company.logo_file !== null
           ? `${API_URL}/company/file/${company.id}/${company.logo_file.name}`
           : ""

@@ -28,19 +28,15 @@ export async function uploadFile(file: File): Promise<UploadFileResponse> {
 
 type CreateCompanyPayload = Pick<
   Company,
-  | "name"
-  | "email"
-  | "country"
-  | "city"
-  | "zip"
-  | "address"
-  | "registration_date"
-  | "country_of_registration"
-  | "city_of_registration"
-  | "registration_number"
+  "name" | "email" | "country" | "city" | "address"
 > & {
-  proof_of_registration_file_upload_id?: string;
-  logo_file_upload_id?: string;
+  registration_date: string | null;
+  country_of_registration: string | null;
+  city_of_registration: string | null;
+  registration_number: string | null;
+  zip: string | null;
+  proof_of_registration_file_upload_id?: string | null;
+  logo_file_upload_id?: string | null;
 };
 
 type CreateCompanyResponse = Company;

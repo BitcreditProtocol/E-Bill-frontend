@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import {
   createBrowserRouter,
+  Navigate,
   Outlet,
   RouteObject,
   RouterProvider,
@@ -14,7 +15,6 @@ import IdentityProvider from "./context/identity/IdentityProvider";
 import DefaultLayout from "./layouts/Default";
 import Authenticated from "./layouts/Authenticated";
 
-// import Unlock from "./pages/Unlock";
 import Login from "./pages/Login";
 import RecoverWithSeedPhrase from "./pages/RecoverWithSeedPhrase";
 import Home from "./pages/home";
@@ -24,7 +24,6 @@ import meta from "@/constants/meta";
 
 import "./index.css";
 import "./styles/fonts.css";
-// import { BillsEmpty } from "./pages/Bills";
 
 // settings
 import Settings from "./pages/settings";
@@ -49,9 +48,6 @@ import Pay from "./pages/bills/Pay";
 import ViewBill from "./pages/bills/View";
 import Offer from "./pages/bills/Offer";
 
-// import IssueBill from "./pages/IssueBill";
-// import PreviewBill from "./pages/PreviewBill";
-// import MintBill from "./pages/MintBill";
 import SellBill from "./pages/bills/Sell";
 import Recourse from "./pages/bills/Recourse";
 import RequestMint from "./pages/bills/RequestMint";
@@ -73,14 +69,10 @@ import CompanySigners from "./pages/company/Signers";
 import EditCompany from "./pages/company/Edit";
 import ViewCompany from "./pages/company/View";
 
-// import NonAcceptance from "./pages/recourse/NonAcceptance";
-// import NonPayment from "./pages/recourse/NonPayment";
-
 import { Toaster } from "./components/ui/toaster";
 import CashFlow from "./pages/home/CashFlow";
 
 const queryClient = new QueryClient();
-
 
 const router = createBrowserRouter(
   [
@@ -90,6 +82,10 @@ const router = createBrowserRouter(
         {
           element: <Authenticated />,
           children: [
+            {
+              path: routes.ROOT,
+              element: <Navigate to={routes.HOME} />,
+            },
             // public
             {
               path: routes.ONBOARDING,

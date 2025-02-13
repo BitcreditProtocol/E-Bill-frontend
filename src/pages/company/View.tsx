@@ -14,7 +14,9 @@ import Summary from "@/components/Summary";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { getCompanyDetails } from "@/services/company";
 import routes from "@/constants/routes";
-import type { Company } from "@/types/company";
+import { COUNTRIES } from "@/constants/countries";
+import { API_URL } from "@/constants/api";
+import { GET_COMPANY_FILE } from "@/constants/endpoints";
 import Property from "./components/Property";
 import { messages } from "./components/messages";
 
@@ -55,22 +57,42 @@ function Loader() {
 
 function Information({ companyId }: { companyId: string }) {
   const { formatMessage: f } = useIntl();
-  const { data } = useSuspenseQuery<Company>({
+  const { data } = useSuspenseQuery({
     queryKey: ["company", companyId, "details"],
     queryFn: () => getCompanyDetails(companyId),
   });
 
-  const combinedAddress = `${data.address}, ${
-    data.zip !== "" ? data.zip + ", " : ""
-  }${data.city}, ${data.country}`;
+  const avatarImageUrl =
+    (data.logo_file !== null &&
+      `${API_URL}/${GET_COMPANY_FILE.replace(
+        ":node_id/:name",
+        data.id + "/" + data.logo_file.name
+      )}`) ||
+    "";
+
+  const combinedAddress =
+    [
+      data.address,
+      data.zip,
+      data.city,
+      COUNTRIES[data.country as keyof typeof COUNTRIES],
+    ]
+      .filter(Boolean)
+      .join(", ") || "-";
+
   const registrationDate =
-    data.registration_date !== ""
+    data.registration_date && data.registration_date !== ""
       ? format(parseISO(data.registration_date), "dd-MMM-yyyy")
       : "";
 
   return (
     <div className="flex flex-col gap-6">
-      <Summary identityType={1} name={data.name} nodeId={data.id} picture="" />
+      <Summary
+        identityType={1}
+        name={data.name}
+        nodeId={data.id}
+        picture={avatarImageUrl}
+      />
 
       <div className="flex flex-col gap-3 py-6 px-5 border border-divider-75 rounded-xl">
         <Property label={f(messages["company.name"])} value={data.name} />
