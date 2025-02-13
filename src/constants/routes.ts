@@ -14,7 +14,7 @@ const SIGNUP = "/signup";
 const BILLS = "/bills";
 const VIEW_BILL = "/bill/:id";
 const ISSUE_BILL = "/issue-bill";
-const CREATE_BILL = "/create-bill";
+const CREATE_BILL = "/bill/create";
 const PREVIEW_BILL = "/preview-bill";
 const MINT_BILL = "/mint-bill";
 

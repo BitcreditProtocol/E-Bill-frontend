@@ -9,11 +9,12 @@ import RefreshButton from "@/components/RefreshButton";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { getBillDetails } from "@/services/bills";
 import { getQuote } from "@/services/quotes";
+import { API_URL } from "@/constants/api";
+import { GET_BILL_ATTACHMENT } from "@/constants/endpoints";
+import routes from "@/constants/routes";
 import Card, { Loader } from "./components/BillCard";
 import Actions from "./components/Actions";
 import EcashToken from "./mint/components/EcashToken";
-import { API_URL } from "@/constants/api";
-import { GET_BILL_ATTACHMENT } from "@/constants/endpoints";
 
 function Details({ id }: { id: string }) {
   const { activeIdentity } = useIdentity();
@@ -25,9 +26,14 @@ function Details({ id }: { id: string }) {
 
   const { data: quote } = useQuery({
     queryKey: ["quotes", id],
-    queryFn: () => getQuote(id).then((quote) => {
-      return quote.quote_id === "" ? null : quote;
-    }).catch(() => { return null })
+    queryFn: () =>
+      getQuote(id)
+        .then((quote) => {
+          return quote.quote_id === "" ? null : quote;
+        })
+        .catch(() => {
+          return null;
+        }),
   });
 
   // if drawee and current identity node ids are the same, then the role is payer
@@ -86,7 +92,7 @@ export default function View() {
   return (
     <Page className="gap-5">
       <Topbar
-        lead={<NavigateBack />}
+        lead={<NavigateBack route={routes.HOME} />}
         trail={
           <RefreshButton
             label={f({

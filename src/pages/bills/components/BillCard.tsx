@@ -12,9 +12,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
-import { getEndorsements } from "@/services/bills";
-import type { BillFull, Peer } from "@/types/bill";
 import { cn } from "@/lib/utils";
+import { getEndorsements } from "@/services/bills";
+import { COUNTRIES } from "@/constants/countries";
+import type { BillFull, Peer } from "@/types/bill";
 import { messages } from "./messages";
 
 function Separators() {
@@ -222,7 +223,9 @@ export default function BillCard({
   const intl = useIntl();
   const formattedIssueDate = format(parseISO(issue_date), "dd-MMM-yyyy");
   const issuingInformation = `${city_of_issuing}, ${country_of_issuing}, ${formattedIssueDate}`;
-  const placeOfPayment = `${city_of_payment}, ${country_of_payment}`;
+  const placeOfPayment = `${city_of_payment}, ${
+    COUNTRIES[country_of_payment as keyof typeof COUNTRIES]
+  }`;
 
   const { data: endorsements } = useQuery({
     queryKey: ["bills", id, "endorsements"],
@@ -230,6 +233,7 @@ export default function BillCard({
     enabled: endorsed,
   });
 
+  const formattedMaturityDate = format(parseISO(maturity_date), "dd-MMM-yyyy");
   const endorsementsCount = endorsements?.past_endorsees.length || 0;
 
   return (
@@ -269,7 +273,7 @@ export default function BillCard({
                 defaultMessage: "Pay on",
                 description: "Pay on property for bill card",
               })}
-              value={maturity_date}
+              value={formattedMaturityDate}
             />
             <Separator />
 
@@ -364,9 +368,16 @@ export default function BillCard({
           <span className="text-text-300 text-sm font-medium">
             <FormattedMessage
               id="bill.view.details.noProtest"
-              defaultMessage="No protest. Value received."
+              defaultMessage="No protest."
               description="No protest copy for bill card"
-            />
+            />{" "}
+            {attachment && attachment !== "" && (
+              <FormattedMessage
+                id="bill.view.details.valueReceived"
+                defaultMessage="Value received."
+                description="Value received. copy for bill card"
+              />
+            )}
           </span>
         </div>
       </div>
