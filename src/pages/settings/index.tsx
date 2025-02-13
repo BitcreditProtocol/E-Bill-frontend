@@ -23,6 +23,7 @@ import Theme from "./components/Theme";
 import MenuOption from "./components/MenuOption";
 import LanguagePreference from "./components/LanguagePreference";
 import { useState } from "react";
+import { exit } from "@/services/general";
 
 export default function Settings() {
   const intl = useIntl();
@@ -43,7 +44,9 @@ export default function Settings() {
           />
         </h1>
 
-        <PowerIcon className="text-text-300 h-6 w-6 stroke-1" />
+        <PowerIcon className="text-text-300 h-6 w-6 stroke-1 cursor-pointer" onClick={() => {
+          void exit();
+        }} />
       </div>
 
       <ViewDetails
