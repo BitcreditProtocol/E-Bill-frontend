@@ -4,6 +4,7 @@ import {
   AlignVerticalJustifyCenterIcon,
   BellDotIcon,
   CloudDownloadIcon,
+  EarthIcon,
   InfoIcon,
   LandmarkIcon,
   LockIcon,
@@ -26,6 +27,7 @@ import { PropsWithChildren, useState } from "react";
 import { exit } from "@/services/general";
 import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/language/LanguageContext";
 
 function ExitConfirmDialog({ children, onConfirm, disabled = false }: PropsWithChildren<{
   onConfirm: () => void
@@ -93,6 +95,7 @@ function ExitConfirmDialog({ children, onConfirm, disabled = false }: PropsWithC
 export default function Settings() {
   const intl = useIntl();
   const { activeIdentity } = useIdentity();
+  const lang = useLanguage();
 
   const backupFileUrl = `${API_URL}${DOWNLOAD_BACKUP}`;
 
@@ -144,7 +147,18 @@ export default function Settings() {
           <DisplayCurrency />
           <Separator className="bg-divider-75" />
 
-          <LanguagePreference />
+          <LanguagePreference value={lang.locale} onChange={(value) => {
+            lang.setLocale(value);
+          }} values={lang.availableLocales()}>
+            <MenuOption
+              icon={<EarthIcon className="text-text-300 h-6 w-6 stroke-1" />}
+              label={intl.formatMessage({
+                id: "settings.languagePreference",
+                defaultMessage: "Locale",
+              })}
+              defaultValue={lang.locale}
+            />
+          </LanguagePreference>
           <Separator className="bg-divider-75" />
 
           <MenuOption

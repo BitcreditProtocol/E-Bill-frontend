@@ -569,7 +569,7 @@
   "settings.exit.confirm": "Confirm",
   "settings.exit.description": "This will exit the application.",
   "settings.exit.title": "Are you sure?",
-  "settings.languagePreference": "Language",
+  "settings.languagePreference": "Locale",
   "settings.languagePreference.title": "Language preference",
   "settings.legal": "Legal",
   "settings.menu.about": "About",
