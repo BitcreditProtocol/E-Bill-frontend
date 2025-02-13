@@ -54,7 +54,7 @@ export default function Settings() {
       />
 
       <div className="flex flex-col gap-4 mb-16">
-        <div className="flex flex-col gap-4 py-6 px-4 border border-divider-75 rounded-xl">
+        <div className="flex flex-col gap-2.5 py-6 px-4 border border-divider-75 rounded-xl">
           <span className="text-text-200 text-sm font-medium leading-5">
             <FormattedMessage
               id="settings.menu.title"
