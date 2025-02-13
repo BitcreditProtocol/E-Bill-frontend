@@ -54,18 +54,18 @@ export default function SwitchContactType({
         />
       </Button>
 
-      <Button
-        active={contactType === ContactTypes.Mint}
-        onClick={() => {
-          onChange(ContactTypes.Mint);
-        }}
-      >
-        <FormattedMessage
-          id="contacts.create.type.mint"
-          defaultMessage="Mint"
-          description="Switch to mint contact type"
-        />
-      </Button>
+      {/*<Button*/}
+      {/*  active={contactType === ContactTypes.Mint}*/}
+      {/*  onClick={() => {*/}
+      {/*    onChange(ContactTypes.Mint);*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <FormattedMessage*/}
+      {/*    id="contacts.create.type.mint"*/}
+      {/*    defaultMessage="Mint"*/}
+      {/*    description="Switch to mint contact type"*/}
+      {/*  />*/}
+      {/*</Button>*/}
     </div>
   );
 }
