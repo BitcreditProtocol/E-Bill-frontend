@@ -205,10 +205,9 @@ function Information({ contactId }: { contactId: string }) {
       .join(", ") || "-";
 
   // todo: this can be a util. it's everywhere
-  const formattedDate = format(
-    parseISO(date_of_birth_or_registration),
-    "dd-MMM-yyyy"
-  );
+  const formattedDate =
+    date_of_birth_or_registration &&
+    format(parseISO(date_of_birth_or_registration), "dd-MMM-yyyy");
 
   const parsedCountryOfOriginName =
     COUNTRIES[country_of_birth_or_registration as keyof typeof COUNTRIES];
