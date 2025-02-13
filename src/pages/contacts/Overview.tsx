@@ -164,6 +164,7 @@ export default function Overview() {
             defaultMessage: "Name, address, email...",
             description: "Placeholder text for contacts search input",
           })}
+          value={searchTerm}
           onChange={setSearchTerm}
           onSearch={() => {
             mutate();

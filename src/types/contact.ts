@@ -22,6 +22,7 @@ export type Contact = {
   city: string;
   zip: string;
   address: string;
+  avatar_file: string | null;
   date_of_birth_or_registration: string;
   country_of_birth_or_registration: string;
   city_of_birth_or_registration: string;
