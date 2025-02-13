@@ -11,6 +11,11 @@ export const messages = defineMessages({
     defaultMessage: "Rejected",
     description: "Bill rejected status",
   },
+  "bill.status.unaccepted": {
+    id: "bill.status.unaccepted",
+    defaultMessage: "Unaccepted",
+    description: "Bill unaccepted status",
+  },
   "bill.status.pending_acceptance": {
     id: "bill.status.pending_acceptance",
     defaultMessage: "Pending acceptance",

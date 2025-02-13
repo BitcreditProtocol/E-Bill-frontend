@@ -8,8 +8,8 @@ const WILDCAT_ONE = {
 
 export const MINT_LIST = [
   { ...WILDCAT_ONE, enabled: true },
-  { name: "Fishermans Mint", node_id: "1", enabled: false },
-  { name: "Whalers Mint", node_id: "2", enabled: false },
+  // { name: "Fishermans Mint", node_id: "1", enabled: false },
+  // { name: "Whalers Mint", node_id: "2", enabled: false },
 ];
 
 export type MintConfig = {

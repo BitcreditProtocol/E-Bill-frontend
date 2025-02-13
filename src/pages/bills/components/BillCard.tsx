@@ -141,7 +141,7 @@ function Status({
   const message = {
     accepted: f(messages["bill.status.accepted"]),
     pending_acceptance: f(messages["bill.status.pending_acceptance"]),
-    unaccepted: f(messages["bill.status.rejected"]),
+    unaccepted: f(messages["bill.status.unaccepted"]),
     paid: f(messages["bill.status.paid"]),
     pending_payment: f(messages["bill.status.pending_payment"]),
     unpaid: f(messages["bill.status.unpaid"]),
