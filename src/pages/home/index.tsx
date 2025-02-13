@@ -175,6 +175,7 @@ export default function Home() {
         item_types: typeFilters.length === 0 ? SEARCH_ITEMS_ALL : typeFilters,
       }
     }),
+    staleTime: 30 * 1_000,
     enabled: false,
     refetchOnWindowFocus: false,
     retry: false,
@@ -241,7 +242,9 @@ export default function Home() {
             onChange={setSearchTerm}
             onFocus={() => { setSearchModeEnabled(true); }}
             onSearch={() => {
-              void doSearch()
+              if (searchTerm) {
+                void doSearch()
+              }
             }}
           />
         }

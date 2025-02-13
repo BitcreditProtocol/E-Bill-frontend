@@ -165,20 +165,13 @@ function SearchResults({ data } : { data: SearchResponse }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="text-text-200 text-xs font-medium">
-        <FormattedMessage
-          id="home.search.results.title"
-          defaultMessage="Search results"
-          description="Title for search results on home page"
-        />
-      </div>
       {isEmpty ? (<div className="text-text-300 text-sm font-medium">
         <FormattedMessage
           id="home.search.results.no_results.text"
           defaultMessage="No results"
           description="Title for no search results on Home page"
         />
-      </div>) : (<div className="flex flex-col gap-4">
+      </div>) : (<>
         {data.companies.map((it, index) => {
           return <CompanyPreview value={it} key={index} />
         })}
@@ -188,7 +181,7 @@ function SearchResults({ data } : { data: SearchResponse }) {
         {data.bills.map((it, index) => {
           return <BillPreview value={it} key={index} />
         })}
-      </div>)}
+      </>)}
     </div>
   );
 }
@@ -223,9 +216,20 @@ export default function HomeSearch({ searchTerm, isLoading, data }: HomeSearchPr
         {/* NOTE: Hidden for now, till actual data can be used. */}
         <RecentContacts values={__dev__RECENT_CONTACTS} />
       </div>
-      { (!searchTerm || !data) && !isLoading && (<SearchSuggestions />) }
-      {isLoading && <Loader />}
-      { !isLoading && searchTerm && data && <SearchResults data={data} /> }
+      {(!searchTerm || !data) && !isLoading && (<SearchSuggestions />)}
+      {((searchTerm && data) || isLoading) && (
+        <div className="flex flex-col gap-4">
+          <div className="text-text-200 text-xs font-medium">
+            <FormattedMessage
+              id="home.search.results.title"
+              defaultMessage="Search results"
+              description="Title for search results on home page"
+            />
+          </div>
+          {isLoading && <Loader />}
+          {!isLoading && searchTerm && data && <SearchResults data={data} />}
+        </div>
+      )}
     </div>
   );
 }
