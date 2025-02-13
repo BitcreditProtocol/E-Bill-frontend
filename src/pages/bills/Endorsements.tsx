@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { FormattedMessage, FormattedNumber } from "react-intl";
@@ -97,6 +97,17 @@ function List({ id }: { id: BillFull["id"] }) {
     queryFn: () => getEndorsements(id),
   });
 
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+  
+  const toggleSortOrder = () => {
+    setSortOrder((current) => current === "newest" ? "oldest" : "newest");
+  };
+
+  const sortedData = useMemo(() => {
+    const sorted = data.endorsements.sort((a, b) => a.signing_timestamp - b.signing_timestamp);
+    return sortOrder === "oldest" ? sorted : sorted.reverse(); 
+  }, [data, sortOrder])
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -118,18 +129,24 @@ function List({ id }: { id: BillFull["id"] }) {
           </div>
         </div>
 
-        <button className="flex items-center gap-1 p-0 text-text-300 text-xs font-medium">
+        <button className="flex items-center gap-1 p-0 text-text-300 text-xs font-medium"
+          onClick={() => { toggleSortOrder(); }}>
           <ChevronsUpDownIcon className="text-text-300 w-4 h-4 stroke-1" />
 
-          <FormattedMessage
-            id="bill.endorsements.sort"
+          {sortOrder === "newest" && (<FormattedMessage
+            id="bill.endorsements.sort.timestamp.desc"
             defaultMessage="Newest"
-            description="Sort endorsements"
-          />
+            description="Sort endorsements newest first"
+          />)}
+          {sortOrder === "oldest" && (<FormattedMessage
+            id="bill.endorsements.sort.timestamp.asc"
+            defaultMessage="Oldest"
+            description="Sort endorsements oldest first"
+          />)}
         </button>
       </div>
       <div className="flex flex-col gap-3">
-        {data.endorsements.map((endorsement, index) => (
+        {sortedData.map((endorsement, index) => (
           <Endorsement
             key={index}
             payee={endorsement.pay_to_the_order_of}
