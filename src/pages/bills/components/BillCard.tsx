@@ -14,6 +14,7 @@ import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { cn } from "@/lib/utils";
 import type { BillFull, Peer } from "@/types/bill";
 import { messages } from "./messages";
+import routes from "@/constants/routes";
 
 function Separators() {
   return (
@@ -189,7 +190,6 @@ type CardProps = {
   drawer: Pick<Peer, "name" | "address">;
   city_of_payment: BillFull["city_of_payment"];
   country_of_payment: BillFull["country_of_payment"];
-  endorsed: BillFull["endorsed"];
   accepted: BillFull["accepted"];
   requested_to_accept: BillFull["requested_to_accept"];
   paid: BillFull["paid"];
@@ -202,6 +202,7 @@ type CardProps = {
 };
 
 export default function BillCard({
+  id,
   sum,
   currency,
   city_of_issuing,
@@ -213,7 +214,6 @@ export default function BillCard({
   drawer,
   city_of_payment,
   country_of_payment,
-  endorsed,
   accepted,
   requested_to_accept,
   paid,
@@ -407,7 +407,7 @@ export default function BillCard({
           />
         </div>
 
-        <Link to={endorsed ? "endorsements" : "#"}>
+        <Link to={routes.ENDORSEMENTS.replace(":id", id)}>
           <button className="flex items-center gap-1">
             <span className="text-text-200 text-xs font-normal">
               <FormattedMessage

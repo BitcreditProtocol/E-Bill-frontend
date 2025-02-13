@@ -87,7 +87,6 @@ function Details({ id }: { id: string }) {
         drawer={{ name: data.drawer.name, address: data.drawer.address }}
         city_of_payment={data.city_of_payment}
         country_of_payment={data.country_of_payment}
-        endorsed={data.endorsed}
         requested_to_accept={data.requested_to_accept}
         requested_to_pay={data.requested_to_pay}
         accepted={data.accepted}
@@ -100,9 +99,7 @@ function Details({ id }: { id: string }) {
       />
 
       {quote && quote.token && (
-        <>
-          <EcashToken token={quote.token} />
-        </>
+        <EcashToken token={quote.token} />
       )}
 
       {<Actions role={role} {...data} />}
