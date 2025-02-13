@@ -44,8 +44,10 @@ export default function Preview() {
   const { toast } = useToast();
   const { activeIdentity } = useIdentity();
 
+  console.log("getValues", getValues());
+
   const formattedIssueDate = format(
-    parseISO(getValues("issuance.date")),
+    parseISO(getValues("issuance.date") || ""),
     "dd-MMM-yyyy"
   );
   const formattedMaturityDate = format(
@@ -66,10 +68,10 @@ export default function Preview() {
         type: getValues("type"),
         country_of_issuing: getValues("issuance.country"),
         city_of_issuing: getValues("issuance.city"),
-        issue_date: getValues("issuance.date"),
+        issue_date: getValues("issuance.date") || "",
         maturity_date: getValues("payment.date") || "",
-        sum: getValues("sum").toString(),
-        currency: getValues("currency"),
+        sum: getValues("billing.sum")?.toString() || "",
+        currency: getValues("billing.currency"),
         language: getValues("language"),
         country_of_payment: getValues("payment.country"),
         city_of_payment: getValues("payment.city"),
@@ -172,11 +174,16 @@ export default function Preview() {
                   description: "Sum property for bill card",
                 })}
                 value={
-                  <FormattedCurrency
-                    value={getValues("sum")}
-                    color="none"
-                    signDisplay="never"
-                  />
+                  <div className="flex items-center gap-1">
+                    <FormattedCurrency
+                      value={getValues("billing.sum") || 0}
+                      type="debit"
+                      signDisplay="never"
+                    />
+                    <span className="text-text-200 text-[10px] font-normal leading-[14px]">
+                      {getValues("billing.currency")}
+                    </span>
+                  </div>
                 }
               />
               <Separator />

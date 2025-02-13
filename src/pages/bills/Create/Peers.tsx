@@ -22,15 +22,13 @@ function Placeholder({ label }: { label: string }) {
   );
 }
 
-const payeeFormSchema = z.object({
-  payee: z
-    .object({
-      node_id: z.string(),
-      name: z.string(),
-      address: z.string(),
-    })
-    .nullable(),
-});
+const payeeFormSchema = z
+  .object({
+    node_id: z.string(),
+    name: z.string(),
+    address: z.string(),
+  })
+  .nullable();
 
 export function Payee() {
   const { formatMessage: f } = useIntl();
@@ -109,15 +107,13 @@ export function Payee() {
 
 Payee.formSchema = payeeFormSchema;
 
-const payerFormSchema = z.object({
-  drawee: z
-    .object({
-      node_id: z.string(),
-      name: z.string(),
-      address: z.string(),
-    })
-    .nullable(),
-});
+const payerFormSchema = z
+  .object({
+    node_id: z.string(),
+    name: z.string(),
+    address: z.string(),
+  })
+  .nullable();
 
 export function Payer() {
   const { formatMessage: f } = useIntl();

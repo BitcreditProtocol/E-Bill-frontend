@@ -135,6 +135,7 @@
   "bill.card.placeOfPayment": "Place of payment",
   "bill.card.status": "Status:",
   "bill.create.billOfExchange": "Against this bill of exchange",
+  "bill.create.discount": "Calculate discount",
   "bill.create.invoice.noProtest": "No protest.",
   "bill.create.invoice.valueReceived": "Value received.",
   "bill.create.issuance.cancel": "Cancel",

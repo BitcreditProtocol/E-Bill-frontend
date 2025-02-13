@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Payee, Payer } from "./Peers";
 import PaymentDate from "./PaymentDate";
 import Issuance from "./Issuance";
+import Amount from "./Amount";
 import PlaceOfPayment from "./PlaceOfPayment";
 import Invoice from "./Invoice";
 import Preview from "./Preview";
@@ -25,15 +26,55 @@ import Preview from "./Preview";
 const formSchema = z
   .object({
     type: z.number(),
+    payee: Payee.formSchema,
+    drawee: Payer.formSchema,
     issuance: Issuance.formSchema,
     payment: PlaceOfPayment.formSchema.merge(PaymentDate.formSchema).nullable(),
-    sum: z.number().min(1),
-    currency: z.string().min(1),
+    billing: Amount.formSchema,
     language: z.string().min(1),
     invoice: Invoice.formSchema,
   })
-  .merge(Payee.formSchema)
-  .merge(Payer.formSchema);
+  .superRefine((data, ctx) => {
+    if (!data.issuance) {
+      ctx.addIssue({
+        path: ["issuance"],
+        message: "Issuance details are required.",
+        code: z.ZodIssueCode.custom,
+      });
+    }
+
+    if (!data.payee) {
+      ctx.addIssue({
+        path: ["payee"],
+        message: "Payee details are required.",
+        code: z.ZodIssueCode.custom,
+      });
+    }
+
+    if (!data.drawee) {
+      ctx.addIssue({
+        path: ["drawee"],
+        message: "Drawee details are required.",
+        code: z.ZodIssueCode.custom,
+      });
+    }
+
+    if (!data.payment) {
+      ctx.addIssue({
+        path: ["payment"],
+        message: "Payment details are required.",
+        code: z.ZodIssueCode.custom,
+      });
+    }
+
+    if (!data.billing.sum) {
+      ctx.addIssue({
+        path: ["billing", "sum"],
+        message: "Amount is required.",
+        code: z.ZodIssueCode.custom,
+      });
+    }
+  });
 
 export type CreateBillFormSchema = z.infer<typeof formSchema>;
 
@@ -57,8 +98,8 @@ function Details({
   }, [bill, trigger]);
 
   return (
-    <div className="flex-1 flex flex-col justify-between mb-auto">
-      <div className="flex flex-col gap-4">
+    <div className="flex-1 flex flex-col justify-between ">
+      <div className="flex flex-col gap-4 mb-auto">
         <Issuance />
 
         <span className="text-text-300 text-xl font-medium leading-normal">
@@ -77,7 +118,6 @@ function Details({
               description="pay on label"
             />
           </Label>
-
           <PaymentDate />
         </div>
 
@@ -92,6 +132,8 @@ function Details({
           <Payee />
         </div>
 
+        <Amount />
+
         <div className="flex flex-col gap-2">
           <Label className="font-normal">
             <FormattedMessage
@@ -104,6 +146,7 @@ function Details({
         </div>
 
         <PlaceOfPayment />
+
         <Invoice />
       </div>
 
@@ -132,12 +175,14 @@ export default function Create() {
       type: 0,
       issuance: null,
       payment: null,
-      sum: 0,
-      currency: "sat",
+      billing: {
+        sum: null,
+        discount: null,
+        currency: "sat",
+      },
       language: "en-US",
       payee: null,
       drawee: null,
-
       invoice: {
         has_selected_file: false,
         file_name: "",
