@@ -64,16 +64,14 @@ const STEPS = {
 
 type ContactPickerProps = {
   children: React.ReactNode;
-  onSelect: (
-    contact: Pick<Contact, "node_id" | "name" | "address" | "type">
-  ) => void;
+  onSelect: (contact: Contact) => void;
   canEdit: boolean;
 };
 
 export default function ContactPicker({
   children,
   onSelect,
-  canEdit,
+  canEdit = true,
 }: ContactPickerProps) {
   const { formatMessage: f } = useIntl();
   const [open, setOpen] = useState(false);

@@ -44,8 +44,6 @@ export default function Preview() {
   const { toast } = useToast();
   const { activeIdentity } = useIdentity();
 
-  console.log("getValues", getValues());
-
   const formattedIssueDate = format(
     parseISO(getValues("issuance.date") || ""),
     "dd-MMM-yyyy"
@@ -107,7 +105,7 @@ export default function Preview() {
   });
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col gap-10">
       <div className="flex flex-col border border-divider-50 rounded-xl select-none mb-auto">
         <div className="flex flex-col gap-3 p-5 bg-elevation-200 rounded-xl">
           <div className="flex justify-between">

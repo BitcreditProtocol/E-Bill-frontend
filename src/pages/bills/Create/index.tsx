@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FormProvider,
   useForm,
@@ -8,13 +9,14 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormattedMessage } from "react-intl";
-
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import PageTitle from "@/components/typography/PageTitle";
 import Label from "@/components/typography/Label";
 import { Button } from "@/components/ui/button";
+import routes from "@/constants/routes";
+import Category from "./Category";
 import { Payee, Payer } from "./Peers";
 import PaymentDate from "./PaymentDate";
 import Issuance from "./Issuance";
@@ -78,11 +80,7 @@ const formSchema = z
 
 export type CreateBillFormSchema = z.infer<typeof formSchema>;
 
-function Details({
-  setIsPreviewing,
-}: {
-  setIsPreviewing: (value: boolean) => void;
-}) {
+function Form({ setIsPreviewing }: { setIsPreviewing: () => void }) {
   const [isValid, setIsValid] = useState(false);
   const { control, trigger } = useFormContext<CreateBillFormSchema>();
   const bill = useWatch<CreateBillFormSchema>({ control });
@@ -98,7 +96,7 @@ function Details({
   }, [bill, trigger]);
 
   return (
-    <div className="flex-1 flex flex-col justify-between ">
+    <div className="flex-1 flex flex-col gap-10">
       <div className="flex flex-col gap-4 mb-auto">
         <Issuance />
 
@@ -153,7 +151,7 @@ function Details({
       <Button
         className="w-full"
         onClick={() => {
-          setIsPreviewing(true);
+          setIsPreviewing();
         }}
         disabled={!isValid}
       >
@@ -168,11 +166,13 @@ function Details({
 }
 
 export default function Create() {
-  const [isPreviewing, setIsPreviewing] = useState(false);
+  const [step, setStep] = useState(0);
+  const navigate = useNavigate();
+
   const methods = useForm<CreateBillFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: 0,
+      type: -1,
       issuance: null,
       payment: null,
       billing: {
@@ -192,10 +192,29 @@ export default function Create() {
     },
   });
 
+  const billType = methods.watch("type");
+
+  useEffect(() => {
+    if (billType > -1) setStep(1);
+  }, [billType]);
+
+  const navigateBack = () => {
+    if (step === 0) {
+      navigate(routes.BILLS);
+      return;
+    }
+
+    if (step === 1) {
+      methods.reset();
+    }
+
+    setStep((prev) => prev - 1);
+  };
+
   return (
     <Page className="gap-6">
       <Topbar
-        lead={<NavigateBack />}
+        lead={<NavigateBack callBack={navigateBack} />}
         middle={
           <PageTitle>
             <FormattedMessage
@@ -208,8 +227,15 @@ export default function Create() {
       />
 
       <FormProvider {...methods}>
-        <Details setIsPreviewing={setIsPreviewing} />
-        {isPreviewing && <Preview />}
+        {step === 0 && <Category />}
+        {step === 1 && (
+          <Form
+            setIsPreviewing={() => {
+              setStep(2);
+            }}
+          />
+        )}
+        {step === 2 && <Preview />}
       </FormProvider>
     </Page>
   );

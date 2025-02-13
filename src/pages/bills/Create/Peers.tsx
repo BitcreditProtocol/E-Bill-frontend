@@ -3,12 +3,13 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { useIntl } from "react-intl";
 import { ChevronRightIcon, PencilIcon, UserIcon } from "lucide-react";
-
 import ContactPicker from "@/components/Contact/ContactPicker";
 import Picture from "@/components/Picture";
+import { useIdentity } from "@/context/identity/IdentityContext";
 import { BILL_TYPE } from "@/types/bill";
 import type { Contact } from "@/types/contact";
 import type { CreateBillFormSchema } from "./index";
+import { format, parseISO } from "date-fns";
 
 function Placeholder({ label }: { label: string }) {
   return (
@@ -32,6 +33,7 @@ const payeeFormSchema = z
 
 export function Payee() {
   const { formatMessage: f } = useIntl();
+  const { activeIdentity } = useIdentity();
   const { control, setValue } = useFormContext<CreateBillFormSchema, "payee">();
   const billType = useWatch<CreateBillFormSchema, "type">({
     control,
@@ -44,13 +46,19 @@ export function Payee() {
 
   useEffect(() => {
     if (billType === BILL_TYPE.SELF_DRAFTED) {
+      setValue("issuance", {
+        city: activeIdentity.city ?? "",
+        country: activeIdentity.country ?? "",
+        date: format(parseISO(new Date().toISOString()), "yyyy-MM-dd"),
+      });
+
       setValue("payee", {
-        node_id: "self",
-        name: "Selfs",
-        address: "Self",
+        node_id: activeIdentity.node_id,
+        name: activeIdentity.name,
+        address: activeIdentity.address ?? "",
       });
     }
-  }, [billType, setValue]);
+  }, [billType, activeIdentity, setValue]);
 
   const handleSelectPayee = (
     contact: Pick<Contact, "node_id" | "name" | "address">
@@ -117,6 +125,7 @@ const payerFormSchema = z
 
 export function Payer() {
   const { formatMessage: f } = useIntl();
+  const { activeIdentity } = useIdentity();
   const { control, setValue } = useFormContext<
     CreateBillFormSchema,
     "drawee"
@@ -132,13 +141,19 @@ export function Payer() {
 
   useEffect(() => {
     if (billType === BILL_TYPE.PROMISSORY_NOTE) {
+      setValue("issuance", {
+        city: activeIdentity.city ?? "",
+        country: activeIdentity.country ?? "",
+        date: format(parseISO(new Date().toISOString()), "yyyy-MM-dd"),
+      });
+
       setValue("drawee", {
-        node_id: "self",
-        name: "Selfs",
-        address: "Self",
+        node_id: activeIdentity.node_id,
+        name: activeIdentity.name,
+        address: activeIdentity.address ?? "",
       });
     }
-  }, [billType, setValue]);
+  }, [billType, activeIdentity, setValue]);
 
   const handleSelectPayer = (
     contact: Pick<Contact, "node_id" | "name" | "address">

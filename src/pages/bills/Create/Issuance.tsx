@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { format, parseISO } from "date-fns";
@@ -44,6 +44,15 @@ export default function Issuance() {
     country: issuance?.country,
     date: issuance?.date,
   });
+
+  useEffect(() => {
+    setNewIssuanceData({
+      city: issuance?.city,
+      country: issuance?.country,
+      date: issuance?.date,
+    });
+  }, [issuance]);
+
   const [open, setOpen] = useState(false);
   const closeDialog = () => {
     setOpen(false);
