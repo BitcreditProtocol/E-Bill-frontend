@@ -23,6 +23,11 @@ const data: SearchResponse = {
   })),
   companies: db.company.getAll().map((it) => ({
     ...it,
+    zip: it.zip || '',
+    registration_date: it.registration_date || '',
+    country_of_registration: it.country_of_registration || '',
+    city_of_registration: it.city_of_registration || '',
+    registration_number: it.registration_number || '',
     logo_file: {
       "name": "",
       "hash": "",
@@ -35,6 +40,7 @@ const data: SearchResponse = {
   })),
   contacts: db.contact.getAll().map((it) => ({
     ...it,
+    zip: it.zip || '',
     avatar_file: null,
   })),
 };

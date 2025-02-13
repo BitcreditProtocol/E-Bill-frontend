@@ -57,7 +57,7 @@ export default function IdentityProvider({
         const company = await getCompanyDetails(activeNodeId);
 
         const companyAvatar =
-          company.logo_file !== null
+          company.logo_file
             ? `${API_URL}/company/file/${company.id}/${company.logo_file.name}`
             : "";
 
@@ -78,7 +78,7 @@ export default function IdentityProvider({
 
         const personalAvatar =
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          personalIdentity.profile_picture_file !== null
+          personalIdentity.profile_picture_file
             ? `${API_URL}/identity/file/${personalIdentity.profile_picture_file.name}`
             : "";
 

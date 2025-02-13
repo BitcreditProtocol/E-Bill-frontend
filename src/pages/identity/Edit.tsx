@@ -134,7 +134,7 @@ function Form() {
 
   const avatar =
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    data.profile_picture_file !== null
+    data.profile_picture_file
       ? `${API_URL}/identity/file/${data.profile_picture_file.name}`
       : "";
 

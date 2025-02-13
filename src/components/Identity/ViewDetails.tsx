@@ -8,8 +8,12 @@ import { truncateString } from "@/utils/strings";
 import type { Identity } from "@/types/identity";
 import { Link } from "react-router-dom";
 import routes from "@/constants/routes";
+import { cn } from "@/lib/utils";
 
-type DetailsProps = { type: "personal" | "company" | null } & Pick<
+type DetailsProps = { 
+  type: "personal" | "company" | null,
+  showLink?: boolean
+} & Pick<
   Identity,
   "name" | "bitcoin_public_key"
 >;
@@ -18,6 +22,7 @@ export default function ViewDetails({
   type,
   name,
   bitcoin_public_key,
+  showLink = true,
 }: DetailsProps) {
   const { formatMessage: f } = useIntl();
   const { toast } = useToast();
@@ -59,7 +64,9 @@ export default function ViewDetails({
         </button>
       </div>
 
-      <Link className="ml-auto" to={viewIdentityRoute}>
+      <Link to={viewIdentityRoute} className={cn("ml-auto", {
+        "hidden": !showLink
+      })}>
         <button className="flex items-center gap-2">
           <span className="text-text-300 text-sm font-normal leading-5">
             <FormattedMessage id="identity.view" defaultMessage="View" />

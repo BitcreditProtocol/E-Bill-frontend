@@ -22,7 +22,73 @@ import Agreements from "./components/Agreements";
 import Theme from "./components/Theme";
 import MenuOption from "./components/MenuOption";
 import LanguagePreference from "./components/LanguagePreference";
-import { useState } from "react";
+import { PropsWithChildren, useState } from "react";
+import { exit } from "@/services/general";
+import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
+
+function ExitConfirmDialog({ children, onConfirm, disabled = false }: PropsWithChildren<{
+  onConfirm: () => void
+  disabled?: boolean
+}>) {
+  const [open, setOpen] = useState(false);
+  return (
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger>
+        {children}
+      </DrawerTrigger>
+      <DrawerContent className="max-w-[375px] bg-elevation-50 mx-auto">
+        <div className="flex flex-col gap-6 py-8 px-5">
+          <div className="flex flex-col gap-1.5">
+            <span className="text-text-300 text-lg font-medium">
+              <FormattedMessage
+                id="settings.exit.title"
+                defaultMessage="Are you sure?"
+                description="Title for exit confirm dialog"
+              />
+            </span>
+
+            <span className="text-text-200 text-xs">
+              <FormattedMessage
+                id="settings.exit.description"
+                defaultMessage="This will exit the application."
+                description="Description for exit confirm dialog"
+              />
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <Button
+              className="w-full"
+              size="md"
+              onClick={() => {
+                onConfirm();
+                setOpen(false);
+              }}
+              disabled={disabled}
+            >
+              <FormattedMessage
+                id="settings.exit.confirm"
+                defaultMessage="Confirm"
+                description="Confirm button text for exit confirm dialog"
+              />
+            </Button>
+
+            <DrawerClose>
+              <Button className="w-full" variant="outline" size="md">
+                <FormattedMessage
+                  id="settings.exit.cancel"
+                  defaultMessage="Cancel"
+                  description="Cancel button text for exit confirm dialog"
+                />
+              </Button>
+            </DrawerClose>
+          </div>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
+}
 
 export default function Settings() {
   const intl = useIntl();
@@ -43,7 +109,9 @@ export default function Settings() {
           />
         </h1>
 
-        <PowerIcon className="text-text-300 h-6 w-6 stroke-1" />
+        <ExitConfirmDialog onConfirm={() => { void exit(); }}>
+          <PowerIcon className="text-text-300 h-6 w-6 stroke-1 cursor-pointer"/>
+        </ExitConfirmDialog>
       </div>
 
       <ViewDetails
@@ -54,7 +122,7 @@ export default function Settings() {
       />
 
       <div className="flex flex-col gap-4 mb-16">
-        <div className="flex flex-col gap-4 py-6 px-4 border border-divider-75 rounded-xl">
+        <div className="flex flex-col gap-2.5 py-6 px-4 border border-divider-75 rounded-xl">
           <span className="text-text-200 text-sm font-medium leading-5">
             <FormattedMessage
               id="settings.menu.title"
