@@ -1,3 +1,5 @@
+import { Notification } from "./notification";
+
 export type Bill = {
   bill_name: string;
   role?: "payee" | "payer" | "drawer" | "holder" | "endorsee";
@@ -36,6 +38,8 @@ export type Bill = {
   files?: {
     file_name: string;
   }[];
+  endorsements_count: 1;
+  active_notification: Notification | null;
 };
 
 export type SearchBillsFilter = {
@@ -105,6 +109,8 @@ export type BillFull = {
   chain_of_blocks: {
     blocks: Block[];
   };
+  endorsements_count: 1;
+  active_notification: Notification | null;
 };
 
 // for bill creation

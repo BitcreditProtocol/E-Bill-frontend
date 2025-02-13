@@ -60,6 +60,10 @@ function Details({ id }: { id: string }) {
   // if drawee and current identity node ids are the same, then the role is payer
   // if bill is endorsed, and endorsee and current identity node ids are the same, then the role is holder
   const isPayer = data.drawee.node_id === activeIdentity.node_id;
+  const isPayee =
+    (data.endorsed && data.endorsee?.node_id === activeIdentity.node_id) ||
+    data.payee.node_id === activeIdentity.node_id;
+
   const isHolder = holder.node_id === activeIdentity.node_id;
   const role = isPayer ? "payer" : isHolder ? "holder" : null;
 
@@ -73,6 +77,7 @@ function Details({ id }: { id: string }) {
       <Card
         id={data.id}
         sum={data.sum}
+        currency={data.currency}
         city_of_issuing={data.city_of_issuing}
         country_of_issuing={data.country_of_issuing}
         issue_date={data.issue_date}
@@ -89,6 +94,8 @@ function Details({ id }: { id: string }) {
         paid={data.paid}
         waiting_for_payment={data.waiting_for_payment}
         attachment={attachment}
+        isPayer={isPayer}
+        isPayee={isPayee}
       />
 
       {quote && quote.token && (

@@ -86,6 +86,7 @@ type GetBillsLightResponse = {
     sum: BillFull["sum"];
     currency: BillFull["currency"];
     issue_date: BillFull["issue_date"];
+    active_notification: BillFull["active_notification"];
   }[];
 };
 
@@ -381,7 +382,9 @@ export async function requestAcceptanceRecourse(
   });
 }
 
-export async function rejectToPayRecourse(bill_id: BillFull["id"]): Promise<void> {
+export async function rejectToPayRecourse(
+  bill_id: BillFull["id"]
+): Promise<void> {
   return apiFetch(REJECT_BILL_PAYMENT_RECOURSE, {
     method: "PUT",
     headers: {

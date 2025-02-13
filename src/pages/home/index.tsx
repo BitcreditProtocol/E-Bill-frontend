@@ -146,6 +146,10 @@ function RecentBills({ values }: RecentBillsProps) {
             amount={bill.sum}
             currency={bill.currency}
             date={bill.issue_date}
+            drawee={bill.drawee}
+            payee={bill.payee}
+            endorsee={bill.endorsee}
+            hasPendingAction={bill.active_notification !== null || false}
           />
         </Link>
       ))}

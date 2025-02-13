@@ -14,7 +14,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { cn } from "@/lib/utils";
 import { getEndorsements } from "@/services/bills";
-import { COUNTRIES } from "@/constants/countries";
 import type { BillFull, Peer } from "@/types/bill";
 import { messages } from "./messages";
 
@@ -182,6 +181,7 @@ function Status({
 type CardProps = {
   id: BillFull["id"];
   sum: BillFull["sum"];
+  currency: string;
   city_of_issuing: string;
   country_of_issuing: string;
   issue_date: BillFull["issue_date"];
@@ -198,11 +198,14 @@ type CardProps = {
   requested_to_pay: BillFull["requested_to_pay"];
   waiting_for_payment: BillFull["waiting_for_payment"];
   attachment: string | null;
+  isPayer: boolean;
+  isPayee: boolean;
 };
 
 export default function BillCard({
   id,
   sum,
+  currency,
   city_of_issuing,
   country_of_issuing,
   issue_date,
@@ -219,13 +222,15 @@ export default function BillCard({
   requested_to_pay,
   waiting_for_payment,
   attachment,
+  isPayer,
+  isPayee,
 }: CardProps) {
   const intl = useIntl();
   const formattedIssueDate = format(parseISO(issue_date), "dd-MMM-yyyy");
   const issuingInformation = `${city_of_issuing}, ${country_of_issuing}, ${formattedIssueDate}`;
-  const placeOfPayment = `${city_of_payment}, ${
-    COUNTRIES[country_of_payment as keyof typeof COUNTRIES]
-  }`;
+  const placeOfPayment = [city_of_payment, country_of_payment]
+    .filter(Boolean)
+    .join(", ");
 
   const { data: endorsements } = useQuery({
     queryKey: ["bills", id, "endorsements"],
@@ -303,11 +308,20 @@ export default function BillCard({
                 description: "Sum property for bill card",
               })}
               value={
-                <FormattedCurrency
-                  value={Number(sum)}
-                  color="none"
-                  signDisplay="never"
-                />
+                <div className="flex items-center gap-1">
+                  <FormattedCurrency
+                    className={cn("!text-sm, !font-medium !leading-5", {
+                      "!text-signal-error": isPayer,
+                      "!text-signal-success": isPayee,
+                      "!text-text-300": !isPayer && !isPayee,
+                    })}
+                    value={isPayer ? -parseInt(sum) : parseInt(sum)}
+                    currency=""
+                  />
+                  <span className="text-text-200 text-[10px] font-normal leading-[14px]">
+                    {currency}
+                  </span>
+                </div>
               }
             />
             <Separator />

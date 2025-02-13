@@ -163,7 +163,8 @@ function List() {
 
   const { data } = useSuspenseQuery({
     queryKey: [mintConfig.__dev_mintViewEnabled ? "bills-all" : "bills"],
-    queryFn: () => mintConfig.__dev_mintViewEnabled ? getBillsAll() :  getBillsLight(),
+    queryFn: () =>
+      mintConfig.__dev_mintViewEnabled ? getBillsAll() : getBillsLight(),
   });
 
   // todo: fix bills being identified as earlier if date is not strictly today
@@ -237,6 +238,10 @@ function List() {
                   date={bill.issue_date}
                   amount={Number(bill.sum)}
                   currency={bill.currency}
+                  drawee={bill.drawee}
+                  payee={bill.payee}
+                  endorsee={bill.endorsee}
+                  hasPendingAction={bill.active_notification !== null || false}
                 />
               </Link>
             ))}
@@ -269,6 +274,10 @@ function List() {
                   date={bill.issue_date}
                   amount={Number(bill.sum)}
                   currency={bill.currency}
+                  drawee={bill.drawee}
+                  payee={bill.payee}
+                  endorsee={bill.endorsee}
+                  hasPendingAction={bill.active_notification !== null || false}
                 />
               </Link>
             ))}

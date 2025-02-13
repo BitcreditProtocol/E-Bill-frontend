@@ -49,6 +49,7 @@ function Endorsee({
 }) {
   return (
     <ContactPicker
+      canEdit
       onSelect={(contact) => {
         setEndorsee(contact);
       }}
