@@ -78,6 +78,7 @@ function CalculateDiscount() {
       </DrawerTrigger>
       <DrawerContent className="flex flex-col items-center gap-6 pb-5 px-5 max-w-[375px] bg-elevation-50 mx-auto">
         <DiscountForm
+          currency="sat"
           startDate={parseISO(
             watch("issuance.date") ?? new Date().toISOString()
           )}

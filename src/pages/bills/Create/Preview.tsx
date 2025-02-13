@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormContext } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
@@ -7,6 +8,7 @@ import { PaperclipIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
+import Sign from "@/components/Sign";
 import { useToast } from "@/hooks/use-toast";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { createBill } from "@/services/bills";
@@ -40,7 +42,7 @@ export default function Preview() {
   const { formatMessage: f } = useIntl();
   const navigate = useNavigate();
   const { getValues } = useFormContext<CreateBillFormSchema>();
-
+  const [signOpen, setSignOpen] = useState(false);
   const { toast } = useToast();
   const { activeIdentity } = useIdentity();
 
@@ -60,7 +62,7 @@ export default function Preview() {
     "payment.country"
   )}`;
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: () =>
       createBill({
         type: getValues("type"),
@@ -260,19 +262,59 @@ export default function Preview() {
         </div>
       </div>
 
-      <Button
-        className="w-full"
-        size="md"
-        onClick={() => {
-          mutate();
+      <Sign
+        open={signOpen}
+        onOpenChange={() => {
+          setSignOpen(!signOpen);
         }}
+        title={f({
+          id: "bill.create.sign.title",
+          defaultMessage: "Are you sure?",
+          description: "Sign confirmation title",
+        })}
+        description={f({
+          id: "bill.create.sign.description",
+          defaultMessage: "Issuing a bill is legally binding",
+          description: "Sign confirmation description",
+        })}
+        confirm={
+          <Button
+            size="md"
+            onClick={() => {
+              mutate();
+            }}
+            disabled={isPending}
+          >
+            <FormattedMessage
+              id="bill.create.sign.confirm"
+              defaultMessage="Confirm"
+              description="Sign bill creation confirmation button"
+            />
+          </Button>
+        }
+        cancel={
+          <Button
+            size="md"
+            className="w-full"
+            variant="outline"
+            disabled={isPending}
+          >
+            <FormattedMessage
+              id="bill.create.sign.cancel"
+              defaultMessage="Cancel"
+              description="Cancel bill creation button"
+            />
+          </Button>
+        }
       >
-        <FormattedMessage
-          id="bill.create.sign"
-          defaultMessage="Sign"
-          description="Sign bill creation button"
-        />
-      </Button>
+        <Button className="w-full" size="md">
+          <FormattedMessage
+            id="bill.create.sign"
+            defaultMessage="Sign"
+            description="Button to trigger bill creation signature"
+          />
+        </Button>
+      </Sign>
     </div>
   );
 }

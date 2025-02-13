@@ -633,7 +633,7 @@ function Preview({ nextStep }: { nextStep: () => void }) {
               disabled={isPending}
             >
               <FormattedMessage
-                id="contacts.create.sign.cancel"
+                id="company.create.sign.cancel"
                 defaultMessage="Cancel"
                 description="Cancel company creation button"
               />
