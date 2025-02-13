@@ -281,9 +281,8 @@ function Form() {
     },
   });
 
-  const { buyer, sum, discount } = methods.watch();
-  const canOfferToSell =
-    !!buyer.node_id && !!sum && !!discount.rate && !!discount.days;
+  const { buyer, sum } = methods.watch();
+  const canOfferToSell = !!buyer.node_id && !!sum;
 
   const queryClient = useQueryClient();
   const { toast } = useToast();

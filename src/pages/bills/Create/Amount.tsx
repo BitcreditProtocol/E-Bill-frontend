@@ -97,7 +97,7 @@ function CalculateDiscount() {
           }}
           gross={{
             value: Big(watch("billing.sum") || 0),
-            currency: "BTC",
+            currency: "sat",
           }}
         />
       </DrawerContent>
