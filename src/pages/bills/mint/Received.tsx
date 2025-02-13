@@ -13,38 +13,42 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { getBillDetails } from "@/services/bills";
 import { getQuote } from "@/services/quotes";
 import EcashToken from "./components/EcashToken";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useLanguage } from "@/context/language/LanguageContext";
 import { formatDateAndTime } from "@/utils/dates";
 import { MintConfig, readMintConfig } from "@/constants/mints";
+import { Skeleton } from "@/components/ui/skeleton";
+import { BillFull } from "@/types/bill";
 
-export default function Received() {
+function Loader() {
+  return (
+    <div className="flex flex-col gap-6">
+      <Skeleton className="h-20 w-full bg-elevation-200" />
+    </div>
+  );
+}
+
+function ReceivedInner({ bill_id: id } : { bill_id: BillFull["id"] }) {
   const lang = useLanguage();
-  const { id } = useParams<{ id: string }>();
 
   const [mintConfig] = useState<MintConfig>(readMintConfig());
 
   const { data: bill } = useSuspenseQuery({
     queryKey: ["bills", id],
-    queryFn: () => getBillDetails(id as string),
+    queryFn: () => getBillDetails(id),
   });
 
   const { data: quote } = useSuspenseQuery({
-    queryKey: ["quotes", id as string],
-    queryFn: () => getQuote(id as string),
+    queryKey: ["quotes", id],
+    queryFn: () => getQuote(id),
   });
-
-  console.log(bill);
 
   const lastEndorseBlocks = useMemo(() => {
     const endorsements = bill.chain_of_blocks.blocks.filter((it) => it.op_code === 'Endorse');
     return endorsements.length > 0 ? endorsements[endorsements.length - 1] : undefined;
   }, [bill]);
 
-  return (
-    <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
-      <Topbar lead={<NavigateBack />} trail={<></>} />
-
+  return (<>
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-2 text-center">
           <CircleCheckIcon className="text-signal-success w-12 h-12 stroke-1" />
@@ -103,6 +107,20 @@ export default function Received() {
       </div>
 
       <EcashToken token={quote.token} />
+    </>
+  );
+}
+
+export default function Received() {
+  const { id } = useParams<{ id: string }>();
+
+  return (
+    <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
+      <Topbar lead={<NavigateBack />} trail={<></>} />
+
+      <Suspense fallback={<Loader />}>
+        <ReceivedInner bill_id={id as string} />
+      </Suspense>
     </div>
   );
 }

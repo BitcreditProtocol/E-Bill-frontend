@@ -273,7 +273,10 @@ export default function HomeSearch({
         {/* NOTE: Hidden for now, till actual data can be used. */}
         <RecentContacts values={__dev__RECENT_CONTACTS} />
       </div>
-      {/*{(!searchTerm || !data) && !isLoading && <SearchSuggestions />}*/}
+      <div className="hidden">
+        {/* NOTE: Hidden for now, till actual data can be used. */}
+        {(!searchTerm || !data) && !isLoading && <SearchSuggestions />}
+      </div>
       {((searchTerm && data) || isLoading) && (
         <div className="flex flex-col gap-4">
           <div className="text-text-200 text-xs font-medium">

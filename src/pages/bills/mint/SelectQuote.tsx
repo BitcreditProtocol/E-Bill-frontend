@@ -15,6 +15,7 @@ import { Suspense, useMemo } from "react";
 import { getQuote } from "@/services/quotes";
 import routes from "@/constants/routes";
 import { readMintList } from "@/constants/mints";
+import { BillFull } from "@/types/bill";
 
 function Loader() {
   return (
@@ -24,35 +25,18 @@ function Loader() {
   );
 }
 
-function Information({ id }: { id: string }) {
-  const { data: bill } = useSuspenseQuery({
-    queryKey: ["bills", id],
-    queryFn: () => getBillDetails(id),
-  });
-
-  return (
-    <Preview
-      name={bill.drawee.name}
-      date={bill.issue_date}
-      amount={Number(bill.sum)}
-      currency={bill.currency}
-    />
-  );
-}
-
-export default function SelectQuote() {
-  const { id } = useParams<{ id: string }>();
+function SelectQuoteInner({ bill_id: id } : { bill_id: BillFull["id"]}) {
   const queryClient = useQueryClient();
   const mintList = useMemo(() => readMintList(), []);
 
   const { data: bill } = useSuspenseQuery({
     queryKey: ["bills", id],
-    queryFn: () => getBillDetails(id as string),
+    queryFn: () => getBillDetails(id),
   });
 
   const { data: quote } = useSuspenseQuery({
-    queryKey: ["quotes", id as string, "select"],
-    queryFn: () => getQuote(id as string).then((quote) => {
+    queryKey: ["quotes", id],
+    queryFn: () => getQuote(id).then((quote) => {
       return quote.quote_id === "" ? null : quote;
     }).catch(() => { return null }),
     refetchInterval: 5_000,
@@ -60,7 +44,6 @@ export default function SelectQuote() {
     refetchOnMount: 'always',
     refetchOnReconnect: 'always',
     refetchOnWindowFocus: 'always',
-
   });
 
   // TODO: remove - fake accepting mint request here
@@ -79,24 +62,14 @@ export default function SelectQuote() {
   });
 
   return (
-    <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
-      <Topbar
-        lead={<NavigateBack />}
-        middle={
-          <PageTitle>
-            <FormattedMessage
-              id="bill.mint.title"
-              defaultMessage="Mint quotes"
-              description="Mint quotes page title"
-            />
-          </PageTitle>
-        }
-        trail={<></>}
-      />
-
-    <Suspense fallback={<Loader />}>
+    <>
       <div className="flex flex-col gap-6">
-        <Information id={id as string} />
+        <Preview
+          name={bill.drawee.name}
+          date={bill.issue_date}
+          amount={Number(bill.sum)}
+          currency={bill.currency}
+        />
       </div>
 
       <div className="flex-1 flex flex-col gap-6">
@@ -141,6 +114,31 @@ export default function SelectQuote() {
           />
         </Button>
       </div>
+    </>
+  );
+}
+
+export default function SelectQuote() {
+  const { id } = useParams<{ id: string }>();
+
+  return (
+    <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
+      <Topbar
+        lead={<NavigateBack />}
+        middle={
+          <PageTitle>
+            <FormattedMessage
+              id="bill.mint.title"
+              defaultMessage="Mint quotes"
+              description="Mint quotes page title"
+            />
+          </PageTitle>
+        }
+        trail={<></>}
+      />
+
+      <Suspense fallback={<Loader />}>
+        <SelectQuoteInner bill_id={id as string} />
       </Suspense>
     </div>
   );

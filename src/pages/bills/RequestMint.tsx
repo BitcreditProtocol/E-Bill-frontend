@@ -20,6 +20,7 @@ import { getQuote } from "@/services/quotes";
 import { cn } from "@/lib/utils";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { readMintList } from "@/constants/mints";
+import { BillFull } from "@/types/bill";
 
 type MintProps = {
   name: string;
@@ -56,36 +57,19 @@ function Loader() {
   );
 }
 
-function Information({ id }: { id: string }) {
-  const { data: bill } = useSuspenseQuery({
-    queryKey: ["bills", id],
-    queryFn: () => getBillDetails(id),
-  });
-
-  return (
-    <Preview
-      name={bill.drawee.name}
-      date={bill.issue_date}
-      amount={Number(bill.sum)}
-      currency={bill.currency}
-    />
-  );
-}
-
-export default function RequestMint() {
-  const { id } = useParams<{ id: string }>();
+function RequestMintInner({ bill_id: id } : { bill_id: BillFull["id"] }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const mintList = useMemo(() => readMintList(), []);
 
   const { data: bill } = useSuspenseQuery({
     queryKey: ["bills", id],
-    queryFn: () => getBillDetails(id as string),
+    queryFn: () => getBillDetails(id),
   });
 
   const { data: quote, isFetching } = useSuspenseQuery({
     queryKey: ["quotes", id],
-    queryFn: () => getQuote(id as string).catch(() => { return null }),
+    queryFn: () => getQuote(id).catch(() => { return null }),
     staleTime: 5_000,
     refetchOnMount: 'always',
     refetchOnReconnect: 'always',
@@ -127,11 +111,69 @@ export default function RequestMint() {
         position: "bottom-center",
       });
 
-      navigate(routes.SELECT_QUOTE.replace(":id", id as string))
+      navigate(routes.SELECT_QUOTE.replace(":id", id))
     },
   });
 
   const [selectedMints, setSelectedMints] = useState<typeof mintList>([]);
+
+  return (
+    <>
+      <div className="flex flex-col gap-6">
+        <Preview
+          name={bill.drawee.name}
+          date={bill.issue_date}
+          amount={Number(bill.sum)}
+          currency={bill.currency}
+        />
+      </div>
+
+      {(isFetching || quote !== null) ? (
+        <Loader />
+      ) : (<div className="flex-1 flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
+          <SectionTitle>
+            <FormattedMessage
+              id="bill.mint.request.selectMint"
+              defaultMessage="Select a mint"
+              description="Select a mint section title"
+            />
+          </SectionTitle>
+
+          <div className="flex flex-col gap-3 p-4 border border-divider-75 rounded-xl">
+            {mintList.map((it, index) => (
+              <div key={index} className="flex flex-col gap-3">
+                <Mint name={it.name}
+                  disabled={!it.enabled}
+                  checked={selectedMints.includes(it)}
+                  onChange={(checked) => {
+                    setSelectedMints((current) => checked ? [...current, it] : current.filter((v) => v !== it));
+                  }} />
+                {index < mintList.length - 1 && (
+                  <Separator className="bg-divider-75" />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <Button className="mt-auto" onClick={() => {
+            doRequestToMint(selectedMints[0].node_id);
+          }}
+          disabled={selectedMints.length === 0 || isPending}>
+          <FormattedMessage
+            id="bill.mint.request.action"
+            defaultMessage="Request mint quote"
+            description="Request mint quote button"
+          />
+        </Button>
+      </div>)}
+    </>
+  );
+}
+
+export default function RequestMint() {
+  const { id } = useParams<{ id: string }>();
 
   return (
     <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
@@ -150,50 +192,7 @@ export default function RequestMint() {
       />
 
       <Suspense fallback={<Loader />}>
-        <div className="flex flex-col gap-6">
-            <Information id={id as string} />
-        </div>
-
-        {(isFetching || quote !== null) ? (
-          <Loader />
-        ) : (<div className="flex-1 flex flex-col gap-6">
-          <div className="flex flex-col gap-4">
-            <SectionTitle>
-              <FormattedMessage
-                id="bill.mint.request.selectMint"
-                defaultMessage="Select a mint"
-                description="Select a mint section title"
-              />
-            </SectionTitle>
-
-            <div className="flex flex-col gap-3 p-4 border border-divider-75 rounded-xl">
-              {mintList.map((it, index) => (
-                <div key={index} className="flex flex-col gap-3">
-                  <Mint name={it.name}
-                    disabled={!it.enabled}
-                    checked={selectedMints.includes(it)}
-                    onChange={(checked) => {
-                      setSelectedMints((current) => checked ? [...current, it] : current.filter((v) => v !== it));
-                    }} />
-                  {index < mintList.length - 1 && (
-                    <Separator className="bg-divider-75" />
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <Button className="mt-auto" onClick={() => {
-              doRequestToMint(selectedMints[0].node_id);
-            }}
-            disabled={selectedMints.length === 0 || isPending}>
-            <FormattedMessage
-              id="bill.mint.request.action"
-              defaultMessage="Request mint quote"
-              description="Request mint quote button"
-            />
-          </Button>
-        </div>)}
+        <RequestMintInner bill_id={id as string} />
       </Suspense>
     </div>
   );

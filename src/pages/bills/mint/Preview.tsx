@@ -28,6 +28,8 @@ import { toast } from "@/hooks/use-toast";
 import routes from "@/constants/routes";
 import { MintConfig, readMintConfig } from "@/constants/mints";
 import { DialogProps } from "vaul";
+import { BillFull } from "@/types/bill";
+
 function Loader() {
   return (
     <div className="flex flex-col gap-6">
@@ -101,10 +103,9 @@ function ConfirmSign({ onConfirm, open, onOpenChange} : ConfirmSignProps) {
   );
 }
 
-export default function Preview() {
+function InnerPreview({ bill_id: id } : { bill_id: BillFull["id"] }) {
   const intl = useIntl();
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
 
   const [mintConfig] = useState<MintConfig>(readMintConfig());
 
@@ -112,17 +113,20 @@ export default function Preview() {
 
   const { data: bill } = useSuspenseQuery({
     queryKey: ["bills", id],
-    queryFn: () => getBillDetails(id as string),
+    queryFn: () => getBillDetails(id),
   });
 
   const { data: quote } = useSuspenseQuery({
-    queryKey: ["quotes", id as string],
-    queryFn: () => getQuote(id as string),
+    queryKey: ["quotes", id],
+    queryFn: () => getQuote(id),
+    refetchOnMount: 'always',
+    refetchOnReconnect: 'always',
+    refetchOnWindowFocus: 'always',
   });
 
   const { mutate: doAcceptQuote } = useMutation({
     mutationFn: () => {
-      return acceptQuote(id as string);
+      return acceptQuote(id);
     },
     onError: () => {
       toast({
@@ -151,35 +155,19 @@ export default function Preview() {
         position: "bottom-center",
       });
 
-      navigate(routes.MINT_RECEIVED.replace(":id", id as string))
+      navigate(routes.MINT_RECEIVED.replace(":id", id))
     },
   });
 
   return (
-    <div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
-      <Topbar
-        lead={<NavigateBack />}
-        middle={
-          <PageTitle>
-            <FormattedMessage
-              id="bill.mint.preview.title"
-              defaultMessage="Preview mint"
-              description="Preview mint page title"
-            />
-          </PageTitle>
-        }
-        trail={<></>}
-      />
-
+    <>
       <div className="flex flex-col gap-6">
-        <Suspense fallback={<Loader />}>
-          <BillPreview
-            name={bill.drawee.name}
-            date={bill.issue_date}
-            amount={Number(bill.sum)}
-            currency={bill.currency}
-          />
-        </Suspense>
+        <BillPreview
+          name={bill.drawee.name}
+          date={bill.issue_date}
+          amount={Number(bill.sum)}
+          currency={bill.currency}
+        />
       </div>
 
       <div className="flex flex-col gap-6">
@@ -209,20 +197,18 @@ export default function Preview() {
               <div className="flex gap-1.5">
                 <img src={BitcoinCurrencyIcon} />
                 <span className="text-text-300 text-sm font-medium leading-5">
-                  BTC
+                  sat
                 </span>
               </div>
 
-              <Suspense fallback={<Loader />}>
-                <div className="flex items-center gap-1 self-end">
-                  <FormattedCurrency
-                    className="text-sm font-medium leading-5"
-                    value={Number(quote.sum)}
-                    type="credit"
-                  />
-                  <span className="text-text-200 text-[10px]">sat</span>
-                </div>
-              </Suspense>
+              <div className="flex items-center gap-1 self-end">
+                <FormattedCurrency
+                  className="text-sm font-medium leading-5"
+                  value={Number(quote.sum)}
+                  type="credit"
+                />
+                <span className="text-text-200 text-[10px]">sat</span>
+              </div>
             </div>
           </div>
         </div>
@@ -231,6 +217,30 @@ export default function Preview() {
       <div className="flex flex-col gap-5 mt-auto">
         <ConfirmSign onConfirm={() => { doAcceptQuote(); }} open={confirmOpen} onOpenChange={setConfirmOpen}/>
       </div>
-    </div>
+    </>
   );
+}
+
+
+export default function Preview() {
+  const { id } = useParams<{ id: string }>();
+
+  return (<div className="flex flex-col min-h-fit h-screen gap-6 py-4 px-5 w-full select-none">
+    <Topbar
+      lead={<NavigateBack />}
+      middle={
+        <PageTitle>
+          <FormattedMessage
+            id="bill.mint.preview.title"
+            defaultMessage="Preview mint"
+            description="Preview mint page title"
+          />
+        </PageTitle>
+      }
+      trail={<></>}
+    />
+    <Suspense fallback={<Loader />}>
+      <InnerPreview bill_id={id as string} />
+    </Suspense>
+  </div>)
 }
