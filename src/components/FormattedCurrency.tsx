@@ -1,6 +1,7 @@
 import { FormattedNumber, type FormatNumberOptions } from "react-intl";
 import { cn } from "@/lib/utils";
 
+const SATOSHI_CODE = "sat";
 const BITCOIN_CODE = "BTC";
 const BITCOIN_NAME = "bitcoin";
 const BITCOIN_SYMBOL = "₿";
@@ -37,7 +38,7 @@ const FormattedCurrency = ({
       <FormattedNumber
         value={value}
         signDisplay={signDisplay}
-        minimumFractionDigits={currency === BITCOIN_CODE ? 8 : 2}
+        minimumFractionDigits={currency === BITCOIN_CODE ? 8 : currency === SATOSHI_CODE ? 0 : 2}
         maximumFractionDigits={8}
         style={currency !== undefined ? "currency" : "decimal"}
         currency={currency}
