@@ -123,18 +123,16 @@ function Status({
   // waiting_for_payment = false: unpaid
 
   const status = {
-    acceptance: accepted
-      ? "accepted"
-      : requested_to_accept
-      ? "pending_acceptance"
-      : "unaccepted",
-    payment: paid
-      ? "paid"
-      : requested_to_pay
-      ? "pending_payment"
-      : waiting_for_payment
-      ? "pending_payment"
-      : "unpaid",
+    //TODO: rejected for accept and reject for pay
+    acceptance
+        : accepted ? "accepted"
+        : requested_to_accept ? "pending_acceptance"
+        : "unaccepted",
+    payment
+        : paid ? "paid"
+        : requested_to_pay ? "pending_payment"
+        : waiting_for_payment ? "pending_payment"
+        : "unpaid",
   };
 
   const message = {
@@ -144,7 +142,7 @@ function Status({
     paid: f(messages["bill.status.paid"]),
     pending_payment: f(messages["bill.status.pending_payment"]),
     unpaid: f(messages["bill.status.unpaid"]),
-  }[status.acceptance || status.payment];
+  }[status.payment || status.acceptance];
 
   const icon = {
     accepted: <CheckIcon className="h-4 w-5 stroke-1" />,
@@ -153,7 +151,7 @@ function Status({
     paid: <CheckIcon className="w-5 h-5" />,
     pending_payment: <LoaderIcon className="h-4 w-5 stroke-1" />,
     unpaid: <XIcon className="h-4 w-5 stroke-1" />,
-  }[status.acceptance || status.payment];
+  }[status.payment || status.acceptance];
 
   return (
     <div className="flex items-center gap-1">
@@ -162,12 +160,14 @@ function Status({
       <span
         className={cn("text-xs font-normal leading-normal", {
           "text-signal-success":
-            status.acceptance === "accepted" || status.payment === "paid",
+            status.acceptance === "accepted" ||
+            status.payment === "paid",
           "text-text-300":
             status.acceptance === "pending_acceptance" ||
+            status.acceptance === "unaccepted" ||
             status.payment === "pending_payment",
           "text-signal-error":
-            status.acceptance === "unaccepted" ||
+          //TODO: we put red color only if we reject something
             (status.acceptance === "accepted" && status.payment === "unpaid"),
         })}
       >
