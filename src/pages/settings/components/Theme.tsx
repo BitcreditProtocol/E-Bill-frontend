@@ -21,7 +21,7 @@ export default function Theme() {
         />
       </DrawerTrigger>
 
-      <DrawerContent className="bg-elevation-50 py-4 px-5">
+      <DrawerContent className="max-w-[375px] py-4 px-5 bg-elevation-50 mx-auto">
         <span className="text-text-300 text-lg font-medium leading-[28px]">
           <FormattedMessage
             id="settings.theme.title"

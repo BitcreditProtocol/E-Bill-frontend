@@ -21,26 +21,27 @@ function Description({ children }: { children: React.ReactNode }) {
   );
 }
 
-type CurrencySelectorProps = PropsWithChildren<{ 
+type CurrencySelectorProps = PropsWithChildren<{
   value: string;
-  onChange: (value: string) => void
+  onChange: (value: string) => void;
 }>;
 
-export default function CurrencySelector({ children, onChange }: CurrencySelectorProps) {
-	const [open, setOpen] = useState(false);
+export default function CurrencySelector({
+  children,
+  onChange,
+}: CurrencySelectorProps) {
+  const [open, setOpen] = useState(false);
 
   const _onChange = (value: string) => {
     onChange(value);
     setOpen(false);
-  }
+  };
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger>
-        {children}
-      </DrawerTrigger>
+      <DrawerTrigger>{children}</DrawerTrigger>
 
-      <DrawerContent className="bg-elevation-50 py-4 px-5">
+      <DrawerContent className="max-w-[375px] py-4 px-5 bg-elevation-50 mx-auto">
         <div className="flex flex-col gap-3">
           <span className="text-text-300 text-lg font-medium leading-[28px]">
             <FormattedMessage
@@ -51,7 +52,12 @@ export default function CurrencySelector({ children, onChange }: CurrencySelecto
           </span>
 
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-4 cursor-pointer" onClick={() => { _onChange("USD"); }}>
+            <div
+              className="flex items-center gap-4 cursor-pointer"
+              onClick={() => {
+                _onChange("USD");
+              }}
+            >
               <div className="flex items-center justify-center h-8 w-8 p-2 bg-[#118200] rounded-full">
                 <DollarSignIcon className="text-white h-4 w-4 stroke-1" />
               </div>
@@ -63,7 +69,12 @@ export default function CurrencySelector({ children, onChange }: CurrencySelecto
             </div>
             <Separator className="bg-divider-75" />
 
-            <div className="flex items-center gap-4 cursor-pointer" onClick={() => { _onChange("EUR"); }}>
+            <div
+              className="flex items-center gap-4 cursor-pointer"
+              onClick={() => {
+                _onChange("EUR");
+              }}
+            >
               <div className="flex items-center justify-center h-8 w-8 p-2 bg-[#003398] rounded-full">
                 <EuroIcon className="text-white h-4 w-4 stroke-1" />
               </div>
@@ -75,7 +86,12 @@ export default function CurrencySelector({ children, onChange }: CurrencySelecto
             </div>
             <Separator className="bg-divider-75" />
 
-            <div className="flex items-center gap-4 cursor-pointer" onClick={() => { _onChange("BTC"); }}>
+            <div
+              className="flex items-center gap-4 cursor-pointer"
+              onClick={() => {
+                _onChange("BTC");
+              }}
+            >
               <div className="flex items-center justify-center rounded-full">
                 <img
                   src={BitcoinCurrencyIcon}
@@ -91,7 +107,12 @@ export default function CurrencySelector({ children, onChange }: CurrencySelecto
             </div>
             <Separator className="bg-divider-75" />
 
-            <div className="flex items-center gap-4 cursor-pointer" onClick={() => { _onChange("sat"); }}>
+            <div
+              className="flex items-center gap-4 cursor-pointer"
+              onClick={() => {
+                _onChange("sat");
+              }}
+            >
               <div className="flex items-center justify-center rounded-full">
                 <img
                   src={BitcoinCurrencyIcon}
