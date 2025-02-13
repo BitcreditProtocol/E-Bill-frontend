@@ -131,7 +131,7 @@ function PersonalIdentity() {
 
   const avatarUrl =
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    data.profile_picture_file !== null
+    data.profile_picture_file
       ? `${API_URL}/identity/file/${data.profile_picture_file.name}`
       : "";
 
@@ -170,8 +170,7 @@ function Companies() {
       name={company.name}
       address={company.address}
       avatar={
-         
-        company.logo_file !== null
+        company.logo_file
           ? `${API_URL}/company/file/${company.id}/${company.logo_file.name}`
           : ""
       }

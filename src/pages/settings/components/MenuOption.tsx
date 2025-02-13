@@ -26,7 +26,7 @@ export default function MenuOption({
             {defaultValue}
           </span>
         )}
-        <ChevronRightIcon className="text-text-300 h-6 w-6 stroke-1" />
+        <ChevronRightIcon className="text-text-300 h-5 w-5 stroke-1" />
       </div>
     </div>
   );

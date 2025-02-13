@@ -113,6 +113,7 @@ export default function Mints() {
           type="company"
           name={mintConfig.wildcatOne.name}
           bitcoin_public_key={mintConfig.wildcatOne.node_id}
+          showLink={false}
         />
 
         <div className="flex flex-col gap-4 py-6 px-4 border border-divider-75 rounded-xl">

@@ -71,6 +71,7 @@ const GET_CONTACT_FILE = "contacts/file/:node_id/:name";
 const BALANCES_OVERVIEW = "/overview?currency=";
 const LIST_ACTIVE_NOTIFICATIONS = "/notifications";
 const SEARCH = "/search";
+const EXIT = "/exit";
 const RESOLVE_NOTIFICATION = "/notifications/:notification_id/done";
 const GET_TEMP_FILE = "/temp_file/:file_id";
 
@@ -147,6 +148,7 @@ export {
   BALANCES_OVERVIEW,
   LIST_ACTIVE_NOTIFICATIONS,
   SEARCH,
+  EXIT,
   RESOLVE_NOTIFICATION,
   GET_TEMP_FILE,
 };

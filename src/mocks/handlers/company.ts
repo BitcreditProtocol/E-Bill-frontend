@@ -63,10 +63,12 @@ export const editCompanyInformation = http.put<
     );
   }
 
+  const { id: companyId, ...update } = data; 
+
   db.company.update({
-    where: { id: { equals: data.id } },
+    where: { id: { equals: companyId } },
     data: {
-      ...data,
+      ...update
     },
   });
 

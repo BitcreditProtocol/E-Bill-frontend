@@ -69,7 +69,7 @@ function Information() {
 
   const avatar =
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    profile_picture_file !== null
+    profile_picture_file
       ? `${API_URL}/identity/file/${profile_picture_file.name}`
       : "";
   // todo: standardize date format; maybe use an util
