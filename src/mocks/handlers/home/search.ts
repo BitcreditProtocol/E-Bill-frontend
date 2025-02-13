@@ -1,54 +1,42 @@
 import { delay, http, HttpResponse } from "msw";
 import { SEARCH } from "@/constants/endpoints";
-
-import * as bills from "@/mocks/handlers/bills/list";
-import * as contacts from "@/mocks/handlers/contacts/data";
 import { matchesSearchTerm } from "../utils";
 import type { SearchPayload, SearchResponse } from "@/services/search";
+import { db } from "../../db";
 
 const data: SearchResponse = {
-  bills: bills.data.map((it) => ({ ...it,
-    id: it.bill_name,
-    drawee: {
-      ...it.drawer,
-      node_id: it.drawer.name
-    },
+  bills: db.bill.getAll().map((it) => ({
+    ...it,
     drawer: {
-      ...it.drawer,
-      node_id: it.drawer.name
+      name: it.drawer?.name || "",
+      node_id: it.drawer?.node_id || "",
+    },
+    drawee: {
+      name: it.drawee?.name || "",
+      node_id: it.drawee?.node_id || "",
     },
     payee: {
-      ...it.payee,
-      node_id: it.payee.name
+      name: it.payee?.name || "",
+      node_id: it.payee?.node_id || "",
     },
     endorsee: null,
-    sum: it.sum.amount,
-    currency: it.sum.currency,
   })),
-  // TODO: use mocked company data once it exists
-  companies: [{
-    "id": "C5Pjn2jmz7W9xqty3qZ9V9SKBAxqoirRaibF1zqp2abX",
-    "name": "Hayek Ltd.",
-    "country_of_registration": "AT",
-    "city_of_registration": "Vienna",
-    "country": "AT",
-    "city": "Vienna",
-    "zip": "1030",
-    "address": "Smithstreet 34",
-    "email": "hayek_ltd@example.com",
-    "registration_number": "1234 555 4321",
-    "registration_date": "2011-08-22",
-    "proof_of_registration_file": {
+  companies: db.company.getAll().map((it) => ({
+    ...it,
+    logo_file: {
       "name": "",
       "hash": "",
     },
-    "logo_file": {
+    proof_of_registration_file: {
       "name": "",
       "hash": "",
     },
-    "signatories": [],
-  }],
-  contacts: contacts.data,
+    signatories: [],
+  })),
+  contacts: db.contact.getAll().map((it) => ({
+    ...it,
+    avatar_file: null,
+  })),
 };
 
 const filterSearchResponse = (
