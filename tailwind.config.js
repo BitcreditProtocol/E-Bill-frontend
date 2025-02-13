@@ -87,6 +87,7 @@ export default {
         base: {
           hover: '#331C00',
           active: '#000000',
+          inactive: '#BAB4A9',
         },
       },
       backgroundImage: {

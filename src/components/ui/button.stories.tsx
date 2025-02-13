@@ -53,6 +53,34 @@ export const BrandColors: Story = {
   ),
 };
 
+
+
+export const Disabled: Story = {
+  render: (args) => (
+    <div className="flex items-center gap-2">
+      <Button {...args} disabled>Default</Button>
+      <Button {...args} variant="outline" disabled>
+        Outline
+      </Button>
+      <Button {...args} variant="destructive" disabled>
+        Destructive
+      </Button>
+      <Button {...args} variant="secondary" disabled>
+        Secondary
+      </Button>
+      <Button {...args} variant="ghost" disabled>
+        Ghost
+      </Button>
+      <Button {...args} variant="link" disabled>
+        Link
+      </Button>
+      <Button {...args} variant="filter" disabled>
+        Filter
+      </Button>
+    </div>
+  ),
+};
+
 export const ButtonSizes: Story = {
   render: (args) => (
     <div className="flex items-center gap-2">
