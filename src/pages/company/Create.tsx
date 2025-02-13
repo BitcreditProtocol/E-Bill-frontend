@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
@@ -701,6 +701,7 @@ type FormSchema = z.infer<typeof formSchema>;
 
 export default function Create() {
   const [step, setStep] = useState(0);
+  const navigate = useNavigate();
 
   const methods = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -731,7 +732,9 @@ export default function Create() {
 
   const previousStep = () => {
     setStep((prev) => {
-      if (prev === 0) return 0;
+      if (prev === 0) {
+        navigate(-1);
+      }
 
       return prev - 1;
     });

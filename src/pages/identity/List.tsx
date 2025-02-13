@@ -61,7 +61,7 @@ function SelectedIdentity() {
               toast({
                 description: "Copied to clipboard",
                 position: "bottom-center",
-                duration: 750
+                duration: 750,
               });
             });
           }}
@@ -227,7 +227,7 @@ export default function List() {
   return (
     <Page className="gap-7">
       <Topbar
-        lead={<NavigateBack />}
+        lead={<NavigateBack route={routes.HOME} />}
         middle={
           <PageTitle>
             <FormattedMessage
