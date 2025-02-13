@@ -26,6 +26,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Sign from "@/components/Sign";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { useToast } from "@/hooks/use-toast";
+import { findHolder } from "@/utils/bill";
 import { getBillDetails, offerToSell } from "@/services/bills";
 import routes from "@/constants/routes";
 import type { Contact } from "@/types/contact";
@@ -341,7 +342,7 @@ function Form() {
     },
   });
 
-  const isHolder = data.drawer.node_id === activeIdentity.node_id;
+  const isHolder = findHolder(data).node_id === activeIdentity.node_id;
   const isOfferedForSale = data.seller !== null && data.waiting_for_payment;
 
   const signSale = () => {
