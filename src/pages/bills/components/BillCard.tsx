@@ -1,7 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { format, parseISO } from "date-fns";
-import { FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage, FormattedNumber, useIntl } from "react-intl";
 import {
   CheckIcon,
   ChevronRightIcon,
@@ -13,7 +12,6 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { cn } from "@/lib/utils";
-import { getEndorsements } from "@/services/bills";
 import type { BillFull, Peer } from "@/types/bill";
 import { messages } from "./messages";
 
@@ -197,13 +195,13 @@ type CardProps = {
   paid: BillFull["paid"];
   requested_to_pay: BillFull["requested_to_pay"];
   waiting_for_payment: BillFull["waiting_for_payment"];
+  endorsements_count: BillFull["endorsements_count"]
   attachment: string | null;
   isPayer: boolean;
   isPayee: boolean;
 };
 
 export default function BillCard({
-  id,
   sum,
   currency,
   city_of_issuing,
@@ -221,6 +219,7 @@ export default function BillCard({
   paid,
   requested_to_pay,
   waiting_for_payment,
+  endorsements_count,
   attachment,
   isPayer,
   isPayee,
@@ -232,14 +231,7 @@ export default function BillCard({
     .filter(Boolean)
     .join(", ");
 
-  const { data: endorsements } = useQuery({
-    queryKey: ["bills", id, "endorsements"],
-    queryFn: () => getEndorsements(id),
-    enabled: endorsed,
-  });
-
   const formattedMaturityDate = format(parseISO(maturity_date), "dd-MMM-yyyy");
-  const endorsementsCount = endorsements?.past_endorsees.length || 0;
 
   return (
     <div className="flex flex-col border border-divider-50 rounded-xl select-none">
@@ -426,7 +418,12 @@ export default function BillCard({
             </span>
 
             <span className="text-text-300 text-xs font-medium">
-              ({endorsementsCount})
+              (<FormattedNumber 
+                value={endorsements_count}
+                signDisplay="negative"
+                minimumFractionDigits={0}
+                maximumFractionDigits={0}
+              />)
             </span>
 
             <ChevronRightIcon className="text-text-300 w-5 h-5 ml-0.5 stroke-1" />

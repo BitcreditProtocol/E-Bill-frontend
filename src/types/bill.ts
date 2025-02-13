@@ -109,7 +109,7 @@ export type BillFull = {
   chain_of_blocks: {
     blocks: Block[];
   };
-  endorsements_count: 1;
+  endorsements_count: number;
   active_notification: Notification | null;
 };
 

@@ -93,6 +93,7 @@ function Details({ id }: { id: string }) {
         accepted={data.accepted}
         paid={data.paid}
         waiting_for_payment={data.waiting_for_payment}
+        endorsements_count={data.endorsements_count}
         attachment={attachment}
         isPayer={isPayer}
         isPayee={isPayee}
