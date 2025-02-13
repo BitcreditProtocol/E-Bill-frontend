@@ -65,7 +65,7 @@ const STEPS = {
 type ContactPickerProps = {
   children: React.ReactNode;
   onSelect: (contact: Contact) => void;
-  canEdit: boolean;
+  canEdit?: boolean;
 };
 
 export default function ContactPicker({

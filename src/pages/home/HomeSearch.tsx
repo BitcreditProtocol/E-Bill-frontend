@@ -23,7 +23,7 @@ function RecentContactItem({
       <Icon
         name={name}
         type={type}
-        src={avatar_file || undefined}
+        src={avatar_file?.name || undefined}
         className="w-8 h-8"
       />
       <div className="text-text-300 text-[11px] font-medium text-center">
@@ -232,18 +232,27 @@ const __dev__RECENT_CONTACTS: Pick<Contact, "name" | "type" | "avatar_file">[] =
     {
       name: "Matt Preziegka",
       type: ContactTypes.Person,
-      avatar_file: randomAvatar("men"),
+      avatar_file: {
+        name: randomAvatar("men"),
+        hash: 'deadbeef'
+      }
     },
     {
       name: "Jurica Kolectic",
       type: ContactTypes.Person,
-      avatar_file: randomAvatar("men"),
+      avatar_file: {
+        name: randomAvatar("men"),
+        hash: 'deadbeef'
+      }
     },
     { name: "Testla Inc", type: ContactTypes.Company, avatar_file: null },
     {
       name: "Mia Flores",
       type: ContactTypes.Person,
-      avatar_file: randomAvatar("women"),
+      avatar_file: {
+        name: randomAvatar("women"),
+        hash: 'deadbeef'
+      }
     },
   ];
 

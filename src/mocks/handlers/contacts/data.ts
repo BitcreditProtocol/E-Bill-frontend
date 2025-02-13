@@ -1,6 +1,6 @@
 import { Contact, ContactTypes } from "@/types/contact";
 
-const ALICE = {
+const ALICE: Contact = {
   type: ContactTypes.Person,
   node_id: "11111111BN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKY11111111",
   name: "Alice White",
@@ -13,10 +13,11 @@ const ALICE = {
   country_of_birth_or_registration: "US",
   city_of_birth_or_registration: "Miami",
   identification_number: "1234567890",
+  proof_document_file: null,
   avatar_file: null,
 };
 
-const BOB = {
+const BOB: Contact = {
   type: ContactTypes.Person,
   node_id: "22222222BN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKY22222222",
   name: "Bob White",
@@ -29,10 +30,11 @@ const BOB = {
   country_of_birth_or_registration: "US",
   city_of_birth_or_registration: "Miami",
   identification_number: "1234567890",
+  proof_document_file: null,
   avatar_file: null,
 };
 
-const DAVID = {
+const DAVID: Contact = {
   type: ContactTypes.Person,
   node_id: "44444444BN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKY44444444",
   name: "David Brown",
@@ -45,10 +47,11 @@ const DAVID = {
   country_of_birth_or_registration: "UK",
   city_of_birth_or_registration: "London",
   identification_number: "AB123456C",
+  proof_document_file: null,
   avatar_file: null,
 };
 
-const EMILY = {
+const EMILY: Contact = {
   type: ContactTypes.Person,
   node_id: "55555555BN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKY55555555",
   name: "Emily Davis",
@@ -61,10 +64,11 @@ const EMILY = {
   country_of_birth_or_registration: "AU",
   city_of_birth_or_registration: "Sydney",
   identification_number: "7890123456",
+  proof_document_file: null,
   avatar_file: null,
 };
 
-const FIONA = {
+const FIONA: Contact = {
   type: ContactTypes.Person,
   node_id: "66666666BN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKY66666666",
   name: "Fiona Green",
@@ -77,10 +81,11 @@ const FIONA = {
   country_of_birth_or_registration: "IE",
   city_of_birth_or_registration: "Dublin",
   identification_number: "IR987654321",
+  proof_document_file: null,
   avatar_file: null,
 };
 
-const GEORGE = {
+const GEORGE: Contact = {
   type: ContactTypes.Person,
   node_id: "77777777BN48JhNXAKhKxbUVM1YXRrHTfPYxjWiGpcKY77777777",
   name: "George Miller",
@@ -93,6 +98,7 @@ const GEORGE = {
   country_of_birth_or_registration: "NZ",
   city_of_birth_or_registration: "Wellington",
   identification_number: "NZ123450987",
+  proof_document_file: null,
   avatar_file: null,
 };
 
