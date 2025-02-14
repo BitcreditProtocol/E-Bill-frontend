@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 type DetailsProps = {
   type: "personal" | "company" | null;
   showLink?: boolean;
-  avatar: string;
+  avatar?: string;
 } & Pick<Identity, "name" | "bitcoin_public_key">;
 
 export default function ViewDetails({
@@ -33,7 +33,7 @@ export default function ViewDetails({
     <div className="flex items-center gap-3">
       <IdentityAvatar
         name={name}
-        picture={avatar}
+        picture={avatar || ""}
         identityType={type}
         size="lg"
       />
