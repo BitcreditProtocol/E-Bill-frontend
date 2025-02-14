@@ -41,8 +41,14 @@ const data: SearchResponse = {
   })),
   contacts: db.contact.getAll().map((it) => ({
     ...it,
+    date_of_birth_or_registration: it.date_of_birth_or_registration || '',
+    city_of_birth_or_registration: it.city_of_birth_or_registration || '',
+    country_of_birth_or_registration: it.country_of_birth_or_registration || '',
+    identification_number: it.identification_number || '',
     zip: it.zip || '',
     avatar_file: null,
+    nostr_relays: null,
+    proof_document_file: null,
   })),
 };
 

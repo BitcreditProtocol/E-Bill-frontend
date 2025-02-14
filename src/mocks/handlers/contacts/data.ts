@@ -15,6 +15,7 @@ const ALICE: Contact = {
   identification_number: "1234567890",
   proof_document_file: null,
   avatar_file: null,
+  nostr_relays: null,
 };
 
 const BOB: Contact = {
@@ -32,6 +33,7 @@ const BOB: Contact = {
   identification_number: "1234567890",
   proof_document_file: null,
   avatar_file: null,
+  nostr_relays: null,
 };
 
 const DAVID: Contact = {
@@ -49,6 +51,7 @@ const DAVID: Contact = {
   identification_number: "AB123456C",
   proof_document_file: null,
   avatar_file: null,
+  nostr_relays: null,
 };
 
 const EMILY: Contact = {
@@ -66,6 +69,7 @@ const EMILY: Contact = {
   identification_number: "7890123456",
   proof_document_file: null,
   avatar_file: null,
+  nostr_relays: null,
 };
 
 const FIONA: Contact = {
@@ -83,6 +87,7 @@ const FIONA: Contact = {
   identification_number: "IR987654321",
   proof_document_file: null,
   avatar_file: null,
+  nostr_relays: null,
 };
 
 const GEORGE: Contact = {
@@ -100,6 +105,7 @@ const GEORGE: Contact = {
   identification_number: "NZ123450987",
   proof_document_file: null,
   avatar_file: null,
+  nostr_relays: null,
 };
 
 export const data: Contact[] = [ALICE, BOB, DAVID, EMILY, FIONA, GEORGE];

@@ -34,4 +34,5 @@ export type Contact = {
     name: string;
     hash: string;
   } | null;
+  nostr_relays: string[] | null;
 };

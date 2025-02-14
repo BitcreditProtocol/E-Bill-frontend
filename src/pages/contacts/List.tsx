@@ -1,5 +1,5 @@
 import { Suspense, useMemo, useState } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
 import { ChevronRightIcon, PlusIcon } from "lucide-react";
@@ -16,6 +16,7 @@ import { GET_CONTACT_FILE } from "@/constants/endpoints";
 import { type Contact } from "@/types/contact";
 import TypeFilter from "./components/TypeFilter";
 import EmptyList from "./components/EmptyList";
+import { searchContacts } from "@/services/search";
 
 type ContactProps = Pick<
   Contact,
@@ -143,10 +144,47 @@ function List({ typeFilters }: ListProps) {
   );
 }
 
+type SearchResultsProps = {
+  typeFilters: Contact["type"][]
+  values: Contact[]
+}
+
+function SearchResults({ typeFilters, values }: SearchResultsProps) {
+  const filtered = useMemo(() => {
+    return values.filter((it) => typeFilters.length === 0 || typeFilters.includes(it.type))
+  }, [values, typeFilters]);
+
+  return (
+    <div className="flex flex-col gap-2 mb-16">
+      {filtered.length === 0 ? (<>
+        <EmptySearchResult />
+      </>) : (<>
+        {filtered.map((it) => (
+          <Contact key={it.node_id} {...it} />
+        ))}
+      </>)}
+    </div>
+  );
+}
+
 export default function Contacts() {
   const { formatMessage: f } = useIntl();
   const [typeFilters, setTypeFilters] = useState<Contact["type"][]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchModeEnabled, setSearchModeEnabled] = useState(false);
+
+  const {
+    isFetching: searchIsLoading,
+    data: searchData,
+    refetch: doSearch,
+  } = useQuery({
+    queryKey: ["search", "contacts", searchTerm],
+    queryFn: () => searchContacts({ search_term: searchTerm }),
+    staleTime: 1,
+    enabled: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
 
   return (
     <Page className="gap-6" displayBottomNavigation>
@@ -169,9 +207,17 @@ export default function Contacts() {
             defaultMessage: "Name, address, email...",
             description: "Placeholder text for contacts search input",
           })}
-          onChange={setSearchTerm}
+          onChange={(value) => {
+            setSearchTerm(value);
+            if (value === "") {
+              setSearchModeEnabled(false);
+            }
+          }}
           onSearch={() => {
-            console.log(searchTerm);
+            setSearchModeEnabled(searchTerm !== "");
+            if (searchTerm) {
+              void doSearch();
+            }
           }}
         />
         <TypeFilter
@@ -186,7 +232,13 @@ export default function Contacts() {
       <div className="flex flex-col gap-4">
         <Create />
         <Suspense fallback={<Loader />}>
-          <List typeFilters={typeFilters}/>
+          {searchModeEnabled ? (<>
+            {searchIsLoading ? (<Loader />) : (<>
+              <SearchResults typeFilters={typeFilters} values={searchData || []} />
+            </>)}
+          </>) : (<>
+            <List typeFilters={typeFilters} />
+          </>)}
         </Suspense>
       </div>
     </Page>
