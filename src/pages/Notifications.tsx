@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseISO, isToday, isBefore, startOfToday, format } from "date-fns";
@@ -166,11 +166,19 @@ function Loader() {
   );
 }
 
-function List() {
+function List({
+  setNotificationsCount,
+}: {
+  setNotificationsCount: (count: number) => void;
+}) {
   const { data } = useSuspenseQuery({
     queryFn: () => getNotifications(),
     queryKey: ["notifications"],
   });
+
+  useEffect(() => {
+    setNotificationsCount(data.length);
+  }, [data, setNotificationsCount]);
 
   const today = startOfToday();
 
@@ -182,8 +190,9 @@ function List() {
     isBefore(parseISO(notification.datetime), today)
   );
 
+  // check how to best render the empty list, if only when no data at all, or if no notifications today too
   return (
-    <div className="flex flex-col gap-3 pt-10 pb-16 my-auto">
+    <div className="flex flex-col gap-3 h-full pt-10 pb-16">
       {(data.length === 0 || todayNotifications.length === 0) && (
         <EmptyNotifications />
       )}
@@ -246,6 +255,8 @@ function Filters() {
 }
 
 export default function Notifications() {
+  const [notificationsCount, setNotificationsCount] = useState(0);
+
   return (
     <Page displayBottomNavigation>
       <div className="flex flex-col gap-3">
@@ -258,14 +269,14 @@ export default function Notifications() {
             />
           </h2>
           <span className="text-text-200 text-xs font-medium leading-none">
-            (0)
+            ({notificationsCount})
           </span>
         </div>
         <Filters />
       </div>
 
       <Suspense fallback={<Loader />}>
-        <List />
+        <List setNotificationsCount={setNotificationsCount} />
       </Suspense>
     </Page>
   );

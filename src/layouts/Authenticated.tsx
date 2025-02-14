@@ -4,6 +4,7 @@ import routes from "@/constants/routes";
 
 const PUBLIC_ROUTES = [
   routes.ONBOARDING,
+  routes.GET_STARTED,
   routes.LOGIN,
   routes.RESTORE_WITH_SEED_PHRASE,
   routes.CREATE_IDENTITY,

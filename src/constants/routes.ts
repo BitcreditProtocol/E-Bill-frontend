@@ -23,7 +23,9 @@ const CREATE_CONTACT = "new";
 const VIEW_CONTACT = ":nodeId";
 const EDIT_CONTACT = ":nodeId/edit";
 const SETTINGS = "/settings";
-const ONBOARDING = "/get-started";
+
+const ONBOARDING = "/onboarding";
+const GET_STARTED = "/get-started";
 
 const CREATE_IDENTITY = "/create-identity";
 const IDENTITY_CATEGORY = "/category";
@@ -111,18 +113,18 @@ export default {
   PREVIEW_MINT,
   MINT_RECEIVED,
   MINT_REQUEST,
-  ONBOARDING,
   ABOUT,
   NOTIFICATIONS_SETTINGS,
   SECURITY_SETTINGS,
   MINT_SETTINGS,
   RECOVERY_SEED_PHRASE,
-
   NON_ACCEPTANCE,
   NON_PAYMENT,
-
   IDENTITY_LIST,
   COMPANY_SIGNERS,
   EDIT_COMPANY,
   VIEW_COMPANY,
+
+  ONBOARDING,
+  GET_STARTED,
 };

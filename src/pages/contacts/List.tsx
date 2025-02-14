@@ -13,7 +13,7 @@ import { getContacts } from "@/services/contact_v2";
 import routes from "@/constants/routes";
 import { API_URL } from "@/constants/api";
 import { GET_CONTACT_FILE } from "@/constants/endpoints";
-import type { Contact } from "@/types/contact";
+import { ContactTypes, type Contact } from "@/types/contact";
 import TypeFilter from "./components/TypeFilter";
 import EmptyList from "./components/EmptyList";
 
@@ -140,8 +140,7 @@ export default function Contacts() {
           }}
         />
         <TypeFilter
-          multiple
-          values={[]}
+          values={[ContactTypes.Person]}
           onChange={(types) => {
             console.log(types);
           }}

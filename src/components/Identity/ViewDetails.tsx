@@ -10,19 +10,18 @@ import { Link } from "react-router-dom";
 import routes from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
-type DetailsProps = { 
-  type: "personal" | "company" | null,
-  showLink?: boolean
-} & Pick<
-  Identity,
-  "name" | "bitcoin_public_key"
->;
+type DetailsProps = {
+  type: "personal" | "company" | null;
+  showLink?: boolean;
+  avatar: string;
+} & Pick<Identity, "name" | "bitcoin_public_key">;
 
 export default function ViewDetails({
   type,
   name,
   bitcoin_public_key,
   showLink = true,
+  avatar,
 }: DetailsProps) {
   const { formatMessage: f } = useIntl();
   const { toast } = useToast();
@@ -32,7 +31,12 @@ export default function ViewDetails({
 
   return (
     <div className="flex items-center gap-3">
-      <IdentityAvatar name={name} picture="" identityType={type} size="lg" />
+      <IdentityAvatar
+        name={name}
+        picture={avatar}
+        identityType={type}
+        size="lg"
+      />
 
       <div className="flex flex-col items-start gap-1.5">
         <span className="text-text-300 text-center text-base font-medium leading-6">
@@ -53,7 +57,7 @@ export default function ViewDetails({
                   defaultMessage: "Node ID copied to clipboard",
                 }),
                 position: "bottom-center",
-                duration: 750
+                duration: 750,
               });
             });
           }}
@@ -64,9 +68,12 @@ export default function ViewDetails({
         </button>
       </div>
 
-      <Link to={viewIdentityRoute} className={cn("ml-auto", {
-        "hidden": !showLink
-      })}>
+      <Link
+        to={viewIdentityRoute}
+        className={cn("ml-auto", {
+          hidden: !showLink,
+        })}
+      >
         <button className="flex items-center gap-2">
           <span className="text-text-300 text-sm font-normal leading-5">
             <FormattedMessage id="identity.view" defaultMessage="View" />

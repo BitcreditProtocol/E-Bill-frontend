@@ -25,20 +25,27 @@ import MenuOption from "./components/MenuOption";
 import LanguagePreference from "./components/LanguagePreference";
 import { PropsWithChildren, useState } from "react";
 import { exit } from "@/services/general";
-import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/language/LanguageContext";
 
-function ExitConfirmDialog({ children, onConfirm, disabled = false }: PropsWithChildren<{
-  onConfirm: () => void
-  disabled?: boolean
+function ExitConfirmDialog({
+  children,
+  onConfirm,
+  disabled = false,
+}: PropsWithChildren<{
+  onConfirm: () => void;
+  disabled?: boolean;
 }>) {
   const [open, setOpen] = useState(false);
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger>
-        {children}
-      </DrawerTrigger>
+      <DrawerTrigger>{children}</DrawerTrigger>
       <DrawerContent className="max-w-[375px] bg-elevation-50 mx-auto">
         <div className="flex flex-col gap-6 py-8 px-5">
           <div className="flex flex-col gap-1.5">
@@ -112,14 +119,18 @@ export default function Settings() {
           />
         </h1>
 
-        <ExitConfirmDialog onConfirm={() => { void exit(); }}>
-          <PowerIcon className="text-text-300 h-6 w-6 stroke-1 cursor-pointer"/>
+        <ExitConfirmDialog
+          onConfirm={() => {
+            void exit();
+          }}
+        >
+          <PowerIcon className="text-text-300 h-6 w-6 stroke-1 cursor-pointer" />
         </ExitConfirmDialog>
       </div>
-
       <ViewDetails
         type={activeIdentity.type}
         name={activeIdentity.name}
+        avatar={activeIdentity.avatar}
         // todo: replace by node id
         bitcoin_public_key={activeIdentity.node_id}
       />
@@ -147,9 +158,13 @@ export default function Settings() {
           <DisplayCurrency />
           <Separator className="bg-divider-75" />
 
-          <LanguagePreference value={lang.locale} onChange={(value) => {
-            lang.setLocale(value);
-          }} values={lang.availableLocales()}>
+          <LanguagePreference
+            value={lang.locale}
+            onChange={(value: string) => {
+              lang.setLocale(value);
+            }}
+            values={lang.availableLocales()}
+          >
             <MenuOption
               icon={<EarthIcon className="text-text-300 h-6 w-6 stroke-1" />}
               label={intl.formatMessage({

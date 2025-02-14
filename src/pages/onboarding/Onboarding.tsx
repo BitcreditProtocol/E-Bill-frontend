@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import Page from "@/components/wrappers/Page";
 import { Button } from "@/components/ui/button";
 import DotIndicator from "@/components/DotIndicator";
-import OnboardingLogo from "@/assets/images/onboarding-logo.svg";
 import routes from "@/constants/routes";
+import OnboardingLogo from "@/assets/images/onboarding-logo.svg";
 
 import { First, Second, Third, Fourth } from "./Screens";
 
@@ -24,7 +24,7 @@ export default function Onboarding() {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      navigate(routes.CREATE_IDENTITY);
+      navigate(routes.GET_STARTED);
     }
   };
 

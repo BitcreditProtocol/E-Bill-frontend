@@ -7,19 +7,22 @@ import type { Contact } from "@/types/contact";
 import { ContactTypes } from "@/types/contact";
 
 type TypeFilterProps = {
-  values: Contact['type'][];
+  values: Contact["type"][];
   multiple?: boolean;
-  onChange: (values: Contact['type'][]) => void;
+  onChange: (values: Contact["type"][]) => void;
 };
 
-export default function TypeFilter({ values, onChange, multiple = false }: TypeFilterProps) {
-
-  const handleOnClick = (type: Contact['type']) => {
+export default function TypeFilter({
+  values,
+  onChange,
+  multiple = false,
+}: TypeFilterProps) {
+  const handleOnClick = (type: Contact["type"]) => {
     if (!multiple) {
       onChange([type]);
     } else {
-      if (values.includes(type)) {  
-        onChange(values.filter(value => value !== type));
+      if (values.includes(type)) {
+        onChange(values.filter((value) => value !== type));
       } else {
         onChange([...values, type]);
       }
@@ -28,10 +31,17 @@ export default function TypeFilter({ values, onChange, multiple = false }: TypeF
 
   return (
     <div className="flex gap-2">
-      <Button variant="filter" size="xs" className={cn({
-          "!font-semibold border-text-300": values.includes(ContactTypes.Person)
+      <Button
+        variant="filter"
+        size="xs"
+        className={cn({
+          "!font-semibold border-text-300": values.includes(
+            ContactTypes.Person
+          ),
         })}
-        onClick={() => { handleOnClick(ContactTypes.Person); }}
+        onClick={() => {
+          handleOnClick(ContactTypes.Person);
+        }}
       >
         <FormattedMessage
           id="Person"
@@ -39,10 +49,17 @@ export default function TypeFilter({ values, onChange, multiple = false }: TypeF
           description="Person contact type"
         />
       </Button>
-      <Button variant="filter" size="xs" className={cn({
-          "!font-semibold border-text-300": values.includes(ContactTypes.Company)
+      <Button
+        variant="filter"
+        size="xs"
+        className={cn({
+          "!font-semibold border-text-300": values.includes(
+            ContactTypes.Company
+          ),
         })}
-        onClick={() => { handleOnClick(ContactTypes.Company); }}
+        onClick={() => {
+          handleOnClick(ContactTypes.Company);
+        }}
       >
         <FormattedMessage
           id="Company"
@@ -50,7 +67,7 @@ export default function TypeFilter({ values, onChange, multiple = false }: TypeF
           description="Company contact type"
         />
       </Button>
-      <Button variant="filter" size="xs" className={cn({
+      {/*       <Button variant="filter" size="xs" className={cn({
           "!font-semibold border-text-300": values.includes(ContactTypes.Mint)
         })}
         onClick={() => { handleOnClick(ContactTypes.Mint); }}
@@ -60,7 +77,7 @@ export default function TypeFilter({ values, onChange, multiple = false }: TypeF
           defaultMessage="Mint"
           description="Mint contact type"
         />
-      </Button>
+      </Button> */}
     </div>
   );
 }

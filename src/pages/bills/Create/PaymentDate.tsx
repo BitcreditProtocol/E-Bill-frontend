@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, addDays } from "date-fns";
 import { useIntl } from "react-intl";
 import { CalendarIcon } from "lucide-react";
 import { DatePicker } from "@/components/DatePicker/datePicker";
@@ -18,9 +19,16 @@ export default function PaymentDate() {
     name: "payment.date",
   });
 
+  useEffect(() => {
+    const today = new Date();
+    const addedDays = addDays(today, 90);
+
+    setValue("payment.date", format(addedDays, "yyyy-MM-dd"));
+  }, [setValue]);
+
   return (
     <DatePicker
-      value={{ from: date ? parseISO(date) : undefined }}
+      // value={{ from: date ? parseISO(date) : undefined }}
       mode="single"
       customComponent={
         <div className="flex items-center gap-2 py-5 px-4 bg-elevation-200 text-text-300 text-sm font-medium leading-5 border border-divider-50 rounded-lg cursor-pointer">

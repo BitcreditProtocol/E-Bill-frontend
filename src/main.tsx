@@ -71,6 +71,7 @@ import ViewCompany from "./pages/company/View";
 
 import { Toaster } from "./components/ui/toaster";
 import CashFlow from "./pages/home/CashFlow";
+import Onboarding from "./pages/onboarding/Onboarding";
 
 const queryClient = new QueryClient();
 
@@ -88,8 +89,12 @@ const router = createBrowserRouter(
             },
             // public
             {
-              path: routes.ONBOARDING,
+              path: routes.GET_STARTED,
               element: <GetStarted />,
+            },
+            {
+              path: routes.ONBOARDING,
+              element: <Onboarding />,
             },
             {
               path: routes.CREATE_IDENTITY,

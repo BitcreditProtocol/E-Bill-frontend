@@ -125,19 +125,21 @@ export default function ContactPicker({
           }
         />
 
-        <div className="flex flex-col gap-3">
-          <Search
-            placeholder={f({
-              id: "contacts.search.placeholder",
-              defaultMessage: "Name, address, email...",
-              description: "Placeholder text for contacts search input",
-            })}
-            onChange={setSearchTerm}
-            onSearch={() => {
-              console.log(searchTerm);
-            }}
-          />
-        </div>
+        {currentStep !== STEPS.INFORMATION && (
+          <div className="flex flex-col gap-3">
+            <Search
+              placeholder={f({
+                id: "contacts.search.placeholder",
+                defaultMessage: "Name, address, email...",
+                description: "Placeholder text for contacts search input",
+              })}
+              onChange={setSearchTerm}
+              onSearch={() => {
+                console.log(searchTerm);
+              }}
+            />
+          </div>
+        )}
 
         <Suspense fallback={<Loader />}>
           {currentStep === STEPS.LIST && (
