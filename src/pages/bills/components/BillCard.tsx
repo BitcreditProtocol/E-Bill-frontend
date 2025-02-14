@@ -146,10 +146,10 @@ function Status({
 
   const icon = {
     accepted: <CheckIcon className="h-4 w-5 stroke-1" />,
-    pending_acceptance: <LoaderIcon className="h-4 w-5 stroke-1" />,
+    pending_acceptance: <LoaderIcon className="h-4 w-5 stroke-1 animate-spin" />,
     unaccepted: <XIcon className="h-4 w-5 stroke-1" />,
     paid: <CheckIcon className="w-5 h-5" />,
-    pending_payment: <LoaderIcon className="h-4 w-5 stroke-1" />,
+    pending_payment: <LoaderIcon className="h-4 w-5 stroke-1 animate-spin" />,
     unpaid: <XIcon className="h-4 w-5 stroke-1" />,
   }[status.payment || status.acceptance];
 
