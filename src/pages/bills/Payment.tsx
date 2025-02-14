@@ -16,13 +16,14 @@ import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { Skeleton } from "@/components/ui/skeleton";
+import { findHolder } from "@/utils/bill";
+import { truncateString } from "@/utils/strings";
 import { useToast } from "@/hooks/use-toast";
 import { getBillDetails, getPrivateKey } from "@/services/bills";
 import { getActiveIdentity } from "@/services/identity_v2";
 import { copyToClipboard } from "@/utils";
 import LoaderIcon from "@/assets/icons/loader.svg";
 import Preview from "./components/Preview";
-import { findHolder } from "@/utils/bill";
 
 function Loader() {
   return (
@@ -233,7 +234,7 @@ function Information({ id }: { id: string }) {
 
             <div className="flex items-center gap-2">
               <span className="max-w-64 text-text-200 text-base font-normal leading-6 break-all">
-                {data.mempool_link_for_address_to_pay}
+                {truncateString(data.mempool_link_for_address_to_pay, 24)}
               </span>
 
               <button
