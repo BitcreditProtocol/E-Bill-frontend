@@ -421,6 +421,8 @@
   "contacts.person.identityNumber": "Social security number",
   "contacts.person.name": "Legal full name",
   "contacts.person.uploadDocument": "Upload identity document",
+  "contacts.search.results.no_results.text": "No results",
+  "contacts.search.results.title": "Search results",
   "contacts.select.details.select": "Select",
   "contacts.select.title": "Select contact",
   "contacts.view.title": "View contact",

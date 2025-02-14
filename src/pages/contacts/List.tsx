@@ -93,6 +93,25 @@ function Loader() {
   );
 }
 
+function EmptySearchResult() {
+  return (<div className="flex flex-col gap-4">
+    <div className="text-text-200 text-xs font-medium">
+      <FormattedMessage
+        id="contacts.search.results.title"
+        defaultMessage="Search results"
+        description="Title for search results on Contacts page"
+      />
+    </div>
+    <div className="text-text-300 text-sm font-medium">
+      <FormattedMessage
+        id="contacts.search.results.no_results.text"
+        defaultMessage="No results"
+        description="Title for no search results on Contacts page"
+      />
+    </div>
+  </div>);
+}
+
 type ListProps = {
   typeFilters: Contact["type"][]
 }
@@ -103,16 +122,23 @@ function List({ typeFilters }: ListProps) {
     queryFn: () => getContacts(),
   });
 
-  const values = useMemo(() => {
+  const filtered = useMemo(() => {
     return data.contacts.filter((it) => typeFilters.length === 0 || typeFilters.includes(it.type))
   }, [data, typeFilters]);
 
   return (
     <div className="flex flex-col gap-2 mb-16">
-      {data.contacts.length === 0 && <EmptyList />}
-      {values.map((it) => (
-        <Contact key={it.node_id} {...it} />
-      ))}
+      {data.contacts.length === 0 ? (
+        <EmptyList />
+      ) : (<>
+        {filtered.length === 0 ? (<>
+          <EmptySearchResult />
+        </>) : (<>
+          {filtered.map((it) => (
+            <Contact key={it.node_id} {...it} />
+          ))}
+        </>)}
+      </>)}
     </div>
   );
 }
