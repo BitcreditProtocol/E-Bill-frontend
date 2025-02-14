@@ -105,9 +105,10 @@ function Details({ id }: { id: string }) {
         isPayee={isPayee}
       />
 
-      {quote && quote.token && <EcashToken token={quote.token} />}
-
-      {<Actions role={role} {...data} />}
+      <div className="flex flex-col gap-2">
+        {quote && quote.token && <EcashToken token={quote.token} />}
+        {<Actions role={role} {...data} />}
+      </div>
     </div>
   );
 }
