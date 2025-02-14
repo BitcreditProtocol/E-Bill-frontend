@@ -17,6 +17,7 @@ import { type Contact } from "@/types/contact";
 import TypeFilter from "./components/TypeFilter";
 import EmptyList from "./components/EmptyList";
 import { searchContacts } from "@/services/search";
+import { useLanguage } from "@/context/language/LanguageContext";
 
 type ContactProps = Pick<
   Contact,
@@ -94,6 +95,26 @@ function Loader() {
   );
 }
 
+type Category = string;
+
+const sortContacts = (
+  values: Contact[],
+  locale: string
+): Record<Category, Contact[]> => {
+  return [...values]
+    .sort((a, b) => a.name.localeCompare(b.name, locale))
+    .map((it) => {
+      const firstChar: Category = it.name.length === 0 ? '#' : it.name.charAt(0).toLocaleUpperCase(locale);
+      return { category: firstChar, value: it };
+    })
+    .reduce<Record<Category, Contact[]>>((acc, item) => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      acc[item.category] = acc[item.category] || [];
+      acc[item.category].push(item.value);
+      return acc;
+    }, {});
+};
+
 function EmptySearchResult() {
   return (<div className="flex flex-col gap-4">
     <div className="text-text-200 text-xs font-medium">
@@ -112,6 +133,50 @@ function EmptySearchResult() {
     </div>
   </div>);
 }
+
+type CatogorizedListProps = {
+  values: Contact[]
+}
+
+function CatogorizedList({ values }: CatogorizedListProps) {
+  const lang = useLanguage();
+
+  const valuesMap = useMemo(
+    () => sortContacts(values, lang.locale),
+    [values, lang.locale]
+  );
+
+  const categories = useMemo<Category[]>(() => {
+    return Object.keys(valuesMap).sort((a, b) =>
+      a.localeCompare(b, lang.locale)
+    );
+  }, [valuesMap, lang.locale]);
+
+  return (<>
+    {categories.map((category) => (
+      <div
+        key={category}
+        data-testid={`contact-category-container-${category}`}
+      >
+        <div
+          className="text-text-300 text-xs ps-5 mb-3 font-medium"
+          data-testid={`contact-category-title-${category}`}
+        >
+          {category}
+        </div>
+        <div
+          className="flex flex-col gap-2"
+          data-testid={`contact-category-items-${category}`}
+        >
+          {valuesMap[category].map((value, valueIndex) => (
+            <Contact key={valueIndex} {...value} />
+          ))}
+        </div>
+      </div>
+    ))}
+  </>);
+}
+
 
 type ListProps = {
   typeFilters: Contact["type"][]
@@ -135,9 +200,7 @@ function List({ typeFilters }: ListProps) {
         {filtered.length === 0 ? (<>
           <EmptySearchResult />
         </>) : (<>
-          {filtered.map((it) => (
-            <Contact key={it.node_id} {...it} />
-          ))}
+          <CatogorizedList values={filtered} />
         </>)}
       </>)}
     </div>
@@ -159,9 +222,7 @@ function SearchResults({ typeFilters, values }: SearchResultsProps) {
       {filtered.length === 0 ? (<>
         <EmptySearchResult />
       </>) : (<>
-        {filtered.map((it) => (
-          <Contact key={it.node_id} {...it} />
-        ))}
+        <CatogorizedList values={filtered} />
       </>)}
     </div>
   );
