@@ -7,11 +7,10 @@ import {
 } from "@tanstack/react-query";
 import { isToday, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
-import { CalendarDaysIcon, ChevronsUpDownIcon } from "lucide-react";
+import { ChevronsUpDownIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import PageTitle from "@/components/typography/PageTitle";
-import { DatePicker } from "@/components/DatePicker/datePicker";
 import { Skeleton } from "@/components/ui/skeleton";
 import Search from "@/components/ui/search";
 import { Button } from "@/components/ui/button";
@@ -24,7 +23,8 @@ import Empty from "./components/Empty";
 import { readMintConfig } from "@/constants/mints";
 import { BillLight } from "@/types/bill";
 
-function DateRangeFilter({ onChange }: { onChange: (e: unknown) => void }) {
+/* TODO: disabled for now, till it is clarified in UI how to unset/clear the range filter again */
+/*function DateRangeFilter({ onChange }: { onChange: (dateRange: DateRange) => void }) {
   return (
     <DatePicker
       customComponent={
@@ -41,7 +41,7 @@ function DateRangeFilter({ onChange }: { onChange: (e: unknown) => void }) {
       onChange={onChange}
     />
   );
-}
+}*/
 
 function MaturityFilter({ onClick }: { onClick: (e: unknown) => void }) {
   return (
@@ -390,13 +390,13 @@ export default function Bills() {
             />
           </PageTitle>
         }
-        trail={
+        /*trail={
           <DateRangeFilter
             onChange={(e) => {
               console.log(e);
             }}
           />
-        }
+        }*/
       />
       <div className="flex flex-col gap-2">
         <Search

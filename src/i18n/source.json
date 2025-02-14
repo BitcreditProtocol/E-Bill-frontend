@@ -286,7 +286,6 @@
   "bills.create.title": "Draw bill",
   "bills.create.type": "Type of bill",
   "bills.create.valueReceived": "Value received.",
-  "bills.list.dateRange": "Date range",
   "bills.list.earlier": "Earlier",
   "bills.list.maturity": "Maturity",
   "bills.list.title": "Bills",
