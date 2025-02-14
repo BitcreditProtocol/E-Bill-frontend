@@ -16,13 +16,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Search from "@/components/ui/search";
 import { Button } from "@/components/ui/button";
 import RefreshButton from "@/components/RefreshButton";
-import { checkBillsInDHT, getBillsAll, getBillsLight } from "@/services/bills";
+import { checkBillsInDHT, getBillsAll, getBillsLight, searchBills } from "@/services/bills";
 import { cn } from "@/lib/utils";
 import routes from "@/constants/routes";
 import { Card } from "./components/Card";
 import Empty from "./components/Empty";
 import { readMintConfig } from "@/constants/mints";
-import { searchBills } from "@/services/search";
 import { BillLight } from "@/types/bill";
 
 function DateRangeFilter({ onChange }: { onChange: (e: unknown) => void }) {
@@ -267,10 +266,6 @@ function ListAll() {
       mintConfig.__dev_mintViewEnabled ? getBillsAll() : getBillsLight(),
   });
 
-  const filtered = useMemo(() => {
-    return data.bills; // .filter((it) => typeFilters.length === 0 || typeFilters.includes(it.type))
-  }, [data]);
-
   const { refetch, isFetching } = useQuery({
     queryFn: () => checkBillsInDHT(),
     queryKey: ["bills", "check"],
@@ -312,7 +307,7 @@ function ListAll() {
         </div>
       ) : (
         <>
-          <List values={filtered} />
+          <List values={data.bills} />
         </>
       )}
     </div>
@@ -341,21 +336,16 @@ function EmptySearchResult() {
 
 
 type SearchResultsProps = {
-  typeFilters: TypeFilterValue[]
   values: BillLight[]
 }
 
 function SearchResults({ values }: SearchResultsProps) {
-  const filtered = useMemo(() => {
-    return values; //.filter((it) => typeFilters.length === 0 || typeFilters.includes(it.type))
-  }, [values]);
-
   return (
     <div className="flex flex-col gap-2 mb-16">
-      {filtered.length === 0 ? (<>
+      {values.length === 0 ? (<>
         <EmptySearchResult />
       </>) : (<>
-        <List values={filtered} />
+        <List values={values} />
       </>)}
     </div>
   );
@@ -372,7 +362,17 @@ export default function Bills() {
     refetch: doSearch,
   } = useQuery({
     queryKey: ["search", "bill", searchTerm],
-    queryFn: () => searchBills({ search_term: searchTerm }),
+    queryFn: () => searchBills({
+      filter: {
+        search_term: searchTerm,
+        /*date_range?: {
+          from: string;
+          to: string;
+        }*/
+        role: "All",
+        currency: "sat",
+      }
+    }).then((it) => it.bills),
     staleTime: 1,
     enabled: false,
     refetchOnWindowFocus: false,
@@ -425,7 +425,7 @@ export default function Bills() {
       <Suspense fallback={<Loader />}>
         {searchModeEnabled ? (<>
           {searchIsLoading ? (<Loader />) : (<>
-            <SearchResults typeFilters={[typeFilter]} values={searchData || []} />
+            <SearchResults values={searchData || []} />
           </>)}
         </>) : (<>
           <ListAll />

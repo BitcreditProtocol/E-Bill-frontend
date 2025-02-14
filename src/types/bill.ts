@@ -1,7 +1,4 @@
-import { getBillsLight } from "@/services/bills";
 import { Notification } from "./notification";
-
-export type BillLight = Awaited<ReturnType<typeof getBillsLight>>['bills'][0];
 
 export type Bill = {
   bill_name: string;
@@ -117,6 +114,19 @@ export type BillFull = {
   active_notification: Notification | null;
   time_of_maturity: number;
 };
+
+export type BillLight = {
+  id: BillFull["id"];
+  drawee: Pick<Peer, "name" | "node_id">;
+  drawer: Pick<Peer, "name" | "node_id">;
+  payee: Pick<Peer, "name" | "node_id">;
+  endorsee: Pick<Peer, "name" | "node_id"> | null;
+  sum: BillFull["sum"];
+  currency: BillFull["currency"];
+  issue_date: BillFull["issue_date"];
+  active_notification: BillFull["active_notification"];
+  time_of_drawing: BillFull["time_of_drawing"];
+}
 
 // for bill creation
 export const BILL_TYPE = {

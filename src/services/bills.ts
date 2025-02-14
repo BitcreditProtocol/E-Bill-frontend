@@ -25,8 +25,9 @@ import {
   CHECK_BILL_PAYMENT_STATUS,
   GET_BILLS_ALL,
   CHECK_BILL_IN_DHT,
+  SEARCH_BILLS,
 } from "@/constants/endpoints";
-import type { BillFull, Peer } from "@/types/bill";
+import type { BillFull, BillLight } from "@/types/bill";
 
 type UploadFileResponse = {
   file_upload_id: string;
@@ -77,18 +78,7 @@ export async function createBill(
 }
 
 type GetBillsLightResponse = {
-  bills: {
-    id: BillFull["id"];
-    drawee: Pick<Peer, "name" | "node_id">;
-    drawer: Pick<Peer, "name" | "node_id">;
-    payee: Pick<Peer, "name" | "node_id">;
-    endorsee: Pick<Peer, "name" | "node_id"> | null;
-    sum: BillFull["sum"];
-    currency: BillFull["currency"];
-    issue_date: BillFull["issue_date"];
-    active_notification: BillFull["active_notification"];
-    time_of_drawing: BillFull["time_of_drawing"];
-  }[];
+  bills: BillLight[];
 };
 
 export async function getBillsLight(): Promise<GetBillsLightResponse> {
@@ -428,3 +418,29 @@ export async function checkBillPaymentStatus(): Promise<void> {
     },
   });
 }
+
+type SearchBillsPayload = {
+  filter: {
+    search_term: string;
+    role: string;
+    currency: string;
+    date_range?: {
+      from: string;
+      to: string;
+    };
+  };
+};
+
+type SearchBillsResponse = {
+  bills: BillLight[]
+}
+
+export const searchBills = async (payload: SearchBillsPayload) => {
+  return await apiFetch<SearchBillsResponse>(SEARCH_BILLS, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+};

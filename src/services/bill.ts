@@ -40,6 +40,7 @@ type SearchBillsResponse = Pick<
   "bill_name" | "role" | "drawer" | "sum" | "issue_date"
 >[];
 
+// REMOVE?
 export const searchBills = async (payload: SearchBillsPayload) => {
   const response = await fetch(SEARCH_BILLS, {
     method: "POST",
