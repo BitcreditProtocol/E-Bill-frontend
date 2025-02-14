@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { FormattedMessage, useIntl } from "react-intl";
 import { getContacts } from "@/services/contact_v2";
 import { Contact } from "@/types/contact";
@@ -13,6 +13,7 @@ import Search from "../ui/search";
 import { Card } from "./Card";
 import Information from "./Information";
 import { cn } from "@/lib/utils";
+import { searchContacts } from "@/services/search";
 
 function Loader() {
   return (
@@ -75,7 +76,6 @@ export default function ContactPicker({
 }: ContactPickerProps) {
   const { formatMessage: f } = useIntl();
   const [open, setOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [currentStep, setCurrentStep] = useState<keyof typeof STEPS>(
     STEPS.LIST
   );
@@ -90,6 +90,23 @@ export default function ContactPicker({
     setCurrentStep(STEPS.LIST);
     setViewingContact(null);
   };
+
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchModeEnabled, setSearchModeEnabled] = useState(false);
+
+  const {
+    isFetching: searchIsLoading,
+    // data: searchData,
+    refetch: doSearch,
+  } = useQuery({
+    queryKey: ["search", "contacts", searchTerm],
+    queryFn: () => searchContacts({ search_term: searchTerm }),
+    staleTime: 1,
+    enabled: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
 
   return (
     <Dialog
@@ -133,9 +150,17 @@ export default function ContactPicker({
                 defaultMessage: "Name, address, email...",
                 description: "Placeholder text for contacts search input",
               })}
-              onChange={setSearchTerm}
+              onChange={(value) => {
+                setSearchTerm(value);
+                if (value === "") {
+                  setSearchModeEnabled(false);
+                }
+              }}
               onSearch={() => {
-                console.log(searchTerm);
+                setSearchModeEnabled(searchTerm !== "");
+                if (searchTerm) {
+                  void doSearch();
+                }
               }}
             />
           </div>
@@ -143,12 +168,20 @@ export default function ContactPicker({
 
         <Suspense fallback={<Loader />}>
           {currentStep === STEPS.LIST && (
-            <List
-              onSelect={(contactId) => {
-                setCurrentStep(STEPS.INFORMATION);
-                setViewingContact(contactId);
-              }}
-            />
+            <>
+              {searchModeEnabled ? (<>
+                {searchIsLoading ? (<Loader />) : (<>
+                  {/*<SearchResults typeFilters={typeFilters} values={searchData || []} />*/}
+                </>)}
+              </>) : (<>
+                <List
+                  onSelect={(contactId) => {
+                    setCurrentStep(STEPS.INFORMATION);
+                    setViewingContact(contactId);
+                  }}
+                />
+              </>)}
+            </>
           )}
 
           {currentStep === STEPS.INFORMATION && viewingContact !== null && (
