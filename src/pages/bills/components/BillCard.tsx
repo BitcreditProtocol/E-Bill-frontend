@@ -124,15 +124,18 @@ function Status({
 
   const status = {
     //TODO: rejected for accept and reject for pay
-    acceptance
-        : accepted ? "accepted"
-        : requested_to_accept ? "pending_acceptance"
-        : "unaccepted",
-    payment
-        : paid ? "paid"
-        : requested_to_pay ? "pending_payment"
-        : waiting_for_payment ? "pending_payment"
-        : "unpaid",
+    acceptance: accepted
+      ? "accepted"
+      : requested_to_accept
+      ? "pending_acceptance"
+      : "unaccepted",
+    payment: paid
+      ? "paid"
+      : requested_to_pay
+      ? "pending_payment"
+      : waiting_for_payment
+      ? "pending_payment"
+      : "unpaid",
   };
 
   const message = {
@@ -146,10 +149,14 @@ function Status({
 
   const icon = {
     accepted: <CheckIcon className="h-4 w-5 stroke-1" />,
-    pending_acceptance: <LoaderIcon className="h-4 w-5 stroke-1" />,
+    pending_acceptance: (
+      <LoaderIcon className="h-4 w-5 stroke-1 animate-spin" />
+    ),
     unaccepted: <XIcon className="h-4 w-5 stroke-1" />,
     paid: <CheckIcon className="w-5 h-5" />,
-    pending_payment: <LoaderIcon className="h-4 w-5 stroke-1" />,
+    pending_payment: (
+      <LoaderIcon className="h-4 w-5 stroke-1 animate-spin ease-in-out" />
+    ),
     unpaid: <XIcon className="h-4 w-5 stroke-1" />,
   }[status.payment || status.acceptance];
 
@@ -160,15 +167,14 @@ function Status({
       <span
         className={cn("text-xs font-normal leading-normal", {
           "text-signal-success":
-            status.acceptance === "accepted" ||
-            status.payment === "paid",
+            status.acceptance === "accepted" || status.payment === "paid",
           "text-text-300":
             status.acceptance === "pending_acceptance" ||
             status.acceptance === "unaccepted" ||
             status.payment === "pending_payment",
           "text-signal-error":
-          //TODO: we put red color only if we reject something
-            (status.acceptance === "accepted" && status.payment === "unpaid"),
+            //TODO: we put red color only if we reject something
+            status.acceptance === "accepted" && status.payment === "unpaid",
         })}
       >
         {message}
@@ -195,7 +201,7 @@ type CardProps = {
   paid: BillFull["paid"];
   requested_to_pay: BillFull["requested_to_pay"];
   waiting_for_payment: BillFull["waiting_for_payment"];
-  endorsements_count: BillFull["endorsements_count"]
+  endorsements_count: BillFull["endorsements_count"];
   attachment: string | null;
   isPayer: boolean;
   isPayee: boolean;
@@ -418,12 +424,14 @@ export default function BillCard({
             </span>
 
             <span className="text-text-300 text-xs font-medium">
-              (<FormattedNumber 
+              (
+              <FormattedNumber
                 value={endorsements_count}
                 signDisplay="negative"
                 minimumFractionDigits={0}
                 maximumFractionDigits={0}
-              />)
+              />
+              )
             </span>
 
             <ChevronRightIcon className="text-text-300 w-5 h-5 ml-0.5 stroke-1" />

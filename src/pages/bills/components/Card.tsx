@@ -15,6 +15,7 @@ type CardProps = {
   hasPendingAction?: boolean;
 };
 
+// todo: combine with the other card component
 export function Card({
   name,
   date,
@@ -31,7 +32,9 @@ export function Card({
   const isPayer = drawee.node_id === node_id;
   const isPayee =
     (endorsee !== null && endorsee.node_id === node_id) ||
-    payee.node_id === node_id;
+    (endorsee === null && payee.node_id === node_id);
+
+  const parsedAmount = isPayer ? -amount : amount;
   const formattedDate = format(parseISO(date), "dd-MMM-yyyy");
 
   return (
@@ -52,13 +55,13 @@ export function Card({
 
       <div className="flex items-center gap-1 self-end">
         <FormattedCurrency
+          signDisplay={isPayer ? "negative" : isPayee ? "always" : "never"}
+          value={parsedAmount}
           className={cn("!text-sm !font-normal !leading-5", {
             "!text-signal-error": isPayer,
             "!text-signal-success": isPayee,
             "!text-text-300": !isPayer && !isPayee,
           })}
-          value={isPayer ? -amount : amount}
-          currency=""
         />
         <span className="text-text-300 text-xs font-normal leading-normal">
           {currency}

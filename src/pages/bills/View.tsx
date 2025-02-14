@@ -69,7 +69,7 @@ function Details({ id }: { id: string }) {
   const isPayer = data.drawee.node_id === activeIdentity.node_id;
   const isPayee =
     (data.endorsed && data.endorsee?.node_id === activeIdentity.node_id) ||
-    data.payee.node_id === activeIdentity.node_id;
+    (!data.endorsed && data.payee.node_id === activeIdentity.node_id);
 
   const isHolder = holder.node_id === activeIdentity.node_id;
   const role = isPayer ? "payer" : isHolder ? "holder" : null;

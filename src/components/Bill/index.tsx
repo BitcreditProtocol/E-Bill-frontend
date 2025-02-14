@@ -63,7 +63,7 @@ export default function Bill({
         <div className="flex gap-1 items-baseline">
           <FormattedCurrency
             type={isPayer ? "debit" : isPayee ? "credit" : "auto"}
-            signDisplay="always"
+            signDisplay={isPayer ? "negative" : isPayee ? "always" : "never"}
             value={parsedAmount}
             className={cn("!text-sm !font-normal !leading-5", {
               "!text-signal-error": isPayer,
