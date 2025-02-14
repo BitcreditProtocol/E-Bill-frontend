@@ -126,7 +126,9 @@ export type BillLight = {
   issue_date: BillFull["issue_date"];
   active_notification: BillFull["active_notification"];
   time_of_drawing: BillFull["time_of_drawing"];
+  time_of_maturity: BillFull["time_of_maturity"];
 }
+
 
 // for bill creation
 export const BILL_TYPE = {

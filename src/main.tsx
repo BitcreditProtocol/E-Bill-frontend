@@ -73,6 +73,7 @@ import ViewCompany from "./pages/company/View";
 import { Toaster } from "./components/ui/toaster";
 import CashFlow from "./pages/home/CashFlow";
 import Onboarding from "./pages/onboarding/Onboarding";
+import ErrorBoundary from "./ErrorBoundary";
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,9 @@ const router = createBrowserRouter(
   [
     {
       element: <DefaultLayout />,
+      errorElement: (<DefaultLayout>
+        <ErrorBoundary />
+      </DefaultLayout>),
       children: [
         {
           element: <Authenticated />,

@@ -24,6 +24,9 @@ const FormattedCurrency = ({
   currencyDisplay = "symbol",
   signDisplay = "exceptZero",
 }: FormattedCurrencyProps) => {
+
+  const displayAsCurrency = currency !== undefined && currencyDisplay !== "none";
+
   return (
     <span
       className={cn(className, {
@@ -40,13 +43,9 @@ const FormattedCurrency = ({
         signDisplay={signDisplay}
         minimumFractionDigits={currency === BITCOIN_CODE ? 8 : currency === SATOSHI_CODE ? 0 : 2}
         maximumFractionDigits={8}
-        style={currency !== undefined ? "currency" : "decimal"}
-        currency={currency}
-        currencyDisplay={
-          currency !== undefined && currencyDisplay !== "none"
-            ? currencyDisplay
-            : undefined
-        }
+        style={displayAsCurrency ? "currency" : "decimal"}
+        currency={displayAsCurrency ? currency : undefined}
+        currencyDisplay={displayAsCurrency ? currencyDisplay : undefined}
       >
         {(formattedNumber: string) => {
           if (currency !== BITCOIN_CODE) {

@@ -169,7 +169,7 @@ function Status({
   }[status];
 
   const icon = {
-    pending: <img src={LoaderIcon} alt="Loader" className="w-12 h-12" />,
+    pending: <img src={LoaderIcon} alt="Loader" className="w-12 h-12 animate-spin ease-in-out" />,
     success: (
       <CircleCheckIcon className="text-signal-success w-12 h-12 stroke-1" />
     ),
@@ -264,7 +264,7 @@ function Details() {
       : "pending";
 
   if (!isOfferedForSale) {
-    return <Navigate to={"/" + routes.VIEW_BILL.replace(":id", id)} />;
+    return <Navigate to={routes.VIEW_BILL.replace(":id", id)} />;
   }
 
   return isBuyer ? (

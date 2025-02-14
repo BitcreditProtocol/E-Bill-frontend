@@ -134,7 +134,6 @@ export default function SelectQuote() {
             />
           </PageTitle>
         }
-        trail={<></>}
       />
 
       <Suspense fallback={<Loader />}>

@@ -1,3 +1,5 @@
+export type NotificationActionType = "BuyBill" | "RecourseBill" | "AcceptBill" | "PayBill" | "CheckBill" | "CheckQuote";
+
 export type Notification = {
   id: string;
   node_id: string;
@@ -7,7 +9,7 @@ export type Notification = {
   datetime: string;
   active: boolean;
   payload: {
-    action_type: string;
+    action_type: NotificationActionType;
     bill_id: string;
     sum?: number;
   };

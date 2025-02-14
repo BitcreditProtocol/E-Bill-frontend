@@ -301,7 +301,7 @@ export default function View() {
         trail={
           // todo: fix route build
           <Link
-            to={"/contacts/" + routes.EDIT_CONTACT.replace(":nodeId", nodeId)}
+            to={routes.CONTACTS + "/" + routes.EDIT_CONTACT.replace(":nodeId", nodeId)}
           >
             <button className="flex flex-col items-center justify-center h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md">
               <PencilIcon className="text-text-300 h-5 w-5 stroke-1" />

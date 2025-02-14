@@ -1,18 +1,18 @@
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseISO, isToday, isBefore, startOfToday, format } from "date-fns";
 import { FormattedMessage } from "react-intl";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getNotifications } from "@/services/notifications";
 import routes from "@/constants/routes";
 import createBillIllustration from "@/assets/create-bill-illustration.svg";
-import type { Notification } from "@/types/notification";
+import type { Notification, NotificationActionType} from "@/types/notification";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { Skeleton } from "@/components/ui/skeleton";
+import TypeFilter from "./notifications/components/TypeFilter";
 
 type NotificationProps = Pick<
   Notification,
@@ -65,7 +65,8 @@ function Notification({
           )}
 
           <span className="text-text-300 text-xs font-normal leading-normal">
-            sat
+            {/* TODO: show value here when it is available */}
+            <span className="hidden">sat</span>
           </span>
         </div>
       </div>
@@ -102,6 +103,30 @@ function EmptyNotifications() {
           />
         </button>
       </Link>
+    </div>
+  );
+}
+
+function EmptyActiveNotifications() {
+  return (
+    <div className="flex flex-col items-center gap-4 mb-5">
+      <img src={createBillIllustration} className="h-12 w-12 mb-1" />
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-text-300 text-xl font-medium leading-normal">
+          <FormattedMessage
+            id="notifications.active.empty.title"
+            defaultMessage="No active notifications"
+            description="Empty active notifications message title"
+          />
+        </span>
+        <span className="text-text-200 text-base font-normal leading-normal text-center mx-12">
+          <FormattedMessage
+            id="notifications.active.empty.description"
+            defaultMessage="Perfect!"
+            description="Empty active notifications message description"
+          />
+        </span>
+      </div>
     </div>
   );
 }
@@ -172,13 +197,20 @@ function Loader() {
 
 function List({
   setNotificationsCount,
+  typeFilters,
 }: {
-  setNotificationsCount: (count: number) => void;
+  setNotificationsCount: (count: number) => void,
+  typeFilters: NotificationActionType[]
 }) {
   const { data } = useSuspenseQuery({
     queryFn: () => getNotifications(),
     queryKey: ["notifications"],
   });
+
+  const filtered = useMemo(() => {
+    if (typeFilters.length === 0) return data;
+    return data.filter((it) => typeFilters.includes(it.payload.action_type));
+  }, [typeFilters, data])
 
   useEffect(() => {
     setNotificationsCount(data.length);
@@ -186,19 +218,42 @@ function List({
 
   const today = startOfToday();
 
-  const todayNotifications = data.filter((notification) =>
+
+  const activeNotifications = filtered.filter((notification) => notification.active);
+
+  const todayNotifications = filtered.filter((notification) =>
     isToday(parseISO(notification.datetime))
   );
 
-  const earlierNotifications = data.filter((notification) =>
+  const earlierNotifications = filtered.filter((notification) =>
     isBefore(parseISO(notification.datetime), today)
   );
 
   // check how to best render the empty list, if only when no data at all, or if no notifications today too
   return (
     <div className="flex flex-col gap-3 h-full pt-10 pb-16">
-      {(data.length === 0 || todayNotifications.length === 0) && (
+      {filtered.length === 0 ? (
         <EmptyNotifications />
+      ) : (<>
+        {activeNotifications.length === 0 && (
+          <EmptyActiveNotifications />
+        )}
+      </>)}
+      {activeNotifications.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <span className="text-text-300 text-base font-medium leading-normal">
+            <FormattedMessage
+              id="notifications.list.active"
+              defaultMessage="Active"
+              description="Active notifications section title"
+            />
+          </span>
+          <div className="flex flex-col gap-3">
+            {activeNotifications.map((notification) => (
+              <Notification key={notification.id} {...notification} />
+            ))}
+          </div>
+        </div>
       )}
       {todayNotifications.length > 0 && (
         <div className="flex flex-col gap-3">
@@ -223,43 +278,10 @@ function List({
   );
 }
 
-function Filters() {
-  return (
-    <div className="flex item-center gap-2">
-      <Button variant="filter">
-        <FormattedMessage
-          id="notifications.filter.all"
-          defaultMessage="All"
-          description="Filter to view all notifications"
-        />
-      </Button>
-      <Button variant="filter">
-        <FormattedMessage
-          id="notifications.filter.pay"
-          defaultMessage="Pay"
-          description="Filter to view pending pay notifications"
-        />
-      </Button>
-      <Button variant="filter">
-        <FormattedMessage
-          id="notifications.filter.accept"
-          defaultMessage="Accept"
-          description="Filter to view pending accept notifications"
-        />
-      </Button>
-      <Button variant="filter">
-        <FormattedMessage
-          id="notifications.filter.recourse"
-          defaultMessage="Recourse"
-          description="Filter to view pending recourse notifications"
-        />
-      </Button>
-    </div>
-  );
-}
-
 export default function Notifications() {
   const [notificationsCount, setNotificationsCount] = useState(0);
+
+  const [typeFilters, setTypeFilters] = useState<NotificationActionType[]>([]);
 
   return (
     <Page displayBottomNavigation>
@@ -276,11 +298,18 @@ export default function Notifications() {
             ({notificationsCount})
           </span>
         </div>
-        <Filters />
+        <TypeFilter
+          multiple
+          values={typeFilters}
+          onChange={(types) => {
+            setTypeFilters(types);
+            // mutate();
+          }}
+        />
       </div>
 
       <Suspense fallback={<Loader />}>
-        <List setNotificationsCount={setNotificationsCount} />
+        <List setNotificationsCount={setNotificationsCount} typeFilters={typeFilters} />
       </Suspense>
     </Page>
   );

@@ -150,7 +150,7 @@ function Status({
   const icon = {
     accepted: <CheckIcon className="h-4 w-5 stroke-1" />,
     pending_acceptance: (
-      <LoaderIcon className="h-4 w-5 stroke-1 animate-spin" />
+      <LoaderIcon className="h-4 w-5 stroke-1 animate-spin ease-in-out" />
     ),
     unaccepted: <XIcon className="h-4 w-5 stroke-1" />,
     paid: <CheckIcon className="w-5 h-5" />,

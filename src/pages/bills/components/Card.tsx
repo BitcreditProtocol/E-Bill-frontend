@@ -62,6 +62,8 @@ export function Card({
             "!text-signal-success": isPayee,
             "!text-text-300": !isPayer && !isPayee,
           })}
+          currency={currency}
+          currencyDisplay="none"
         />
         <span className="text-text-300 text-xs font-normal leading-normal">
           {currency}
