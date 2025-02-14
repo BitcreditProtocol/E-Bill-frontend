@@ -32,7 +32,6 @@ import {
 } from "@/services/bills";
 import { getActiveIdentity } from "@/services/identity_v2";
 import { copyToClipboard } from "@/utils";
-import { cn } from "@/lib/utils";
 import LoaderIcon from "@/assets/icons/loader.svg";
 import Preview from "./components/Preview";
 
@@ -95,9 +94,7 @@ function Information({ id }: { id: string }) {
       <img
         src={LoaderIcon}
         alt="Loader"
-        className={cn("w-12 h-12", {
-          "animate-spin ease-in-out": status === "pending",
-        })}
+        className={"w-12 h-12 animate-spin ease-in-out"}
       />
     ),
     success: (
