@@ -44,6 +44,7 @@ const RESTORE_SEED_PHRASE = "/identity/seed/recover";
 const BACKUP_SEED_PHRASE = "/identity/seed/backup";
 const RESTORE_BACKUP_FILE = "/identity/restore";
 const DOWNLOAD_BACKUP = "/identity/backup";
+const GET_IDENTITY_FILE = "/identity/file";
 
 // company endpoints
 const GET_COMPANIES = "/company/list";
@@ -121,6 +122,7 @@ export {
   BACKUP_SEED_PHRASE,
   RESTORE_BACKUP_FILE,
   DOWNLOAD_BACKUP,
+  GET_IDENTITY_FILE,
 
   // company
   GET_COMPANIES,

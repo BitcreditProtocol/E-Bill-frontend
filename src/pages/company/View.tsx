@@ -11,6 +11,7 @@ import PageTitle from "@/components/typography/PageTitle";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import Summary from "@/components/Summary";
+import { Attachment } from "@/components/Attachment";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { getCompanyDetails } from "@/services/company";
 import routes from "@/constants/routes";
@@ -67,6 +68,13 @@ function Information({ companyId }: { companyId: string }) {
       `${API_URL}/${GET_COMPANY_FILE.replace(
         ":node_id/:name",
         data.id + "/" + data.logo_file.name
+      )}`) ||
+    "";
+  const registrationFile =
+    (data.proof_of_registration_file !== null &&
+      `${API_URL}/${GET_COMPANY_FILE.replace(
+        ":node_id/:name",
+        data.id + "/" + data.proof_of_registration_file.name
       )}`) ||
     "";
 
@@ -128,6 +136,19 @@ function Information({ companyId }: { companyId: string }) {
         <Property
           label={f(messages["company.registration_number"])}
           value={data.registration_number}
+        />
+        <Separator className="bg-divider-75" />
+
+        <Property
+          label={f(messages["company.proof_of_registration"])}
+          value={
+            data.proof_of_registration_file && (
+              <Attachment
+                name={data.proof_of_registration_file.name}
+                url={registrationFile}
+              />
+            )
+          }
         />
       </div>
     </div>

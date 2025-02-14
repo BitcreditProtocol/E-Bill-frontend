@@ -1,10 +1,10 @@
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import {
   useMutation,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -15,6 +15,8 @@ import {
   MapPinnedIcon,
   MailIcon,
   ShieldCheckIcon,
+  PencilIcon,
+  CopyIcon,
 } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
@@ -26,9 +28,16 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
-import Summary from "@/components/Summary";
-import { editIdentity, getIdentityDetails } from "@/services/identity_v2";
+import Picture from "@/components/Picture";
+import { copyToClipboard } from "@/utils";
+import { truncateString } from "@/utils/strings";
+import {
+  editIdentity,
+  getIdentityDetails,
+  uploadFile,
+} from "@/services/identity_v2";
 import { API_URL } from "@/constants/api";
+import { GET_TEMP_FILE } from "@/constants/endpoints";
 import { messages } from "./components/messages";
 
 function Loader() {
@@ -58,6 +67,63 @@ function Loader() {
   );
 }
 
+function EditProfilePicture() {
+  const { watch, setValue } = useFormContext<FormSchema>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { mutate } = useMutation({
+    mutationFn: (file: File) => {
+      return uploadFile(file);
+    },
+    onSuccess: (data) => {
+      const previewUrl = `${API_URL}/${GET_TEMP_FILE.replace(
+        ":file_id",
+        data.file_upload_id
+      )}`;
+
+      setValue("avatar.file_upload_id", data.file_upload_id);
+      setValue("avatar.preview_url", previewUrl);
+    },
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      mutate(file);
+    }
+  };
+
+  const triggerFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <div
+      className="relative h-fit mx-auto cursor-pointer"
+      onClick={triggerFileSelect}
+    >
+      <Picture
+        size="lg"
+        name={watch("name")}
+        image={watch("avatar.preview_url") || ""}
+        type={0}
+      />
+      <button className="relative bottom-6 left-12 flex items-center justify-center p-1.5 h-6 w-6 bg-brand-200 rounded-full">
+        <PencilIcon className="text-white h-3 w-3 stroke-1" />
+      </button>
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        onChange={handleFileChange}
+      />
+    </div>
+  );
+}
+
 const formSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
@@ -69,7 +135,14 @@ const formSchema = z.object({
   country_of_birth: z.string().min(2).optional(),
   city_of_birth: z.string().min(1).optional(),
   identification_number: z.string().min(1).optional(),
+
+  avatar: z.object({
+    preview_url: z.string().optional().nullable(),
+    file_upload_id: z.string().optional().nullable(),
+  }),
 });
+
+type FormSchema = z.infer<typeof formSchema>;
 
 function Form() {
   const [isDataValid, setIsDataValid] = useState(false);
@@ -78,6 +151,12 @@ function Form() {
     queryFn: getIdentityDetails,
     queryKey: ["identity", "details"],
   });
+
+  const avatarPreviewUrl =
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    data.profile_picture_file
+      ? `${API_URL}/identity/file/${data.profile_picture_file.name}`
+      : "";
 
   const methods = useForm({
     resolver: zodResolver(formSchema),
@@ -92,6 +171,10 @@ function Form() {
       country_of_birth: data.country_of_birth,
       city_of_birth: data.city_of_birth,
       identification_number: data.identification_number,
+      avatar: {
+        preview_url: avatarPreviewUrl,
+        file_upload_id: data.profile_picture_file.name,
+      },
     },
   });
 
@@ -114,6 +197,8 @@ function Form() {
     mutationFn: () => {
       return editIdentity({
         ...methods.getValues(),
+        profile_picture_file_upload_id:
+          methods.getValues().avatar.file_upload_id,
       });
     },
     onSuccess: async () => {
@@ -132,22 +217,38 @@ function Form() {
     },
   });
 
-  const avatar =
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    data.profile_picture_file
-      ? `${API_URL}/identity/file/${data.profile_picture_file.name}`
-      : "";
-
   return (
     <div className="flex-1 flex flex-col gap-6">
-      <Summary
-        identityType={0}
-        name={data.name}
-        nodeId={data.node_id}
-        picture={avatar}
-      />
-
       <FormProvider {...methods}>
+        <div className="flex flex-col items-center gap-2">
+          <EditProfilePicture />
+
+          <span className="text-text-300 text-xl font-medium leading-[30px]">
+            {data.name}
+          </span>
+
+          <div className="flex items-center gap-1">
+            <span className="text-text-200 text-xs font-normal leading-[18px]">
+              {truncateString(data.node_id, 12)}
+            </span>
+
+            <button
+              className="flex items-center justify-center p-0"
+              onClick={() => {
+                void copyToClipboard(data.node_id, () => {
+                  toast({
+                    description: "Copied to clipboard",
+                    position: "bottom-center",
+                    duration: 750,
+                  });
+                });
+              }}
+            >
+              <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
+            </button>
+          </div>
+        </div>
+
         <div className="flex flex-col gap-3">
           <Input
             {...methods.register("name")}

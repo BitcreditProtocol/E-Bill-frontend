@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import { PencilIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
@@ -10,13 +11,14 @@ import PageTitle from "@/components/typography/PageTitle";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import Summary from "@/components/Summary";
+import { Attachment } from "@/components/Attachment";
 import { getIdentityDetails } from "@/services/identity_v2";
 import routes from "@/constants/routes";
-import { COUNTRIES } from "@/constants/countries";
 import { API_URL } from "@/constants/api";
+import { GET_IDENTITY_FILE } from "@/constants/endpoints";
+import { COUNTRIES } from "@/constants/countries";
 import Property from "./components/Property";
 import { messages } from "./components/messages";
-import { format, parseISO } from "date-fns";
 
 function Loader() {
   return (
@@ -65,6 +67,7 @@ function Information() {
     city_of_birth,
     identification_number,
     profile_picture_file,
+    identity_document_file,
   } = data;
 
   const avatar =
@@ -81,6 +84,7 @@ function Information() {
     [address, zip, city, COUNTRIES[country as keyof typeof COUNTRIES]]
       .filter(Boolean)
       .join(", ") || "-";
+  const identityFile = `${API_URL}${GET_IDENTITY_FILE}/${name}`;
 
   return (
     <div className="flex flex-col gap-4">
@@ -120,6 +124,14 @@ function Information() {
         <Property
           label={f(messages["identity.identification_number"])}
           value={identification_number}
+        />
+        <Separator className="bg-divider-75 mt-0.5" />
+
+        <Property
+          label={f(messages["identity.personal.identity_file"])}
+          value={
+            <Attachment name={identity_document_file.name} url={identityFile} />
+          }
         />
       </div>
     </div>
