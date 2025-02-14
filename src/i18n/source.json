@@ -544,6 +544,7 @@
   "notifications.empty.title": "No notifications",
   "notifications.filter.accept": "Accept",
   "notifications.filter.all": "All",
+  "notifications.filter.check": "Check",
   "notifications.filter.pay": "Pay",
   "notifications.filter.recourse": "Recourse",
   "notifications.history.collapse": "Collapse history",

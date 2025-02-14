@@ -30,7 +30,7 @@ export default function TypeFilter({
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex items-center gap-2">
       <Button
         variant="filter"
         size="xs"
@@ -67,9 +67,10 @@ export default function TypeFilter({
           description="Company contact type"
         />
       </Button>
-      {/*       <Button variant="filter" size="xs" className={cn({
+      {/* TODO: reenable (remove "hidden" class) after demo */}
+      <Button variant="filter" size="xs" className={cn({
           "!font-semibold border-text-300": values.includes(ContactTypes.Mint)
-        })}
+        }, "hidden")}
         onClick={() => { handleOnClick(ContactTypes.Mint); }}
       >
         <FormattedMessage
@@ -77,7 +78,7 @@ export default function TypeFilter({
           defaultMessage="Mint"
           description="Mint contact type"
         />
-      </Button> */}
+      </Button>
     </div>
   );
 }

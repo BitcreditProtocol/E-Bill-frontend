@@ -5,14 +5,14 @@ import { parseISO, isToday, isBefore, startOfToday, format } from "date-fns";
 import { FormattedMessage } from "react-intl";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getNotifications } from "@/services/notifications";
 import routes from "@/constants/routes";
 import createBillIllustration from "@/assets/create-bill-illustration.svg";
-import type { Notification } from "@/types/notification";
+import type { Notification, NotificationActionType} from "@/types/notification";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { Skeleton } from "@/components/ui/skeleton";
+import TypeFilter from "./notifications/components/TypeFilter";
 
 type NotificationProps = Pick<
   Notification,
@@ -223,43 +223,10 @@ function List({
   );
 }
 
-function Filters() {
-  return (
-    <div className="flex item-center gap-2">
-      <Button variant="filter">
-        <FormattedMessage
-          id="notifications.filter.all"
-          defaultMessage="All"
-          description="Filter to view all notifications"
-        />
-      </Button>
-      <Button variant="filter">
-        <FormattedMessage
-          id="notifications.filter.pay"
-          defaultMessage="Pay"
-          description="Filter to view pending pay notifications"
-        />
-      </Button>
-      <Button variant="filter">
-        <FormattedMessage
-          id="notifications.filter.accept"
-          defaultMessage="Accept"
-          description="Filter to view pending accept notifications"
-        />
-      </Button>
-      <Button variant="filter">
-        <FormattedMessage
-          id="notifications.filter.recourse"
-          defaultMessage="Recourse"
-          description="Filter to view pending recourse notifications"
-        />
-      </Button>
-    </div>
-  );
-}
-
 export default function Notifications() {
   const [notificationsCount, setNotificationsCount] = useState(0);
+
+  const [typeFilters, setTypeFilters] = useState<NotificationActionType[]>([]);
 
   return (
     <Page displayBottomNavigation>
@@ -276,7 +243,14 @@ export default function Notifications() {
             ({notificationsCount})
           </span>
         </div>
-        <Filters />
+        <TypeFilter
+          multiple
+          values={typeFilters}
+          onChange={(types) => {
+            setTypeFilters(types);
+            // mutate();
+          }}
+        />
       </div>
 
       <Suspense fallback={<Loader />}>
