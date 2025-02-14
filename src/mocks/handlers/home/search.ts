@@ -20,6 +20,7 @@ const data: SearchResponse = {
       node_id: it.payee?.node_id || "",
     },
     endorsee: null,
+    active_notification: null,
   })),
   companies: db.company.getAll().map((it) => ({
     ...it,

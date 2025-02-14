@@ -66,6 +66,8 @@ const RECOVERY_SEED_PHRASE = "/recovery-phrase";
 const NON_ACCEPTANCE = "/non-acceptance";
 const NON_PAYMENT = "/non-payment";
 
+const SHUTDOWN_INFO = "/shutdown-info"
+
 export default {
   ROOT,
   LOGIN,
@@ -114,6 +116,7 @@ export default {
   MINT_RECEIVED,
   MINT_REQUEST,
   ABOUT,
+  SHUTDOWN_INFO,
   NOTIFICATIONS_SETTINGS,
   SECURITY_SETTINGS,
   MINT_SETTINGS,
