@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -13,7 +13,7 @@ import { getContacts } from "@/services/contact_v2";
 import routes from "@/constants/routes";
 import { API_URL } from "@/constants/api";
 import { GET_CONTACT_FILE } from "@/constants/endpoints";
-import { ContactTypes, type Contact } from "@/types/contact";
+import { type Contact } from "@/types/contact";
 import TypeFilter from "./components/TypeFilter";
 import EmptyList from "./components/EmptyList";
 
@@ -93,25 +93,34 @@ function Loader() {
   );
 }
 
-function List() {
+type ListProps = {
+  typeFilters: Contact["type"][]
+}
+
+function List({ typeFilters }: ListProps) {
   const { data } = useSuspenseQuery({
     queryKey: ["contacts"],
     queryFn: () => getContacts(),
   });
 
+  const values = useMemo(() => {
+    return data.contacts.filter((it) => typeFilters.length === 0 || typeFilters.includes(it.type))
+  }, [data, typeFilters]);
+
   return (
     <div className="flex flex-col gap-2 mb-16">
       {data.contacts.length === 0 && <EmptyList />}
-      {data.contacts.map((contact) => (
-        <Contact key={contact.node_id} {...contact} />
+      {values.map((it) => (
+        <Contact key={it.node_id} {...it} />
       ))}
     </div>
   );
 }
 
 export default function Contacts() {
-  const [searchTerm, setSearchTerm] = useState("");
   const { formatMessage: f } = useIntl();
+  const [typeFilters, setTypeFilters] = useState<Contact["type"][]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <Page className="gap-6" displayBottomNavigation>
@@ -140,9 +149,10 @@ export default function Contacts() {
           }}
         />
         <TypeFilter
-          values={[ContactTypes.Person]}
+          multiple
+          values={typeFilters}
           onChange={(types) => {
-            console.log(types);
+            setTypeFilters(types);
           }}
         />
       </div>
@@ -150,7 +160,7 @@ export default function Contacts() {
       <div className="flex flex-col gap-4">
         <Create />
         <Suspense fallback={<Loader />}>
-          <List />
+          <List typeFilters={typeFilters}/>
         </Suspense>
       </div>
     </Page>
