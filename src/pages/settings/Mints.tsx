@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import meta from "@/constants/meta";
 
 const formatUptime = (uptime: number) => {
   let secondsLeft = Math.floor(uptime / 1_000);
@@ -239,40 +240,42 @@ export default function Mints() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between px-2 py-2">
-          <Label>
-              <div className="flex flex-col">
-                <span>Mint view (dev)</span>
-                <span className="text-text-200 text-xs font-normal">
-                  Display all local bills in bill overview
-                </span>
-              </div>
-          </Label>
-          <Switch checked={mintConfig.__dev_mintViewEnabled === true} onCheckedChange={() => { toggleMintView(); }}/>
-        </div>
-
-        {mintConfig.__dev_mintViewEnabled && (<div className="flex items-center justify-between px-2 py-2">
-          <div className="flex-1">
-            <FormProvider {...methods}>
-              <Form onSubmit={onSubmit} className="flex flex-col gap-2">
-                <div className="flex gap-1">
-                  <Input
-                    {...methods.register("mint_node_id")}
-                    label={"Mint Node Id"}
-                    icon={<IdCardIcon className="text-text-300 h-5 w-5 stroke-1" />}
-                    minLength={66}
-                    maxLength={66}
-                    required
-                  />
-                  <Button type="submit" disabled={mintNodeId.length !== 66}>Save</Button>
+        {meta.devModeEnabled && (<>
+          <div className="flex items-center justify-between px-2 py-2">
+            <Label>
+                <div className="flex flex-col">
+                  <span>Mint view (dev)</span>
+                  <span className="text-text-200 text-xs font-normal">
+                    Display all local bills in bill overview
+                  </span>
                 </div>
-                <div className="flex gap-1 justify-end">
-                  <Button onClick={() => { resetToDefault(); }} size="xs" variant="ghost" type="button">Reset to default</Button>
-                </div>
-              </Form>
-            </FormProvider>
+            </Label>
+            <Switch checked={mintConfig.__dev_mintViewEnabled === true} onCheckedChange={() => { toggleMintView(); }}/>
           </div>
-        </div>)}
+
+          {mintConfig.__dev_mintViewEnabled && (<div className="flex items-center justify-between px-2 py-2">
+            <div className="flex-1">
+              <FormProvider {...methods}>
+                <Form onSubmit={onSubmit} className="flex flex-col gap-2">
+                  <div className="flex gap-1">
+                    <Input
+                      {...methods.register("mint_node_id")}
+                      label={"Mint Node Id"}
+                      icon={<IdCardIcon className="text-text-300 h-5 w-5 stroke-1" />}
+                      minLength={66}
+                      maxLength={66}
+                      required
+                    />
+                    <Button type="submit" disabled={mintNodeId.length !== 66}>Save</Button>
+                  </div>
+                  <div className="flex gap-1 justify-end">
+                    <Button onClick={() => { resetToDefault(); }} size="xs" variant="ghost" type="button">Reset to default</Button>
+                  </div>
+                </Form>
+              </FormProvider>
+            </div>
+          </div>)}
+        </>)}
       </div>
     </Page>
   );
