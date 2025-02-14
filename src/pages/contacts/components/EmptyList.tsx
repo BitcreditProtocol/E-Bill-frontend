@@ -8,7 +8,7 @@ import contactsIllustration from "@/assets/contacts-illustration.svg";
 export default function EmptyList() {
   const navigate = useNavigate();
   const goToCreateContact = () => {
-    navigate(routes.CREATE_CONTACT);
+    navigate(`${routes.CONTACTS}/${routes.CREATE_CONTACT}`);
   };
 
   return (

@@ -14,6 +14,7 @@ import { Card } from "./Card";
 import Information from "./Information";
 import { cn } from "@/lib/utils";
 import { searchContacts } from "@/services/search";
+import EmptyList from "@/pages/contacts/components/EmptyList";
 
 function Loader() {
   return (
@@ -44,17 +45,22 @@ function List({ onSelect }: { onSelect: (e: string) => void }) {
   });
 
   return (
-    <div className="flex flex-col gap-2">
-      {data.contacts.map((contact) => (
-        <Card
-          key={contact.node_id}
-          {...contact}
-          onClick={() => {
-            onSelect(contact.node_id);
-          }}
-        />
-      ))}
-    </div>
+    <>
+      {data.contacts.length === 0 ? (
+        <EmptyList />
+      ) : (
+      <div className="flex flex-col gap-2">
+        {data.contacts.map((contact) => (
+          <Card
+            key={contact.node_id}
+            {...contact}
+            onClick={() => {
+              onSelect(contact.node_id);
+            }}
+          />
+        ))}
+      </div>)}
+    </>
   );
 }
 
