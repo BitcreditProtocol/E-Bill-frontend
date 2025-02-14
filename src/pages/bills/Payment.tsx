@@ -1,8 +1,13 @@
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import {
   CircleCheckIcon,
   CircleXIcon,
@@ -14,14 +19,20 @@ import {
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
+import RefreshButton from "@/components/RefreshButton";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
 import { Skeleton } from "@/components/ui/skeleton";
 import { findHolder } from "@/utils/bill";
 import { truncateString } from "@/utils/strings";
-import { useToast } from "@/hooks/use-toast";
-import { getBillDetails, getPrivateKey } from "@/services/bills";
+import { useToast, toast } from "@/hooks/use-toast";
+import {
+  checkBillInDHT,
+  getBillDetails,
+  getPrivateKey,
+} from "@/services/bills";
 import { getActiveIdentity } from "@/services/identity_v2";
 import { copyToClipboard } from "@/utils";
+import { cn } from "@/lib/utils";
 import LoaderIcon from "@/assets/icons/loader.svg";
 import Preview from "./components/Preview";
 
@@ -80,7 +91,15 @@ function Information({ id }: { id: string }) {
   }[status];
 
   const icon = {
-    pending: <img src={LoaderIcon} alt="Loader" className="w-12 h-12" />,
+    pending: (
+      <img
+        src={LoaderIcon}
+        alt="Loader"
+        className={cn("w-12 h-12", {
+          "animate-spin ease-in-out": status === "pending",
+        })}
+      />
+    ),
     success: (
       <CircleCheckIcon className="text-signal-success w-12 h-12 stroke-1" />
     ),
@@ -274,14 +293,61 @@ function Information({ id }: { id: string }) {
 }
 
 export default function Payment() {
-  const { id } = useParams<{ id: string }>();
+  const { formatMessage: f } = useIntl();
+  const queryClient = useQueryClient();
+  const { id } = useParams() as { id: string };
+
+  // todo: use a query instead
+  const { mutate: refetch, isPending } = useMutation({
+    mutationFn: () => checkBillInDHT(id),
+    retry: false,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["bills", id],
+      });
+
+      toast({
+        title: f({
+          id: "bill.status.refresh.success.title",
+          defaultMessage: "Success!",
+        }),
+        description: f({
+          id: "bill.status.refresh.success.description",
+          defaultMessage: "Successfully refreshed bill status!",
+        }),
+        variant: "success",
+        position: "bottom-center",
+        duration: 1_000,
+      });
+    },
+  });
 
   return (
     <Page className="gap-6" displayBottomNavigation>
-      <Topbar lead={<NavigateBack />} />
+      <Topbar
+        lead={<NavigateBack />}
+        trail={
+          <RefreshButton
+            label={f({
+              id: "bill.status.refresh",
+              defaultMessage: "Refresh",
+              description: "Refresh button label",
+            })}
+            content={f({
+              id: "bill.status.refresh.content",
+              defaultMessage: "Refresh bill status",
+              description: "Refresh bill status tooltip",
+            })}
+            onClick={() => {
+              refetch();
+            }}
+            loading={isPending}
+          />
+        }
+      />
 
       <Suspense fallback={<Loader />}>
-        <Information id={id as string} />
+        <Information id={id} />
       </Suspense>
     </Page>
   );

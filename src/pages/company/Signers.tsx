@@ -142,13 +142,16 @@ type SignerProps = {
   id: string;
   name: string;
   address: string;
-  avatar: string;
+  avatar: {
+    hash: string;
+    name: string;
+  } | null;
 };
 
 function Signer({ companyId, id, name, address, avatar }: SignerProps) {
   return (
     <div className="flex items-center gap-3 py-4 px-3 border border-dashed border-divider-75 rounded-lg">
-      {avatar}
+      {avatar && ""}
       <div className="flex flex-col mr-auto">
         <span className="text-text-300 text-base font-medium leading-6">
           {name}
@@ -237,7 +240,7 @@ function List({ companyId }: { companyId: string }) {
           id={signer.node_id}
           name={signer.name}
           address={signer.address}
-          avatar=""
+          avatar={signer.avatar_file}
         />
       ))}
     </div>

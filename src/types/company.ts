@@ -31,5 +31,5 @@ export type Signer = {
   avatar_file: {
     name: string;
     hash: string;
-  };
+  } | null;
 };

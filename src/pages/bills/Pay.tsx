@@ -46,6 +46,7 @@ function Information({ id }: { id: string }) {
 
   const isPayer = data.drawee.node_id === activeIdentity.node_id;
 
+  // todo: move to declarative block navigate redirect
   useEffect(() => {
     if (!isPayer || data.paid) {
       navigate(routes.VIEW_BILL.replace(":id", id));

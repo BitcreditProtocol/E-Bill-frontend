@@ -117,6 +117,7 @@ export default function View() {
   const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
 
+  // todo: use a query instead
   const { mutate: refetch, isPending } = useMutation({
     mutationFn: () => checkBillInDHT(id as string),
     retry: false,
