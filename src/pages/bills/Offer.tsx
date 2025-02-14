@@ -264,7 +264,7 @@ function Details() {
       : "pending";
 
   if (!isOfferedForSale) {
-    return <Navigate to={"/" + routes.VIEW_BILL.replace(":id", id)} />;
+    return <Navigate to={routes.VIEW_BILL.replace(":id", id)} />;
   }
 
   return isBuyer ? (
