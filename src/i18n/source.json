@@ -296,6 +296,8 @@
   "bills.list.type.history": "History",
   "bills.list.type.payee": "Payee",
   "bills.list.type.payer": "Payer",
+  "bills.search.results.no_results.text": "No results",
+  "bills.search.results.title": "Search results",
   "company.address": "Company address",
   "company.city": "City",
   "company.city_of_registration": "City of registration",

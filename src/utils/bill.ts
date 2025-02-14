@@ -1,6 +1,5 @@
 
-import { getBillsLight } from "@/services/bills";
-import { BillFull, Peer } from "@/types/bill";
+import { BillFull, BillLight, Peer } from "@/types/bill";
 
 export const findHolder = (
   bill: Pick<BillFull, 'endorsed' | 'endorsee' | 'payee'>
@@ -9,7 +8,7 @@ export const findHolder = (
 };
 
 export const findHolderLight = (
-  bill: Pick<Awaited<ReturnType<typeof getBillsLight>>['bills'][0], 'endorsee' | 'payee'>
+  bill: Pick<BillLight, 'endorsee' | 'payee'>
 ): Pick<Peer, "name" | "node_id"> => {
   return bill.endorsee || bill.payee;
 };

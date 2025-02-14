@@ -1,4 +1,7 @@
+import { getBillsLight } from "@/services/bills";
 import { Notification } from "./notification";
+
+export type BillLight = Awaited<ReturnType<typeof getBillsLight>>['bills'][0];
 
 export type Bill = {
   bill_name: string;
@@ -38,7 +41,7 @@ export type Bill = {
   files?: {
     file_name: string;
   }[];
-  endorsements_count: 1;
+  endorsements_count: number;
   active_notification: Notification | null;
 };
 

@@ -2,10 +2,10 @@ import { SEARCH } from "@/constants/endpoints";
 import type { Company } from "@/types/company";
 import type { Contact } from "@/types/contact";
 import { apiFetch } from "@/utils/api";
-import { getBillsLight } from "./bills";
+import { BillLight } from "@/types/bill";
 
 export type SearchResponse = {
-  bills: Awaited<ReturnType<typeof getBillsLight>>['bills'];
+  bills: BillLight[];
   companies: Pick<Company,
   | "id"
   | "name"
