@@ -31,6 +31,7 @@ import NotificationsSettings from "./pages/settings/Notifications";
 import Security from "./pages/settings/Security";
 import Mints from "./pages/settings/Mints";
 import SeedPhrase from "./pages/settings/SeedPhrase";
+import ShutdownInfo from "./pages/settings/ShutdownInfo";
 
 // contact flows
 import Create from "./pages/contacts/Create";
@@ -136,6 +137,10 @@ const router = createBrowserRouter(
             {
               path: routes.SETTINGS,
               element: <Settings />,
+            },
+            {
+              path: routes.SHUTDOWN_INFO,
+              element: <ShutdownInfo />,
             },
             {
               path: routes.NOTIFICATIONS_SETTINGS,

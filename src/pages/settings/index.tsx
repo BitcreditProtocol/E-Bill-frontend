@@ -1,5 +1,5 @@
 import { FormattedMessage, useIntl } from "react-intl";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AlignVerticalJustifyCenterIcon,
   BellDotIcon,
@@ -28,6 +28,7 @@ import { exit } from "@/services/general";
 import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/language/LanguageContext";
+import { toast } from "@/hooks/use-toast";
 
 function ExitConfirmDialog({ children, onConfirm, disabled = false }: PropsWithChildren<{
   onConfirm: () => void
@@ -96,6 +97,7 @@ export default function Settings() {
   const intl = useIntl();
   const { activeIdentity } = useIdentity();
   const lang = useLanguage();
+  const navigate = useNavigate();
 
   const backupFileUrl = `${API_URL}${DOWNLOAD_BACKUP}`;
 
@@ -112,7 +114,29 @@ export default function Settings() {
           />
         </h1>
 
-        <ExitConfirmDialog onConfirm={() => { void exit(); }}>
+        <ExitConfirmDialog onConfirm={() => { 
+            exit()
+              .then(() => {
+                navigate(routes.SHUTDOWN_INFO);
+              })
+              .catch(() => {
+                toast({
+                  title: intl.formatMessage({
+                    id: "settings.shutdown.error.title",
+                    defaultMessage: "Error!",
+                    description: "Toast message title when application shutdown fails",
+                  }),
+                  description: intl.formatMessage({
+                    id: "settings.shutdown.error.description",
+                    defaultMessage: "Failed to shutdown the application. Please try again.",
+                    description:
+                      "Toast message description when application shutdown fails",
+                  }),
+                  variant: "error",
+                  position: "bottom-center",
+                });
+              })
+          }}>
           <PowerIcon className="text-text-300 h-6 w-6 stroke-1 cursor-pointer"/>
         </ExitConfirmDialog>
       </div>
