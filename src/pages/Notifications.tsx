@@ -65,7 +65,8 @@ function Notification({
           )}
 
           <span className="text-text-300 text-xs font-normal leading-normal">
-            sat
+            {/* TODO: show value here when it is available */}
+            <span className="hidden">sat</span>
           </span>
         </div>
       </div>
