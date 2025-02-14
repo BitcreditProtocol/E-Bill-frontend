@@ -22,6 +22,7 @@ import { Card } from "./components/Card";
 import Empty from "./components/Empty";
 import { readMintConfig } from "@/constants/mints";
 import { BillLight } from "@/types/bill";
+import { toast } from "@/hooks/use-toast";
 
 /* TODO: disabled for now, till it is clarified in UI how to unset/clear the range filter again */
 /*function DateRangeFilter({ onChange }: { onChange: (dateRange: DateRange) => void }) {
@@ -265,7 +266,7 @@ function ListAll() {
       mintConfig.__dev_mintViewEnabled ? getBillsAll() : getBillsLight(),
   });
 
-  const { refetch, isFetching } = useQuery({
+  const { refetch: doCheckBillsInDHT, isFetching } = useQuery({
     queryFn: () => checkBillsInDHT(),
     queryKey: ["bills", "check"],
     enabled: false,
@@ -289,11 +290,31 @@ function ListAll() {
             description: "Refresh bills list tooltip",
           })}
           onClick={() => {
-            void refetch();
-            void queryClient.invalidateQueries({
-              queryKey: [
-                mintConfig.__dev_mintViewEnabled ? "bills-all" : "bills",
-              ],
+            doCheckBillsInDHT()
+            .then(() => queryClient.invalidateQueries({
+              queryKey: ["bills-all"],
+              refetchType: "all"
+            }))
+            .then(() => queryClient.invalidateQueries({
+              queryKey: ["bills"],
+              refetchType: "all"
+            }))
+            .catch(() => {
+              toast({
+                title: f({
+                  id: "bills.list.refresh.error",
+                  defaultMessage: "Error!",
+                  description: "Toast message title when bills refresh fails",
+                }),
+                description: f({
+                  id: "bills.list.refresh.error.description",
+                  defaultMessage: "Failed to refresh bills. Please try again.",
+                  description:
+                    "Toast message description when bills refresh fails",
+                }),
+                variant: "error",
+                position: "bottom-center",
+              });
             });
           }}
           loading={isFetching}
