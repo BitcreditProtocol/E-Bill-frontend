@@ -102,6 +102,7 @@ export type BillFull = {
   link_for_buy: string;
   link_to_pay: string;
   address_to_pay: string;
+  mempool_link_for_address_to_pay: string;
   files: {
     name: string;
     hash: string;

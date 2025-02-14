@@ -58,7 +58,9 @@ function Details({ id }: { id: string }) {
   });
 
   useEffect(() => {
-    void resolveNotification(data.active_notification?.id || "");
+    if (!data.active_notification) return;
+
+    void resolveNotification(data.active_notification.id);
   }, [data]);
 
   const holder = findHolder(data);

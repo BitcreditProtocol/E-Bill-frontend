@@ -214,6 +214,7 @@
   "bill.payment.info.address": "Address to pay",
   "bill.payment.info.from": "Payment from",
   "bill.payment.info.link": "Link to pay",
+  "bill.payment.info.mempoolLink": "Link to mempool",
   "bill.payment.info.privateKey": "Private key spend",
   "bill.recourse.holders": "Prior holders",
   "bill.recourse.holders.description": "Select a prior holder for recourse",

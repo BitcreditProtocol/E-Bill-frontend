@@ -8,6 +8,7 @@ import {
   CircleXIcon,
   CopyIcon,
   LandmarkIcon,
+  SquareArrowOutUpRightIcon,
 } from "lucide-react";
 
 import Page from "@/components/wrappers/Page";
@@ -220,6 +221,31 @@ function Information({ id }: { id: string }) {
               </div>
             </div>
           )}
+
+          <div className="flex flex-col gap-2">
+            <span className="text-text-300 text-sm font-medium">
+              <FormattedMessage
+                id="bill.payment.info.mempoolLink"
+                defaultMessage="Link to mempool"
+                description="Link to mempool label"
+              />
+            </span>
+
+            <div className="flex items-center gap-2">
+              <span className="max-w-64 text-text-200 text-base font-normal leading-6 break-all">
+                {data.mempool_link_for_address_to_pay}
+              </span>
+
+              <button
+                className="p-0"
+                onClick={() =>
+                  window.open(data.mempool_link_for_address_to_pay)
+                }
+              >
+                <SquareArrowOutUpRightIcon className="text-text-200 w-4 h-4 stroke-1" />
+              </button>
+            </div>
+          </div>
 
           {/* <div className="flex flex-col gap-2">
             <span className="text-text-300 text-sm font-medium">

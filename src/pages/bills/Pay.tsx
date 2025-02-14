@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { QRCodeSVG } from "qrcode.react";
@@ -46,9 +46,11 @@ function Information({ id }: { id: string }) {
 
   const isPayer = data.drawee.node_id === activeIdentity.node_id;
 
-  if (!isPayer || !data.requested_to_pay || data.paid) {
-    navigate(routes.VIEW_BILL.replace(":id", id));
-  }
+  useEffect(() => {
+    if (!isPayer || data.paid) {
+      navigate(routes.VIEW_BILL.replace(":id", id));
+    }
+  }, [id, data, isPayer, navigate]);
 
   return (
     <>
