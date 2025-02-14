@@ -56,10 +56,14 @@ function Notification({
         </div>
 
         <div className="flex items-center gap-1">
-          <FormattedCurrency
-            value={1000}
-            className="text-sm font-normal leading-5"
-          />
+          {payload.sum && (
+            <FormattedCurrency
+              signDisplay="never"
+              value={payload.sum}
+              className="!text-text-300 text-sm font-normal leading-5"
+            />
+          )}
+
           <span className="text-text-300 text-xs font-normal leading-normal">
             sat
           </span>

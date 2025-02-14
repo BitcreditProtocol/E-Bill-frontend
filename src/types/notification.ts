@@ -9,5 +9,6 @@ export type Notification = {
   payload: {
     action_type: string;
     bill_id: string;
+    sum?: number;
   };
 };

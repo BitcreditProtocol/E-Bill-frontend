@@ -143,7 +143,7 @@ function RecentBills({ values }: RecentBillsProps) {
         <Link to={routes.VIEW_BILL.replace(":id", bill.id)} key={bill.id}>
           <Bill
             title={bill.drawer.name}
-            amount={bill.sum}
+            amount={Number(bill.sum)}
             currency={bill.currency}
             date={bill.issue_date}
             drawee={bill.drawee}
@@ -299,7 +299,11 @@ export default function Home() {
           </div>
 
           <Suspense fallback={<RecentBillsLoader />}>
-            <RecentBills values={data.bills.slice(0, 3)} />
+            <RecentBills
+              values={data.bills
+                .sort((a, b) => b.time_of_drawing - a.time_of_drawing)
+                .slice(0, 3)}
+            />
           </Suspense>
 
           {data.bills.length > 0 && (

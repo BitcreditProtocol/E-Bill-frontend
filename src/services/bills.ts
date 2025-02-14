@@ -87,6 +87,7 @@ type GetBillsLightResponse = {
     currency: BillFull["currency"];
     issue_date: BillFull["issue_date"];
     active_notification: BillFull["active_notification"];
+    time_of_drawing: BillFull["time_of_drawing"];
   }[];
 };
 

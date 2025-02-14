@@ -111,6 +111,7 @@ export type BillFull = {
   };
   endorsements_count: number;
   active_notification: Notification | null;
+  time_of_maturity: number;
 };
 
 // for bill creation

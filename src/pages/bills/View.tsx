@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import {
   useMutation,
@@ -13,6 +13,7 @@ import NavigateBack from "@/components/NavigateBack";
 import RefreshButton from "@/components/RefreshButton";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { checkBillInDHT, getBillDetails } from "@/services/bills";
+import { resolveNotification } from "@/services/notifications";
 import { getQuote } from "@/services/quotes";
 import { API_URL } from "@/constants/api";
 import { GET_BILL_ATTACHMENT } from "@/constants/endpoints";
@@ -56,6 +57,10 @@ function Details({ id }: { id: string }) {
         }),
   });
 
+  useEffect(() => {
+    void resolveNotification(data.active_notification?.id || "");
+  }, [data]);
+
   const holder = findHolder(data);
   // if drawee and current identity node ids are the same, then the role is payer
   // if bill is endorsed, and endorsee and current identity node ids are the same, then the role is holder
@@ -98,9 +103,7 @@ function Details({ id }: { id: string }) {
         isPayee={isPayee}
       />
 
-      {quote && quote.token && (
-        <EcashToken token={quote.token} />
-      )}
+      {quote && quote.token && <EcashToken token={quote.token} />}
 
       {<Actions role={role} {...data} />}
     </div>

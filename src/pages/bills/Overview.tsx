@@ -1,6 +1,10 @@
 import { Suspense, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { isToday, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CalendarDaysIcon, ChevronsUpDownIcon } from "lucide-react";
@@ -202,7 +206,9 @@ function List() {
           onClick={() => {
             void refetch();
             void queryClient.invalidateQueries({
-              queryKey: [mintConfig.__dev_mintViewEnabled ? "bills-all" : "bills"],
+              queryKey: [
+                mintConfig.__dev_mintViewEnabled ? "bills-all" : "bills",
+              ],
             });
           }}
           loading={isFetching}

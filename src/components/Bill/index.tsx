@@ -7,7 +7,7 @@ import { FormattedCurrency } from "../FormattedCurrency";
 type BillProps = {
   title: string;
   date: string;
-  amount: number | string;
+  amount: number;
   currency: string;
   drawee: Pick<Peer, "name" | "node_id">;
   payee: Pick<Peer, "name" | "node_id">;
@@ -36,6 +36,7 @@ export default function Bill({
     (endorsee !== null && endorsee.node_id === node_id) ||
     payee.node_id === node_id;
 
+  const parsedAmount = isPayer ? -amount : amount;
   const formattedDate = format(parseISO(date), "dd-MMM-yyyy");
 
   return (
@@ -61,7 +62,9 @@ export default function Bill({
       <div className="flex justify-between">
         <div className="flex gap-1 items-baseline">
           <FormattedCurrency
-            value={Number(amount)}
+            type={isPayer ? "debit" : isPayee ? "credit" : "auto"}
+            signDisplay="always"
+            value={parsedAmount}
             className={cn("!text-sm !font-normal !leading-5", {
               "!text-signal-error": isPayer,
               "!text-signal-success": isPayee,
