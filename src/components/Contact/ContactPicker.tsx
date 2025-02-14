@@ -38,7 +38,28 @@ function Loader() {
   );
 }
 
-function List({ onSelect }: { onSelect: (e: string) => void }) {
+type ListProps = { 
+  values: Contact[], 
+  onSelect: (e: string) => void
+};
+
+function List({ values, onSelect }: ListProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      {values.map((contact) => (
+        <Card
+          key={contact.node_id}
+          {...contact}
+          onClick={() => {
+            onSelect(contact.node_id);
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ListAll({ onSelect }: Pick<ListProps, 'onSelect'>) {
   const { data } = useSuspenseQuery({
     queryKey: ["contacts"],
     queryFn: () => getContacts(),
@@ -49,17 +70,41 @@ function List({ onSelect }: { onSelect: (e: string) => void }) {
       {data.contacts.length === 0 ? (
         <EmptyList />
       ) : (
-      <div className="flex flex-col gap-2">
-        {data.contacts.map((contact) => (
-          <Card
-            key={contact.node_id}
-            {...contact}
-            onClick={() => {
-              onSelect(contact.node_id);
-            }}
-          />
-        ))}
-      </div>)}
+        <List values={data.contacts}  onSelect={onSelect}/>
+      )}
+    </>
+  );
+}
+
+function EmptySearchResult() {
+  return (<div className="flex flex-col gap-4">
+    <div className="text-text-200 text-xs font-medium">
+      <FormattedMessage
+        id="contacts.picker.search.results.title"
+        defaultMessage="Search results"
+        description="Title for search results  in Contact Picker dialog"
+      />
+    </div>
+    <div className="text-text-300 text-sm font-medium">
+      <FormattedMessage
+        id="contacts.picker.search.results.no_results.text"
+        defaultMessage="No results"
+        description="Title for no search results in Contact Picker dialog"
+      />
+    </div>
+  </div>);
+}
+
+type SearchResultsProps = ListProps
+
+function SearchResults({ values, onSelect }: SearchResultsProps) {
+  return (
+    <>
+      {values.length === 0 ? (<>
+        <EmptySearchResult />
+      </>) : (<>
+        <List values={values}  onSelect={onSelect}/>
+      </>)}
     </>
   );
 }
@@ -103,7 +148,7 @@ export default function ContactPicker({
 
   const {
     isFetching: searchIsLoading,
-    // data: searchData,
+    data: searchData,
     refetch: doSearch,
   } = useQuery({
     queryKey: ["search", "contacts", searchTerm],
@@ -177,16 +222,19 @@ export default function ContactPicker({
             <>
               {searchModeEnabled ? (<>
                 {searchIsLoading ? (<Loader />) : (<>
-                  {/*<SearchResults typeFilters={typeFilters} values={searchData || []} />*/}
+                  <SearchResults values={searchData || []} 
+                    onSelect={(contactId) => {
+                      setCurrentStep(STEPS.INFORMATION);
+                      setViewingContact(contactId);
+                    }}/>
                 </>)}
-              </>) : (<>
-                <List
+              </>) : (
+                <ListAll
                   onSelect={(contactId) => {
                     setCurrentStep(STEPS.INFORMATION);
                     setViewingContact(contactId);
                   }}
-                />
-              </>)}
+                />)}
             </>
           )}
 
