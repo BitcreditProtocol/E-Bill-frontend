@@ -22,16 +22,7 @@ export type SearchResponse = {
   | "logo_file"
   | "proof_of_registration_file"
   >[];
-  contacts: Pick<Contact,
-  | "node_id"
-  | "type"
-  | "name"
-  | "country"
-  | "city"
-  | "zip"
-  | "address"
-  | "avatar_file"
-  >[];
+  contacts: Contact[];
 };
 export type SearchItemType = "Bill" | "Company" | "Contact" 
 
@@ -53,4 +44,14 @@ export const search = async (payload: SearchPayload) => {
     },
     body: JSON.stringify(payload),
   });
+};
+
+export const searchContacts = async ({ search_term }: { search_term: string }) => {
+  return search({
+    filter: {
+      search_term,
+      currency: "sat",
+      item_types: ["Contact"]
+    }
+  }).then((it) => it.contacts);
 };
