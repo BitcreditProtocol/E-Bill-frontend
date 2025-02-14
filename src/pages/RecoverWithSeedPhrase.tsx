@@ -232,7 +232,7 @@ function RestoreBackupFile() {
 
       setTimeout(() => {
         navigate(routes.HOME);
-      }, 2000);
+      }, 4000);
     },
     onError: () => {
       toast({

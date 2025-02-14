@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
@@ -643,6 +643,8 @@ function Preview({ moveToNextStep }: { moveToNextStep: () => void }) {
 }
 
 function Success() {
+  const navigate = useNavigate();
+
   return (
     <div className="flex-1 flex flex-col">
       <div className="flex flex-col gap-12 justify-center mb-auto">
@@ -671,15 +673,21 @@ function Success() {
         />
       </div>
 
-      <Link to={routes.HOME}>
-        <Button className="w-full" size="md">
-          <FormattedMessage
-            id="identity.create.finish"
-            defaultMessage="Finish"
-            description="Action to enter the app after finishing the onboarding"
-          />
-        </Button>
-      </Link>
+      <Button
+        className="w-full"
+        size="md"
+        onClick={() => {
+          setTimeout(() => {
+            navigate(routes.HOME);
+          }, 4000);
+        }}
+      >
+        <FormattedMessage
+          id="identity.create.finish"
+          defaultMessage="Finish"
+          description="Action to enter the app after finishing the onboarding"
+        />
+      </Button>
     </div>
   );
 }

@@ -36,6 +36,7 @@ import routes from "@/constants/routes";
 import { COUNTRIES } from "@/constants/countries";
 import Property from "./components/Property";
 import { getMessage, messages } from "./components/messages";
+import { Attachment } from "@/components/Attachment";
 
 type DeleteContactProps = {
   contactId: string;
@@ -189,6 +190,7 @@ function Information({ contactId }: { contactId: string }) {
     city_of_birth_or_registration,
     identification_number,
     avatar_file,
+    proof_document_file,
   } = data;
 
   const avatarImageUrl =
@@ -211,6 +213,14 @@ function Information({ contactId }: { contactId: string }) {
 
   const parsedCountryOfOriginName =
     COUNTRIES[country_of_birth_or_registration as keyof typeof COUNTRIES];
+
+  const registrationDocumentFile =
+    proof_document_file !== null
+      ? `${API_URL}/${GET_CONTACT_FILE.replace(
+          ":node_id/:name",
+          node_id + "/" + proof_document_file.name
+        )}`
+      : "";
 
   return (
     <div className="flex flex-col gap-6">
@@ -269,13 +279,19 @@ function Information({ contactId }: { contactId: string }) {
           label={f(getMessage(type, "identificationNumber"))}
           value={identification_number}
         />
-        {/*  <Separator className="bg-divider-75" /> */}
+        <Separator className="bg-divider-75" />
 
-        {/* enable when we add metadata (name and size) to the response 
-        <Property
-          label={f(getMessage(type, "document"))}
-          value={"proof_document.file_upload_id"}
-        /> */}
+        {proof_document_file && (
+          <Property
+            label={f(getMessage(type, "document"))}
+            value={
+              <Attachment
+                name={proof_document_file.name || ""}
+                url={registrationDocumentFile}
+              />
+            }
+          />
+        )}
       </div>
     </div>
   );
@@ -301,7 +317,11 @@ export default function View() {
         trail={
           // todo: fix route build
           <Link
-            to={routes.CONTACTS + "/" + routes.EDIT_CONTACT.replace(":nodeId", nodeId)}
+            to={
+              routes.CONTACTS +
+              "/" +
+              routes.EDIT_CONTACT.replace(":nodeId", nodeId)
+            }
           >
             <button className="flex flex-col items-center justify-center h-8 w-8 bg-elevation-200 border border-divider-50 rounded-md">
               <PencilIcon className="text-text-300 h-5 w-5 stroke-1" />
