@@ -106,6 +106,30 @@ function EmptyNotifications() {
   );
 }
 
+function EmptyActiveNotifications() {
+  return (
+    <div className="flex flex-col items-center gap-4 mb-5">
+      <img src={createBillIllustration} className="h-12 w-12 mb-1" />
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-text-300 text-xl font-medium leading-normal">
+          <FormattedMessage
+            id="notifications.active.empty.title"
+            defaultMessage="No active notifications"
+            description="Empty active notifications message title"
+          />
+        </span>
+        <span className="text-text-200 text-base font-normal leading-normal text-center mx-12">
+          <FormattedMessage
+            id="notifications.active.empty.description"
+            defaultMessage="Perfect!"
+            description="Empty active notifications message description"
+          />
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function History({ notifications }: { notifications: NotificationProps[] }) {
   const [displayHistory, setDisplayHistory] = useState(false);
 
@@ -193,6 +217,9 @@ function List({
 
   const today = startOfToday();
 
+
+  const activeNotifications = filtered.filter((notification) => notification.active);
+
   const todayNotifications = filtered.filter((notification) =>
     isToday(parseISO(notification.datetime))
   );
@@ -204,8 +231,28 @@ function List({
   // check how to best render the empty list, if only when no data at all, or if no notifications today too
   return (
     <div className="flex flex-col gap-3 h-full pt-10 pb-16">
-      {(data.length === 0 || todayNotifications.length === 0) && (
+      {filtered.length === 0 ? (
         <EmptyNotifications />
+      ) : (<>
+        {activeNotifications.length === 0 && (
+          <EmptyActiveNotifications />
+        )}
+      </>)}
+      {activeNotifications.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <span className="text-text-300 text-base font-medium leading-normal">
+            <FormattedMessage
+              id="notifications.list.active"
+              defaultMessage="Active"
+              description="Active notifications section title"
+            />
+          </span>
+          <div className="flex flex-col gap-3">
+            {activeNotifications.map((notification) => (
+              <Notification key={notification.id} {...notification} />
+            ))}
+          </div>
+        </div>
       )}
       {todayNotifications.length > 0 && (
         <div className="flex flex-col gap-3">
