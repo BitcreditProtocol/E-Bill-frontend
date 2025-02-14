@@ -419,10 +419,12 @@ export async function checkBillPaymentStatus(): Promise<void> {
   });
 }
 
+export type BillsFilterRole = "All" | "Payer" | "Payee" | "Contingent";
+
 type SearchBillsPayload = {
   filter: {
     search_term: string;
-    role: string;
+    role: BillsFilterRole;
     currency: string;
     date_range?: {
       from: string;

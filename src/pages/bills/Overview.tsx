@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Search from "@/components/ui/search";
 import { Button } from "@/components/ui/button";
 import RefreshButton from "@/components/RefreshButton";
-import { checkBillsInDHT, getBillsAll, getBillsLight, searchBills } from "@/services/bills";
+import { BillsFilterRole, checkBillsInDHT, getBillsAll, getBillsLight, searchBills } from "@/services/bills";
 import { cn } from "@/lib/utils";
 import routes from "@/constants/routes";
 import { Card } from "./components/Card";
@@ -59,29 +59,27 @@ function MaturityFilter({ onClick }: { onClick: (e: unknown) => void }) {
   );
 }
 
-type TypeFilterValue ="all" | "payee" | "payer" | "contingent" | "history"
-
 function TypeFilter({
   selectedType,
   onChange,
 }: {
-  selectedType: TypeFilterValue;
-  onChange: (val: TypeFilterValue) => void;
+  selectedType: BillsFilterRole;
+  onChange: (val: BillsFilterRole) => void;
 }) {
 
-  const onClick = (value: TypeFilterValue) => {
-      onChange(selectedType === value ? "all" : value);
+  const onClick = (value: BillsFilterRole) => {
+      onChange(selectedType === value ? "All" : value);
   };
 
   return (
     <div className="flex items-center gap-2">
       <Button
         className={cn("!min-w-px", {
-          "!font-medium border-text-300": selectedType === "all",
+          "!font-medium border-text-300": selectedType === "All",
         })}
         variant="filter"
         onClick={() => {
-          onClick("all");
+          onClick("All");
         }}
       >
         <FormattedMessage
@@ -93,11 +91,11 @@ function TypeFilter({
 
       <Button
         className={cn("!min-w-px", {
-          "!font-medium border-text-300": selectedType === "payee",
+          "!font-medium border-text-300": selectedType === "Payee",
         })}
         variant="filter"
         onClick={() => {
-          onClick("payee");
+          onClick("Payee");
         }}
       >
         <FormattedMessage
@@ -109,11 +107,11 @@ function TypeFilter({
 
       <Button
         className={cn("!min-w-px", {
-          "!font-medium border-text-300": selectedType === "payer",
+          "!font-medium border-text-300": selectedType === "Payer",
         })}
         variant="filter"
         onClick={() => {
-          onClick("payer");
+          onClick("Payer");
         }}
       >
         <FormattedMessage
@@ -125,11 +123,11 @@ function TypeFilter({
 
       <Button
         className={cn("!min-w-px", {
-          "!font-medium border-text-300": selectedType === "contingent",
+          "!font-medium border-text-300": selectedType === "Contingent",
         })}
         variant="filter"
         onClick={() => {
-          onClick("contingent");
+          onClick("Contingent");
         }}
       >
         <FormattedMessage
@@ -139,13 +137,14 @@ function TypeFilter({
         />
       </Button>
 
-      <Button
+      {/* Uncomment for now - use, when showing only unpaid bills is supported */
+        /*<Button
         className={cn("!min-w-px", {
-          "!font-medium border-text-300": selectedType === "history",
+          "!font-medium border-text-300": selectedType === "History",
         })}
         variant="filter"
         onClick={() => {
-          onClick("history");
+          onClick("History");
         }}
       >
         <FormattedMessage
@@ -153,7 +152,7 @@ function TypeFilter({
           defaultMessage="History"
           description="Filter as history button"
         />
-      </Button>
+      </Button>*/}
     </div>
   );
 }
@@ -352,7 +351,7 @@ function SearchResults({ values }: SearchResultsProps) {
 }
 
 export default function Bills() {
-  const [typeFilter, setTypeFilter] = useState<TypeFilterValue>("all");
+  const [typeFilter, setTypeFilter] = useState<BillsFilterRole>("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchModeEnabled, setSearchModeEnabled] = useState(false);
 
@@ -361,7 +360,7 @@ export default function Bills() {
     data: searchData,
     refetch: doSearch,
   } = useQuery({
-    queryKey: ["search", "bill", searchTerm],
+    queryKey: ["search", "bill", searchTerm, typeFilter],
     queryFn: () => searchBills({
       filter: {
         search_term: searchTerm,
@@ -369,7 +368,7 @@ export default function Bills() {
           from: string;
           to: string;
         }*/
-        role: "All",
+        role: typeFilter,
         currency: "sat",
       }
     }).then((it) => it.bills),
@@ -406,11 +405,12 @@ export default function Bills() {
           onChange={(value) => {
             setSearchTerm(value);
             if (value === "") {
+              setTypeFilter("All");
               setSearchModeEnabled(false);
             }
           }}
           onSearch={() => {
-            setSearchModeEnabled(searchTerm !== "");
+            setSearchModeEnabled(searchTerm !== "" || typeFilter !== "All");
             if (searchTerm) {
               void doSearch();
             }
@@ -418,7 +418,11 @@ export default function Bills() {
         />
         <TypeFilter
           selectedType={typeFilter}
-          onChange={setTypeFilter}
+          onChange={(it) => {
+            setSearchModeEnabled(searchTerm !== "" || it !== "All");
+            setTypeFilter(it);
+            void doSearch();
+          }}
         />
       </div>
 
