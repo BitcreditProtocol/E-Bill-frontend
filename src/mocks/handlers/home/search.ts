@@ -21,6 +21,8 @@ const data: SearchResponse = {
     },
     endorsee: null,
     active_notification: null,
+    time_of_drawing: 0,
+    time_of_maturity: 0,
   })),
   companies: db.company.getAll().map((it) => ({
     ...it,
