@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseISO, isToday, isBefore, startOfToday, format } from "date-fns";
@@ -172,13 +172,20 @@ function Loader() {
 
 function List({
   setNotificationsCount,
+  typeFilters,
 }: {
-  setNotificationsCount: (count: number) => void;
+  setNotificationsCount: (count: number) => void,
+  typeFilters: NotificationActionType[]
 }) {
   const { data } = useSuspenseQuery({
     queryFn: () => getNotifications(),
     queryKey: ["notifications"],
   });
+
+  const filtered = useMemo(() => {
+    if (typeFilters.length === 0) return data;
+    return data.filter((it) => typeFilters.includes(it.payload.action_type));
+  }, [typeFilters, data])
 
   useEffect(() => {
     setNotificationsCount(data.length);
@@ -186,11 +193,11 @@ function List({
 
   const today = startOfToday();
 
-  const todayNotifications = data.filter((notification) =>
+  const todayNotifications = filtered.filter((notification) =>
     isToday(parseISO(notification.datetime))
   );
 
-  const earlierNotifications = data.filter((notification) =>
+  const earlierNotifications = filtered.filter((notification) =>
     isBefore(parseISO(notification.datetime), today)
   );
 
@@ -254,7 +261,7 @@ export default function Notifications() {
       </div>
 
       <Suspense fallback={<Loader />}>
-        <List setNotificationsCount={setNotificationsCount} />
+        <List setNotificationsCount={setNotificationsCount} typeFilters={typeFilters} />
       </Suspense>
     </Page>
   );
