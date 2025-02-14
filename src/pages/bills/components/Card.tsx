@@ -58,7 +58,8 @@ export function Card({
             "!text-text-300": !isPayer && !isPayee,
           })}
           value={isPayer ? -amount : amount}
-          currency=""
+          currency={currency}
+          currencyDisplay="none"
         />
         <span className="text-text-300 text-xs font-normal leading-normal">
           {currency}
