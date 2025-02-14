@@ -55,3 +55,13 @@ export const searchContacts = async ({ search_term }: { search_term: string }) =
     }
   }).then((it) => it.contacts);
 };
+
+export const searchBills = async ({ search_term }: { search_term: string }) => {
+  return search({
+    filter: {
+      search_term,
+      currency: "sat",
+      item_types: ["Bill"]
+    }
+  }).then((it) => it.bills);
+};
