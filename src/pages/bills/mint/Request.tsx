@@ -301,7 +301,6 @@ export default function Request() {
             />
           </PageTitle>
         }
-        trail={<></>}
       />
 
       <Suspense fallback={<Loader />}>

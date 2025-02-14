@@ -7,23 +7,24 @@ import {
 } from "@tanstack/react-query";
 import { isToday, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
-import { CalendarDaysIcon, ChevronsUpDownIcon } from "lucide-react";
+import { ChevronsUpDownIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import PageTitle from "@/components/typography/PageTitle";
-import { DatePicker } from "@/components/DatePicker/datePicker";
 import { Skeleton } from "@/components/ui/skeleton";
 import Search from "@/components/ui/search";
 import { Button } from "@/components/ui/button";
 import RefreshButton from "@/components/RefreshButton";
-import { checkBillsInDHT, getBillsAll, getBillsLight } from "@/services/bills";
+import { BillsFilterRole, checkBillsInDHT, getBillsAll, getBillsLight, searchBills } from "@/services/bills";
 import { cn } from "@/lib/utils";
 import routes from "@/constants/routes";
 import { Card } from "./components/Card";
 import Empty from "./components/Empty";
 import { readMintConfig } from "@/constants/mints";
+import { BillLight } from "@/types/bill";
 
-function DateRangeFilter({ onChange }: { onChange: (e: unknown) => void }) {
+/* TODO: disabled for now, till it is clarified in UI how to unset/clear the range filter again */
+/*function DateRangeFilter({ onChange }: { onChange: (dateRange: DateRange) => void }) {
   return (
     <DatePicker
       customComponent={
@@ -40,7 +41,7 @@ function DateRangeFilter({ onChange }: { onChange: (e: unknown) => void }) {
       onChange={onChange}
     />
   );
-}
+}*/
 
 function MaturityFilter({ onClick }: { onClick: (e: unknown) => void }) {
   return (
@@ -60,20 +61,25 @@ function MaturityFilter({ onClick }: { onClick: (e: unknown) => void }) {
 
 function TypeFilter({
   selectedType,
-  onClick,
+  onChange,
 }: {
-  selectedType: string;
-  onClick: (e: "all" | "payee" | "payer" | "contingent" | "history") => void;
+  selectedType: BillsFilterRole;
+  onChange: (val: BillsFilterRole) => void;
 }) {
+
+  const onClick = (value: BillsFilterRole) => {
+      onChange(selectedType === value ? "All" : value);
+  };
+
   return (
     <div className="flex items-center gap-2">
       <Button
         className={cn("!min-w-px", {
-          "!font-medium border-text-300": selectedType === "all",
+          "!font-medium border-text-300": selectedType === "All",
         })}
         variant="filter"
         onClick={() => {
-          onClick("all");
+          onClick("All");
         }}
       >
         <FormattedMessage
@@ -85,11 +91,11 @@ function TypeFilter({
 
       <Button
         className={cn("!min-w-px", {
-          "!font-medium border-text-300": selectedType === "payee",
+          "!font-medium border-text-300": selectedType === "Payee",
         })}
         variant="filter"
         onClick={() => {
-          onClick("payee");
+          onClick("Payee");
         }}
       >
         <FormattedMessage
@@ -101,11 +107,11 @@ function TypeFilter({
 
       <Button
         className={cn("!min-w-px", {
-          "!font-medium border-text-300": selectedType === "payer",
+          "!font-medium border-text-300": selectedType === "Payer",
         })}
         variant="filter"
         onClick={() => {
-          onClick("payer");
+          onClick("Payer");
         }}
       >
         <FormattedMessage
@@ -117,11 +123,11 @@ function TypeFilter({
 
       <Button
         className={cn("!min-w-px", {
-          "!font-medium border-text-300": selectedType === "contingent",
+          "!font-medium border-text-300": selectedType === "Contingent",
         })}
         variant="filter"
         onClick={() => {
-          onClick("contingent");
+          onClick("Contingent");
         }}
       >
         <FormattedMessage
@@ -131,13 +137,14 @@ function TypeFilter({
         />
       </Button>
 
-      <Button
+      {/* Uncomment for now - use, when showing only unpaid bills is supported */
+        /*<Button
         className={cn("!min-w-px", {
-          "!font-medium border-text-300": selectedType === "history",
+          "!font-medium border-text-300": selectedType === "History",
         })}
         variant="filter"
         onClick={() => {
-          onClick("history");
+          onClick("History");
         }}
       >
         <FormattedMessage
@@ -145,7 +152,7 @@ function TypeFilter({
           defaultMessage="History"
           description="Filter as history button"
         />
-      </Button>
+      </Button>*/}
     </div>
   );
 }
@@ -161,7 +168,93 @@ function Loader() {
   );
 }
 
-function List() {
+function List({ values } : { values: BillLight[] }) {
+  // todo: fix bills being identified as earlier if date is not strictly today
+  const todayBills = values.filter((bill) =>
+    isToday(parseISO(bill.issue_date))
+  );
+  const earlierBills = values.filter(
+    (bill) => !isToday(parseISO(bill.issue_date))
+  );
+
+  return (
+    <>
+      <div className="flex flex-col gap-1.5">
+        {todayBills.length > 0 && (
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-text-300 text-base font-medium leading-normal">
+              <FormattedMessage
+                id="bills.list.today"
+                defaultMessage="Today"
+                description="Today bills section title"
+              />
+            </span>
+
+            <MaturityFilter
+              onClick={() => {
+                console.log("clicked");
+              }}
+            />
+          </div>
+        )}
+
+        {todayBills.map((bill) => (
+          <Link to={routes.VIEW_BILL.replace(":id", bill.id)} key={bill.id}>
+            <Card
+              key={bill.id}
+              name={bill.drawer.name}
+              date={bill.issue_date}
+              amount={Number(bill.sum)}
+              currency={bill.currency}
+              drawee={bill.drawee}
+              payee={bill.payee}
+              endorsee={bill.endorsee}
+              hasPendingAction={bill.active_notification !== null || false}
+            />
+          </Link>
+        ))}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-text-300 text-base font-medium leading-normal">
+            <FormattedMessage
+              id="bills.list.earlier"
+              defaultMessage="Earlier"
+              description="Earlier bills section title"
+            />
+          </span>
+
+          {earlierBills.length > 0 && todayBills.length === 0 && (
+            <MaturityFilter
+              onClick={() => {
+                console.log("clicked");
+              }}
+            />
+          )}
+        </div>
+
+        {earlierBills.map((bill) => (
+          <Link to={routes.VIEW_BILL.replace(":id", bill.id)} key={bill.id}>
+            <Card
+              key={bill.id}
+              name={bill.drawee.name}
+              date={bill.issue_date}
+              amount={Number(bill.sum)}
+              currency={bill.currency}
+              drawee={bill.drawee}
+              payee={bill.payee}
+              endorsee={bill.endorsee}
+              hasPendingAction={bill.active_notification !== null || false}
+            />
+          </Link>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function ListAll() {
   const { formatMessage: f } = useIntl();
   const mintConfig = useMemo(() => readMintConfig(), []);
   const queryClient = useQueryClient();
@@ -171,14 +264,6 @@ function List() {
     queryFn: () =>
       mintConfig.__dev_mintViewEnabled ? getBillsAll() : getBillsLight(),
   });
-
-  // todo: fix bills being identified as earlier if date is not strictly today
-  const todayBills = data.bills.filter((bill) =>
-    isToday(parseISO(bill.issue_date))
-  );
-  const earlierBills = data.bills.filter(
-    (bill) => !isToday(parseISO(bill.issue_date))
-  );
 
   const { refetch, isFetching } = useQuery({
     queryFn: () => checkBillsInDHT(),
@@ -221,85 +306,77 @@ function List() {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-1.5">
-            {todayBills.length > 0 && (
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-text-300 text-base font-medium leading-normal">
-                  <FormattedMessage
-                    id="bills.list.today"
-                    defaultMessage="Today"
-                    description="Today bills section title"
-                  />
-                </span>
-
-                <MaturityFilter
-                  onClick={() => {
-                    console.log("clicked");
-                  }}
-                />
-              </div>
-            )}
-
-            {todayBills.map((bill) => (
-              <Link to={routes.VIEW_BILL.replace(":id", bill.id)} key={bill.id}>
-                <Card
-                  key={bill.id}
-                  name={bill.drawer.name}
-                  date={bill.issue_date}
-                  amount={Number(bill.sum)}
-                  currency={bill.currency}
-                  drawee={bill.drawee}
-                  payee={bill.payee}
-                  endorsee={bill.endorsee}
-                  hasPendingAction={bill.active_notification !== null || false}
-                />
-              </Link>
-            ))}
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-text-300 text-base font-medium leading-normal">
-                <FormattedMessage
-                  id="bills.list.earlier"
-                  defaultMessage="Earlier"
-                  description="Earlier bills section title"
-                />
-              </span>
-
-              {earlierBills.length > 0 && todayBills.length === 0 && (
-                <MaturityFilter
-                  onClick={() => {
-                    console.log("clicked");
-                  }}
-                />
-              )}
-            </div>
-
-            {earlierBills.map((bill) => (
-              <Link to={routes.VIEW_BILL.replace(":id", bill.id)} key={bill.id}>
-                <Card
-                  key={bill.id}
-                  name={bill.drawee.name}
-                  date={bill.issue_date}
-                  amount={Number(bill.sum)}
-                  currency={bill.currency}
-                  drawee={bill.drawee}
-                  payee={bill.payee}
-                  endorsee={bill.endorsee}
-                  hasPendingAction={bill.active_notification !== null || false}
-                />
-              </Link>
-            ))}
-          </div>
+          <List values={data.bills} />
         </>
       )}
     </div>
   );
 }
 
+
+function EmptySearchResult() {
+  return (<div className="flex flex-col gap-4">
+    <div className="text-text-200 text-xs font-medium">
+      <FormattedMessage
+        id="bills.search.results.title"
+        defaultMessage="Search results"
+        description="Title for search results on Bills page"
+      />
+    </div>
+    <div className="text-text-300 text-sm font-medium">
+      <FormattedMessage
+        id="bills.search.results.no_results.text"
+        defaultMessage="No results"
+        description="Title for no search results on Bills page"
+      />
+    </div>
+  </div>);
+}
+
+
+type SearchResultsProps = {
+  values: BillLight[]
+}
+
+function SearchResults({ values }: SearchResultsProps) {
+  return (
+    <div className="flex flex-col gap-2 mb-16">
+      {values.length === 0 ? (<>
+        <EmptySearchResult />
+      </>) : (<>
+        <List values={values} />
+      </>)}
+    </div>
+  );
+}
+
 export default function Bills() {
-  const [selectedTypeFilter, setSelectedTypeFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState<BillsFilterRole>("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchModeEnabled, setSearchModeEnabled] = useState(false);
+
+  const {
+    isFetching: searchIsLoading,
+    data: searchData,
+    refetch: doSearch,
+  } = useQuery({
+    queryKey: ["search", "bill", searchTerm, typeFilter],
+    queryFn: () => searchBills({
+      filter: {
+        search_term: searchTerm,
+        /*date_range?: {
+          from: string;
+          to: string;
+        }*/
+        role: typeFilter,
+        currency: "sat",
+      }
+    }).then((it) => it.bills),
+    staleTime: 1,
+    enabled: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
 
   return (
     <Page className="gap-3" displayBottomNavigation>
@@ -313,30 +390,50 @@ export default function Bills() {
             />
           </PageTitle>
         }
-        trail={
+        /*trail={
           <DateRangeFilter
             onChange={(e) => {
               console.log(e);
             }}
           />
-        }
+        }*/
       />
       <div className="flex flex-col gap-2">
         <Search
           size="sm"
           placeholder="Search for bills..."
+          onChange={(value) => {
+            setSearchTerm(value);
+            if (value === "") {
+              setTypeFilter("All");
+              setSearchModeEnabled(false);
+            }
+          }}
           onSearch={() => {
-            console.log("search");
+            setSearchModeEnabled(searchTerm !== "" || typeFilter !== "All");
+            if (searchTerm) {
+              void doSearch();
+            }
           }}
         />
         <TypeFilter
-          selectedType={selectedTypeFilter}
-          onClick={setSelectedTypeFilter}
+          selectedType={typeFilter}
+          onChange={(it) => {
+            setSearchModeEnabled(searchTerm !== "" || it !== "All");
+            setTypeFilter(it);
+            void doSearch();
+          }}
         />
       </div>
 
       <Suspense fallback={<Loader />}>
-        <List />
+        {searchModeEnabled ? (<>
+          {searchIsLoading ? (<Loader />) : (<>
+            <SearchResults values={searchData || []} />
+          </>)}
+        </>) : (<>
+          <ListAll />
+        </>)}
       </Suspense>
     </Page>
   );
