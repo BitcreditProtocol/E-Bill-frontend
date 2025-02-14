@@ -188,7 +188,6 @@ export default function RequestMint() {
             />
           </PageTitle>
         }
-        trail={<></>}
       />
 
       <Suspense fallback={<Loader />}>
