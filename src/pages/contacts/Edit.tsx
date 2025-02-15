@@ -28,7 +28,7 @@ import NavigateBack from "@/components/NavigateBack";
 import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
 import { DatePicker } from "@/components/DatePicker/datePicker";
-import Upload from "@/components/Upload";
+import Upload, { UploadedFilePreview } from "@/components/Upload";
 import Picture from "@/components/Picture";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -150,6 +150,12 @@ const formSchema = z.object({
     preview_url: z.string().optional().nullable(),
     file_upload_id: z.string().optional().nullable(),
   }),
+
+  document_file: z.object({
+    hasFile: z.boolean(),
+    name: z.string().optional(),
+    file_upload_id: z.string().optional(),
+  }),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -191,6 +197,12 @@ function Form({ nodeId }: { nodeId: string }) {
         preview_url: avatarImageUrl,
         file_upload_id: "",
       },
+
+      document_file: {
+        hasFile: data.proof_document_file?.name ? true : false,
+        name: data.proof_document_file?.name || "",
+        file_upload_id: "",
+      },
     },
   });
 
@@ -228,6 +240,9 @@ function Form({ nodeId }: { nodeId: string }) {
       return editContact({
         ...methods.getValues(),
         avatar_file_upload_id: methods.getValues("avatar.file_upload_id"),
+        proof_document_file_upload_id: methods.getValues(
+          "document_file.file_upload_id"
+        ),
       });
     },
     onSuccess: async () => {
@@ -248,6 +263,15 @@ function Form({ nodeId }: { nodeId: string }) {
       setTimeout(() => {
         navigate(routes.CONTACTS + "/" + data.node_id);
       }, 1000);
+    },
+  });
+
+  const { mutate: mutateFileUpload } = useMutation({
+    mutationFn: (file: File) => {
+      return uploadFile(file);
+    },
+    onSuccess: (data) => {
+      methods.setValue("document_file.file_upload_id", data.file_upload_id);
     },
   });
 
@@ -349,14 +373,38 @@ function Form({ nodeId }: { nodeId: string }) {
           icon={<ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />}
           label={f(getMessage(contactType, "identificationNumber"))}
         />
-        <Upload
-          label={f(getMessage(contactType, "document"))}
-          description={f({
-            id: "contacts.create.upload.acceptedFormats",
-            defaultMessage: "PDF, PNG or JPG (max. 5mb)",
-            description: "Accepted file formats",
-          })}
-        />
+
+        {data.proof_document_file && methods.watch("document_file.hasFile") ? (
+          <div
+            onClick={() => {
+              methods.setValue("document_file.hasFile", false);
+            }}
+          >
+            <UploadedFilePreview
+              name={data.proof_document_file.name}
+              size={100}
+            />
+          </div>
+        ) : (
+          <Upload
+            label={f(getMessage(contactType, "document"))}
+            description={f({
+              id: "contacts.edit.upload.acceptedFormats",
+              defaultMessage: "PDF, PNG or JPG (max. 100kb)",
+              description: "Accepted file formats",
+            })}
+            onAddFile={(file) => {
+              methods.setValue("document_file.name", file.name);
+              methods.setValue("document_file.file_upload_id", "");
+
+              mutateFileUpload(file);
+            }}
+            onRemoveFile={() => {
+              methods.setValue("document_file.name", "");
+              methods.setValue("document_file.file_upload_id", "");
+            }}
+          />
+        )}
       </div>
 
       <div className="flex flex-col gap-2">

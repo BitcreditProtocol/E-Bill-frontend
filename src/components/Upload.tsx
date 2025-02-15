@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useIntl } from "react-intl";
 import { CircleCheckIcon, TrashIcon, UploadIcon } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 function UploadedFile({
   name,
@@ -36,18 +38,22 @@ export function UploadedFilePreview({
   size,
 }: {
   name: string;
-  size: number;
+  size?: number;
 }) {
   return (
     <div className="flex items-center justify-between p-4 bg-elevation-200 border border-divider-50 rounded-lg">
-      <div className="flex gap-1 items-center">
+      <div className="flex gap-1 items-center w-full">
         <span className="max-w-32 text-text-300 text-sm font-medium leading-5 truncate">
           {name}
         </span>
-        <span className="text-text-200 text-xs font-normal leading-[18px]">
-          {size} KB
-        </span>
+        {size && (
+          <span className="text-text-200 text-xs font-normal leading-[18px]">
+            {size} KB
+          </span>
+        )}
+
         <CircleCheckIcon className="text-signal-success h-4 w-4 stroke-1" />
+        <TrashIcon className="text-text-300 h-5 w-5 stroke-1 ml-auto cursor-pointer" />
       </div>
     </div>
   );
@@ -64,15 +70,36 @@ export default function Upload({
   onAddFile?: (file: File) => void;
   onRemoveFile?: () => void;
 }) {
+  const { formatMessage: f } = useIntl();
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
+
     if (selectedFile) {
-      setFile(selectedFile);
+      if (selectedFile.size >= 100 * 1024) {
+        toast({
+          title: f({
+            id: "upload.file.error",
+            defaultMessage: "Error",
+          }),
+          description: f({
+            id: "upload.file.size.error",
+            defaultMessage: "File size is too big. Max. 100kb allowed.",
+          }),
+          variant: "error",
+          position: "bottom-center",
+          duration: 1000,
+        });
+
+        return;
+      }
+
       if (onAddFile) {
         onAddFile(selectedFile);
       }
+
+      setFile(selectedFile);
     }
   };
 

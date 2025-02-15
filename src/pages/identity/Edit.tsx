@@ -1,4 +1,5 @@
 import { Suspense, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useMutation,
   useQueryClient,
@@ -29,6 +30,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import Picture from "@/components/Picture";
+import Upload, { UploadedFilePreview } from "@/components/Upload";
 import { copyToClipboard } from "@/utils";
 import { truncateString } from "@/utils/strings";
 import {
@@ -36,6 +38,7 @@ import {
   getIdentityDetails,
   uploadFile,
 } from "@/services/identity_v2";
+import routes from "@/constants/routes";
 import { API_URL } from "@/constants/api";
 import { GET_TEMP_FILE } from "@/constants/endpoints";
 import { messages } from "./components/messages";
@@ -140,12 +143,18 @@ const formSchema = z.object({
     preview_url: z.string().optional().nullable(),
     file_upload_id: z.string().optional().nullable(),
   }),
+  document_file: z.object({
+    hasFile: z.boolean().optional().nullable(),
+    name: z.string().optional().nullable(),
+    file_upload_id: z.string().optional().nullable(),
+  }),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
 
 function Form() {
   const [isDataValid, setIsDataValid] = useState(false);
+  const navigate = useNavigate();
   const { formatMessage: f } = useIntl();
   const { data } = useSuspenseQuery({
     queryFn: getIdentityDetails,
@@ -175,6 +184,11 @@ function Form() {
         preview_url: avatarPreviewUrl,
         file_upload_id: "",
       },
+      document_file: {
+        hasFile: data.identity_document_file.name ? true : false,
+        name: data.identity_document_file.name,
+        file_upload_id: "",
+      },
     },
   });
 
@@ -199,6 +213,8 @@ function Form() {
         ...methods.getValues(),
         profile_picture_file_upload_id:
           methods.getValues().avatar.file_upload_id,
+        identity_document_file_upload_id:
+          methods.getValues().document_file.file_upload_id,
       });
     },
     onSuccess: async () => {
@@ -213,7 +229,21 @@ function Form() {
           description: "Personal identity updated successfully toast message",
         }),
         position: "bottom-center",
+        duration: 1000,
       });
+
+      setTimeout(() => {
+        navigate(routes.VIEW_IDENTITY);
+      });
+    },
+  });
+
+  const { mutate: mutateFileUpload } = useMutation({
+    mutationFn: (file: File) => {
+      return uploadFile(file);
+    },
+    onSuccess: (data) => {
+      methods.setValue("document_file.file_upload_id", data.file_upload_id);
     },
   });
 
@@ -305,6 +335,38 @@ function Form() {
               <ShieldCheckIcon className="text-text-300 h-5 w-5 stroke-1" />
             }
           />
+          {methods.watch("document_file.hasFile") ? (
+            <div
+              onClick={() => {
+                methods.setValue("document_file.hasFile", false);
+              }}
+            >
+              <UploadedFilePreview name={methods.watch("document_file.name")} />
+            </div>
+          ) : (
+            <Upload
+              label={f({
+                id: "identity.edit.file.upload",
+                defaultMessage: "Upload document",
+                description: "Upload document label",
+              })}
+              description={f({
+                id: "identity.edit.file.upload.acceptedFormats",
+                defaultMessage: "PDF, PNG or JPG (max. 100kb)",
+                description: "Accepted file formats",
+              })}
+              onAddFile={(file) => {
+                mutateFileUpload(file);
+
+                methods.setValue("document_file.hasFile", true);
+                methods.setValue("document_file.name", file.name);
+              }}
+              onRemoveFile={() => {
+                methods.setValue("document_file.hasFile", false);
+                methods.setValue("document_file.name", "");
+              }}
+            />
+          )}
         </div>
       </FormProvider>
 

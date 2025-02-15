@@ -35,7 +35,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/DatePicker/datePicker";
 import Upload, { UploadedFilePreview } from "@/components/Upload";
-import { useToast } from "@/hooks/use-toast";
+import { toast, useToast } from "@/hooks/use-toast";
 import { createContact, uploadFile } from "@/services/contact_v2";
 import { copyToClipboard } from "@/utils";
 import { truncateString } from "@/utils/strings";
@@ -48,6 +48,7 @@ import { Label, Value } from "./components/Typography";
 import { messages, getMessage } from "./components/messages";
 
 function ProfilePictureUpload() {
+  const { formatMessage: f } = useIntl();
   const { watch, setValue } = useFormContext<FormSchema>();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -71,6 +72,24 @@ function ProfilePictureUpload() {
     const file = e.target.files?.[0];
 
     if (file) {
+      if (file.size >= 100 * 1024) {
+        toast({
+          title: f({
+            id: "contact.create.file.error",
+            defaultMessage: "Error",
+          }),
+          description: f({
+            id: "contact.create.file.size.error",
+            defaultMessage: "File size is too big. Max. 100kb allowed.",
+          }),
+          variant: "error",
+          position: "bottom-center",
+          duration: 1000,
+        });
+
+        return;
+      }
+
       mutate(file);
     }
   };
@@ -127,7 +146,7 @@ function DocumentFileUpload() {
         label={f(getMessage(contactType, "uploadDocument"))}
         description={f({
           id: "contacts.create.upload.acceptedFormats",
-          defaultMessage: "PDF, PNG or JPG (max. 5mb)",
+          defaultMessage: "PDF, PNG or JPG (max. 100kb)",
           description: "Accepted file formats",
         })}
         onAddFile={(file) => {

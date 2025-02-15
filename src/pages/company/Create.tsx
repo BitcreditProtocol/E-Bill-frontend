@@ -121,7 +121,7 @@ function DocumentFileUpload() {
         })}
         description={f({
           id: "company.create.upload.acceptedFormats",
-          defaultMessage: "PDF, PNG or JPG (max. 5mb)",
+          defaultMessage: "PDF, PNG or JPG (max. 100kb)",
           description: "Accepted file formats",
         })}
         onAddFile={(file) => {
