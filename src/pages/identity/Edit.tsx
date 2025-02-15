@@ -173,7 +173,7 @@ function Form() {
       identification_number: data.identification_number,
       avatar: {
         preview_url: avatarPreviewUrl,
-        file_upload_id: data.profile_picture_file.name,
+        file_upload_id: "",
       },
     },
   });
