@@ -6,8 +6,6 @@ export const editContact = http.put<never, never, never, typeof EDIT_CONTACT>(
   async ({ request }) => {
     await delay(1500);
 
-    return HttpResponse.json({
-      ...request.body,
-    });
+    return HttpResponse.json(await request.json());
   }
 );
