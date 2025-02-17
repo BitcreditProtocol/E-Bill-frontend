@@ -12,9 +12,7 @@ export const apiFetch = async <T = unknown>(
       "Content-Type": "application/json",
       ...(options.headers || {}),
     }, */
-    headers: {
-      ...(options.headers || {}),
-    },
+    headers: options.headers || {},
   });
 
   if (!response.ok) {
