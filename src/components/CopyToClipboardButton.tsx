@@ -1,6 +1,7 @@
 import { useIntl } from "react-intl";
 import { CopyIcon } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 import { copyToClipboard } from "@/utils";
 
 type CopyToClipboardButtonProps = {
@@ -11,13 +12,14 @@ type CopyToClipboardButtonProps = {
 export default function CopyToClipboardButton({
   value,
   onCopy,
+  className,
   ...props
 }: CopyToClipboardButtonProps) {
   const { formatMessage: f } = useIntl();
 
   return (
     <button
-      className="flex items-center justify-center p-0"
+      className={cn("flex items-center justify-center p-0", className)}
       onClick={() => {
         void copyToClipboard(value, () => {
           onCopy?.();
