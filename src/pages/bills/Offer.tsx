@@ -3,9 +3,8 @@ import { Navigate, useParams } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { QRCodeSVG } from "qrcode.react";
-import { FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 import {
-  CopyIcon,
   SquareArrowOutUpRightIcon,
   CircleCheckIcon,
   CircleXIcon,
@@ -17,11 +16,10 @@ import NavigateBack from "@/components/NavigateBack";
 import PageTitle from "@/components/typography/PageTitle";
 import Picture from "@/components/Picture";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
+import CopyToClipboardButton from "@/components/CopyToClipboardButton";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { getBillDetails } from "@/services/bills";
-import { copyToClipboard } from "@/utils";
 import { truncateString } from "@/utils/strings";
 import routes from "@/constants/routes";
 import type { BillFull } from "@/types/bill";
@@ -52,9 +50,6 @@ function Payment({
   address_to_pay,
   link_for_buy,
 }: PaymentProps) {
-  const { formatMessage: f } = useIntl();
-  const { toast } = useToast();
-
   const sum = link_for_buy.match(/[?&]amount=([^&]*)/)?.[1] as string;
 
   return (
@@ -78,34 +73,7 @@ function Payment({
               {address_to_pay}
             </span>
 
-            <button
-              className="p-0"
-              onClick={() => {
-                copyToClipboard(address_to_pay)
-                  .then(() => {
-                    toast({
-                      description: f({
-                        id: "bill.offer.payment.address.copied",
-                        defaultMessage: "Address copied to clipboard!",
-                      }),
-                      position: "bottom-center",
-                    });
-                  })
-                  .catch(() => {
-                    toast({
-                      description: f({
-                        id: "bill.offer.payment.address.failed",
-                        defaultMessage:
-                          "Error while copying address to clipboard",
-                      }),
-                      variant: "error",
-                      position: "bottom-center",
-                    });
-                  });
-              }}
-            >
-              <CopyIcon className="text-text-200 w-4 h-4 stroke-1" />
-            </button>
+            <CopyToClipboardButton value={address_to_pay} />
           </div>
         </div>
 
@@ -169,7 +137,13 @@ function Status({
   }[status];
 
   const icon = {
-    pending: <img src={LoaderIcon} alt="Loader" className="w-12 h-12 animate-spin ease-in-out" />,
+    pending: (
+      <img
+        src={LoaderIcon}
+        alt="Loader"
+        className="w-12 h-12 animate-spin ease-in-out"
+      />
+    ),
     success: (
       <CircleCheckIcon className="text-signal-success w-12 h-12 stroke-1" />
     ),

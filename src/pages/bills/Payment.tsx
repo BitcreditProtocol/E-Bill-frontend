@@ -21,17 +21,17 @@ import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import RefreshButton from "@/components/RefreshButton";
 import { FormattedCurrency } from "@/components/FormattedCurrency";
+import CopyToClipboardButton from "@/components/CopyToClipboardButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { findHolder } from "@/utils/bill";
 import { truncateString } from "@/utils/strings";
-import { useToast, toast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/use-toast";
 import {
   checkBillInDHT,
   getBillDetails,
   getPrivateKey,
 } from "@/services/bills";
 import { getActiveIdentity } from "@/services/identity_v2";
-import { copyToClipboard } from "@/utils";
 import LoaderIcon from "@/assets/icons/loader.svg";
 import Preview from "./components/Preview";
 
@@ -47,8 +47,6 @@ function Loader() {
 }
 
 function Information({ id }: { id: string }) {
-  const { toast } = useToast();
-
   const { data: activeIdentity } = useSuspenseQuery({
     queryFn: () => getActiveIdentity(),
     queryKey: ["identity", "active"],
@@ -191,28 +189,9 @@ function Information({ id }: { id: string }) {
                   {privateKeyData?.private_key}
                 </span>
 
-                <button
-                  className="p-0"
-                  onClick={() => {
-                    copyToClipboard(privateKeyData?.private_key || "")
-                      .then(() => {
-                        toast({
-                          description: "Private key copied to clipboard",
-                          position: "bottom-center",
-                        });
-                      })
-                      .catch(() => {
-                        toast({
-                          description:
-                            "Failed to copy private key to clipboard",
-                          variant: "error",
-                          position: "bottom-center",
-                        });
-                      });
-                  }}
-                >
-                  <CopyIcon className="text-text-200 w-4 h-4 stroke-1" />
-                </button>
+                <CopyToClipboardButton
+                  value={privateKeyData?.private_key || ""}
+                />
               </div>
             </div>
           )}

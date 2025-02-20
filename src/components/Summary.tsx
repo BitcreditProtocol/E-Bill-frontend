@@ -1,9 +1,7 @@
-import { CopyIcon } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { truncateAvatarName, truncateString } from "@/utils/strings";
-import { copyToClipboard } from "@/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import CopyToClipboardButton from "./CopyToClipboardButton";
 
 type SummaryProps = {
   identityType: number;
@@ -18,8 +16,6 @@ export default function Summary({
   nodeId,
   picture,
 }: SummaryProps) {
-  const { toast } = useToast();
-
   return (
     <div className="flex flex-col items-center gap-2">
       <Avatar
@@ -49,20 +45,7 @@ export default function Summary({
           {truncateString(nodeId, 12)}
         </span>
 
-        <button
-          className="flex items-center justify-center p-0"
-          onClick={() => {
-            void copyToClipboard(nodeId, () => {
-              toast({
-                description: "Copied to clipboard",
-                position: "bottom-center",
-                duration: 750
-              });
-            });
-          }}
-        >
-          <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
-        </button>
+        <CopyToClipboardButton value={nodeId} />
       </div>
     </div>
   );

@@ -13,7 +13,6 @@ import { format } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
   CalendarIcon,
-  CopyIcon,
   GitForkIcon,
   MailIcon,
   MapIcon,
@@ -34,10 +33,10 @@ import CountrySelector from "@/components/CountrySelector";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/DatePicker/datePicker";
+import CopyToClipboardButton from "@/components/CopyToClipboardButton";
 import Upload, { UploadedFilePreview } from "@/components/Upload";
 import { toast, useToast } from "@/hooks/use-toast";
 import { createContact, uploadFile } from "@/services/contact_v2";
-import { copyToClipboard } from "@/utils";
 import { truncateString } from "@/utils/strings";
 import routes from "@/constants/routes";
 import { API_URL } from "@/constants/api";
@@ -627,14 +626,7 @@ function Preview() {
               <span className="text-text-200 text-xs font-normal leading-normal">
                 {truncateString(node_id, 14)}
               </span>
-              <button
-                className="p-0"
-                onClick={() => {
-                  void copyToClipboard(node_id);
-                }}
-              >
-                <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
-              </button>
+              <CopyToClipboardButton value={node_id} />
             </div>
           </div>
         </div>
