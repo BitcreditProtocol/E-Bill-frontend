@@ -12,7 +12,6 @@ import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
   CalendarIcon,
-  CopyIcon,
   MailIcon,
   MapIcon,
   MapPinIcon,
@@ -29,13 +28,13 @@ import { Input } from "@/components/ui/input";
 import CountrySelector from "@/components/CountrySelector";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import CopyToClipboardButton from "@/components/CopyToClipboardButton";
 import { DatePicker } from "@/components/DatePicker/datePicker";
 import Upload, { UploadedFilePreview } from "@/components/Upload";
 import Picture from "@/components/Picture";
 import { useIdentity } from "@/context/identity/IdentityContext";
 import { editCompany, getCompanyDetails, uploadFile } from "@/services/company";
 import { truncateString } from "@/utils/strings";
-import { copyToClipboard } from "@/utils";
 import { useToast } from "@/hooks/use-toast";
 import { API_URL } from "@/constants/api";
 import { GET_COMPANY_FILE, GET_TEMP_FILE } from "@/constants/endpoints";
@@ -262,20 +261,7 @@ function Form({ companyId }: { companyId: string }) {
               {truncateString(data.id, 12)}
             </span>
 
-            <button
-              className="flex items-center justify-center p-0"
-              onClick={() => {
-                void copyToClipboard(data.id, () => {
-                  toast({
-                    description: "Copied to clipboard",
-                    position: "bottom-center",
-                    duration: 750,
-                  });
-                });
-              }}
-            >
-              <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
-            </button>
+            <CopyToClipboardButton value={data.id} />
           </div>
         </div>
 

@@ -3,19 +3,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { QRCodeSVG } from "qrcode.react";
 import { format, parseISO } from "date-fns";
-import { FormattedMessage, useIntl } from "react-intl";
-import { CopyIcon, SquareArrowOutUpRightIcon } from "lucide-react";
-
+import { FormattedMessage } from "react-intl";
+import { SquareArrowOutUpRightIcon } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
 import PageTitle from "@/components/typography/PageTitle";
+import CopyToClipboardButton from "@/components/CopyToClipboardButton";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
 import { getBillDetails } from "@/services/bills";
 import { getActiveIdentity } from "@/services/identity_v2";
 import { truncateString } from "@/utils/strings";
-import { copyToClipboard } from "@/utils";
 import routes from "@/constants/routes";
 import Preview from "./components/Preview";
 
@@ -31,8 +29,6 @@ function Loader() {
 
 function Information({ id }: { id: string }) {
   const navigate = useNavigate();
-  const { formatMessage: f } = useIntl();
-  const { toast } = useToast();
 
   const { data } = useSuspenseQuery({
     queryFn: () => getBillDetails(id),
@@ -75,34 +71,7 @@ function Information({ id }: { id: string }) {
                 {data.address_to_pay}
               </span>
 
-              <button
-                className="p-0"
-                onClick={() => {
-                  copyToClipboard(data.address_to_pay)
-                    .then(() => {
-                      toast({
-                        description: f({
-                          id: "bill.payment.info.address.copied",
-                          defaultMessage: "Address copied to clipboard!",
-                        }),
-                        position: "bottom-center",
-                      });
-                    })
-                    .catch(() => {
-                      toast({
-                        description: f({
-                          id: "bill.payment.info.address.failed",
-                          defaultMessage:
-                            "Error while copying address to clipboard",
-                        }),
-                        variant: "error",
-                        position: "bottom-center",
-                      });
-                    });
-                }}
-              >
-                <CopyIcon className="text-text-200 w-4 h-4 stroke-1" />
-              </button>
+              <CopyToClipboardButton value={data.address_to_pay} />
             </div>
           </div>
 

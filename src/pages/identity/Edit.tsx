@@ -17,7 +17,6 @@ import {
   MailIcon,
   ShieldCheckIcon,
   PencilIcon,
-  CopyIcon,
 } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
@@ -30,8 +29,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import Picture from "@/components/Picture";
+import CopyToClipboardButton from "@/components/CopyToClipboardButton";
 import Upload, { UploadedFilePreview } from "@/components/Upload";
-import { copyToClipboard } from "@/utils";
 import { truncateString } from "@/utils/strings";
 import {
   editIdentity,
@@ -261,21 +260,7 @@ function Form() {
             <span className="text-text-200 text-xs font-normal leading-[18px]">
               {truncateString(data.node_id, 12)}
             </span>
-
-            <button
-              className="flex items-center justify-center p-0"
-              onClick={() => {
-                void copyToClipboard(data.node_id, () => {
-                  toast({
-                    description: "Copied to clipboard",
-                    position: "bottom-center",
-                    duration: 750,
-                  });
-                });
-              }}
-            >
-              <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
-            </button>
+            <CopyToClipboardButton value={data.node_id} />
           </div>
         </div>
 

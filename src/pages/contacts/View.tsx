@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
 import { FormattedMessage, useIntl } from "react-intl";
-import { CopyIcon, PencilIcon, TrashIcon, TriangleAlert } from "lucide-react";
+import { PencilIcon, TrashIcon, TriangleAlert } from "lucide-react";
 import Page from "@/components/wrappers/Page";
 import Topbar from "@/components/Topbar";
 import NavigateBack from "@/components/NavigateBack";
@@ -24,11 +24,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import CopyToClipboardButton from "@/components/CopyToClipboardButton";
+import { Attachment } from "@/components/Attachment";
 import Picture from "@/components/Picture";
 import { Button } from "@/components/ui/button";
 import { getContactDetails, removeContact } from "@/services/contact_v2";
 import { useToast } from "@/hooks/use-toast";
-import { copyToClipboard } from "@/utils";
 import { truncateString } from "@/utils/strings";
 import { API_URL } from "@/constants/api";
 import { GET_CONTACT_FILE } from "@/constants/endpoints";
@@ -36,7 +37,6 @@ import routes from "@/constants/routes";
 import { COUNTRIES } from "@/constants/countries";
 import Property from "./components/Property";
 import { getMessage, messages } from "./components/messages";
-import { Attachment } from "@/components/Attachment";
 
 type DeleteContactProps = {
   contactId: string;
@@ -237,14 +237,7 @@ function Information({ contactId }: { contactId: string }) {
               <span className="text-text-200 text-xs font-normal leading-normal">
                 {truncateString(node_id, 14)}
               </span>
-              <button
-                className="p-0"
-                onClick={() => {
-                  void copyToClipboard(node_id);
-                }}
-              >
-                <CopyIcon className="text-text-200 h-4 w-4 stroke-1" />
-              </button>
+              <CopyToClipboardButton value={node_id} />
             </div>
           </div>
         </div>
