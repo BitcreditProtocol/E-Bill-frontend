@@ -1,6 +1,4 @@
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Page from "@/components/wrappers/Page";
 
 const formSchema = z.object({
@@ -31,3 +29,5 @@ export type CreateIdentityFormSchema = z.infer<typeof formSchema>;
 export default function Create() {
   return <Page></Page>;
 }
+
+Create.formSchema = formSchema;
