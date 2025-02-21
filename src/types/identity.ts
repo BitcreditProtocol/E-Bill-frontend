@@ -19,5 +19,5 @@ export type Identity = {
   identity_document_file: {
     name: string;
     hash: string;
-  };
+  } | null;
 };

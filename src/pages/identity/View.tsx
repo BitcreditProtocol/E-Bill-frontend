@@ -84,7 +84,9 @@ function Information() {
     [address, zip, city, COUNTRIES[country as keyof typeof COUNTRIES]]
       .filter(Boolean)
       .join(", ") || "-";
-  const identityFile = `${API_URL}${GET_IDENTITY_FILE}/${name}`;
+  const identityFile =
+    identity_document_file &&
+    `${API_URL}${GET_IDENTITY_FILE}/${identity_document_file.name}`;
 
   return (
     <div className="flex flex-col gap-4">
@@ -130,7 +132,12 @@ function Information() {
         <Property
           label={f(messages["identity.personal.identity_file"])}
           value={
-            <Attachment name={identity_document_file.name} url={identityFile} />
+            identity_document_file && (
+              <Attachment
+                name={identity_document_file.name}
+                url={identityFile || ""}
+              />
+            )
           }
         />
       </div>
